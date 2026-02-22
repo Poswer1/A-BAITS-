@@ -1,0 +1,21 @@
+{
+    "lot-title": "2018 AUDI Q7 PRESTIGE",
+    "lot-number": "лота",
+    "lot-current-bid": "Текущая ставка",
+    "lot-location": "Местоположение",
+    "lot-details-button": "Посмотреть детали",
+    "lot-favorite": "Добавить в избранное",
+    "lot-state": "Состояние",
+    "lot-currentPrice": "Текущая ставка",
+    "lot-day": "Дней",
+    "lot-dateStop": "Окончание аукциона",
+    "lot-lowStep": "Ставка не может быть ниже",
+    "lot-doBid": "Сделать ставку",
+    "lot-buyNow": "Купить сейчас",
+    "lot-userDoBid": "Сделал ставку",
+    "lot-historyBid": "История ставок",
+    "lot-lastReview": "Последние Отзовы",
+    "lot-views": "Просмотров",
+    "lot-favoriteCount": "Добавлено в избранное",
+    "lot-myBet": "Моя последняя ставка"
+}

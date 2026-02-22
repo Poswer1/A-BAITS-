@@ -1,0 +1,15 @@
+{
+    "category": "Категории",
+    "searchPlaceholder": "Поиск лотов",
+    "searchValueNotFound": "Ничего не найдено",
+    "userNameNotFound": "Не найдено",
+    "login": "Войти",
+    "register": "Регистрация",
+    "createLot": "Создать лот",
+    "modalProfile-profile": "Профиль",
+    "modalProfile-history": "История ставок",
+    "modalProfile-support": "Поддержка",
+    "modalProfile-createLot": "Создать лот",
+    "modalProfile-logout": "Выйти"
+
+}

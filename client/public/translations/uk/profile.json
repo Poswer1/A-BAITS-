@@ -1,0 +1,16 @@
+{
+  "firstName": "Ім’я",
+  "lastName": "Прізвище",
+  "selectCity": "Оберіть місто",
+  "enterCity": "Введіть місто",
+  "cityNotFound": "Місто не знайдено",
+  "changeAvatar": "Змінити аватар",
+  "deleteAvatar": "Видалити аватар",
+  "cityNotSelected": "Місто не обрано",
+  "saveChanges": "Застосувати зміни",
+  "settingsProfile": "Налаштування профілю",
+  "active": "Активні",
+  "archived": "Архівні",
+  "completed": "Завершені",
+  "sold": "Продані"
+}

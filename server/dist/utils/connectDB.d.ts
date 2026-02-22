@@ -1,0 +1,7 @@
+import { OnModuleInit } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+export declare class ConnectDB implements OnModuleInit {
+    private configService;
+    constructor(configService: ConfigService);
+    onModuleInit(): Promise<void>;
+}

@@ -1,0 +1,20 @@
+{
+    "firstName": "Имя",
+    "lastName": "Фамилия",
+    "selectCity": "Выберети город",
+    "enterCity": "Введите город",
+    "cityNotFound": "Город не найден",
+    "changeAvatar": "Сменить аватар",
+    "deleteAvatar": "Удалить аватар",
+    "cityNotSelected": "Город не выбран",
+    "saveChanges": "Приминить изменения",
+    "settingsProfile": "Настройки профиля",
+    "active": "Активные",
+    "archived": "Архивные",
+    "completed": "Завершенные",
+    "sold": "Проданные",
+    "profile": "Профиль",
+    "myLots": "Мои лоты",
+    "historyBids": "История ставок",
+    "favorites": "Избранные"
+}

@@ -1,0 +1,8 @@
+export const overlay = 'flex justify-center items-center fixed top-0 left-0 w-full h-full bg-black/50 z-10'
+export const button = 'flex justify-center items-center text-white p-2 bg-orange-600 rounded-md px-5'
+export const messageError = 'flex justify-center items-center p-2 border border-red-600 text-red-600 bg-red-500/20 text-center rounded-md text-center fixed fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2'
+export const avatarBlock = 'bg-gray-300 rounded-full flex justify-center items-center overflow-hidden cursor-pointer'
+export const customInput = 'flex justify-between items-center w-full gap-2 bg-gray-100 border border-gray-200 px-2 rounded-md'
+export const inputBlock = 'flex flex-col justify-center items-start w-full p-5 rounded-xl'
+export const input = 'outline-none py-2 rounded-md w-full px-2'
+export const loadingBlock = 'flex justify-center items-center w-full h-full'
