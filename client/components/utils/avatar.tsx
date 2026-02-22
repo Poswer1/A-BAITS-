@@ -1,0 +1,23 @@
+import { avatarBlock, overlay } from '@/styles/global'
+import { animationOpacity } from '@/styles/style'
+import { Camera, User } from 'lucide-react'
+
+export default function AvatarBlock(avatar: string | null, size: string | null, changeAvatar?: boolean, setChangeAvatar?: (value: boolean) => void) {
+ return (
+    <>
+    {avatar ? (
+        <div className={`${avatarBlock} relative`} style={{width: `${size || '45'}px`, height: `${size || '45'}px`}} onMouseEnter={() => setChangeAvatar && setChangeAvatar(true)} onMouseLeave={() => setChangeAvatar && setChangeAvatar(false)}>
+         {changeAvatar && (
+            <label className={`${overlay} ${animationOpacity} !absolute z-10 cursor-pointer`} htmlFor='changeFile'>
+                <Camera className='text-white'/>
+                <input type="file" className="hidden" id='changeFile'/>
+            </label>   
+         )}
+         <img src={avatar} className='w-full h-full object-cover z-0'/>
+        </div>
+    ): (
+        <User />
+    )}
+    </>
+ )
+}
