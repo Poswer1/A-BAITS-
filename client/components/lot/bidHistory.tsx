@@ -7,6 +7,7 @@ import { Socket } from "socket.io-client";
 import { useEffect, useState } from "react";
 import { avatarBlock } from "@/styles/global";
 import AvatarBlock from "../utils/avatar";
+import Link from "next/link";
 
 interface BidHistoryProps {
   lot:any,
@@ -30,7 +31,7 @@ export default function BidHistory({userHistory}:BidHistoryProps) {
           ): (
           userHistory.map((user ,i) => (
             <div key={i} className="flex justify-center items-center gap-2">
-              {AvatarBlock(user?.avatar, '45')}
+              <Link href={`/${lang}/profile/${user?.name}`}><AvatarBlock avatar={user?.avatar} size="45"/></Link>
               <div className="flex flex-col justify-center items-start">
               <h1>{user?.name || ''}</h1>
               <span className="text-sm text-orange-600">{t('lot', 'lot-userDoBid')} {user?.currentBid} ₴</span>

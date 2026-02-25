@@ -29,7 +29,7 @@ function page() {
     const [value, setValue] = useState(0)
 
     useEffect(() => {
-        socket.emit('joinLot', numberLot)
+        socket.emit('joinLot', numberLot) 
         
         socket.on('bidUpdated', (data) => {
           if(data.lotId === numberLot) {

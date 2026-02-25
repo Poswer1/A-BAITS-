@@ -35,19 +35,19 @@ function page() {
   }, [])
 
   return (
-    <div className={pageContainerClass}>
+    <div className={`${blockClass} flex-col !items-start`}>
       {loading ? (
         <div className={loadingBlock}>
            <Loading />
         </div>
             ): (
               <>
-              <h1 className="text-2xl mb-5">{t('profile', 'settingsProfile')}</h1>
+              <h1 className="text-xl mb-5">{t('profile', 'settingsProfile')}</h1>
                 <div className="flex flex-col justify-center items-center w-2/3 gap-5">
                   
                   <div className={blockClass}>
                         <div className="relative">
-                          {AvatarBlock(user?.avatar, '180', changeAvatar, setChangeAvatar)}
+                          <AvatarBlock avatar={user?.avatar} size="180" changeAvatar={changeAvatar} setChangeAvatar={setChangeAvatar}/>
                         </div>
                         <div className="flex flex-col justify-center items-start">
                           <h1 className="text-xl">{username}</h1>

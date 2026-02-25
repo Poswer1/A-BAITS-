@@ -20,6 +20,8 @@ import ruGlobal from '../../public/translations/ru/global.json'
 import ruProfile from '../../public/translations/ru/profile.json'
 import ClientLayout from "./clientLayout";
 
+type Lang = 'uk' | 'ru'
+
 const translationsMap = {
     uk: {
         header: ukHeader,
@@ -46,7 +48,7 @@ const translationsMap = {
 export default async function LangLayout({children, params}: {children: React.ReactNode; params: { lang: string }}) {
     
     const Params = await params
-    const lang = Params.lang
+    const lang = Params.lang as Lang || 'uk'
 
     const messages = translationsMap[lang] ||  translationsMap.uk
 

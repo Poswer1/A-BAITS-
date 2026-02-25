@@ -2,7 +2,14 @@ import { avatarBlock, overlay } from '@/styles/global'
 import { animationOpacity } from '@/styles/style'
 import { Camera, User } from 'lucide-react'
 
-export default function AvatarBlock(avatar: string | null, size: string | null, changeAvatar?: boolean, setChangeAvatar?: (value: boolean) => void) {
+interface AvatarBlockProps {
+    avatar: string
+    size: string
+    changeAvatar?: boolean,
+    setChangeAvatar?: (value: boolean) => void
+}
+
+export default function AvatarBlock({avatar, size, changeAvatar, setChangeAvatar}: AvatarBlockProps) {
  return (
     <>
     {avatar ? (
@@ -16,7 +23,7 @@ export default function AvatarBlock(avatar: string | null, size: string | null, 
          <img src={avatar} className='w-full h-full object-cover z-0'/>
         </div>
     ): (
-        <User />
+        <User size={size || '15'}/>
     )}
     </>
  )

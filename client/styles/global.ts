@@ -4,5 +4,5 @@ export const messageError = 'flex justify-center items-center p-2 border border-
 export const avatarBlock = 'bg-gray-300 rounded-full flex justify-center items-center overflow-hidden cursor-pointer'
 export const customInput = 'flex justify-between items-center w-full gap-2 bg-gray-100 border border-gray-200 px-2 rounded-md'
 export const inputBlock = 'flex flex-col justify-center items-start w-full p-5 rounded-xl'
-export const input = 'outline-none py-2 rounded-md w-full px-2'
+export const input = 'outline-none py-2 rounded-md w-full px-2 bg-gray-100'
 export const loadingBlock = 'flex justify-center items-center w-full h-full'

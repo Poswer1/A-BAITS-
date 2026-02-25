@@ -97,11 +97,11 @@ function Header() {
                             <div className={`flex justify-center items-center gap-5`}>
                             <div className='flex flex-col justify-center items-start relative'>
                                 <div className={`${hover} flex justify-center items-center gap-2`} onClick={() => setOpenProfile(prev => !prev)}>
-                                    {AvatarBlock(avatar, '32')}
+                                    <AvatarBlock avatar={avatar} size="32"/>
                                     <span>{name || t('header','userNameNotFound')}</span>
                                 </div>
                                 {openProfile && (
-                                    <OpenProfile setOpenProfile={setOpenProfile}/>
+                                    <OpenProfile setOpenProfile={setOpenProfile} name={name}/>
                                 )}
                             </div>
                             </div>

@@ -16,7 +16,7 @@ export class UserService {
 
   async getUserByName(name: string) {
     try {
-      const user = await UserModel.findOne({name:name}).select('-password');
+      const user = await UserModel.findOne({name:name}).select('-password -email');
       return user
     } catch (error) {
       throw new BadRequestException('Помилка получення профилю')

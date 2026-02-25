@@ -13,6 +13,7 @@ const connectDB_1 = require("./utils/connectDB");
 const auth_module_1 = require("./module/auth/auth.module");
 const user_module_1 = require("./module/user/user.module");
 const lot_module_1 = require("./module/lot/lot.module");
+const chat_module_1 = require("./module/chat/chat.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -25,6 +26,7 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             user_module_1.UserModule,
             lot_module_1.LotModule,
+            chat_module_1.ChatModule
         ],
         providers: [connectDB_1.ConnectDB]
     })

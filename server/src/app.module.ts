@@ -4,6 +4,7 @@ import { ConnectDB } from './utils/connectDB';
 import { AuthModule } from './module/auth/auth.module';
 import { UserModule } from './module/user/user.module';
 import { LotModule } from './module/lot/lot.module';
+import { ChatModule } from './module/chat/chat.module';
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { LotModule } from './module/lot/lot.module';
     AuthModule,
     UserModule,
     LotModule,
+    ChatModule
   ],
   providers: [ConnectDB]
 })

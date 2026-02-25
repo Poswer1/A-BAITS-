@@ -21,7 +21,7 @@ let UserService = class UserService {
     }
     async getUserByName(name) {
         try {
-            const user = await user_model_1.UserModel.findOne({ name: name }).select('-password');
+            const user = await user_model_1.UserModel.findOne({ name: name }).select('-password -email');
             return user;
         }
         catch (error) {

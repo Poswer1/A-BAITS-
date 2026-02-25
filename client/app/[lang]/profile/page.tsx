@@ -1,11 +1,16 @@
 'use client'
 
-import AvatarBlock from "@/components/utils/avatar"
+import { useTranslation } from "@/app/context/TranslationProvider"
 import { getUserById} from "@/services/user"
+import { pageContainerClass } from "@/styles/profile/profile"
 import { useEffect, useState } from "react"
+
 
 function page() {
   const [user, setUser] = useState<any | null>(null)
+  const [active, setActive] = useState('')
+
+  const {t} = useTranslation()
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -17,10 +22,9 @@ function page() {
   }, [])
 
   return (
-    <div className="flex justify-center items-start w-full h-full">
-      <div className="flex justify-center items-center bg-white p-2 rounded-md gap-2">
-        {AvatarBlock(user?.avatar, '60')}
-        <h1 className="text-lg font-bold">{user?.name}</h1>
+    <div className={pageContainerClass}>
+      <h1 className="text-2xl">{t('profile', 'profile')} | {user?.name}</h1>
+      <div className="flex justify-start items-start w-full gap-5 mt-2">
       </div>
     </div>
   )

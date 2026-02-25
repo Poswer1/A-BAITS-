@@ -9,9 +9,10 @@ import { hoverCat } from '@/styles/categoryList';
 
 interface OpenProfile {
    setOpenProfile:(type:boolean) => void
+   name:string
 }
 
-function OpenProfile({setOpenProfile}: OpenProfile) {
+function OpenProfile({setOpenProfile, name}: OpenProfile) {
 
     const params = useParams()
     const lang = params.lang as string
@@ -29,7 +30,7 @@ function OpenProfile({setOpenProfile}: OpenProfile) {
 
   return ( 
     <div ref={modalRef} className={` ${animationOpacity} flex flex-col justify-center items-center bg-white rounded-xl absolute top-10 text-black z-20 w-40`}>
-        <Link href={`/${lang}/profile`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('header','modalProfile-profile')}</Link> 
+        <Link href={`/${lang}/profile/${name}`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('header','modalProfile-profile')}</Link> 
         <Link href={`/${lang}/profile/myLots`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('profile', 'myLots')}</Link>
         <Link href={`/${lang}/profile/chat`} className={linkClass} onClick={() => setOpenProfile(false)}>Чат</Link>
         <Link href={`/${lang}/profile/historyBids`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('header',"modalProfile-history")}</Link>
