@@ -11,6 +11,7 @@ const common_1 = require("@nestjs/common");
 const lot_model_1 = require("../../models/lot.model");
 const files_upload_1 = require("../../utils/files-upload");
 const mongoose_1 = require("mongoose");
+const user_model_1 = require("../../models/user.model");
 let LotService = class LotService {
     async createLot(dto, files, userId) {
         const images = files ? await (0, files_upload_1.ProccessImages)(files) : [];
@@ -63,10 +64,20 @@ let LotService = class LotService {
             console.log('лот не найден');
             return;
         }
+        if (lot.winner) {
+            throw new common_1.BadRequestException('LotAlreadySold');
+        }
         const minBid = lot.startPrice + lot.stepPrice;
         if (data.bid < minBid) {
-            console.log(`Минимальная ставка ${minBid}`);
+            throw new common_1.BadRequestException(`Минимальная ставка ${minBid}`);
+        }
+        const user = await user_model_1.UserModel.findById(userId);
+        if (!user) {
+            console.log('пользователь не найден при ставке');
             return;
+        }
+        if (data.bid >= user?.balance) {
+            throw new common_1.BadRequestException('NoMoney');
         }
         lot.startPrice = data.bid;
         lot.historyBid.push({ author: new mongoose_1.Types.ObjectId(userId), currentBid: data.bid });

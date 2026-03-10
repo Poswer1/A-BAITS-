@@ -5,6 +5,9 @@ import { AuthModule } from './module/auth/auth.module';
 import { UserModule } from './module/user/user.module';
 import { LotModule } from './module/lot/lot.module';
 import { ChatModule } from './module/chat/chat.module';
+import { NotificationModule } from './module/notification/notification.module';
+import { PaymentModule } from './module/payment/payment.module';
+import { ReviewModule } from './module/review/review.module';
 
 @Module({
   imports: [
@@ -14,7 +17,10 @@ import { ChatModule } from './module/chat/chat.module';
     AuthModule,
     UserModule,
     LotModule,
-    ChatModule
+    ChatModule,
+    NotificationModule,
+    PaymentModule,
+    ReviewModule
   ],
   providers: [ConnectDB]
 })

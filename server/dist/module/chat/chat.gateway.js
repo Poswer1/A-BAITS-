@@ -26,6 +26,9 @@ let ChatGateway = class ChatGateway {
         this.jwtService = jwtService;
     }
     server;
+    async newReview(to) {
+        this.server.to(to).emit('newReview');
+    }
     async newMessage(data, client) {
         const senderId = this.activeUser.get(client.id);
         if (!senderId)
@@ -39,11 +42,11 @@ let ChatGateway = class ChatGateway {
         }
         return chat;
     }
-    async getChatHistory(toUserId, client) {
+    async getChatHistory(data, client) {
         const userId = this.activeUser.get(client.id);
-        if (!userId || !toUserId)
+        if (!userId || !data.toUserId)
             return console.log('ошибка при получение истории чата');
-        const history = await this.chatService.getChatHistory(toUserId, userId);
+        const history = await this.chatService.getChatHistory(data.toUserId, data.type, userId);
         client.emit('getHistory', history);
     }
     async handleConnection(client) {
@@ -55,6 +58,8 @@ let ChatGateway = class ChatGateway {
         }
         const payload = await this.jwtService.verify(token);
         const userId = payload._id;
+        client.join(userId);
+        client.data.userId = userId;
         this.activeUser.set(client.id, userId);
     }
 };
@@ -76,7 +81,7 @@ __decorate([
     __param(0, (0, websockets_1.MessageBody)()),
     __param(1, (0, websockets_1.ConnectedSocket)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, socket_io_1.Socket]),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "getChatHistory", null);
 exports.ChatGateway = ChatGateway = __decorate([

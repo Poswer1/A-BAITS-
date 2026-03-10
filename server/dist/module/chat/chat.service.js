@@ -18,13 +18,15 @@ let ChatService = class ChatService {
             $or: [
                 { userFrom: userId, userTo: data.toUserId },
                 { userFrom: data.toUserId, userTo: userId }
-            ]
+            ],
+            type: data.type
         });
         if (!chat) {
             chat = await chat_model_1.ChatModel.create({
                 userFrom: new mongoose_1.Types.ObjectId(userId),
                 userTo: new mongoose_1.Types.ObjectId(data.toUserId),
                 lot: data.numberLot,
+                type: 'default',
                 messages: []
             });
         }
@@ -55,17 +57,19 @@ let ChatService = class ChatService {
             throw new common_1.BadRequestException('Ошибка при получение всех моих чатов', error);
         }
     }
-    async getChatHistory(toUserId, userId) {
+    async getChatHistory(toUserId, type, userId) {
         try {
             const history = await chat_model_1.ChatModel.findOne({
                 $or: [
                     { userFrom: toUserId, userTo: userId },
                     { userFrom: userId, userTo: toUserId },
-                ]
+                ],
+                type: type
             });
             if (!history)
                 return { historyMessage: [], numberLot: null };
-            return { historyMessage: history.messages, numberLot: history.lot };
+            const hadReview = history.reviews.some(obj => obj.to.toString() === userId);
+            return { historyMessage: history.messages, numberLot: history.lot, type: history.type, hadReview, status: history.status };
         }
         catch (error) {
             throw new common_1.BadRequestException('Ошибка при получение истории чата', error);

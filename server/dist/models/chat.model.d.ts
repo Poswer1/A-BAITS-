@@ -6,10 +6,17 @@ export interface Message {
     read: boolean;
     createdAt: Date;
 }
+export interface ReviewsType {
+    from: Types.ObjectId;
+    to: Types.ObjectId;
+}
 export interface Chat extends Document {
     userFrom: Types.ObjectId;
     userTo: Types.ObjectId;
+    type: string;
     lot: string;
+    status: string;
+    reviews: ReviewsType[];
     messages: Message[];
 }
 export declare const ChatModel: import("mongoose").Model<Chat, {}, {}, {}, Document<unknown, {}, Chat, {}, import("mongoose").DefaultSchemaOptions> & Chat & Required<{

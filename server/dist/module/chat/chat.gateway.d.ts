@@ -7,10 +7,12 @@ export declare class ChatGateway {
     private activeUser;
     constructor(chatService: ChatService, jwtService: JwtService);
     server: Server;
+    newReview(to: string): Promise<void>;
     newMessage(data: {
         toUserId: string;
         message: string;
         numberLot: string;
+        type: string;
     }, client: Socket): Promise<void | {
         from: import("mongoose").Types.ObjectId;
         to: import("mongoose").Types.ObjectId;
@@ -18,6 +20,9 @@ export declare class ChatGateway {
         read: boolean;
         createdAt: Date;
     }>;
-    getChatHistory(toUserId: string, client: Socket): Promise<void>;
+    getChatHistory(data: {
+        toUserId: string;
+        type: string;
+    }, client: Socket): Promise<void>;
     handleConnection(client: Socket): Promise<void>;
 }

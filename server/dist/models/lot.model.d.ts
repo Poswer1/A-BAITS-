@@ -8,9 +8,6 @@ export interface Lot {
     name: string;
     author: Types.ObjectId;
     lotNumber: string;
-    category: string;
-    subCategory: string;
-    subSubCategory?: string;
     startPrice: number;
     stepPrice: number;
     blitzPrice?: number;
@@ -26,6 +23,7 @@ export interface Lot {
     delivary: string;
     Advertising: boolean;
     historyBid: HistoryBid[];
+    winner: Types.ObjectId;
 }
 export declare const LotModel: import("mongoose").Model<Lot, {}, {}, {}, import("mongoose").Document<unknown, {}, Lot, {}, import("mongoose").DefaultSchemaOptions> & Lot & {
     _id: Types.ObjectId;
