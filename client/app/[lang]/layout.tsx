@@ -9,6 +9,8 @@ import ukNavbar from '../../public/translations/uk/navbar.json'
 import ukCreateLot from '../../public/translations/uk/createLot.json'
 import ukGlobal from '../../public/translations/uk/global.json'
 import ukProfile from '../../public/translations/uk/profile.json'
+import ukChat from '../../public/translations/uk/chat.json'
+import ukReview from '../../public/translations/uk/review.json'
 
 import ruHeader from '../../public/translations/ru/header.json'
 import ruFooter from '../../public/translations/ru/footer.json'
@@ -18,6 +20,9 @@ import ruNavbar from '../../public/translations/ru/navbar.json'
 import ruCreateLot from '../../public/translations/ru/createLot.json'
 import ruGlobal from '../../public/translations/ru/global.json'
 import ruProfile from '../../public/translations/ru/profile.json'
+import ruChat from '../../public/translations/ru/chat.json'
+import ruReview from '../../public/translations/ru/review.json'
+
 import ClientLayout from "./clientLayout";
 
 type Lang = 'uk' | 'ru'
@@ -31,7 +36,9 @@ const translationsMap = {
         main: ukMain,
         navbar: ukNavbar,
         global: ukGlobal,
-        profile: ukProfile
+        profile: ukProfile,
+        chat: ukChat,
+        review: ukReview,
     },
     ru: {
         header: ruHeader,
@@ -41,7 +48,9 @@ const translationsMap = {
         main: ruMain,
         navbar: ruNavbar,
         global: ruGlobal,
-        profile: ruProfile
+        profile: ruProfile,
+        chat: ruChat,
+        review: ruReview
     }
 }
 

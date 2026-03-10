@@ -11,7 +11,8 @@ export class ChatService {
             $or: [
                 {userFrom: userId, userTo: data.toUserId},
                 {userFrom: data.toUserId, userTo: userId}
-            ]
+            ],
+            type: data.type
         }) 
 
         if(!chat) {
@@ -19,6 +20,7 @@ export class ChatService {
                 userFrom: new Types.ObjectId(userId),
                 userTo: new Types.ObjectId(data.toUserId),
                 lot: data.numberLot,
+                type: 'default',
                 messages: []
             })
         }
@@ -54,16 +56,18 @@ export class ChatService {
         }
     }
 
-    async getChatHistory(toUserId:string, userId:string) {
+    async getChatHistory(toUserId:string, type:string, userId:string) {
         try {
             const history = await ChatModel.findOne({
                 $or: [
                     {userFrom: toUserId, userTo: userId},
                     {userFrom: userId, userTo: toUserId},
-                ]
+                ],
+                type: type
             })
             if(!history) return {historyMessage: [], numberLot: null};
-            return {historyMessage: history.messages, numberLot: history.lot}
+            const hadReview = history.reviews.some(obj => obj.to.toString() === userId)
+            return {historyMessage: history.messages, numberLot: history.lot, type: history.type, hadReview, status: history.status}
         } catch (error) {
             throw new BadRequestException('Ошибка при получение истории чата',error)
         }

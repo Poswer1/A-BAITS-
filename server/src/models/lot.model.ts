@@ -10,9 +10,9 @@ export interface Lot {
   name: string;
   author:Types.ObjectId,
   lotNumber:string,
-  category:string;
-  subCategory:string;
-  subSubCategory?:string
+  // category:string;
+  // subCategory:string;
+  // subSubCategory?:string
   startPrice: number;
   stepPrice: number;
   blitzPrice?: number;
@@ -28,6 +28,7 @@ export interface Lot {
   delivary: string;
   Advertising: boolean;
   historyBid: HistoryBid[]
+  winner:Types.ObjectId
 }
 
 const HistoryBidSchema = new Schema<HistoryBid>({
@@ -41,9 +42,9 @@ const LotSchema = new Schema<Lot>({
   name: { type: String, required: true },
   author: {type: Types.ObjectId, ref: 'User', required: true},  //ref говорит Mongoose, к какой коллекции относится этот ObjectId 
   lotNumber: {type: String, required: true},
-  category: { type: String, required: true },
-  subCategory: { type: String, required: true },
-  subSubCategory: { type: String, default: null},
+  // category: { type: String, required: true },
+  // subCategory: { type: String, required: true },
+  // subSubCategory: { type: String, default: null},
   startPrice: { type: Number, required: true },
   stepPrice: { type: Number, required: true },
   blitzPrice: { type: Number },
@@ -59,6 +60,7 @@ const LotSchema = new Schema<Lot>({
   delivary: { type: String, required: true },
   historyBid: { type: [HistoryBidSchema], default: [] },
   Advertising: { type: Boolean, default: false },
+  winner: {type: Types.ObjectId, ref: 'User'},
 },
 {timestamps: true,}
 );

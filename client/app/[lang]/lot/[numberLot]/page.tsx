@@ -9,13 +9,9 @@ import PhotoSection from "@/components/lot/photoSection"
 import Loading from "@/components/utils/loadig"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
-import { io } from "socket.io-client"
-
-const socket = io('http://localhost:3002', {
-    path: '/socket.io',
-    transports: ["websocket"],
-    auth: {token: localStorage.getItem('token')}
-})
+import { useSocketContext } from "@/app/context/SocketIo"
+import { LotTypes } from "@/types/types"
+import DescriptioSection from "@/components/lot/descriptioSection"
 
 function page() {
 
@@ -23,12 +19,17 @@ function page() {
     const numberLot = params.numberLot as string
     console.log(numberLot)
 
-    const [lot, setLot] = useState<any | null>(null)
+    const [lot, setLot] = useState<LotTypes | null>(null)
     const [currentPrice, setCurrentPrice] = useState(0)
     const [userHistory, setUserHistory] = useState<any[]>([])
+    const [status, setStatus] = useState('')
     const [value, setValue] = useState(0)
+    const { socket } = useSocketContext()
 
     useEffect(() => {
+
+        if(!socket) return
+
         socket.emit('joinLot', numberLot) 
         
         socket.on('bidUpdated', (data) => {
@@ -51,7 +52,7 @@ function page() {
         socket.off("bidUpdated")
         socket.off('getHistoryBid')
       }
-    }, [])
+    }, [socket])
 
 
     useEffect(() => {
@@ -60,6 +61,7 @@ function page() {
         .then(data => {
             setLot(data)
             setCurrentPrice(data.startPrice)
+            setStatus(data.status)
             setValue(data.startPrice + data.stepPrice)
         })
     }, [numberLot])
@@ -71,15 +73,16 @@ function page() {
         <Loading />
       ): (
         <>
-        <HeaderLot lot={lot}/>
-        <div className="flex  justify-start items-start w-[80%] py-2 gap-2 h-200">
-            <PhotoSection lot={lot}/>
-            <div className="flex flex-col justify-start items-start">
-              <InfoSection lot={lot} socket={socket} currentPrice={currentPrice} setCurrentPrice={setCurrentPrice} value={value} setValue={setValue}/>
-              <AuthorSection lot={lot}/> 
-            </div>
-            <BidHistory lot={lot} socket={socket} userHistory={userHistory}/>
-        </div>
+          <HeaderLot lot={lot}/>
+          <div className="flex justify-start items-start w-[80%] py-2 gap-2 h-200">
+              <PhotoSection lot={lot}/>
+              <div className="flex flex-col justify-start items-start">
+                <InfoSection lot={lot} socket={socket} currentPrice={currentPrice} setCurrentPrice={setCurrentPrice} value={value} setValue={setValue} status={status} setStatus={setStatus}/>
+                <AuthorSection lot={lot}/> 
+              </div>
+              <BidHistory lot={lot} socket={socket} userHistory={userHistory}/>
+          </div>
+          <DescriptioSection lot={lot}/>
         </>
       )}
     </div>

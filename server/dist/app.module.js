@@ -14,6 +14,9 @@ const auth_module_1 = require("./module/auth/auth.module");
 const user_module_1 = require("./module/user/user.module");
 const lot_module_1 = require("./module/lot/lot.module");
 const chat_module_1 = require("./module/chat/chat.module");
+const notification_module_1 = require("./module/notification/notification.module");
+const payment_module_1 = require("./module/payment/payment.module");
+const review_module_1 = require("./module/review/review.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,7 +29,10 @@ exports.AppModule = AppModule = __decorate([
             auth_module_1.AuthModule,
             user_module_1.UserModule,
             lot_module_1.LotModule,
-            chat_module_1.ChatModule
+            chat_module_1.ChatModule,
+            notification_module_1.NotificationModule,
+            payment_module_1.PaymentModule,
+            review_module_1.ReviewModule
         ],
         providers: [connectDB_1.ConnectDB]
     })

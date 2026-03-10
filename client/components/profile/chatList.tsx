@@ -6,9 +6,10 @@ import { getUserById } from '@/services/user';
 
 interface ChatListProps {
   setSelectChat: (v:string) => void;
+  setTypeChat: (v:string) => void
 }
 
-export default function ChatList({setSelectChat}: ChatListProps) {
+export default function ChatList({setSelectChat, setTypeChat}: ChatListProps) {
 
     const [allChats, setAllChats] = useState<any[]>([])
     const [myId, setMyId] = useState('')
@@ -39,7 +40,7 @@ export default function ChatList({setSelectChat}: ChatListProps) {
             const user = chat.userTo?._id.toString() === myId ? chat.userFrom : chat.userTo;
             if (!user) return null;
             return (
-                <div onClick={() => setSelectChat(user._id)} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-3 w-90 border-b border-gray-200`}>
+                <div onClick={() => {setSelectChat(user._id), setTypeChat(chat.type)}} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-3 w-90 border-b border-gray-200`}>
                     <div className='flex justify-center items-center gap-2'>
                         <AvatarBlock avatar={user?.avatar} size="50"/>
                         <div className='flex flex-col justify-center items-start'>

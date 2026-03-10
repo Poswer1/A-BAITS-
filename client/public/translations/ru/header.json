@@ -10,6 +10,8 @@
     "modalProfile-history": "История ставок",
     "modalProfile-support": "Поддержка",
     "modalProfile-createLot": "Создать лот",
-    "modalProfile-logout": "Выйти"
-
+    "modalProfile-logout": "Выйти",
+    "notification": "Уведомления",
+    "lotPurchased": "Ваш лот был успешно выкуплен - ",
+    "loading": "Загрузка..."
 }

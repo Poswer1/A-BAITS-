@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Search, Menu, User, X, Globe, ChevronDown} from 'lucide-react';
+import { Search, Menu, User, X, Globe, ChevronDown, Bell} from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { arrowActive, hover} from '@/styles/style';
@@ -14,6 +14,9 @@ import OpenProfile from './OpenProfile';
 import {useClickOutside} from '@/utils/useClickOutside';
 import { avatarBlock } from '@/styles/global';
 import AvatarBlock from '../utils/avatar';
+import { hoverSub } from '@/styles/categoryList';
+import OpenNotification from './openNotification';
+import { useSocketContext } from '@/app/context/SocketIo';
 
 
 function Header() {
@@ -21,13 +24,15 @@ function Header() {
     const pathname = usePathname()
     const params = useParams()
     const lang = params.lang as string
+    const {socket} = useSocketContext()
 
     const [openCategory, setOpenCategory] = useState(false)
     const [openSearch, setOpenSearch] = useState(false)
     const [search, setSearch] = useState('')
     const [openLanguage, setOpenLanguage] = useState(false)
     const [openProfile, setOpenProfile] = useState(false)
-    
+    const [openNotification, setOpenNotification] = useState(false)
+    const [read, setRead] = useState(false)
 
     const [name, setName] = useState('')
     const [avatar, setAvatar] = useState('')
@@ -50,6 +55,20 @@ function Header() {
 
         fetchUser();
     }, []);
+
+    useEffect(() => {
+        if(!socket) return
+
+        socket.on('newNotification', () => {
+            setRead(true)
+        })
+
+        socket.emit('checkRead')
+        socket.on('checkRead', (data) => {
+            setRead(data)
+        })
+
+    }, [socket])
 
      const modalRef = useClickOutside(setOpenLanguage)
 
@@ -81,8 +100,9 @@ function Header() {
                         )}
                     </div>
                 </div>
-                <div className='flex justify-center items-center gap-3 whitespace-nowrap'>
-                            <div onClick={() => setOpenLanguage(prev => !prev)}className='flex justify-center items-center gap-2 cursor-pointer relative '>
+                <div className='flex justify-center items-center gap-5 whitespace-nowrap relative'>
+
+                        <div onClick={() => setOpenLanguage(prev => !prev)}className='flex justify-center items-center gap-2 cursor-pointer relative '>
                                 <Globe />
                                 {pathname === '/uk' ? 'Українська' : 'Русский'}
                                 <ChevronDown  className={arrowActive(openLanguage)}/>
@@ -92,9 +112,11 @@ function Header() {
                                         <Link href={'/uk'} className={hover} onClick={() => setOpenLanguage(false)}>Українська</Link>
                                     </div>
                                 )}
-                            </div>
-                    {localStorage.getItem('token') ? (
-                            <div className={`flex justify-center items-center gap-5`}>
+                        </div>
+                                
+                        <Bell className={`${hoverSub} ${read ? 'text-orange-600': 'text-gray-500'}`} onClick={() => setOpenNotification(prev => !prev)}/>
+
+                        <div className={`flex justify-center items-center gap-5`}>
                             <div className='flex flex-col justify-center items-start relative'>
                                 <div className={`${hover} flex justify-center items-center gap-2`} onClick={() => setOpenProfile(prev => !prev)}>
                                     <AvatarBlock avatar={avatar} size="32"/>
@@ -104,12 +126,14 @@ function Header() {
                                     <OpenProfile setOpenProfile={setOpenProfile} name={name}/>
                                 )}
                             </div>
-                            </div>
-                        ): (
-                            <>
-                                <Link href="/auth/register" className={`p-2 px-4 bg-orange-600 rounded-md ${hover} text-white font-medium`}>{t('header','register')}</Link>
-                                <Link href="/auth/login" className={`p-2 px-4 rounded-md ${hover} bg-gray-100`}>{t('header','login')}</Link>
-                            </>
+                        </div>
+                       
+                        {/* <>
+                            <Link href="/auth/register" className={`p-2 px-4 bg-orange-600 rounded-md ${hover} text-white font-medium`}>{t('header','register')}</Link>
+                            <Link href="/auth/login" className={`p-2 px-4 rounded-md ${hover} bg-gray-100`}>{t('header','login')}</Link>
+                        </> */}
+                    {openNotification && (
+                        <OpenNotification setOpen={setOpenNotification} lang={lang} setRead={setRead}/>
                     )}
                 </div>
             </div>

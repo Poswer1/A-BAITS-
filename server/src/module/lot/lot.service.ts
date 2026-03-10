@@ -3,6 +3,7 @@ import { LotDto } from './dto/lot.dto';
 import { LotModel } from 'src/models/lot.model';
 import { ProccessImages } from 'src/utils/files-upload';
 import { Types } from 'mongoose';
+import { UserModel } from 'src/models/user.model';
 
 
 @Injectable()
@@ -62,12 +63,25 @@ export class LotService {
       console.log('лот не найден') 
       return
     }
+
+    if(lot.winner) {
+      throw new BadRequestException('LotAlreadySold')
+    }
     
     const minBid = lot.startPrice + lot.stepPrice
 
     if(data.bid < minBid) {
-       console.log(`Минимальная ставка ${minBid}`)
-       return
+       throw new BadRequestException(`Минимальная ставка ${minBid}`)
+    }
+
+    const user = await UserModel.findById(userId)
+    if(!user) {
+      console.log('пользователь не найден при ставке')
+      return
+    }
+
+    if(data.bid >= user?.balance) {
+      throw new BadRequestException('NoMoney')
     }
 
     lot.startPrice = data.bid

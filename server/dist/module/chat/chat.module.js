@@ -19,7 +19,8 @@ exports.ChatModule = ChatModule = __decorate([
     (0, common_1.Module)({
         imports: [auth_module_1.AuthModule],
         providers: [chat_service_1.ChatService, chat_gateway_1.ChatGateway],
-        controllers: [chat_controller_1.ChatController]
+        controllers: [chat_controller_1.ChatController],
+        exports: [chat_gateway_1.ChatGateway]
     })
 ], ChatModule);
 //# sourceMappingURL=chat.module.js.map

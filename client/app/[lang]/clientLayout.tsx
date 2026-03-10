@@ -5,6 +5,7 @@ import Header from '@/components/header/Header'
 import Navbar from '@/components/Navbar'
 import { usePathname } from 'next/navigation'
 import React from 'react'
+import  SocketIo  from '../context/SocketIo'
 
 export default function ClientLayout({children}: {children: React.ReactNode}) {
 
@@ -15,10 +16,12 @@ export default function ClientLayout({children}: {children: React.ReactNode}) {
 
   return (
     <>
-        <Header />
-        {!hidden && <Navbar/>}
+    <SocketIo >
+      <Header />
+      {!hidden && <Navbar/>}
         {children}
-        {!hiddenFooter && <Footer />}
+      {!hiddenFooter && <Footer />}
+    </SocketIo>
     </>
   )
 }

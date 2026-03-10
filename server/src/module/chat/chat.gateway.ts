@@ -13,8 +13,12 @@ export class ChatGateway {
     @WebSocketServer()
     server:Server
 
+    async newReview(to:string) {
+        this.server.to(to).emit('newReview')
+    }
+    
     @SubscribeMessage('newMessage')
-    async newMessage(@MessageBody() data:{toUserId:string, message:string, numberLot:string}, @ConnectedSocket() client:Socket) {
+    async newMessage(@MessageBody() data:{toUserId:string, message:string, numberLot:string, type:string}, @ConnectedSocket() client:Socket) {
         const senderId = this.activeUser.get(client.id)
         if(!senderId) return console.log('не нашли userId при отправки сообщения')
         
@@ -33,10 +37,10 @@ export class ChatGateway {
     }
 
     @SubscribeMessage('getChatHistory')
-    async getChatHistory(@MessageBody() toUserId:string, @ConnectedSocket() client:Socket) {
+    async getChatHistory(@MessageBody() data:{toUserId:string, type:string}, @ConnectedSocket() client:Socket) {
         const userId = this.activeUser.get(client.id)
-        if(!userId || !toUserId) return console.log('ошибка при получение истории чата')
-        const history = await this.chatService.getChatHistory(toUserId, userId)
+        if(!userId || !data.toUserId) return console.log('ошибка при получение истории чата')
+        const history = await this.chatService.getChatHistory(data.toUserId, data.type, userId)
 
         client.emit('getHistory', history) // отдаем текущему пользователю
     }
@@ -54,7 +58,8 @@ export class ChatGateway {
 
         const payload = await this.jwtService.verify(token)
         const userId = payload._id
-
+        client.join(userId)
+        client.data.userId = userId
         this.activeUser.set(client.id, userId)
 
     }

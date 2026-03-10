@@ -14,11 +14,17 @@ export declare class ChatService {
     } & {
         id: string;
     })[]>;
-    getChatHistory(toUserId: string, userId: string): Promise<{
+    getChatHistory(toUserId: string, type: string, userId: string): Promise<{
         historyMessage: never[];
         numberLot: null;
+        type?: undefined;
+        hadReview?: undefined;
+        status?: undefined;
     } | {
         historyMessage: import("src/models/chat.model").Message[];
         numberLot: string;
+        type: string;
+        hadReview: boolean;
+        status: string;
     }>;
 }
