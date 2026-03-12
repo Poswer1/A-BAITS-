@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards, Req, Query } from '@nestjs/common';
 import { LotService } from './lot.service';
-import { LotDto } from './dto/lot.dto';
+import { filterLot, LotDto } from './dto/lot.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImagesInterceptor } from 'src/utils/files-upload';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth-guard';
@@ -21,6 +21,11 @@ export class LotController {
   @Get('getAllLot')
   async getAllLot() {
     return this.lotService.getAllLot()
+  }
+
+  @Get('getFilterLot')
+  async getFilterLot(@Query() query:filterLot) {
+    return this.lotService.getFilterLot(query)
   }
 
   @Get('getLot/:numberLot')

@@ -14,6 +14,7 @@ export interface NotificationTypes {
     lot?:string
 }
 
+
 export interface LotTypes {
     _id:string,
     name:string,

@@ -10,6 +10,8 @@ interface InputFieldProps {
   minLengthText?: string;
   textarea?: boolean;
   hTextArea?:number
+  maxTotal?:string
+  minTotal?:string
 }
 
 export default function InputField({
@@ -21,6 +23,8 @@ export default function InputField({
   textarea,
   minLengthText,
   hTextArea,
+  maxTotal,
+  minTotal,
   onChange
 }: InputFieldProps) {
 
@@ -34,6 +38,8 @@ export default function InputField({
       onChange(e.target.value);
     }
   }
+
+  console.log('в инпуте', minTotal)
 
   return (
     <div className={`flex flex-col justify-start items-start w-full`}>
@@ -49,6 +55,7 @@ export default function InputField({
         ) : (
           <input
             type={type}
+            min={minTotal || 0}
             placeholder={placeholder}
             value={stringValue}
             onChange={handleChange}

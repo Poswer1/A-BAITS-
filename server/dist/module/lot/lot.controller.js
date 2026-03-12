@@ -31,6 +31,9 @@ let LotController = class LotController {
     async getAllLot() {
         return this.lotService.getAllLot();
     }
+    async getFilterLot(query) {
+        return this.lotService.getFilterLot(query);
+    }
     async getLot(numberLot) {
         return this.lotService.getLot(numberLot);
     }
@@ -57,6 +60,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], LotController.prototype, "getAllLot", null);
+__decorate([
+    (0, common_1.Get)('getFilterLot'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [lot_dto_1.filterLot]),
+    __metadata("design:returntype", Promise)
+], LotController.prototype, "getFilterLot", null);
 __decorate([
     (0, common_1.Get)('getLot/:numberLot'),
     __param(0, (0, common_1.Param)('numberLot')),

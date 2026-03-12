@@ -6,47 +6,64 @@ import { hoverCat, hoverSub, linkClass, listClass } from "@/styles/categoryList"
 import { categoriesWithIcons } from "@/category/category";
 import { overlay } from "@/styles/global";
 import { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
+
 
 interface CategoryList {
     setOpenCategory: (type:boolean) => void
     openFrom:string
-    category?:string | null
-    setCategory?:(v: string ) => void
-    subCategory?:string | null
-    setSubCategory?:(v: string ) => void
-    subSubCategory?:string | null
-    setSubSubCategory?:(v: string) => void
 }
 
-function CategoryList({setOpenCategory, openFrom, category, setCategory, subCategory, setSubCategory, subSubCategory, setSubSubCategory} : CategoryList) {
+function CategoryList({setOpenCategory, openFrom} : CategoryList) {
     if(!categoriesWithIcons) return
 
-  const [openSubCategory, setOpenSubCategory] = useState<string | null>('Приманки') 
+  const params = useParams()
+  const lang = params.lang as string
+  const router = useRouter()
+
+  const [category, setCategory] = useState('')
+  const [subCategory, setSubCategory] = useState('')
+  const [subSubCategory, setSubSubCategory] = useState('')
+
+  const [openSubCategory, setOpenSubCategory] = useState<string | null>('primanki') 
   const [openSubSubCategory, setOpenSubSubCategory] = useState<string | null>(null) 
 
   const activeCategory = categoriesWithIcons.find(
-    cat => cat.name === openSubCategory
+    cat => cat.name === category
   )
 
   const handleSelectSub = (subName: string, hasSubSub: boolean) => {
   if (hasSubSub) {
     setOpenSubSubCategory(prev => (prev === subName ? null : subName));
   }
-  if(openFrom !== 'header') {
-    setSubCategory(prev => (prev === subName ? null : subName))
-  }
+  
 };
 
-const handleSelectCat = (catName:string) => {
-  if(catName) {
-    setOpenSubCategory(prev => prev === catName ? null : catName)
-    setSubCategory(null)
-    setSubSubCategory(null)
+const handleSelectCat = (cat?:string, sub?:string, subSub?:string) => {
+  if(cat) {
+    setCategory(cat)
   } 
-  if(openFrom !== 'header' && setCategory) {
-    setCategory(prev => prev === catName ? null : catName)
+  if(sub) {
+    setSubCategory(sub)
+  }
+  if(subSub) {
+    setSubSubCategory(subSub)
   }
 }
+
+const handleClick = () => {
+  let path = `/${lang}`
+
+  if(category)path += `/${category}`
+  if(subCategory)path += `/${subCategory}`
+  if(subSubCategory)path += `/${subSubCategory}`
+  setOpenCategory(false)
+
+  router.push(`${path}`)
+}
+
+const nameLang = (item: { ru?: string; uk?: string; name: string }) =>
+  lang === 'ru' ? item.ru || item.name : item.uk || item.name
 
   return (
     <>
@@ -55,8 +72,8 @@ const handleSelectCat = (catName:string) => {
         
             <ul className='flex flex-col justify-start items-start gap-3 border-r p-2'>
                 {categoriesWithIcons.map((cat) => ( 
-                  <li key={cat.name} onClick={() => setOpenCategory(false)} onMouseEnter={() => handleSelectCat(cat.name)} className={`${hoverCat} ${openSubCategory === cat.name ? 'bg-orange-800/10 text-orange-600' : '' } flex justify-between p-1 rounded-md items-center w-full ${animationOpacity}`} >
-                    <span className={`${linkClass}`}>{cat.icon}{cat.name}</span>
+                  <li key={cat.name} onClick={handleClick} onMouseEnter={() => handleSelectCat(cat.name)} className={`${hoverCat} ${category === cat.name ? 'bg-orange-800/10 text-orange-600' : '' } flex justify-between p-1 rounded-md items-center w-full ${animationOpacity}`} >
+                    <span className={`${linkClass}`}>{cat.icon}{nameLang(cat)}</span>
                     <ChevronDown className="rotate-270"/>
                 </li>
                 ))}
@@ -65,17 +82,17 @@ const handleSelectCat = (catName:string) => {
             {activeCategory && (
               <ul className={`${listClass} p-2 gap-5`}>
                 {activeCategory.subcategories.map((sub) => (
-                  <li key={sub.name} className={`${listClass}  ${animationOpacity} ml-2 `} >
-                    <span className={`${linkClass} ${hover} text-black`} onClick={() => setOpenCategory(false)} onMouseEnter={() => handleSelectSub(sub.name, sub.subcategories.length > 0)}>
-                      {sub.name}{sub.subcategories.length > 0 
+                  <li key={sub.name} className={`${listClass} ${animationOpacity} ml-2 `} >
+                    <span className={`${linkClass} ${hover} text-black`} onClick={handleClick} onMouseEnter={() => handleSelectCat('', sub.name)}>
+                      {nameLang(sub)}{sub.subcategories.length > 0 
                       && <ChevronDown className='text-gray-500'/>}
                     </span>
 
-                    {openSubSubCategory === sub.name && (
+                    {subCategory === sub.name && (
                       <ul className={`${listClass} border-l border-gray-400`}>
                           {sub.subcategories.map((subSub) => (
                             <li className={`${listClass}  ${animationOpacity} ml-6`}key={subSub.name}>
-                              <span className={`${linkClass} ${hoverSub} text-gray-500`} onClick={() => setOpenCategory(false)} onMouseEnter={() => setSubSubCategory(prev => prev === subSub.name ? null : subSub.name)}>{subSub.name}</span>
+                              <span className={`${linkClass} ${hoverSub} text-gray-500`} onClick={handleClick} onMouseEnter={() => handleSelectCat('', '', subSub.name)}>{nameLang(subSub)}</span>
                             </li>
                         ))}
                       </ul>

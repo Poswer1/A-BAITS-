@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { arrowActive, hover} from '@/styles/style';
 import { getUserById } from '@/services/user';
-import { useParams, usePathname } from 'next/navigation';
+import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useTranslation } from '@/app/context/TranslationProvider';
 import CategoryList from './CategoryList';
 import SearchValue from './SearchValue';
@@ -24,6 +24,7 @@ function Header() {
     const pathname = usePathname()
     const params = useParams()
     const lang = params.lang as string
+    const router = useRouter()
     const {socket} = useSocketContext()
 
     const [openCategory, setOpenCategory] = useState(false)
@@ -70,6 +71,12 @@ function Header() {
 
     }, [socket])
 
+    const handleSearch = (search:string) => {
+        router.push(`/${lang}/${search}`)
+        setOpenSearch(false)
+        setSearch('')
+    }
+
      const modalRef = useClickOutside(setOpenLanguage)
 
   return (
@@ -90,13 +97,23 @@ function Header() {
                     <div className='flex flex-col justify-center items-center w-[40%] relative'>
                         <div className={`flex justify-start items-center p-2 gap-2 bg-gray-100 rounded-md border border-gray-200 w-full ${openSearch && 'z-20'}`}>
                             <Search size={20} className='text-gray-500'/>
-                            <input placeholder={t('header','searchPlaceholder')} className='text-base outline-none w-full' onChange={(e) => {setSearch(e.target.value), setOpenSearch(true)}} value={search}/>
+                            <input 
+                            placeholder={t('header','searchPlaceholder')} 
+                            className='text-base outline-none w-full' 
+                            onChange={(e) => {setSearch(e.target.value), 
+                            setOpenSearch(true)}} 
+                            value={search} 
+                            onKeyDown={(e) => {
+                                if(e.key === 'Enter') {
+                                    handleSearch(search)
+                                }
+                            }}/>
                             {openSearch && search.length > 0 &&(
                             <X className={hover} onClick={() => {setSearch(''), setOpenSearch(false)}}/>
                             )}
                         </div>
                         {openSearch && search.length > 0 &&(
-                            <SearchValue setOpenSearch={setOpenSearch} search={search}/>
+                            <SearchValue setOpenSearch={setOpenSearch} search={search} setSearch={setSearch}/>
                         )}
                     </div>
                 </div>

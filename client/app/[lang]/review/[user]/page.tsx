@@ -44,7 +44,7 @@ export default function page() {
     }
 
   return (
-    <div className='w-full flex justify-center items-center bg-gray-100 h-screen'>
+    <div className='w-full flex justify-center items-center bg-gray-100 h-200'>
         <div className='bg-white p-5 flex flex-col justify-center items-center w-1/4'>
             <h1 className='text-3xl'>{t('review', 'feedback')}</h1>
             <div className='flex justify-center items-center gap-5'>

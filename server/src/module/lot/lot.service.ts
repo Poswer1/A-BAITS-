@@ -1,9 +1,10 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { LotDto } from './dto/lot.dto';
+import { filterLot, LotDto } from './dto/lot.dto';
 import { LotModel } from 'src/models/lot.model';
 import { ProccessImages } from 'src/utils/files-upload';
 import { Types } from 'mongoose';
 import { UserModel } from 'src/models/user.model';
+import { SortOrder } from 'mongoose'
 
 
 @Injectable()
@@ -35,6 +36,65 @@ export class LotService {
     } catch (error) {
       throw new BadRequestException('Ошибка при получение всех товаров',error)
     }
+  }
+
+  async getFilterLot(query: filterLot) {
+
+    const {category, subCategory, subSubCategory, city, minPrice, maxPrice, state, sort, search} = query
+
+    let filter:any = {}
+    const min = Number(minPrice)
+    const max = Number(maxPrice)
+
+    const page = Math.max(Number(query.page) || 1, 1)
+    const limit = 10
+
+    let sortOption: Record<string, SortOrder> = { startPrice: 'asc' }
+    if(sort) { // asc по возрастанию // desc по убыванию
+      sortOption = sort === 'LowToUp' ? { startPrice: 'asc' } : { startPrice: 'desc' }
+    }
+    
+    if(search)filter.$or = [
+        { name: { $regex: search, $options: 'i' } },   // поиск по имени, игнорируя регистр
+        { lotNumber: search }
+    ];
+    if(category)filter.category = category
+    if(subCategory)filter.subCategory = subCategory
+    if(subSubCategory)filter.subSubCategory = subSubCategory
+    if(city)filter.location = city
+    if (min || max) {
+      filter.startPrice = {
+        ...(min ? { $gte: min } : {}),
+        ...(max ? { $lte: max } : {})
+      }
+    }
+    if (state) {
+      const states = Array.isArray(state) ? state : [state]; 
+      filter.state = {
+        $in: states.map(s => s)
+      }
+    }
+    const [lots, totalLot, maxLots] = await Promise.all([
+      LotModel.find(filter)
+      .collation({ locale: 'en', strength: 2 }) // регистр игнорируется
+      .sort(sortOption)
+      .limit(limit)
+      .skip((page - 1) * limit),
+
+      LotModel.countDocuments(filter)
+      .collation({ locale: 'en', strength: 2 }),
+      
+
+      LotModel.find(filter)
+      .sort({startPrice: 'desc'})
+      .collation({ locale: 'en', strength: 2 })
+      .limit(1)
+    ])
+
+    const maxPriceLot = maxLots[0]?.startPrice || 0
+
+    return {lots, totalLot, maxPriceLot}
+
   }
 
   async getLot (numberLot:string) {

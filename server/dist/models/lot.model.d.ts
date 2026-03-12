@@ -8,6 +8,9 @@ export interface Lot {
     name: string;
     author: Types.ObjectId;
     lotNumber: string;
+    category: string;
+    subCategory: string;
+    subSubCategory?: string;
     startPrice: number;
     stepPrice: number;
     blitzPrice?: number;

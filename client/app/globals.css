@@ -28,6 +28,20 @@ body {
 
 @layer utilities {
 
+  .slider {
+
+  }
+
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #f97316;
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
   .noScrollbar::-webkit-scrollbar {
     display: none;
   }

@@ -19,3 +19,46 @@ export class LotDto {
   @IsOptional() @IsBoolean() Advertising?: boolean;
 }
 
+export class filterLot {
+  @IsString()
+  @IsOptional()
+  category?:string
+
+  @IsString()
+  @IsOptional()
+  subCategory?:string
+
+  @IsString()
+  @IsOptional()
+  subSubCategory?:string
+
+  @IsString()
+  @IsOptional()
+  city?:string
+
+  @IsNumber()
+  @IsOptional()
+  minPrice?:number
+
+  @IsNumber()
+  @IsOptional()
+  maxPrice?:number
+
+  @IsArray()
+  @IsString({ each: true }) // each: true проверяет каждый елемент массива что они строчки
+  @IsOptional()
+  state?:string[]
+
+  @IsString()
+  @IsOptional()
+  sort?:string
+
+  @IsString()
+  @IsOptional()
+  page:number
+
+  @IsString()
+  @IsOptional()
+  search?:string
+}
+
