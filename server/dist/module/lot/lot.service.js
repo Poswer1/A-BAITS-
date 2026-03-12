@@ -38,6 +38,58 @@ let LotService = class LotService {
             throw new common_1.BadRequestException('Ошибка при получение всех товаров', error);
         }
     }
+    async getFilterLot(query) {
+        const { category, subCategory, subSubCategory, city, minPrice, maxPrice, state, sort, search } = query;
+        let filter = {};
+        const min = Number(minPrice);
+        const max = Number(maxPrice);
+        const page = Math.max(Number(query.page) || 1, 1);
+        const limit = 10;
+        let sortOption = { startPrice: 'asc' };
+        if (sort) {
+            sortOption = sort === 'LowToUp' ? { startPrice: 'asc' } : { startPrice: 'desc' };
+        }
+        if (search)
+            filter.$or = [
+                { name: { $regex: search, $options: 'i' } },
+                { lotNumber: search }
+            ];
+        if (category)
+            filter.category = category;
+        if (subCategory)
+            filter.subCategory = subCategory;
+        if (subSubCategory)
+            filter.subSubCategory = subSubCategory;
+        if (city)
+            filter.location = city;
+        if (min || max) {
+            filter.startPrice = {
+                ...(min ? { $gte: min } : {}),
+                ...(max ? { $lte: max } : {})
+            };
+        }
+        if (state) {
+            const states = Array.isArray(state) ? state : [state];
+            filter.state = {
+                $in: states.map(s => s)
+            };
+        }
+        const [lots, totalLot, maxLots] = await Promise.all([
+            lot_model_1.LotModel.find(filter)
+                .collation({ locale: 'en', strength: 2 })
+                .sort(sortOption)
+                .limit(limit)
+                .skip((page - 1) * limit),
+            lot_model_1.LotModel.countDocuments(filter)
+                .collation({ locale: 'en', strength: 2 }),
+            lot_model_1.LotModel.find(filter)
+                .sort({ startPrice: 'desc' })
+                .collation({ locale: 'en', strength: 2 })
+                .limit(1)
+        ]);
+        const maxPriceLot = maxLots[0]?.startPrice || 0;
+        return { lots, totalLot, maxPriceLot };
+    }
     async getLot(numberLot) {
         try {
             const lot = await lot_model_1.LotModel.findOne({ lotNumber: numberLot }).populate('author', 'avatar name');

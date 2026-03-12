@@ -16,3 +16,15 @@ export declare class LotDto {
     delivary: string;
     Advertising?: boolean;
 }
+export declare class filterLot {
+    category?: string;
+    subCategory?: string;
+    subSubCategory?: string;
+    city?: string;
+    minPrice?: number;
+    maxPrice?: number;
+    state?: string[];
+    sort?: string;
+    page: number;
+    search?: string;
+}

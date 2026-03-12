@@ -1,5 +1,5 @@
 import { LotService } from './lot.service';
-import { LotDto } from './dto/lot.dto';
+import { filterLot, LotDto } from './dto/lot.dto';
 export declare class LotController {
     private readonly lotService;
     constructor(lotService: LotService);
@@ -17,6 +17,17 @@ export declare class LotController {
     } & {
         id: string;
     })[]>;
+    getFilterLot(query: filterLot): Promise<{
+        lots: (import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        totalLot: number;
+        maxPriceLot: number;
+    }>;
     getLot(numberLot: string): Promise<(import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
         _id: import("mongoose").Types.ObjectId;
     } & {
