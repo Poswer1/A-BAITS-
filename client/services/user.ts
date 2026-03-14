@@ -1,11 +1,9 @@
 import { BASE_URL, dataReturn } from "./utils" 
 
-export async function getUserById(token:string, id?: string) {
+export async function getUserById(id?: string) {
     const res = await fetch(`${BASE_URL}/user/getUserById${id ? `?id=${id}` : ''}`, {
         method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
+        credentials: 'include' // говорит отпровлять куки
     })
     
     return dataReturn(res)

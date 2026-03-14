@@ -48,20 +48,28 @@ export class NotificationGateway {
         client.emit('historyNotification', notification)
     }
 
-    async sendNotification(data: {lotId:string, to:string, from:string, notification:string}) {
+    async sendNotification(data: {lotId:string, to:string, from?:string, notification:string}) {
         const {to, from, notification, lotId} = data
-
-        const newNotification = await this.notificationService.createNotification(lotId, from, to, notification)
-        
-        for(const id of [to, from]) {
-            this.server.to(id).emit('newNotification', newNotification)
+            if(from) {
+                const newNotification = await this.notificationService.createNotification(lotId, from, to, notification)
+                for(const id of [to, from]) {
+                    this.server.to(id).emit('newNotification', newNotification)
+                } 
+            } else {
+                const newNotification = await this.notificationService.createNotification(lotId, 'empty', to, notification)
+                this.server.to(to).emit('newNotification', newNotification)
+            }
         }
-    }
+          
 
     async handleConnection(client:Socket) {
-        const token = client.handshake.auth.token?.replace('Bearer ', ''); 
-        // при первом подключение клиента к сокету в handshake записываеться инфа о пользователи
-        // в auth мы на клиенте передаем токен
+        const cookies = client.handshake.headers.cookie || ''
+        const token = cookies
+        .split('; ')
+        .find(c => c.startsWith('token='))
+        ?.split('=')[1]; 
+        // в cookies токен выглядт так token=a3223 
+        // тут разделяем его по = получим token отедельно и a3223 и берем [1]        
     
         if(!token) {
             console.log('JWT не предоставлен');

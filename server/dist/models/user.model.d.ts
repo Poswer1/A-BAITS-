@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 export interface User {
     name: string;
     surname: string;
@@ -5,11 +6,13 @@ export interface User {
     city?: string;
     password: string;
     balance: number;
+    rating: number;
     avatar: string;
     role: string;
+    favorites: Types.ObjectId[];
 }
 export declare const UserModel: import("mongoose").Model<User, {}, {}, {}, import("mongoose").Document<unknown, {}, User, {}, import("mongoose").DefaultSchemaOptions> & User & {
-    _id: import("mongoose").Types.ObjectId;
+    _id: Types.ObjectId;
 } & {
     __v: number;
 } & {

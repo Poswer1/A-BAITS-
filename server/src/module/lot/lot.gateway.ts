@@ -47,9 +47,13 @@ export class LotGateway {
     }
 
     async handleConnection(client:Socket) {
-        const token = client.handshake.auth.token?.replace('Bearer ', ''); 
-        // при первом подключение клиента к сокету в handshake записываеться инфа о пользователи
-        // в auth мы на клиенте передаем токен
+       const cookies = client.handshake.headers.cookie || ''
+        const token = cookies
+        .split('; ')
+        .find(c => c.startsWith('token='))
+        ?.split('=')[1]; 
+        // в cookies токен выглядт так token=a3223 
+        // тут разделяем его по = получим token отедельно и a3223 и берем [1] 
 
         if(!token) {
             console.log('JWT не предоставлен');

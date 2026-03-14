@@ -1,12 +1,39 @@
+
 import { BASE_URL, dataReturn } from "./utils"
 
-export async function createLot(formData:FormData, token:string) {
+export async function createLot(formData:FormData) {
     const res = await fetch(`${BASE_URL}/lot/createLot`, {
         method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        },
+        credentials: 'include', // говорит отпровлять куки
         body: formData
+    })
+
+    return dataReturn(res)
+}
+
+export async function getLotByUser(name:string, page:number) {
+    const params = new URLSearchParams()
+
+    if(name) params.append('name', name)
+    if(page) params.append('page', page.toString())
+
+    const res = await fetch(`${BASE_URL}/lot/getLotByUser?${params}`, {
+        method: 'GET'
+    })    
+    return dataReturn(res)
+}
+
+export async function getMyLots(slug:string, mode:string, page?:number) {
+
+    const params = new URLSearchParams()
+
+    if(slug) params.append('status', slug)
+    if(mode) params.append('mode', mode)
+    if(page) params.append('page', page.toString())
+
+    const res = await fetch(`${BASE_URL}/lot/getMyLots?${params}`, {
+        method: 'GET',
+        
     })
 
     return dataReturn(res)
@@ -32,6 +59,7 @@ export async function getFilterLot(category?:string, subCategory?:string, subSub
 
     const res = await fetch(`${BASE_URL}/lot/getFilterLot?${params}`, {
         method: 'GET',
+        credentials: 'include' // говорит отпровлять куки
     })
 
     return dataReturn(res)
@@ -54,12 +82,10 @@ export async function getLot(numberLot:string) {
     return dataReturn(res)
 }
 
-export async function myHistoryLot(token:string) {
+export async function myHistoryLot() {
     const res = await fetch(`${BASE_URL}/lot/myHistoryLot`, {
         method: 'GET',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-        }
+        credentials: 'include' // говорит отпровлять куки
     })
 
     return dataReturn(res)

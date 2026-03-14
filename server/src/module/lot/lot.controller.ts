@@ -1,9 +1,10 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, UseGuards, Req, Query } from '@nestjs/common';
 import { LotService } from './lot.service';
-import { filterLot, LotDto } from './dto/lot.dto';
+import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImagesInterceptor } from 'src/utils/files-upload';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth-guard';
+import { CurrentUser } from 'src/decorator/current-user.decorator';
 
 
 @Controller('lot')
@@ -13,14 +14,23 @@ export class LotController {
   @UseGuards(JwtAuthGuard)
   @Post('createLot')
   @UseInterceptors(FilesInterceptor('images', 8, ImagesInterceptor('./uploads/lots')))
-  async createLot(@Req() req: any, @Body() dto: LotDto, @UploadedFiles() files: Express.Multer.File[]) {
-    const userId = (req.user as any)._id
+  async createLot(@Req() req: any, @Body() dto: LotDto, @UploadedFiles() files: Express.Multer.File[], @CurrentUser('id') userId:string) {
     return this.lotService.createLot(dto, files, userId)
   }
 
   @Get('getAllLot')
   async getAllLot() {
     return this.lotService.getAllLot()
+  }
+
+  @Get('getLotByUser')
+  async getLotByUser(@Query() query:{name:string, page:number}) {
+    return this.lotService.getLotByUser(query)
+  }
+
+  @Get('getMyLots')
+  async getMyLots(@Query() query: getMyLotsDto) {
+    return this.lotService.getMyLots(query)
   }
 
   @Get('getFilterLot')

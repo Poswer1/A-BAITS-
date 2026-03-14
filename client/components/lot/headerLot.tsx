@@ -2,6 +2,7 @@ import { useTranslation } from "@/app/context/TranslationProvider"
 import { hover } from "@/styles/style"
 import { Copy, ChevronRight, Star } from "lucide-react"
 import { useParams } from "next/navigation"
+import FavoritesButton from "../utils/favoritesButton"
 
 
 interface HeaderLot {
@@ -32,9 +33,7 @@ export default function HeaderLot({lot}:HeaderLot) {
                 </div>
             </div>
             <div className="flex flex-col justify-center items-end gap-2">
-                <span className={`${hover} flex justify-center items-center gap-2 text-orange-600 bg-orange-600/10 px-2 py-1 rounded-md`}>
-                    <Star /> {t('lot', 'lot-favorite')}
-                </span>
+                <FavoritesButton id={lot._id}/>
                 <span className="text-sm text-gray-500">{t('lot', 'lot-views')}: 32</span>
                 <span className="text-sm  text-gray-500">{t('lot', 'lot-favoriteCount')}: 4</span>
             </div>

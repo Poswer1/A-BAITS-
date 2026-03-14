@@ -20,8 +20,10 @@ export declare class AuthService {
             email: string;
             city?: string;
             balance: number;
+            rating: number;
             avatar: string;
             role: string;
+            favorites: import("mongoose").Types.ObjectId[];
             _id: import("mongoose").Types.ObjectId;
             __v: number;
         };

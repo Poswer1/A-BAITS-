@@ -5,6 +5,7 @@ import { hover } from "@/styles/style"
 import { Star } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import FavoritesButton from "./utils/favoritesButton"
 
 interface LotCardProps {
     lot:any
@@ -34,9 +35,7 @@ function LotCard({lot}: LotCardProps) {
                         <button className={`${hover} p-2 bg-orange-600 rounded-md text-white w-3/5`}>
                             {t('lot', 'lot-details-button')}
                         </button>
-                        <span className={`${hover} w-3/5 flex justify-center items-center gap-2 text-orange-600`}>
-                            <Star /> {t('lot', 'lot-favorite')}
-                        </span>
+                        <FavoritesButton id={lot._id}/>
                     </div>
                 </div>
             </div>

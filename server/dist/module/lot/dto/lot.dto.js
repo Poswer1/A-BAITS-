@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.filterLot = exports.LotDto = void 0;
+exports.filterLot = exports.getMyLotsDto = exports.LotDto = void 0;
 const class_validator_1 = require("class-validator");
 class LotDto {
     name;
@@ -99,6 +99,25 @@ __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], LotDto.prototype, "Advertising", void 0);
+class getMyLotsDto {
+    status;
+    mode;
+    page;
+}
+exports.getMyLotsDto = getMyLotsDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], getMyLotsDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], getMyLotsDto.prototype, "mode", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", Number)
+], getMyLotsDto.prototype, "page", void 0);
 class filterLot {
     category;
     subCategory;

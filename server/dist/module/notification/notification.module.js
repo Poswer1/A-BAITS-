@@ -20,7 +20,7 @@ exports.NotificationModule = NotificationModule = __decorate([
         imports: [auth_module_1.AuthModule],
         controllers: [notification_controller_1.NotificationController],
         providers: [notification_service_1.NotificationService, notification_gateway_1.NotificationGateway],
-        exports: [notification_gateway_1.NotificationGateway]
+        exports: [notification_gateway_1.NotificationGateway, notification_service_1.NotificationService]
     })
 ], NotificationModule);
 //# sourceMappingURL=notification.module.js.map

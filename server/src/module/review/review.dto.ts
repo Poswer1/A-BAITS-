@@ -1,4 +1,4 @@
-import { IsNumber, IsString } from "class-validator";
+import { IsNumber, IsOptional, IsString } from "class-validator";
 
 export class reviewDto {
 
@@ -10,4 +10,13 @@ export class reviewDto {
 
     @IsNumber()
     rating:number
+}
+
+export class getReviewDto {
+    @IsString()
+    name: string
+
+    @IsNumber()
+    @IsOptional()
+    page?:number
 }

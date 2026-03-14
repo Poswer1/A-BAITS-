@@ -51,9 +51,9 @@ function layout({children}: {children: React.ReactNode}) {
         </div>
       ): (
         <>
-          {(!name || name === username) && (
-              <Sidebar mode='sidebarMain' active={activeLink} name={username}/>
-            )}
+          <div className={`${(!name || name === username) ? '' : 'invisible'} h-full`}>
+            <Sidebar mode='sidebarMain' active={activeLink} name={username}/>
+          </div>
           {children}
         </>
       )}

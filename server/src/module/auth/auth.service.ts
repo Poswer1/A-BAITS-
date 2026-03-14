@@ -11,11 +11,11 @@ export class AuthService {
   constructor(
     private configService:ConfigService,
     private jwtService: JwtService
-  ) {}
+  ) {} 
 
   async register (dto: Auth) {
     const exesting = await UserModel.findOne({email:dto.email})
-    if(exesting) {
+    if(exesting) { 
       throw new BadRequestException('Такий користувач вже зареєстрований')
     }
     

@@ -5,12 +5,16 @@ import { Star } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import listLocation from '../data/citiesUK.json'
+import FavoritesButton from "./utils/favoritesButton"
+import Countdown from "./utils/countdown"
+import { LotTypes } from "@/types/types"
 
 interface LotCardV2Props {
-    lot:any
+    lot:LotTypes
+    show?:boolean
 }
 
-export default function LotCardV2({lot}: LotCardV2Props) {
+export default function LotCardV2({lot, show}: LotCardV2Props) {
 
     const { t } = useTranslation()
     const params = useParams()
@@ -33,7 +37,7 @@ export default function LotCardV2({lot}: LotCardV2Props) {
     : cityObj?.uk || cityObj?.name
     : lot.location
 
-    const columnClass = 'flex flex-col justify-start items-start gap-1 min-w-80 max-w-80'
+    const columnClass = `flex flex-col justify-start items-start gap-1 w-full`
 
   return (
     <Link href={`/${lang}/lot/${lot.lotNumber}`} className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg bg-white w-full rounded-md`}>
@@ -47,13 +51,15 @@ export default function LotCardV2({lot}: LotCardV2Props) {
                 <span>{t('lot', 'lot-state')}: <span className="text-orange-600">{stateObg?.lang}</span></span>
                 <span>{t('lot', 'lot-location')}: {city}</span>
             </div>
-            <div className={columnClass}>
-                <span>{t('lot', 'lot-dateStop')} - <span className="text-orange-600">12д 10ч 32м 02с</span></span>
-            </div>
+            
+                <div className={columnClass}>
+                    <Countdown date={lot.date.toString()}/>
+                </div> 
+            
             <div className={columnClass}>
                 <h1 className="text-lg">{t('lot', 'lot-current-bid')}: <span className="text-orange-600 font-bold">{lot.startPrice} ₴</span></h1>
                 <button className={button}>{t('lot', 'lot-doBid')}</button>
-                <span className="flex justify-center items-center gap-2 text-orange-600"><Star /> {t('lot', 'lot-favorite')}</span>
+                <FavoritesButton id={lot._id}/>
             </div>
         </div>
     </Link>

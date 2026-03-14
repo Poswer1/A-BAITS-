@@ -21,7 +21,7 @@ export interface Lot {
   autoReExtension: boolean;
   descriptions: string;
   state: string;
-  date: number;
+  date: Date;
   dateTime: string;
   location: string;
   status: string;
@@ -54,7 +54,7 @@ const LotSchema = new Schema<Lot>({
   descriptions: { type: String, required: true },
   state: { type: String, required: true },
   status: { type: String, default: 'active' },
-  date: { type: Number, required: true },
+  date: { type: Date, required: true },
   dateTime: { type: String, default: '21:00' },
   location: { type: String, required: true },
   delivary: { type: String, required: true },

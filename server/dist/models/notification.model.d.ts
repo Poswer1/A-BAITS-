@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 export interface NotificationType {
     to: string;
-    from: string;
+    from?: string;
     notification: string;
     lot: Types.ObjectId;
     read: boolean;

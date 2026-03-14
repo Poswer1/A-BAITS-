@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { reviewDto } from './review.dto';
+import { getReviewDto, reviewDto } from './review.dto';
 import { ReviewModel } from 'src/models/review';
 import { UserModel } from 'src/models/user.model';
 import { Types } from 'mongoose';
@@ -60,5 +60,26 @@ export class ReviewService {
         this.chatGateWay.newReview(user._id.toString())
 
         return
+    }
+
+    async getReviewUser(query: getReviewDto) {
+        const {name, page} = query
+        const user = await UserModel.findOne({name:name})
+        if(!user) {
+            console.log('не найден пользователь при получении отзывов')
+            return
+        }
+        const limit = 4
+        const currentPage = Number(page)
+        const [allReview, totalReview] = await Promise.all([
+            ReviewModel.find({to:user._id})
+            .populate('from', 'name avatar')
+            .limit(limit)
+            .skip((currentPage - 1) * limit),
+
+            ReviewModel.countDocuments({to: user._id})
+        ])
+
+        return {allReview, totalReview}
     }
 }

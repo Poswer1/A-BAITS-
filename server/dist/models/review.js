@@ -7,6 +7,6 @@ const ReviewSchema = new mongoose_1.Schema({
     from: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     comment: { type: String, required: true },
     rating: { type: Number, required: true },
-});
+}, { timestamps: true });
 exports.ReviewModel = (0, mongoose_1.model)('review', ReviewSchema);
 //# sourceMappingURL=review.js.map

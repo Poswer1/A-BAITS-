@@ -12,7 +12,7 @@ export declare class NotificationGateway {
     sendNotification(data: {
         lotId: string;
         to: string;
-        from: string;
+        from?: string;
         notification: string;
     }): Promise<void>;
     handleConnection(client: Socket): Promise<void>;

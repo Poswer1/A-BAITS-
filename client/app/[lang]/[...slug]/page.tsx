@@ -80,7 +80,7 @@ export default async function page({params, searchParams}: pageProps) {
         }
     }
 
-    if(slug.length === 1 && !categoryData && !cityData) {
+    if(!categoryData) {
         searchValue = slug[0]
     }
     

@@ -19,6 +19,18 @@ export class LotDto {
   @IsOptional() @IsBoolean() Advertising?: boolean;
 }
 
+export class getMyLotsDto {
+  @IsString()
+  status:string
+
+  @IsString()
+  mode: string
+
+  @IsNumber()
+  @IsOptional()
+  page?:number
+}
+
 export class filterLot {
   @IsString()
   @IsOptional()

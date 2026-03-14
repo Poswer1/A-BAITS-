@@ -1,9 +1,9 @@
 import { LotService } from './lot.service';
-import { filterLot, LotDto } from './dto/lot.dto';
+import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
 export declare class LotController {
     private readonly lotService;
     constructor(lotService: LotService);
-    createLot(req: any, dto: LotDto, files: Express.Multer.File[]): Promise<import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
+    createLot(req: any, dto: LotDto, files: Express.Multer.File[], userId: string): Promise<import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
@@ -17,6 +17,29 @@ export declare class LotController {
     } & {
         id: string;
     })[]>;
+    getLotByUser(query: {
+        name: string;
+        page: number;
+    }): Promise<{
+        allLots: (import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        totalLots: number;
+    } | undefined>;
+    getMyLots(query: getMyLotsDto): Promise<{
+        allLots: (import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        totalLot: number;
+    }>;
     getFilterLot(query: filterLot): Promise<{
         lots: (import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
             _id: import("mongoose").Types.ObjectId;

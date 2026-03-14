@@ -9,6 +9,7 @@ import { useEffect, useRef, useState } from "react"
 import { Socket } from "socket.io-client"
 import { buyNow } from "@/services/payment"
 import { LotTypes } from "@/types/types"
+import Countdown from "../utils/countdown"
 
 interface InfoSectionProps {
     lot: LotTypes,
@@ -54,13 +55,11 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     const timerRef = useRef<NodeJS.Timeout | null>(null)
 
     const handleBuyNow = async () => {
-    const token = localStorage.getItem('token')
-    if (!token || !lot) return
 
     setProgress(true)
     timerRef.current = setTimeout(async () => {
         try {
-            const data = await buyNow(token, lot.lotNumber, value)
+            const data = await buyNow( lot.lotNumber, value)
             if (data?.success) setStatus('Completed')
             setProgress(false)
         } catch (error:any) {
@@ -94,7 +93,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
 
         {status === 'Active' && (
             <>
-                <span className="text-base text-orange-600">{t('lot', 'lot-dateStop')} через <span>{lot.date} {t('lot', 'lot-day')} в {lot.dateTime} ( по Kyiv )</span></span>
+                <Countdown date={lot.date.toString()}/>
                 <div className={`${customInput} py-2`}>
                     <span className="font-bold">₴</span>
                     <input placeholder="950" className="w-full outline-none" value={value}/>

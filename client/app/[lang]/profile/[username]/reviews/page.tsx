@@ -1,39 +1,58 @@
-'use client'
-
 import AvatarBlock from '@/components/utils/avatar'
-import { blockClass } from '@/styles/profile/profile'
-import { Star } from 'lucide-react'
-import { useState } from 'react'
 import Link from 'next/link'
-import { useParams } from 'next/navigation'
+import Rating from '@/components/utils/rating'
+import { ReviewTypes } from '@/types/types'
+import { getReviewUser } from '@/services/review'
+import { getRelativeTime } from '@/components/utils/relativeTime'
+import Pagination from '@/components/utils/pagination'
 
-function page() {
+interface pageProps {
+  params: {
+    lang:string,
+    username:string
+  },
+  searchParams: {
+    page?:number
+  }
+}
 
-  const [allReviews, setAllReviews] = useState()
-  const params = useParams()
-  const lang = params.lang as string
+async function page({params, searchParams}: pageProps) {
+
+  const param = await params
+  const search = await searchParams
+
+  const lang = param.lang as string
+  const name = decodeURIComponent(param.username as string)
+  
+  let date:{allReview: ReviewTypes[], totalReview: number} = {
+    allReview:[], 
+    totalReview: 0
+  }
+
+  try {
+    date = await getReviewUser(name, Number(search.page))
+  } catch (error) {
+    date = {allReview:[], totalReview: 0}
+  }
 
   return (
-    <div className={`flex gap-5 flex-col`}>
-      {Array.from({length: 5}).map(() => (
-        <div className="flex flex-col justify-center items-start gap-2 bg-white p-4 rounded-md">
-          <Link href={`/${lang}/profile/${'Могучее зерно'}`} className="flex justify-center items-center gap-2 cursor-pointer">
-            <AvatarBlock avatar={'https://img.freepik.com/free-photo/successful-bearded-fisherman-standing-blue-wall-with-his-catch-having-happy-expression-handsome-young-man-holding-long-heavy-fish-hands-feeling-proud-excited_273609-8096.jpg?semt=ais_hybrid&w=740&q=80'} size="32"/> 
-            <span className="text-sm">{'Могучее зерно'}</span>
+    <div className={`flex gap-2 flex-col w-full`}>
+      <h1>Найдено: {date.totalReview}</h1>
+      {date?.allReview.map((review) => (
+        <div className="flex flex-col justify-center items-start gap-2 bg-white p-4 rounded-md w-full">
+          <Link href={`/${lang}/profile/${review.from?.name}`} className="flex justify-center items-center gap-2 cursor-pointer">
+            <AvatarBlock avatar={review.from?.avatar} size="32"/> 
+            <span className="text-sm">{review.from?.name}</span>
           </Link>
           <div className='flex justify-center items-center gap-1'>
-          {Array.from({length: 5}).map((_, index) => (
-            <Star
-              size={15}
-              key={index}
-              className={index > 0 ? 'text-orange-600' : 'text-gray-300'}
-            />
-          ))}
+          <Rating rating={review.rating} size={16}/>
           </div>
-          <p className="text-sm">Отличный продавец! Товары для рыбалки пришли быстро и в идеальном состоянии. Всё соответствует описанию, качество на высоте. Общение лёгкое, продавец всегда на связи и готов помочь с выбором. Буду заказывать ещё!</p>
-          <span className='text-sm text-gray-500'>1 день назад</span>
+          <p className="text-sm">{review.comment}</p>
+          <span className='text-sm text-gray-500'>{getRelativeTime(review.createdAt, lang)}</span>
         </div>
       ))}
+
+      <Pagination total={date?.totalReview} maxLot={4}/>
 
     </div>
   )

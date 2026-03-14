@@ -15,18 +15,14 @@ export default function ChatList({setSelectChat, setTypeChat}: ChatListProps) {
     const [myId, setMyId] = useState('')
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        if(!token) return
-        getUserById(token) 
+        getUserById() 
         .then(data => {
             setMyId(data._id)
         })
     }, [])
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        if(!token) return
-        getMyChats(token)
+        getMyChats()
         .then(data => {
             setAllChats(data)
         })

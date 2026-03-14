@@ -26,6 +26,9 @@ let ReviewController = class ReviewController {
         const userId = req.user._id;
         return this.reviewService.newReview(userId, dto);
     }
+    async getReviewUser(query) {
+        return this.reviewService.getReviewUser(query);
+    }
 };
 exports.ReviewController = ReviewController;
 __decorate([
@@ -37,6 +40,13 @@ __decorate([
     __metadata("design:paramtypes", [review_dto_1.reviewDto, Object]),
     __metadata("design:returntype", Promise)
 ], ReviewController.prototype, "newReview", null);
+__decorate([
+    (0, common_1.Get)('getReviewUser'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [review_dto_1.getReviewDto]),
+    __metadata("design:returntype", Promise)
+], ReviewController.prototype, "getReviewUser", null);
 exports.ReviewController = ReviewController = __decorate([
     (0, common_1.Controller)('review'),
     __metadata("design:paramtypes", [review_service_1.ReviewService])

@@ -50,7 +50,11 @@ let ChatGateway = class ChatGateway {
         client.emit('getHistory', history);
     }
     async handleConnection(client) {
-        const token = client.handshake.auth.token?.replace('Bearer ', '');
+        const cookies = client.handshake.headers.cookie || '';
+        const token = cookies
+            .split('; ')
+            .find(c => c.startsWith('token='))
+            ?.split('=')[1];
         if (!token) {
             console.log('JWT не предоставлен');
             client.disconnect();

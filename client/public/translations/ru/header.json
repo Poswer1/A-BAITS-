@@ -13,5 +13,8 @@
     "modalProfile-logout": "Выйти",
     "notification": "Уведомления",
     "lotPurchased": "Ваш лот был успешно выкуплен - ",
+    "lotRelisted": "Ваш лот не был куплен, и был перевыставлен",
+    "lotNotRedeemed": "Ваш лот не был выкуплен, и снят с торгов",
+    "notificationNoYet": "Уведомлений пока что нету",
     "loading": "Загрузка..."
 }

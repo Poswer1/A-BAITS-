@@ -8,6 +8,6 @@ import { AuthModule } from '../auth/auth.module';
   imports: [AuthModule],
   controllers: [NotificationController],
   providers: [NotificationService, NotificationGateway],
-  exports: [NotificationGateway]
+  exports: [NotificationGateway, NotificationService]
 })
 export class NotificationModule {}

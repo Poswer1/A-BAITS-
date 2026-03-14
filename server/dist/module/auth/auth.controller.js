@@ -24,8 +24,16 @@ let AuthController = class AuthController {
     async register(dto) {
         return this.authService.register(dto);
     }
-    async login(dto) {
-        return this.authService.login(dto);
+    async login(dto, res) {
+        const token = await this.authService.login(dto);
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: false,
+            sameSite: 'lax',
+            path: '/',
+            maxAge: 1000 * 60 * 60 * 24 * 7
+        });
+        return { ok: true };
     }
 };
 exports.AuthController = AuthController;
@@ -39,8 +47,9 @@ __decorate([
 __decorate([
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Res)({ passthrough: true })),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_auth_dto_1.Auth]),
+    __metadata("design:paramtypes", [create_auth_dto_1.Auth, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "login", null);
 exports.AuthController = AuthController = __decorate([

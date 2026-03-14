@@ -1,11 +1,11 @@
 'use client'
 
-import { customInput, hover, input} from '@/styles/style'
+import { hover } from '@/styles/style'
 import { useState } from 'react'
 import Link from 'next/link';
 import { Eye, EyeOff} from 'lucide-react';import { register } from '@/services/auth';
 import { useRouter } from 'next/navigation';
-import { messageError } from '@/styles/global';
+import { customInput, input, messageError } from '@/styles/global';
 
 
 function page() {

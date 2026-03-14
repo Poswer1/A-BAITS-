@@ -14,6 +14,14 @@ export interface NotificationTypes {
     lot?:string
 }
 
+export interface ReviewTypes {
+    _id:string,
+    to:string,
+    from:string,
+    comment:string,
+    rating:number,
+    createdAt: Date
+}
 
 export interface LotTypes {
     _id:string,

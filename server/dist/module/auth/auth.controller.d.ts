@@ -1,5 +1,6 @@
 import { AuthService } from './auth.service';
 import { Auth } from './dto/create-auth.dto';
+import type { Response } from 'express';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
@@ -10,18 +11,7 @@ export declare class AuthController {
     } & {
         id: string;
     }>;
-    login(dto: Auth): Promise<{
-        token: string;
-        userData: {
-            name: string;
-            surname: string;
-            email: string;
-            city?: string;
-            balance: number;
-            avatar: string;
-            role: string;
-            _id: import("mongoose").Types.ObjectId;
-            __v: number;
-        };
+    login(dto: Auth, res: Response): Promise<{
+        ok: boolean;
     }>;
 }

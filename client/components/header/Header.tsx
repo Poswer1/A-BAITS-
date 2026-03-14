@@ -17,6 +17,7 @@ import AvatarBlock from '../utils/avatar';
 import { hoverSub } from '@/styles/categoryList';
 import OpenNotification from './openNotification';
 import { useSocketContext } from '@/app/context/SocketIo';
+import ChangeLanguage from './changeLanguage';
 
 
 function Header() {
@@ -42,11 +43,8 @@ function Header() {
 
     useEffect(() => {
         const fetchUser = async () => {
-            const token = localStorage.getItem('token');
-            if (!token) return;
-
             try {
-            const data = await getUserById(token);
+            const data = await getUserById();
             setName(data.name);
             setAvatar(data.avatar);
             } catch (err: any) {
@@ -77,8 +75,6 @@ function Header() {
         setSearch('')
     }
 
-     const modalRef = useClickOutside(setOpenLanguage)
-
   return (
     <div className='flex flex-col justify-center items-center w-full z-20'>
         <div className='flex flex-col justify-center items-center w-[90%] p-2 relative'>
@@ -95,7 +91,7 @@ function Header() {
                 <div className='flex justify-center items-center gap-3 w-full'>
                     <button onClick={() => setOpenCategory(prev => !prev)} className={`font-medium flex justify-center items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}><Menu size={20}/>{t('header','category')}</button>
                     <div className='flex flex-col justify-center items-center w-[40%] relative'>
-                        <div className={`flex justify-start items-center p-2 gap-2 bg-gray-100 rounded-md border border-gray-200 w-full ${openSearch && 'z-20'}`}>
+                        <div className={`flex justify-start items-center p-2 gap-2 bg-gray-100 rounded-md border border-gray-200 w-full ${openSearch && 'z-90'}`}>
                             <Search size={20} className='text-gray-500'/>
                             <input 
                             placeholder={t('header','searchPlaceholder')} 
@@ -119,17 +115,7 @@ function Header() {
                 </div>
                 <div className='flex justify-center items-center gap-5 whitespace-nowrap relative'>
 
-                        <div onClick={() => setOpenLanguage(prev => !prev)}className='flex justify-center items-center gap-2 cursor-pointer relative '>
-                                <Globe />
-                                {pathname === '/uk' ? 'Українська' : 'Русский'}
-                                <ChevronDown  className={arrowActive(openLanguage)}/>
-                                {openLanguage && (
-                                    <div ref={modalRef} onClick={(e) => e.stopPropagation()} className='w-full p-2 absolute top-[100%] flex flex-col justify-center items-start z-10 bg-white text-black rounded-xl gap-2'>
-                                        <Link href={'/ru'} className={hover} onClick={() => setOpenLanguage(false)}>Русский</Link>
-                                        <Link href={'/uk'} className={hover} onClick={() => setOpenLanguage(false)}>Українська</Link>
-                                    </div>
-                                )}
-                        </div>
+                        <ChangeLanguage />
                                 
                         <Bell className={`${hoverSub} ${read ? 'text-orange-600': 'text-gray-500'}`} onClick={() => setOpenNotification(prev => !prev)}/>
 

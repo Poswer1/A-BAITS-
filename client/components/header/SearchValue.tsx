@@ -35,7 +35,7 @@ function SearchValue({setOpenSearch, search, setSearch}: {setOpenSearch: (type: 
   return (
     <>
     <div className={overlay} onClick={() => setOpenSearch(false)}></div>
-        <div className={`${animationOpacity} bg-gray-100 w-full p-2 rounded-md absolute top-12 z-20 flex flex-col justify-center items-start gap-2`} onClick={(e) => e.stopPropagation()}>
+        <div className={`${animationOpacity} bg-gray-100 w-full p-2 rounded-md absolute top-12 z-80 flex flex-col justify-center items-start gap-2`} onClick={(e) => e.stopPropagation()}>
             {filterProducts.map((p) => (
                 <Link href={`/${params.lang}/${p.name}`} onClick={() => {setOpenSearch(false), setSearch('')}} className={`${animationOpacity} flex flex-col justify-center items-start cursor-pointer`}>
                   <span className={hoverSub}>{p.name}</span>

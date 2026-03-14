@@ -3,11 +3,15 @@ import { ConfigService } from "@nestjs/config";
 import { PassportStrategy } from "@nestjs/passport";
 import { ExtractJwt, Strategy } from 'passport-jwt'
 
+const cookieExtractor = (req:any) => {
+    return req?.cookies?.token
+}
+
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') { // регистрируем в passport с именем jwt  //Strategy это стратегия которая работает с токеном
     constructor(private configService:ConfigService) {
         super({ // super передает данные в родителя в нашем случае в PassportStrategy
-            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), // говорим где искать токен а точне в http запросе в Authorization,
+            jwtFromRequest: cookieExtractor, // от куда береться токен
             secretOrKey: configService.get<string>('SECRET_KEY')
         })
     }

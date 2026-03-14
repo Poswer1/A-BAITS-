@@ -52,14 +52,17 @@ export default function OpenNotification({setOpen, lang, setRead}: OpenNotificat
         ): (
             <>
                 <h1 className='font-bold'>{t('header', 'notification')}</h1>
+                {notification.length === 0 && (
+                    <h1>{t('header', 'notificationNoYet')}</h1>
+                )}
                 {notification.map((n) => (
-                    <Link href={`/${lang}/lot/${n.lot.lotNumber}`} onClick={() => setOpen(false)} key={n._id} className='w-full cursor-pointer'>
+                    <Link href={`/${lang}/lot/${n?.lot?.lotNumber || '0000'}`} onClick={() => setOpen(false)} key={n._id} className='w-full cursor-pointer'>
                         <p className='text-gray-800 whitespace-pre-line'>
                         {t('header', n.notification)}
                         </p>
                         {n?.lot?.name && (
                         <p className='text-orange-600 font-medium whitespace-pre-line'>
-                            {n.lot.name}
+                            {n.lot?.name}
                         </p>
                         )}
                         <Link href='' className={`${button} w-full !p-1 mt-1`} onClick={(e) => e.preventDefault()}>Перейти в чат</Link>

@@ -13,6 +13,6 @@ const ReviewSchema = new Schema<ReviewType>({
     from: {type:Schema.Types.ObjectId,ref: 'User', required:true},
     comment: {type:String, required:true},
     rating: {type:Number, required:true},
-})
+}, {timestamps: true})
 
 export const ReviewModel = model<ReviewType>('review', ReviewSchema)

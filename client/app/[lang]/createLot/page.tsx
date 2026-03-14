@@ -68,13 +68,6 @@ function page() {
     }
 
     const handleCreateOrUpdate = async () => {
-
-      const token = localStorage.getItem('token')
-      if(!token) {
-        setMessage(t("global", 'accountNotFound'))
-        return
-      }
-
        if (!name || !description || !stateLot || !location || !delivery || !price || !priceStep || !date || !time || !file || file.length === 0) {
           setMessage('Будь ласка, заповніть всі дані')
           setTimeout(() => {
@@ -123,7 +116,7 @@ function page() {
         file?.forEach(f => formData.append('images', f))
 
         try {
-          await createLot(formData, token)
+          await createLot(formData)
           handleClear()
           setConfirmCreateOrder(true)
           setLoading(false)

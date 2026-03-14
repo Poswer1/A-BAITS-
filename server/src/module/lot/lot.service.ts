@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { filterLot, LotDto } from './dto/lot.dto';
+import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
 import { LotModel } from 'src/models/lot.model';
 import { ProccessImages } from 'src/utils/files-upload';
 import { Types } from 'mongoose';
@@ -16,11 +16,23 @@ export class LotService {
 
     const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString(); //10000000 — минимальное 8-значное число 90000000 — диапазон до 99999999
 
+    const nowDate = new Date()
+    const oneDay = 24 * 60 * 60 * 1000
+    
+    const newDate = new Date(nowDate.getTime() + (oneDay * dto.date))
+
+    const [hours, minutes] = dto.dateTime.split(':').map(Number)
+
+    newDate.setHours(hours, minutes, 0, 0)
+
+
     try {
       const product = await LotModel.create({
         ...dto,
         author: userId,
         images,
+        date: newDate,
+        dateTime: dto.dateTime,
         lotNumber: Nlot
       })
       return product
@@ -36,6 +48,81 @@ export class LotService {
     } catch (error) {
       throw new BadRequestException('Ошибка при получение всех товаров',error)
     }
+  }
+
+  async getLotByUser(query:{name:string, page:number}) {
+
+    const {name, page} = query
+
+    const user = await UserModel.findOne({name:name})
+    if(!user) {
+      console.log('пользователь не найден при получени товаров по именни')
+      return
+    }
+
+    const limit = 4
+    const currentPage = Number(page) || 1
+
+    const [allLots, totalLots] = await Promise.all([
+      await LotModel.find({author: user._id})
+      .limit(limit)
+      .skip((currentPage - 1) * limit),
+      await LotModel.countDocuments({author: user._id})
+    ])
+
+    return {allLots, totalLots}
+  }
+
+  async getMyLots(query: getMyLotsDto) {
+    const {status, mode, page} = query
+
+    let filter:any = {}
+    const currentPage = Number(page) || 1
+
+    const limit = 4
+
+    if(mode === 'sell' ) {
+      filter.author = '69a99f11882d382dae1b5a4a'
+      if(status)filter.status = status
+    } else {
+      if(status === 'Active'){
+        filter['historyBid.author'] = '69a99f11882d382dae1b5a4a'
+        filter.status = 'Active'
+      }
+      if(status === 'Archive'){
+        filter['historyBid.author'] = '69a99f11882d382dae1b5a4a'
+        filter.status = 'Archive'
+      }
+      if(status === 'Completed') {
+        filter.winner = '69a99f11882d382dae1b5a4a'
+        filter.status = 'Completed'
+      }
+      if(status === 'Sold') {
+        filter.winner = { $ne: new Types.ObjectId('69a99f11882d382dae1b5a4a') } // $ne не равняеться
+        filter.status = 'Completed'
+      }
+      if(status === 'Favorite') {
+        const user = await UserModel.findById(new Types.ObjectId('69a99f11882d382dae1b5a4a'))
+        .select('favorites')
+          if (user?.favorites?.length) {
+            filter._id = { $in: user.favorites }
+          } else {
+            filter._id = { $in: [] } 
+          }
+      }
+    }
+    
+    const [allLots, totalLot] = await Promise.all([
+        LotModel.find(filter)
+        .collation({ locale: 'en', strength: 2 })
+        .limit(limit)
+        .skip((currentPage - 1) * limit),
+
+        LotModel.countDocuments(filter)
+        .collation({ locale: 'en', strength: 2 }),
+    ])
+
+    return {allLots, totalLot}
   }
 
   async getFilterLot(query: filterLot) {
@@ -99,7 +186,7 @@ export class LotService {
 
   async getLot (numberLot:string) {
     try {
-      const lot = await LotModel.findOne({lotNumber: numberLot}).populate('author', 'avatar name')
+      const lot = await LotModel.findOne({lotNumber: numberLot}).populate('author', 'avatar name rating')
       return lot
     } catch (error) {
        throw new BadRequestException('Ошибка при получение товара',error)
@@ -147,6 +234,14 @@ export class LotService {
     lot.startPrice = data.bid
 
     lot.historyBid.push({author: new Types.ObjectId(userId), currentBid: data.bid})
+
+    const nowDate = new Date()
+    const differenceDate = lot.date.getTime() - nowDate.getTime()
+    const fiveMinutes = 300000
+
+    if(differenceDate <= fiveMinutes) {
+      lot.date = new Date(lot.date.getTime() + fiveMinutes)
+    }
 
     await lot.save()
 

@@ -1,6 +1,6 @@
 import { hover } from "./style"
 
-export const overlay = 'flex justify-center items-center fixed top-0 left-0 w-full h-full bg-black/50 z-10'
+export const overlay = 'flex justify-center items-center fixed top-0 left-0 w-full h-full bg-black/50 z-80'
 export const button = `${hover} flex justify-center items-center text-white p-2 bg-orange-600 rounded-md px-5`
 export const buttonWithoutBg = `${hover} flex justify-center items-center text-black p-2 bg-transparent rounded-md px-5 border border-orange-600`
 export const messageError = 'flex justify-center items-center p-2 border border-red-600 text-red-600 bg-red-500/20 text-center rounded-md text-center'

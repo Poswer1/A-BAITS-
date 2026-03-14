@@ -31,9 +31,7 @@ export default function Sidebar({mode, active, setActive, name} : SidebarProps) 
   const [username, setUsername] = useState('')
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if(!token) return
-    getUserById(token)
+    getUserById()
     .then(data => {
       setUsername(data.name)
     })
@@ -44,19 +42,19 @@ export default function Sidebar({mode, active, setActive, name} : SidebarProps) 
   {mode === 'sidebarMain' ? (
     listLinks = [
       {name: t('profile', 'profile'), icon: <User/>, link:`/${name && name}` },
-      {name: t('profile', 'sell'), icon: <Tag/>, link: 'sell'},
-      {name: t('profile', 'buy'), icon: <TrendingUp/>, link: 'buy'},
+      {name: t('profile', 'sell'), icon: <Tag/>, link: 'sell/Active'},
+      {name: t('profile', 'buy'), icon: <TrendingUp/>, link: 'buy/Active'},
       {name: 'Чат', icon: <MessageCircle/>, link: 'chat'},
     ]
   ): mode === 'buy' || mode === 'sell' ?(
     listLinks = [
-      {name: t('profile', 'active'), icon: <Loader/>, link: 'active'},
+      {name: t('profile', 'active'), icon: <Loader/>, link: `${mode}/Active`},
       ...(mode === 'buy'
-      ? [{ name: t('profile', 'favorites'), icon: <Star />, link: 'favorite' }]
+      ? [{ name: t('profile', 'favorites'), icon: <Star />, link: `${mode}/Favorite` }]
       : []),
-      {name: t('profile', 'archived'), icon: <Archive/>, link: 'archive'},
-      {name: t('profile', 'completed'), icon: <Flag/>, link: 'completed'},
-      {name: t('profile', 'sold'), icon: <DollarSign/>, link: 'sold'},
+      {name: t('profile', 'archived'), icon: <Archive/>, link: `${mode}/Archive` },
+      {name: t('profile', 'completed'), icon: <Flag/>, link: `${mode}/Completed`},
+      {name: t('profile', 'sold'), icon: <DollarSign/>, link: `${mode}/Sold`},
     ]
   ): mode === 'sidebarProfile' &&(
     listLinks = [
@@ -70,14 +68,6 @@ export default function Sidebar({mode, active, setActive, name} : SidebarProps) 
   return (
     <div className={`${sidebarClass} ${mode !== 'sidebarMain' && '!h-auto'}`}>
       {listLinks.map(link => (
-          mode === 'sell' || mode === 'buy' ? (
-            active && setActive && (
-              <span key={link.link} className={`${linkClass} ${hoverCat} ${active === link.link && linkActiveClass}`} onClick={() => setActive(link.link)}>
-                {link.icon}
-                {link.name}
-              </span>
-            )
-          ) : (
             <Link
               key={link.link}
               href={`/${lang}/profile/${link.link}`}
@@ -86,7 +76,6 @@ export default function Sidebar({mode, active, setActive, name} : SidebarProps) 
               {link.icon}
               {link.name}
             </Link>
-          )
         ))}
     </div>
   )
