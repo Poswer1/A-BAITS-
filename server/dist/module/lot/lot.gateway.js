@@ -46,7 +46,11 @@ let LotGateway = class LotGateway {
         client.emit('getHistoryBid', result);
     }
     async handleConnection(client) {
-        const token = client.handshake.auth.token?.replace('Bearer ', '');
+        const cookies = client.handshake.headers.cookie || '';
+        const token = cookies
+            .split('; ')
+            .find(c => c.startsWith('token='))
+            ?.split('=')[1];
         if (!token) {
             console.log('JWT не предоставлен');
             client.disconnect();

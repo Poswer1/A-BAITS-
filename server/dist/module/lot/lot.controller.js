@@ -19,17 +19,23 @@ const lot_dto_1 = require("./dto/lot.dto");
 const platform_express_1 = require("@nestjs/platform-express");
 const files_upload_1 = require("../../utils/files-upload");
 const jwt_auth_guard_1 = require("../auth/jwt/jwt-auth-guard");
+const current_user_decorator_1 = require("../../decorator/current-user.decorator");
 let LotController = class LotController {
     lotService;
     constructor(lotService) {
         this.lotService = lotService;
     }
-    async createLot(req, dto, files) {
-        const userId = req.user._id;
+    async createLot(req, dto, files, userId) {
         return this.lotService.createLot(dto, files, userId);
     }
     async getAllLot() {
         return this.lotService.getAllLot();
+    }
+    async getLotByUser(query) {
+        return this.lotService.getLotByUser(query);
+    }
+    async getMyLots(query) {
+        return this.lotService.getMyLots(query);
     }
     async getFilterLot(query) {
         return this.lotService.getFilterLot(query);
@@ -50,8 +56,9 @@ __decorate([
     __param(0, (0, common_1.Req)()),
     __param(1, (0, common_1.Body)()),
     __param(2, (0, common_1.UploadedFiles)()),
+    __param(3, (0, current_user_decorator_1.CurrentUser)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, lot_dto_1.LotDto, Array]),
+    __metadata("design:paramtypes", [Object, lot_dto_1.LotDto, Array, String]),
     __metadata("design:returntype", Promise)
 ], LotController.prototype, "createLot", null);
 __decorate([
@@ -60,6 +67,20 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], LotController.prototype, "getAllLot", null);
+__decorate([
+    (0, common_1.Get)('getLotByUser'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], LotController.prototype, "getLotByUser", null);
+__decorate([
+    (0, common_1.Get)('getMyLots'),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [lot_dto_1.getMyLotsDto]),
+    __metadata("design:returntype", Promise)
+], LotController.prototype, "getMyLots", null);
 __decorate([
     (0, common_1.Get)('getFilterLot'),
     __param(0, (0, common_1.Query)()),

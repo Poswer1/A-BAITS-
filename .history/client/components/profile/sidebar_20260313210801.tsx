@@ -1,0 +1,84 @@
+'use client'
+
+import { hoverCat } from '@/styles/categoryList';
+import { linkActiveClass, linkClass, sidebarClass } from '@/styles/profile/sidebar';
+import { User, MessageCircle, Settings, Tag,TrendingUp, Wallet, Loader, Archive, Flag, DollarSign, Star, Package, MessageSquare} from 'lucide-react';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
+import { useTranslation } from '@/app/context/TranslationProvider';
+import { getUserById } from '@/services/user';
+
+interface SidebarProps {
+  mode: string
+  active?: string,
+  name?:string
+  setActive?: (v:string) => void
+}
+
+interface SidebarLink {
+  name: string
+  icon: React.ReactNode
+  link: string
+}
+
+export default function Sidebar({mode, active, setActive, name} : SidebarProps) {
+
+  const params = useParams()
+  const lang = params.lang as string
+
+  const {t} = useTranslation()
+  const [username, setUsername] = useState('')
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if(!token) return
+    getUserById(token)
+    .then(data => {
+      setUsername(data.name)
+    })
+  }, [])
+
+  let listLinks: SidebarLink[] = []
+
+  {mode === 'sidebarMain' ? (
+    listLinks = [
+      {name: t('profile', 'profile'), icon: <User/>, link:`/${name && name}` },
+      {name: t('profile', 'sell'), icon: <Tag/>, link: 'sell/active'},
+      {name: t('profile', 'buy'), icon: <TrendingUp/>, link: 'buy/active'},
+      {name: 'Чат', icon: <MessageCircle/>, link: 'chat'},
+    ]
+  ): mode === 'buy' || mode === 'sell' ?(
+    listLinks = [
+      {name: t('profile', 'active'), icon: <Loader/>, link: `${mode}/Active`},
+      ...(mode === 'buy'
+      ? [{ name: t('profile', 'favorites'), icon: <Star />, link: `${mode}/Favorite` }]
+      : []),
+      {name: t('profile', 'archived'), icon: <Archive/>, link: `${mode}/archive` },
+      {name: t('profile', 'completed'), icon: <Flag/>, link: `${mode}/completed`},
+      {name: t('profile', 'sold'), icon: <DollarSign/>, link: `${mode}/sold`},
+    ]
+  ): mode === 'sidebarProfile' &&(
+    listLinks = [
+      {name: t('profile', 'Reviews'), icon: <MessageSquare/>, link: `/${name}/reviews`},
+      ...(name === username 
+        ? [{name: 'Баланс', icon: <Wallet/>, link: `${name}/balance`}, {name: t('profile', 'setting'), icon: <Settings/>, link: `${name}/settings`}] 
+        : [{name: t('global', 'lot'), icon: <Package />, link: `${name}/lots`}]),
+    ]
+  )}
+
+  return (
+    <div className={`${sidebarClass} ${mode !== 'sidebarMain' && '!h-auto'}`}>
+      {listLinks.map(link => (
+            <Link
+              key={link.link}
+              href={`/${lang}/profile/${link.link}`}
+              className={`${hoverCat} ${linkClass} ${active === link.name && linkActiveClass}`}
+            >
+              {link.icon}
+              {link.name}
+            </Link>
+        ))}
+    </div>
+  )
+}

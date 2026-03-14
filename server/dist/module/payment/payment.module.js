@@ -21,6 +21,7 @@ exports.PaymentModule = PaymentModule = __decorate([
         imports: [auth_module_1.AuthModule, notification_module_1.NotificationModule],
         controllers: [payment_controller_1.PaymentController],
         providers: [payment_service_1.PaymentService, payment_gateway_1.PaymentGateway],
+        exports: [payment_service_1.PaymentService]
     })
 ], PaymentModule);
 //# sourceMappingURL=payment.module.js.map

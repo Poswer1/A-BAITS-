@@ -57,6 +57,24 @@ let ReviewService = class ReviewService {
         this.chatGateWay.newReview(user._id.toString());
         return;
     }
+    async getReviewUser(query) {
+        const { name, page } = query;
+        const user = await user_model_1.UserModel.findOne({ name: name });
+        if (!user) {
+            console.log('не найден пользователь при получении отзывов');
+            return;
+        }
+        const limit = 4;
+        const currentPage = Number(page);
+        const [allReview, totalReview] = await Promise.all([
+            review_1.ReviewModel.find({ to: user._id })
+                .populate('from', 'name avatar')
+                .limit(limit)
+                .skip((currentPage - 1) * limit),
+            review_1.ReviewModel.countDocuments({ to: user._id })
+        ]);
+        return { allReview, totalReview };
+    }
 };
 exports.ReviewService = ReviewService;
 exports.ReviewService = ReviewService = __decorate([

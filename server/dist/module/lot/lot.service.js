@@ -16,11 +16,18 @@ let LotService = class LotService {
     async createLot(dto, files, userId) {
         const images = files ? await (0, files_upload_1.ProccessImages)(files) : [];
         const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString();
+        const nowDate = new Date();
+        const oneDay = 24 * 60 * 60 * 1000;
+        const newDate = new Date(nowDate.getTime() + (oneDay * dto.date));
+        const [hours, minutes] = dto.dateTime.split(':').map(Number);
+        newDate.setHours(hours, minutes, 0, 0);
         try {
             const product = await lot_model_1.LotModel.create({
                 ...dto,
                 author: userId,
                 images,
+                date: newDate,
+                dateTime: dto.dateTime,
                 lotNumber: Nlot
             });
             return product;
@@ -37,6 +44,71 @@ let LotService = class LotService {
         catch (error) {
             throw new common_1.BadRequestException('Ошибка при получение всех товаров', error);
         }
+    }
+    async getLotByUser(query) {
+        const { name, page } = query;
+        const user = await user_model_1.UserModel.findOne({ name: name });
+        if (!user) {
+            console.log('пользователь не найден при получени товаров по именни');
+            return;
+        }
+        const limit = 4;
+        const currentPage = Number(page) || 1;
+        const [allLots, totalLots] = await Promise.all([
+            await lot_model_1.LotModel.find({ author: user._id })
+                .limit(limit)
+                .skip((currentPage - 1) * limit),
+            await lot_model_1.LotModel.countDocuments({ author: user._id })
+        ]);
+        return { allLots, totalLots };
+    }
+    async getMyLots(query) {
+        const { status, mode, page } = query;
+        let filter = {};
+        const currentPage = Number(page) || 1;
+        const limit = 4;
+        if (mode === 'sell') {
+            filter.author = '69a99f11882d382dae1b5a4a';
+            if (status)
+                filter.status = status;
+        }
+        else {
+            if (status === 'Active') {
+                filter['historyBid.author'] = '69a99f11882d382dae1b5a4a';
+                filter.status = 'Active';
+            }
+            if (status === 'Archive') {
+                filter['historyBid.author'] = '69a99f11882d382dae1b5a4a';
+                filter.status = 'Archive';
+            }
+            if (status === 'Completed') {
+                filter.winner = '69a99f11882d382dae1b5a4a';
+                filter.status = 'Completed';
+            }
+            if (status === 'Sold') {
+                filter.winner = { $ne: new mongoose_1.Types.ObjectId('69a99f11882d382dae1b5a4a') };
+                filter.status = 'Completed';
+            }
+            if (status === 'Favorite') {
+                const user = await user_model_1.UserModel.findById(new mongoose_1.Types.ObjectId('69a99f11882d382dae1b5a4a'))
+                    .select('favorites');
+                if (user?.favorites?.length) {
+                    filter._id = { $in: user.favorites };
+                }
+                else {
+                    filter._id = { $in: [] };
+                }
+            }
+        }
+        const [allLots, totalLot] = await Promise.all([
+            lot_model_1.LotModel.find(filter)
+                .collation({ locale: 'en', strength: 2 })
+                .limit(limit)
+                .skip((currentPage - 1) * limit),
+            lot_model_1.LotModel.countDocuments(filter)
+                .collation({ locale: 'en', strength: 2 }),
+        ]);
+        return { allLots, totalLot };
     }
     async getFilterLot(query) {
         const { category, subCategory, subSubCategory, city, minPrice, maxPrice, state, sort, search } = query;
@@ -92,7 +164,7 @@ let LotService = class LotService {
     }
     async getLot(numberLot) {
         try {
-            const lot = await lot_model_1.LotModel.findOne({ lotNumber: numberLot }).populate('author', 'avatar name');
+            const lot = await lot_model_1.LotModel.findOne({ lotNumber: numberLot }).populate('author', 'avatar name rating');
             return lot;
         }
         catch (error) {
@@ -133,6 +205,12 @@ let LotService = class LotService {
         }
         lot.startPrice = data.bid;
         lot.historyBid.push({ author: new mongoose_1.Types.ObjectId(userId), currentBid: data.bid });
+        const nowDate = new Date();
+        const differenceDate = lot.date.getTime() - nowDate.getTime();
+        const fiveMinutes = 300000;
+        if (differenceDate <= fiveMinutes) {
+            lot.date = new Date(lot.date.getTime() + fiveMinutes);
+        }
         await lot.save();
         const updateLot = await lot_model_1.LotModel.findById(lot._id)
             .populate('historyBid.author', 'name avatar');

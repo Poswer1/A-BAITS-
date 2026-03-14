@@ -22,7 +22,7 @@ const LotSchema = new mongoose_1.Schema({
     descriptions: { type: String, required: true },
     state: { type: String, required: true },
     status: { type: String, default: 'active' },
-    date: { type: Number, required: true },
+    date: { type: Date, required: true },
     dateTime: { type: String, default: '21:00' },
     location: { type: String, required: true },
     delivary: { type: String, required: true },

@@ -3,3 +3,7 @@ export declare class reviewDto {
     comment: string;
     rating: number;
 }
+export declare class getReviewDto {
+    name: string;
+    page?: number;
+}

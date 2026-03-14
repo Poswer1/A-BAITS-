@@ -19,7 +19,7 @@ export interface Lot {
     autoReExtension: boolean;
     descriptions: string;
     state: string;
-    date: number;
+    date: Date;
     dateTime: string;
     location: string;
     status: string;

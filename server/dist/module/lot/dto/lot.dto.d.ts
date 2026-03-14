@@ -16,6 +16,11 @@ export declare class LotDto {
     delivary: string;
     Advertising?: boolean;
 }
+export declare class getMyLotsDto {
+    status: string;
+    mode: string;
+    page?: number;
+}
 export declare class filterLot {
     category?: string;
     subCategory?: string;

@@ -1,0 +1,12 @@
+import { Injectable } from '@nestjs/common';
+import { UserModel } from 'src/models/user.model';
+
+@Injectable()
+export class FavoritesService {
+    async addFavorite(id:string, userId:string) {
+        const user = await UserModel.findById(userId)
+        if(!user) {
+            console.log('поль')
+        }
+    }
+}

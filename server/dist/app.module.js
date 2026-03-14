@@ -17,6 +17,9 @@ const chat_module_1 = require("./module/chat/chat.module");
 const notification_module_1 = require("./module/notification/notification.module");
 const payment_module_1 = require("./module/payment/payment.module");
 const review_module_1 = require("./module/review/review.module");
+const favorites_module_1 = require("./module/favorites/favorites.module");
+const schedule_1 = require("@nestjs/schedule");
+const cron_module_1 = require("./module/cron/cron.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -26,13 +29,16 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
             }),
+            schedule_1.ScheduleModule.forRoot(),
             auth_module_1.AuthModule,
             user_module_1.UserModule,
             lot_module_1.LotModule,
             chat_module_1.ChatModule,
             notification_module_1.NotificationModule,
             payment_module_1.PaymentModule,
-            review_module_1.ReviewModule
+            review_module_1.ReviewModule,
+            favorites_module_1.FavoritesModule,
+            cron_module_1.CronModule
         ],
         providers: [connectDB_1.ConnectDB]
     })

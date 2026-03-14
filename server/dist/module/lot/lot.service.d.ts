@@ -1,4 +1,4 @@
-import { filterLot, LotDto } from './dto/lot.dto';
+import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
 import { Types } from 'mongoose';
 export declare class LotService {
     createLot(dto: LotDto, files: Express.Multer.File[], userId: string): Promise<import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
@@ -15,6 +15,29 @@ export declare class LotService {
     } & {
         id: string;
     })[]>;
+    getLotByUser(query: {
+        name: string;
+        page: number;
+    }): Promise<{
+        allLots: (import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
+            _id: Types.ObjectId;
+        } & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        totalLots: number;
+    } | undefined>;
+    getMyLots(query: getMyLotsDto): Promise<{
+        allLots: (import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
+            _id: Types.ObjectId;
+        } & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        totalLot: number;
+    }>;
     getFilterLot(query: filterLot): Promise<{
         lots: (import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
             _id: Types.ObjectId;
