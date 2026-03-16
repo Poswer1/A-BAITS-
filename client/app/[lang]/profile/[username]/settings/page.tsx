@@ -1,38 +1,106 @@
 'use client'
 
 import { useTranslation } from "@/app/context/TranslationProvider"
-import AvatarBlock from "@/components/utils/avatar"
-import Loading from "@/components/utils/loadig"
-import LocationList from "@/components/utils/location"
-import { getUserById} from "@/services/user"
-import { input } from "@/styles/createLot"
-import { button,inputBlock, loadingBlock } from "@/styles/global"
-import { blockClass, pageContainerClass } from "@/styles/profile/profile"
-import { arrowActive, hover } from "@/styles/style"
-import { ChevronDown } from "lucide-react"
+import AvatarBlock from "@/components/ui/avatar"
+import InputField from "@/components/ui/inputFields"
+import Loading from "@/components/ui/loadig"
+import SelectionField from "@/components/ui/selectionField"
+import { getUserById, updateUser} from "@/services/user"
+import { button,buttonWithoutBg,inputBlock, loadingBlock } from "@/styles/global"
+import { blockClass} from "@/styles/profile/profile"
+import { animationOpacity, hover } from "@/styles/style"
 import { useEffect, useState } from "react"
+import LocationList from '../../../../../data/citiesUK.json'
+import { useParams } from "react-router-dom"
+import { getValueByLang } from "@/utils/translateValue"
 
 function page() {
-  const [user, setUser] = useState<any | null>(null)
+
+  const params = useParams()
+  const lang = params.lang as string
+
   const [loading, setLoading] = useState(true)
-  const [openCity, setOpenCity] = useState(false)
   const [location, setLocation] = useState('')
   const [username, setUsername] = useState('')
-  const [changeAvatar, setChangeAvatar] = useState(false)
+  const [surname, setSurname] = useState('')
+  const [avatar, setAvatar] = useState('')
+  const [defaultAvatar, setDefaultAvatar] = useState('')
+  const [preview, setPreview] = useState('')
+  const [file, setFile] = useState<File | null>(null)
+
+  const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
 
   const {t} = useTranslation()
 
+  const city = getValueByLang(LocationList, location, lang)
+
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if(!token) return
-    getUserById(token)
+    getUserById()
     .then(data => {
-      setUser(data)
       setUsername(data.name)
+      setAvatar(data.avatar)
+      setLocation(data.location)
+      setSurname(data.surname || '')
       setLocation(data.location)
       setLoading(false)
     })
   }, [])
+
+  const handleDefaultAvatar = () => {
+
+    const listAvatar = [
+      {avatar: '/uploads/defaultAvatar/avatar1.webp'},
+      {avatar: '/uploads/defaultAvatar/avatar2.webp'},
+      {avatar: '/uploads/defaultAvatar/avatar3.webp'}
+    ]
+
+    const randomAvatar = listAvatar[Math.floor(Math.random() * listAvatar.length)]
+
+    setAvatar(randomAvatar.avatar)
+    setDefaultAvatar(randomAvatar.avatar)
+  }
+
+  const handleFile = (e:React.ChangeEvent<HTMLInputElement>) => {
+    if(!e.target.files) return
+    const newFile = e.target.files[0]
+    if (newFile.type === 'image/webp') {
+        setError(t('profile', 'formatFile'))
+        setTimeout(() => {
+            setError('')
+        }, 3000)
+        return
+    }
+    setFile(newFile)
+    const preview = URL.createObjectURL(newFile)
+    setPreview(preview)
+  }
+
+  const handleUpdate = async () => {
+    const formData = new FormData()
+
+    if(username)formData.append('name', username)
+    if(surname)formData.append('surname', surname)
+    if(defaultAvatar)formData.append('defaultAvatar', defaultAvatar)
+    if(location)formData.append('location', location)
+    if(file)formData.append('image', file)
+
+    try {
+      await updateUser(formData)
+      setMessage(t('profile', 'ProfileUpdated'))
+      setTimeout(() => (
+        setMessage('')
+      ), 3000)
+    } catch (error:unknown) {
+      if (error instanceof Error) {
+        setError(t('profile', error.message))
+        setTimeout(() => (
+          setError('')
+        ), 3000)
+      }
+    }
+  }
+  
 
   return (
     <div className={`${blockClass} flex-col !items-start`}>
@@ -42,45 +110,34 @@ function page() {
         </div>
             ): (
               <>
-              <h1 className="text-xl mb-5">{t('profile', 'settingsProfile')}</h1>
-                <div className="flex flex-col justify-center items-center w-2/3 gap-5">
+                <div className="flex flex-col justify-start items-start lg:w-full 2xl:w-4/5 gap-5">
                   
                   <div className={blockClass}>
                         <div className="relative">
-                          <AvatarBlock avatar={user?.avatar} size="180" changeAvatar={changeAvatar} setChangeAvatar={setChangeAvatar}/>
+                          <AvatarBlock avatar={avatar} size="120" preview={preview}/>
                         </div>
                         <div className="flex flex-col justify-center items-start">
                           <h1 className="text-xl">{username}</h1>
-                          <span className="text-gray-500 text-sm">{location || t('profile', 'cityNotSelected')}</span>
+                          <span className="text-gray-500 text-sm">{city || t('profile', 'cityNotSelected')}</span>
+                          <div className="flex justify-center items-center gap-2 mt-1">
+                            <label htmlFor="selectPhoto" className={`${button} !p-2`}>{t('profile', 'changeAvatar')}</label>
+                            <input type="file" id="selectPhoto" onChange={handleFile} className="hidden"/>
+                            <button className={`${buttonWithoutBg} !p-2`} onClick={handleDefaultAvatar}>{t('profile', 'defultAvatar')}</button>
+                          </div>
                         </div>
                   </div>
+                  {(message || error) && (
+                    <span className={`${message ? 'text-green-600' : 'text-red-600'} ${animationOpacity}`}>{message || error}</span>
+                  )}
+                  <div className="flex justify-center items-center w-full gap-5">
+                    <InputField value={username} onChange={setUsername} placeholder={t('profile', 'firstName')} label={t('profile', 'firstName')}/>
+                    <InputField value={surname} onChange={setSurname} placeholder={t('profile', 'lastName')} label={t('profile', 'lastName')}/>
+                  </div>
+                  <div className="flex w-1/2">
+                    <SelectionField title={t('profile', 'selectCity')} placeholder={t('profile', 'selectCity')} setValue={setLocation} value={location} list={LocationList}/>
+                  </div>
 
-                  <div className={`${blockClass} flex-col !items-start !gap-0`}>
-                    
-                    <div className="flex justify-start items-center p-2 gap-5 w-full">
-                        <div className={inputBlock}>
-                          <span>{t('profile','firstName')}<span className="text-orange-600">*</span></span>
-                          <input value={username} onChange={(e) => setUsername(e.target.value)} placeholder={`Ваше ${t('profile','firstName')}`} className={`${input} border-gray-300 border`}/>
-                        </div>
-
-                        <div className={inputBlock}>
-                          <span>{t('profile','lastName')}<span className="text-orange-600">*</span></span>
-                          <input placeholder={`Ваша ${t('profile','lastName')}`} className={`${input} border-gray-300 border`}/>
-                        </div>
-                    </div>
-
-                    <div className="flex justify-start items-center p-2 w-1/2">
-                      <div className={`${inputBlock} relative`}>
-                          <span>Город</span>
-                          <div onClick={() => setOpenCity(prev => !prev)} className={`${input} ${hover} !justify-between border-gray-300 border`}>{location || t('profile', 'selectCity')} <ChevronDown className={arrowActive(openCity)}/></div>
-                          {openCity && (
-                              <LocationList setLocation={setLocation} setOpenSelectLocation={setOpenCity}/>
-                          )}
-                      </div>
-                    </div>
-                    
-                    <button className={`${button} ${hover} ml-7 mb-5`}>{t('profile', 'saveChanges')}</button>
-                </div>
+                  <button onClick={handleUpdate} className={`${button} ${hover} mb-2`}>{t('profile', 'saveChanges')}</button>
               </div>
             </>
         )}

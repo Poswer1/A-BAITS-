@@ -6,7 +6,7 @@ import { lotListClass, pageContainerClass } from "@/styles/profile/profile"
 import Sidebar from "./sidebar"
 import { LotTypes } from "@/types/types"
 import LotCardV2 from "../lotCardV2"
-import Pagination from "../utils/pagination"
+import Pagination from "../ui/pagination"
 
 interface LotActivityProps {
     data:{ allLots: LotTypes[], totalLot: number }
@@ -34,8 +34,8 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
 
   return (
     <div className={pageContainerClass}> 
-        <h1 className="text-2xl mb-5">{mode === 'buy' ? t('profile', 'buy') : t('profile', 'sell')} | {slug === 'active' ? t('profile', 'active') : slug === 'archive' ? t('profile', 'archived') : slug === 'completed' ? t('profile', 'completed') : t('profile', 'sold')} {t('global', 'lot')}</h1>
-        <div className="w-full flex justify-start items-start gap-5">
+        <h1 className="2xl:text-2xl lg:text-xl mb-5">{mode === 'buy' ? t('profile', 'buy') : t('profile', 'sell')} | {slug === 'active' ? t('profile', 'active') : slug === 'archive' ? t('profile', 'archived') : slug === 'completed' ? t('profile', 'completed') : t('profile', 'sold')} {t('global', 'lot')}</h1>
+        <div className="w-full flex flex-col justify-start items-start gap-5">
           <Sidebar mode={mode} active={active}/>
           <div className={lotListClass}>
             <h1>{t('profile', 'LotsFound')}: {data?.totalLot}</h1>

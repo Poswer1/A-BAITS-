@@ -1,6 +1,6 @@
 import { useTranslation } from "@/app/context/TranslationProvider";
 import { block, Blockinput, nameInput } from "@/styles/createLot";
-import CheckBox from "@/utils/checkBox";
+import CheckBox from "@/components/ui/checkBox";
 
 interface checkBoxProps {
     check:boolean,

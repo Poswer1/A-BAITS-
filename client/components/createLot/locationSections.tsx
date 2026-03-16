@@ -3,7 +3,7 @@ import { block, Blockinput, nameInput,selectBlock } from "@/styles/createLot"
 import { arrowActive, hover } from "@/styles/style"
 import { ChevronDown } from "lucide-react"
 import { useState } from "react"
-import LocationList from "../utils/location"
+import LocationList from "../ui/location"
 
 interface LocationSections {
   location:string,

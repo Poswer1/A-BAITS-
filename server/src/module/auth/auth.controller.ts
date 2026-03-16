@@ -14,15 +14,14 @@ export class AuthController {
 
   @Post('login')
   async login(@Body() dto:Auth, @Res({passthrough: true}) res:Response) {
-    const token = await this.authService.login(dto)
+    const data = await this.authService.login(dto)
 
-    res.cookie('token', token, {
-      httpOnly: true, // httpOnly — чтобы JS не мог читать токен
-      secure: false, // говорит что токен можно отпровлять только по https
-      sameSite: 'lax', // Защищает от CSRF-атак
-      path: '/', 
-      maxAge: 1000 * 60 * 60 * 24 * 7
-    })
+    res.cookie('token', data.token, {
+    httpOnly: true,
+    sameSite: 'lax',
+    path: '/',        
+    maxAge: 1000*60*60*24*7
+  })
 
     return { ok: true}
 

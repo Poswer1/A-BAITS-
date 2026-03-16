@@ -6,7 +6,7 @@ import BidHistory from "@/components/lot/bidHistory"
 import HeaderLot from "@/components/lot/headerLot"
 import InfoSection from "@/components/lot/infoSection"
 import PhotoSection from "@/components/lot/photoSection"
-import Loading from "@/components/utils/loadig"
+import Loading from "@/components/ui/loadig"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useSocketContext } from "@/app/context/SocketIo"
@@ -74,7 +74,7 @@ function page() {
       ): (
         <>
           <HeaderLot lot={lot}/>
-          <div className="flex justify-start items-start w-[80%] py-2 gap-2 h-200">
+          <div className="flex justify-start items-start 2xl:w-[80%] lg:w-[90%] py-2 gap-2 h-200">
               <PhotoSection lot={lot}/>
               <div className="flex flex-col justify-start items-start">
                 <InfoSection lot={lot} socket={socket} currentPrice={currentPrice} setCurrentPrice={setCurrentPrice} value={value} setValue={setValue} status={status} setStatus={setStatus}/>

@@ -15,7 +15,7 @@ import { useState } from "react"
 import { ChevronDown } from "lucide-react"
 import { hover } from "@/styles/style"
 import { createLot } from "@/services/lot"
-import Loading from "@/components/utils/loadig"
+import Loading from "@/components/ui/loadig"
 import Success from "@/components/createLot/success"
 
 function page() {

@@ -2,9 +2,9 @@
 
 import { useSocketContext } from '@/app/context/SocketIo';
 import ChatList from '@/components/profile/chatList';
-import AvatarBlock from '@/components/utils/avatar'
-import OlnlineUser from '@/components/utils/onlineUser';
-import { getRelativeTime } from '@/components/utils/relativeTime';
+import AvatarBlock from '@/components/ui/avatar'
+import OlnlineUser from '@/components/ui/onlineUser';
+import { getRelativeTime } from '@/components/ui/relativeTime';
 import { getLot } from '@/services/lot';
 import { getUserById } from '@/services/user';
 import { input } from '@/styles/createLot';
@@ -60,9 +60,8 @@ function page() {
   }, [lotNumber])
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if(!token || !selectChat) return
-    getUserById(token, selectChat)
+    if(!selectChat) return
+    getUserById(selectChat)
     .then(data => {
       setUser(data)
     })
@@ -109,12 +108,12 @@ function page() {
 
   return (
     <div className={pageContainerClass}>
-      <h1 className='text-2xl'>Чат</h1>
+      <h1 className='2xl:text-2xl xl:text-xl'>Чат</h1>
       <div className='flex justify-center items-start gap-2'>
         
         <ChatList setSelectChat={setSelectChat} setTypeChat={setTypeChat}/>
 
-        <div className={`${blockClass} flex-col min-h-150 !w-250 !gap-0`}>
+        <div className={`${blockClass} flex-col min-h-150 3xl:w-300 2xl:!w-250 !gap-0`}>
           {selectChat.length === 0 ? (
             <h1>чат не выбран</h1>
           ): (

@@ -28,9 +28,10 @@ export class LotController {
     return this.lotService.getLotByUser(query)
   }
 
+  @UseGuards(JwtAuthGuard)
   @Get('getMyLots')
-  async getMyLots(@Query() query: getMyLotsDto) {
-    return this.lotService.getMyLots(query)
+  async getMyLots(@Query() query: getMyLotsDto, @CurrentUser('id') userId:string) {
+    return this.lotService.getMyLots(query, userId)
   }
 
   @Get('getFilterLot')

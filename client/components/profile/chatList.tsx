@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import AvatarBlock from '../utils/avatar'
+import AvatarBlock from '../ui/avatar'
 import { hoverCat } from '@/styles/categoryList'
 import { getMyChats } from '@/services/chat'
 import { getUserById } from '@/services/user';

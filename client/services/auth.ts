@@ -19,6 +19,7 @@ export async function login(email:string, password:string) {
         headers: {
             'Content-Type': 'application/json',
         },
+        credentials: 'include', // важно: чтобы браузер сохранил и отправлял cookie с токеном
         body: JSON.stringify({email, password})
     })
 

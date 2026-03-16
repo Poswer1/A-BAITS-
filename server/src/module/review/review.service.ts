@@ -82,4 +82,11 @@ export class ReviewService {
 
         return {allReview, totalReview}
     }
+
+    async getRandomReview(id:string) {
+         const populatedReview = await ReviewModel.findOne({to:id})
+        .populate('from', 'name avatar')
+
+        return populatedReview
+    }
 }

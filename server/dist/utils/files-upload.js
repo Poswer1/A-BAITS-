@@ -5,8 +5,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ProccessImages = exports.ImagesInterceptor = void 0;
 const multer_1 = require("multer");
+const promises_1 = __importDefault(require("fs/promises"));
 const path_1 = __importDefault(require("path"));
-const fs_1 = __importDefault(require("fs"));
 const sharp_1 = __importDefault(require("sharp"));
 const ImagesInterceptor = (destination) => {
     return {
@@ -20,21 +20,22 @@ const ImagesInterceptor = (destination) => {
     };
 };
 exports.ImagesInterceptor = ImagesInterceptor;
-const ProccessImages = async (files) => {
+const ProccessImages = async (files, destination) => {
     if (!files)
         return;
     await Promise.all(files.map(async (file) => {
         const parsedName = path_1.default.parse(file.filename).name;
-        const webpName = `${parsedName}.webp`;
-        const webpPath = path_1.default.join(file.destination, webpName);
+        const newName = `${parsedName}-${Math.round(Math.random() * 1e6)}`;
+        const webpName = `${newName}.webp`;
+        const finalPath = path_1.default.join(file.destination, webpName);
         await (0, sharp_1.default)(file.path)
             .resize(600, 600, { fit: 'cover' })
             .webp({ quality: 80 })
-            .toFile(webpPath);
-        await fs_1.default.promises.unlink(file.path);
+            .toFile(finalPath);
+        await promises_1.default.unlink(file.path);
         file.filename = webpName;
     }));
-    return files.map(file => `/uploads/lots/${file.filename}`);
+    return files.map(file => `${destination}${file.filename}`);
 };
 exports.ProccessImages = ProccessImages;
 //# sourceMappingURL=files-upload.js.map

@@ -21,9 +21,9 @@ export default function PhotoSection({lot}:any) {
 
   return (
     <div className="flex flex-col justify-center items-center w-1/2 gap-2">
-        <div className="flex justify-center items-center w-full h-130 relative overflow-hidden rounded-t-md">
+        <div className="flex justify-center items-center w-full lg:h-110 2xl:h-130 relative overflow-hidden rounded-t-md">
             <div className="w-full h-full blur-[10px] brightness-75 absolute z-0" style={{backgroundImage: `url(${BASE_URL}${lot.images[selectPhoto]})`, backgroundSize: 'cover',}}></div>
-            <img src={`${BASE_URL}${lot.images[selectPhoto]}`} className={`w-1/2 h-full z-10 ${animationOpacity}`}/>
+            <img src={`${BASE_URL}${lot.images[selectPhoto]}`} className={`w-2/3 h-full z-10 ${animationOpacity}`}/>
             <div className='bg-black/50 p-2 absolute bottom-2 right-2 rounded-md flex gap-2 justify-center items-center'>
                 <Image className="text-white"/>
                 <span className="text-white ">{selectPhoto + 1} / {lot.images.length}</span>
@@ -35,7 +35,7 @@ export default function PhotoSection({lot}:any) {
         </div>
         <div className="w-full flex justify-start flex-wrap gap-5 items-center h-full">
             {lot.images.map((img, i) => (
-                <img key={i} src={`${BASE_URL}${img}`} onClick={() => setSelectPhoto(i)} className={`${animationOpacity} w-1/7 rounded-md cursor-pointer border border-gray-300`}/>
+                <img key={i} src={`${BASE_URL}${img}`} onClick={() => setSelectPhoto(i)} className={`${animationOpacity} lg:w-1/6 2xl:w-1/7 rounded-md cursor-pointer border border-gray-300`}/>
             ))}
         </div>
      </div>

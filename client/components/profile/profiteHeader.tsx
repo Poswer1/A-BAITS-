@@ -1,9 +1,9 @@
 import { blockClass } from "@/styles/profile/profile";
-import OlnlineUser from "../utils/onlineUser";
-import AvatarBlock from "../utils/avatar";
+import OlnlineUser from "../ui/onlineUser";
+import AvatarBlock from "../ui/avatar";
 import { AlertTriangle } from "lucide-react";
 import { useTranslation } from "@/app/context/TranslationProvider";
-import Rating from "../utils/rating";
+import Rating from "../ui/rating";
 
 export default function ProfiteHeader({user} : {user: any}) {
 

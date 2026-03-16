@@ -1,7 +1,7 @@
 'use client'
 
 import { hoverCat } from '@/styles/categoryList';
-import { linkActiveClass, linkClass, sidebarClass } from '@/styles/profile/sidebar';
+import { linkActiveClass } from '@/styles/profile/sidebar';
 import { User, MessageCircle, Settings, Tag,TrendingUp, Wallet, Loader, Archive, Flag, DollarSign, Star, Package, MessageSquare} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -66,12 +66,12 @@ export default function Sidebar({mode, active, setActive, name} : SidebarProps) 
   )}
 
   return (
-    <div className={`${sidebarClass} ${mode !== 'sidebarMain' && '!h-auto'}`}>
+    <div className={`bg-white h-full flex ${mode === 'sidebarMain' && 'flex-col'} justify-start items-start lg:min-w-60 2xl:min-w-70 ${mode !== 'sidebarMain' && '!h-auto'}`}>
       {listLinks.map(link => (
             <Link
               key={link.link}
               href={`/${lang}/profile/${link.link}`}
-              className={`${hoverCat} ${linkClass} ${active === link.name && linkActiveClass}`}
+              className={`${hoverCat} lg:px-7 2xl:px-10 py-4 border-r-2 border-transparent flex justify-start items-center w-full gap-2 ${active === link.name && linkActiveClass}`}
             >
               {link.icon}
               {link.name}

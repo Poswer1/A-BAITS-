@@ -1,6 +1,7 @@
 import LotActivity from '@/components/profile/lotActivity'
 import { getMyLots } from '@/services/lot'
 import { LotTypes } from '@/types/types'
+import { cookies } from 'next/headers';
 
 interface pageProps {
   params: {
@@ -25,7 +26,10 @@ async function page({params, searchParams}: pageProps) {
 }
   
   try {
-    data = await getMyLots(slug, 'sell', search.page)
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token')?.value;
+    if(!token) return
+    data = await getMyLots(token, slug, 'sell', search.page)
   } catch (error) {
     data = {allLots: [],totalLot: 0}}
   

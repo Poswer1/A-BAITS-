@@ -1,6 +1,6 @@
 import { diskStorage } from 'multer'
+import fs from 'fs/promises'
 import path from 'path' // работа с путями файлов
-import fs from 'fs' // работа с фалйами 
 import sharp from 'sharp'
 
 export const ImagesInterceptor = (destination:string) => {
@@ -17,27 +17,28 @@ export const ImagesInterceptor = (destination:string) => {
 
 // multer сохроняет файл и кладет его в req.file
 
-export const ProccessImages = async (files: Express.Multer.File[]) => {
+export const ProccessImages = async (files: Express.Multer.File[], destination:string) => {
     if(!files) return
 
     await Promise.all( // Promise.all ждет пока все промисы завершаться такие как sharp .toFile fs.unlinkSync они возрощают промисы
         files.map(async (file) => {
             const parsedName = path.parse(file.filename).name // имя файла без разширения
-            const webpName = `${parsedName}.webp` 
-            const webpPath = path.join(file.destination, webpName) // file.destination путь к папку куда был загружен файл
-          
+            const newName = `${parsedName}-${Math.round(Math.random() * 1e6)}` // создаем новое имя
+            const webpName = `${newName}.webp` 
+            const finalPath = path.join(file.destination, webpName)
+
                 await sharp(file.path)
                 .resize(600, 600, {fit:'cover'})
                 .webp({quality: 80})
-                .toFile(webpPath)
+                .toFile(finalPath) 
 
-            await fs.promises.unlink(file.path) // unlinkSync синхронно удаляет файл с диска.
-
+            await fs.unlink(file.path) // unlinkSync синхронно удаляет файл с диска.
+            
             file.filename = webpName // обновляем имя файла
         })
     )
 
-    return files.map(file => `/uploads/lots/${file.filename}`)
+    return files.map(file => `${destination}${file.filename}`)
 
 }
 

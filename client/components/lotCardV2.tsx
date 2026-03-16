@@ -5,8 +5,8 @@ import { Star } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import listLocation from '../data/citiesUK.json'
-import FavoritesButton from "./utils/favoritesButton"
-import Countdown from "./utils/countdown"
+import FavoritesButton from "./ui/favoritesButton"
+import Countdown from "./ui/countdown"
 import { LotTypes } from "@/types/types"
 
 interface LotCardV2Props {
@@ -40,11 +40,11 @@ export default function LotCardV2({lot, show}: LotCardV2Props) {
     const columnClass = `flex flex-col justify-start items-start gap-1 w-full`
 
   return (
-    <Link href={`/${lang}/lot/${lot.lotNumber}`} className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg bg-white w-full rounded-md`}>
+    <Link href={`/${lang}/lot/${lot.lotNumber}`} className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg bg-white w-full rounded-md text-base`}>
         <img src={`${BASE_URL}${lot.images[0]}`} className="rounded-l-md object-cover w-40"/>
         <div className="flex justify-between items-center w-full">
             <div className={columnClass}>
-                <h1>{`${lot.name}`}</h1>
+                <h1>{`${lot.name.length >=30 ? lot.name.slice(0, 30) + '...' : lot.name}`}</h1>
                 <span>№ {t('lot', 'lot-number')} <span className="text-orange-600">{lot.lotNumber}</span></span>
             </div>
             <div className={columnClass}>

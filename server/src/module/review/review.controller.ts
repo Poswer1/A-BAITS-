@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { getReviewDto, reviewDto } from './review.dto';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth-guard';
@@ -17,5 +17,10 @@ export class ReviewController {
   @Get('getReviewUser')
   async getReviewUser(@Query() query: getReviewDto) {
     return this.reviewService.getReviewUser(query)
+  }
+
+  @Get('randomReview/:id')
+  async getRandomReview(@Param('id') id:string) {
+    return this.reviewService.getRandomReview(id)
   }
 }

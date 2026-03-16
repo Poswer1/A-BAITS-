@@ -23,7 +23,7 @@ export async function getLotByUser(name:string, page:number) {
     return dataReturn(res)
 }
 
-export async function getMyLots(slug:string, mode:string, page?:number) {
+export async function getMyLots(token:string, slug:string, mode:string, page?:number) {
 
     const params = new URLSearchParams()
 
@@ -33,7 +33,9 @@ export async function getMyLots(slug:string, mode:string, page?:number) {
 
     const res = await fetch(`${BASE_URL}/lot/getMyLots?${params}`, {
         method: 'GET',
-        
+        headers: {
+        'Authorization': `Bearer ${token}`
+        }
     })
 
     return dataReturn(res)
@@ -59,7 +61,6 @@ export async function getFilterLot(category?:string, subCategory?:string, subSub
 
     const res = await fetch(`${BASE_URL}/lot/getFilterLot?${params}`, {
         method: 'GET',
-        credentials: 'include' // говорит отпровлять куки
     })
 
     return dataReturn(res)

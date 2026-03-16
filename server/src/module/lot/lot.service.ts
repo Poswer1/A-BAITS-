@@ -12,7 +12,7 @@ import { SortOrder } from 'mongoose'
 export class LotService {
   async createLot(dto: LotDto, files: Express.Multer.File[], userId:string) {
     
-    const images = files ? await ProccessImages(files) : []
+    const images = files ? await ProccessImages(files, '/uploads/lots/') : [] 
 
     const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString(); //10000000 — минимальное 8-значное число 90000000 — диапазон до 99999999
 
@@ -73,7 +73,7 @@ export class LotService {
     return {allLots, totalLots}
   }
 
-  async getMyLots(query: getMyLotsDto) {
+  async getMyLots(query: getMyLotsDto, userId:string) {
     const {status, mode, page} = query
 
     let filter:any = {}
@@ -82,27 +82,27 @@ export class LotService {
     const limit = 4
 
     if(mode === 'sell' ) {
-      filter.author = '69a99f11882d382dae1b5a4a'
+      filter.author = userId
       if(status)filter.status = status
     } else {
       if(status === 'Active'){
-        filter['historyBid.author'] = '69a99f11882d382dae1b5a4a'
+        filter['historyBid.author'] = userId
         filter.status = 'Active'
       }
       if(status === 'Archive'){
-        filter['historyBid.author'] = '69a99f11882d382dae1b5a4a'
+        filter['historyBid.author'] = userId
         filter.status = 'Archive'
       }
       if(status === 'Completed') {
-        filter.winner = '69a99f11882d382dae1b5a4a'
+        filter.winner = userId
         filter.status = 'Completed'
       }
       if(status === 'Sold') {
-        filter.winner = { $ne: new Types.ObjectId('69a99f11882d382dae1b5a4a') } // $ne не равняеться
+        filter.winner = { $ne: userId } // $ne не равняеться
         filter.status = 'Completed'
       }
       if(status === 'Favorite') {
-        const user = await UserModel.findById(new Types.ObjectId('69a99f11882d382dae1b5a4a'))
+        const user = await UserModel.findById(userId)
         .select('favorites')
           if (user?.favorites?.length) {
             filter._id = { $in: user.favorites }

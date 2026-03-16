@@ -2,7 +2,7 @@ import { useTranslation } from "@/app/context/TranslationProvider"
 import { hover } from "@/styles/style"
 import { Copy, ChevronRight, Star } from "lucide-react"
 import { useParams } from "next/navigation"
-import FavoritesButton from "../utils/favoritesButton"
+import FavoritesButton from "../ui/favoritesButton"
 
 
 interface HeaderLot {
@@ -18,7 +18,7 @@ export default function HeaderLot({lot}:HeaderLot) {
 
   return (
     <div className='w-full justify-center items-center sticky top-0 z-15 flex  border-b border-gray-300'>
-        <div className='w-[80%] bg-white p-2 flex justify-between items-end'>
+        <div className='2xl:w-[80%] lg:w-[90%] bg-white p-2 flex justify-between items-end'>
             <div className='flex flex-col justify-center items-start gap-2'>
                 <h1 className="text-2xl font-bold">{lot.name || 'Not Found'}</h1>
                 <div className="flex justify-start items-center gap-6 text-gray-800">

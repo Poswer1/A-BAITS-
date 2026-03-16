@@ -13,7 +13,7 @@ import SearchValue from './SearchValue';
 import OpenProfile from './OpenProfile';
 import {useClickOutside} from '@/utils/useClickOutside';
 import { avatarBlock } from '@/styles/global';
-import AvatarBlock from '../utils/avatar';
+import AvatarBlock from '../ui/avatar';
 import { hoverSub } from '@/styles/categoryList';
 import OpenNotification from './openNotification';
 import { useSocketContext } from '@/app/context/SocketIo';
@@ -90,7 +90,7 @@ function Header() {
                 </Link>
                 <div className='flex justify-center items-center gap-3 w-full'>
                     <button onClick={() => setOpenCategory(prev => !prev)} className={`font-medium flex justify-center items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}><Menu size={20}/>{t('header','category')}</button>
-                    <div className='flex flex-col justify-center items-center w-[40%] relative'>
+                    <div className='flex flex-col justify-center items-center lg:w-[60%] 2xl:w-[40%] relative'>
                         <div className={`flex justify-start items-center p-2 gap-2 bg-gray-100 rounded-md border border-gray-200 w-full ${openSearch && 'z-90'}`}>
                             <Search size={20} className='text-gray-500'/>
                             <input 

@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from '@/app/context/TranslationProvider'
-import InputField from '@/components/utils/inputFields'
+import InputField from '@/components/ui/inputFields'
 import { newReview } from '@/services/review'
 import { button, messageError } from '@/styles/global'
 import { animationOpacity, hover } from '@/styles/style'

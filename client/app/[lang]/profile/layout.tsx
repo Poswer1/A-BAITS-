@@ -2,7 +2,7 @@
 
 import { useTranslation } from '@/app/context/TranslationProvider'
 import Sidebar from '@/components/profile/sidebar'
-import Loading from '@/components/utils/loadig'
+import Loading from '@/components/ui/loadig'
 import { getUserById } from '@/services/user'
 import { loadingBlock } from '@/styles/global'
 import { UserTypes } from '@/types/types'
@@ -21,9 +21,7 @@ function layout({children}: {children: React.ReactNode}) {
   const {t} = useTranslation()
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if(!token) return
-    getUserById(token)
+    getUserById()
     .then(data => {
       setUsername(data.name)
       setLoading(false)
@@ -44,7 +42,7 @@ function layout({children}: {children: React.ReactNode}) {
   }, [pathname, t])
 
   return (
-    <div className='flex justify-center items-center h-screen w-full bg-gray-100'>
+    <div className='flex justify-center items-center h-250 w-full bg-gray-100'>
       {loading ? (
         <div className={loadingBlock}>
           <Loading />

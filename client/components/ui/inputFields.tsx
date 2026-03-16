@@ -44,7 +44,7 @@ export default function InputField({
   return (
     <div className={`flex flex-col justify-start items-start w-full`}>
       <span className={'text-gray-500 text-sm'}>{label}</span>
-      <div className={`flex justify-start items-center w-full ${maxLength && stringValue.length > maxLength ? 'border-orange-600 bg-orange-600/10' : 'border-gray-400'} rounded-md border`}>
+      <div className={`flex justify-start items-center w-full ${maxLength && stringValue.length > maxLength ? 'border-orange-600 bg-orange-600/10' : 'border-gray-300'} rounded-md border`}>
         {textarea ? (
           <textarea
             placeholder={placeholder}

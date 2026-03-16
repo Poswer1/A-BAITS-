@@ -13,6 +13,14 @@ export async function newReview(to:string, comment:string, rating:number) {
     return dataReturn(res)
 }
 
+export async function getRandomReview(id:string) {
+    const res = await fetch(`${BASE_URL}/review/randomReview/${id}`, {
+        method: 'GET'
+    })
+
+    return dataReturn(res)
+}
+
 export async function getReviewUser(name:string, page:number) {
 
     const params = new URLSearchParams()

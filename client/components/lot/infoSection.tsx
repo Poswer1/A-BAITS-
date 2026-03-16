@@ -9,7 +9,7 @@ import { useEffect, useRef, useState } from "react"
 import { Socket } from "socket.io-client"
 import { buyNow } from "@/services/payment"
 import { LotTypes } from "@/types/types"
-import Countdown from "../utils/countdown"
+import Countdown from "../ui/countdown"
 
 interface InfoSectionProps {
     lot: LotTypes,

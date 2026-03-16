@@ -1,8 +1,8 @@
 'use client'
 
 import { useTranslation } from "@/app/context/TranslationProvider"
-import Loading from "@/components/utils/loadig"
-import { getRelativeTime } from "@/components/utils/relativeTime"
+import Loading from "@/components/ui/loadig"
+import { getRelativeTime } from "@/components/ui/relativeTime"
 import { myHistoryLot } from "@/services/lot"
 import { loadingBlock } from "@/styles/global"
 import { pageContainerClass } from "@/styles/profile/profile"

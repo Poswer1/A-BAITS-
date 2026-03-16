@@ -1,7 +1,7 @@
 import React from 'react'
 import LotCardV2 from '../lotCardV2';
 import { LotTypes } from '@/types/types';
-import Pagination from '../utils/pagination';
+import Pagination from '../ui/pagination';
 
 interface CatalogProps {
     category:string | undefined;

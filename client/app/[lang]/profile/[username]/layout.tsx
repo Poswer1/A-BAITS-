@@ -3,7 +3,7 @@
 import { useTranslation } from '@/app/context/TranslationProvider'
 import ProfiteHeader from '@/components/profile/profiteHeader'
 import Sidebar from '@/components/profile/sidebar'
-import Loading from '@/components/utils/loadig'
+import Loading from '@/components/ui/loadig'
 import { getUserById, getUserByName, } from '@/services/user'
 import { loadingBlock } from '@/styles/global'
 import { pageContainerClass } from '@/styles/profile/profile'
@@ -53,10 +53,10 @@ export default function Layout({children}: {children: React.ReactNode}) {
         </div>
       ): (
         <>
-          <h1 className='text-2xl mb-2'>{user?.name} | {acitveLink} </h1>
-          <div className='flex justify-start items-start w-full gap-2'>
+          <h1 className='2xl:text-2xl lg:text-xl mb-5'>{user?.name} | {acitveLink} </h1>
+          <div className='flex flex-col justify-start items-start w-full gap-5'>
           <Sidebar mode='sidebarProfile' active={acitveLink} name={username}/>
-            <div className='flex flex-col justify-start items-start gap-2 w-2/3'>
+            <div className='flex flex-col justify-start items-start gap-2 w-full'>
               <ProfiteHeader user={user}/>
               {children}
             </div>

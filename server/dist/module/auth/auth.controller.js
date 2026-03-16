@@ -25,10 +25,9 @@ let AuthController = class AuthController {
         return this.authService.register(dto);
     }
     async login(dto, res) {
-        const token = await this.authService.login(dto);
-        res.cookie('token', token, {
+        const data = await this.authService.login(dto);
+        res.cookie('token', data.token, {
             httpOnly: true,
-            secure: false,
             sameSite: 'lax',
             path: '/',
             maxAge: 1000 * 60 * 60 * 24 * 7

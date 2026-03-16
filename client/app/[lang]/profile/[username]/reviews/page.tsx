@@ -1,10 +1,10 @@
-import AvatarBlock from '@/components/utils/avatar'
+import AvatarBlock from '@/components/ui/avatar'
 import Link from 'next/link'
-import Rating from '@/components/utils/rating'
+import Rating from '@/components/ui/rating'
 import { ReviewTypes } from '@/types/types'
 import { getReviewUser } from '@/services/review'
-import { getRelativeTime } from '@/components/utils/relativeTime'
-import Pagination from '@/components/utils/pagination'
+import { getRelativeTime } from '@/components/ui/relativeTime'
+import Pagination from '@/components/ui/pagination'
 
 interface pageProps {
   params: {

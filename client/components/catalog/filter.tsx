@@ -2,8 +2,8 @@
 
 import { Sliders } from "lucide-react"; 
 import { useEffect, useState } from "react";
-import InputField from "../utils/inputFields";
-import SelectionField from "../utils/selectionField";
+import InputField from "../ui/inputFields";
+import SelectionField from "../ui/selectionField";
 import { useTranslation } from "@/app/context/TranslationProvider";
 import listLocation from '../../data/citiesUK.json'
 import { hover } from "@/styles/style";
@@ -23,9 +23,7 @@ export default function Filter({maxPriceLot}: FilterProps) {
   const path = usePathname()
 
   const [open, setOpen] = useState(true)
-  const [city, setCity] = useState('')
   const [cityValue, setCityValue] = useState('')
-  const [sort, setSort] = useState(t('catalog', 'LowToUp'))
   const [sortValue, setSortValue] = useState('')
   const [minPrice, setMinPrice] = useState(0)
   const [maxPrice, setMaxPrice] = useState(maxPriceLot | 0)
@@ -90,7 +88,7 @@ export default function Filter({maxPriceLot}: FilterProps) {
       
     router.push(`?${params.toString()}`)
 
-  },[state, sort])
+  },[state, sortValue])
 
   const handleApplyPrice = () => {
     const params = new URLSearchParams(searchParams)
@@ -122,8 +120,8 @@ export default function Filter({maxPriceLot}: FilterProps) {
       </div>
       
         <div className={`${open ? 'opacity-100 duration-1000' : 'opacity-0 duration-100'}`}>
-          <SelectionField title={t('catalog', 'FilterByCity')} placeholder={t('catalog', 'SelectCity')} list={listLocation} valueLang={city} setValue={setCityValue}  setValueLang={setCity}/>
-          <SelectionField title={t('catalog', 'sort')} placeholder={t('catalog', 'LowToUp')} list={listLowToUpPrice} valueLang={sort} setValue={setSortValue} setValueLang={setSort}/>
+          <SelectionField title={t('catalog', 'FilterByCity')} placeholder={t('catalog', 'SelectCity')} list={listLocation} setValue={setCityValue} value={cityValue}/>
+          <SelectionField title={t('catalog', 'sort')} placeholder={t('catalog', 'LowToUp')} list={listLowToUpPrice} setValue={setSortValue} value={sortValue}/>
           <div className="flex flex-col justify-center items-center w-full gap-1">
             <div className="flex justify-center items-center gap-2 w-full">
               <InputField label={t('catalog', 'from')} type="number" onChange={setMinPrice} value={minPrice} maxTotal={maxPriceLot.toString()} />

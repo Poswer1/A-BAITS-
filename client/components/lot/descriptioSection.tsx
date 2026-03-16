@@ -8,7 +8,7 @@ export default function DescriptioSection({lot}: {lot:LotTypes}) {
     const {t} = useTranslation()
 
   return (
-    <div className="flex w-[80%] justify-start items-start min-h-80">
+    <div className="flex 2xl:w-[80%] lg:w-[90%] justify-start items-start min-h-80">
         <div className='flex flex-col justify-start items-start w-1/2 gap-2'>
             <h1 className='text-xl'>{t('lot', 'desc')}</h1>
             <p className='whitespace-pre-line'>{lot.descriptions}</p>

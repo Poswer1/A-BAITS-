@@ -7,7 +7,8 @@ export interface User{
     city?:string,
     password:string,
     balance:number,
-    rating:number
+    rating:number,
+    location:string,
     avatar: string,
     role:string,
     favorites:Types.ObjectId[]
@@ -16,6 +17,7 @@ export interface User{
 const UserSchema = new Schema<User>({
     name: {type:String, required:true},
     surname: {type:String},
+    location: {type:String},
     city: {type:String},
     email: {type:String, required:true},
     password: {type:String, required:true},
