@@ -14,7 +14,7 @@ const mongoose_1 = require("mongoose");
 const user_model_1 = require("../../models/user.model");
 let LotService = class LotService {
     async createLot(dto, files, userId) {
-        const images = files ? await (0, files_upload_1.ProccessImages)(files) : [];
+        const images = files ? await (0, files_upload_1.ProccessImages)(files, '/uploads/lots/') : [];
         const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString();
         const nowDate = new Date();
         const oneDay = 24 * 60 * 60 * 1000;
@@ -62,35 +62,35 @@ let LotService = class LotService {
         ]);
         return { allLots, totalLots };
     }
-    async getMyLots(query) {
+    async getMyLots(query, userId) {
         const { status, mode, page } = query;
         let filter = {};
         const currentPage = Number(page) || 1;
         const limit = 4;
         if (mode === 'sell') {
-            filter.author = '69a99f11882d382dae1b5a4a';
+            filter.author = userId;
             if (status)
                 filter.status = status;
         }
         else {
             if (status === 'Active') {
-                filter['historyBid.author'] = '69a99f11882d382dae1b5a4a';
+                filter['historyBid.author'] = userId;
                 filter.status = 'Active';
             }
             if (status === 'Archive') {
-                filter['historyBid.author'] = '69a99f11882d382dae1b5a4a';
+                filter['historyBid.author'] = userId;
                 filter.status = 'Archive';
             }
             if (status === 'Completed') {
-                filter.winner = '69a99f11882d382dae1b5a4a';
+                filter.winner = userId;
                 filter.status = 'Completed';
             }
             if (status === 'Sold') {
-                filter.winner = { $ne: new mongoose_1.Types.ObjectId('69a99f11882d382dae1b5a4a') };
+                filter.winner = { $ne: userId };
                 filter.status = 'Completed';
             }
             if (status === 'Favorite') {
-                const user = await user_model_1.UserModel.findById(new mongoose_1.Types.ObjectId('69a99f11882d382dae1b5a4a'))
+                const user = await user_model_1.UserModel.findById(userId)
                     .select('favorites');
                 if (user?.favorites?.length) {
                     filter._id = { $in: user.favorites };

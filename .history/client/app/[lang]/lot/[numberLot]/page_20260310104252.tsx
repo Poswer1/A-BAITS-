@@ -82,7 +82,7 @@ function page() {
               </div>
               <BidHistory lot={lot} socket={socket} userHistory={userHistory}/>
           </div>
-                          <DescriptioSection lot={lot}/>
+          <DescriptioSection lot={lot}/>
         </>
       )}
     </div>

@@ -29,6 +29,9 @@ let ReviewController = class ReviewController {
     async getReviewUser(query) {
         return this.reviewService.getReviewUser(query);
     }
+    async getRandomReview(id) {
+        return this.reviewService.getRandomReview(id);
+    }
 };
 exports.ReviewController = ReviewController;
 __decorate([
@@ -47,6 +50,13 @@ __decorate([
     __metadata("design:paramtypes", [review_dto_1.getReviewDto]),
     __metadata("design:returntype", Promise)
 ], ReviewController.prototype, "getReviewUser", null);
+__decorate([
+    (0, common_1.Get)('randomReview/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ReviewController.prototype, "getRandomReview", null);
 exports.ReviewController = ReviewController = __decorate([
     (0, common_1.Controller)('review'),
     __metadata("design:paramtypes", [review_service_1.ReviewService])

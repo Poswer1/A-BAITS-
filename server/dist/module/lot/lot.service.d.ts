@@ -28,7 +28,7 @@ export declare class LotService {
         })[];
         totalLots: number;
     } | undefined>;
-    getMyLots(query: getMyLotsDto): Promise<{
+    getMyLots(query: getMyLotsDto, userId: string): Promise<{
         allLots: (import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
             _id: Types.ObjectId;
         } & {

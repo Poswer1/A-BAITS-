@@ -15,4 +15,11 @@ export declare class ReviewService {
         })[];
         totalReview: number;
     } | undefined>;
+    getRandomReview(id: string): Promise<(import("mongoose").Document<unknown, {}, import("src/models/review").ReviewType, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/review").ReviewType & {
+        _id: Types.ObjectId;
+    } & {
+        __v: number;
+    } & {
+        id: string;
+    }) | null>;
 }

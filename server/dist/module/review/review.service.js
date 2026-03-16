@@ -75,6 +75,11 @@ let ReviewService = class ReviewService {
         ]);
         return { allReview, totalReview };
     }
+    async getRandomReview(id) {
+        const populatedReview = await review_1.ReviewModel.findOne({ to: id })
+            .populate('from', 'name avatar');
+        return populatedReview;
+    }
 };
 exports.ReviewService = ReviewService;
 exports.ReviewService = ReviewService = __decorate([
