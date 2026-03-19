@@ -5,6 +5,7 @@ const mongoose_1 = require("mongoose");
 const ReviewSchema = new mongoose_1.Schema({
     to: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
     from: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
+    lot: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Lot', required: true },
     comment: { type: String, required: true },
     rating: { type: Number, required: true },
 }, { timestamps: true });

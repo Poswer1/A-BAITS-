@@ -7,7 +7,7 @@ export declare class ChatGateway {
     private activeUser;
     constructor(chatService: ChatService, jwtService: JwtService);
     server: Server;
-    newReview(to: string): Promise<void>;
+    newReview(to: string, newMessage: any, chatStatusText: string): Promise<void>;
     newMessage(data: {
         toUserId: string;
         message: string;

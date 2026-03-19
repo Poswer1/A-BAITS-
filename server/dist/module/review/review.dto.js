@@ -14,6 +14,7 @@ const class_validator_1 = require("class-validator");
 class reviewDto {
     to;
     comment;
+    lotId;
     rating;
 }
 exports.reviewDto = reviewDto;
@@ -25,6 +26,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], reviewDto.prototype, "comment", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], reviewDto.prototype, "lotId", void 0);
 __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)

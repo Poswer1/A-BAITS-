@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 export interface ReviewType {
     to: Types.ObjectId;
     from: Types.ObjectId;
+    lot: Types.ObjectId;
     comment: string;
     rating: number;
 }

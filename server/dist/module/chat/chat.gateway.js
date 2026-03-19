@@ -26,8 +26,8 @@ let ChatGateway = class ChatGateway {
         this.jwtService = jwtService;
     }
     server;
-    async newReview(to) {
-        this.server.to(to).emit('newReview');
+    async newReview(to, newMessage, chatStatusText) {
+        this.server.to(to).emit('newReview', { newMessage, chatStatusText });
     }
     async newMessage(data, client) {
         const senderId = this.activeUser.get(client.id);

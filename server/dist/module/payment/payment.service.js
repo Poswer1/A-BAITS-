@@ -22,7 +22,7 @@ let PaymentService = class PaymentService {
     }
     async buyLot(userId, dto) {
         const { lotId, price } = dto;
-        const lot = await lot_model_1.LotModel.findOne({ lotNumber: lotId });
+        const lot = await lot_model_1.LotModel.findById(lotId);
         if (!lot) {
             console.log('лот не найден при покупки');
             return;
@@ -39,7 +39,7 @@ let PaymentService = class PaymentService {
             console.log('NoMoney');
             throw new common_1.BadRequestException('NoMoney');
         }
-        const updateLot = await lot_model_1.LotModel.updateOne({ lotNumber: lotId, winner: { $exists: false }, status: 'Active' }, { $set: { winner: userId, status: 'Completed' } });
+        const updateLot = await lot_model_1.LotModel.updateOne({ _id: lotId, winner: { $exists: false }, status: 'Active' }, { $set: { winner: userId, status: 'Completed' } });
         if (updateLot.modifiedCount === 0) {
             console.log('LotAlreadySold');
             throw new common_1.BadRequestException('LotAlreadySold');
@@ -53,7 +53,7 @@ let PaymentService = class PaymentService {
             await chat_model_1.ChatModel.create({
                 userTo: lot.author,
                 userFrom: userId,
-                lot: lot.lotNumber,
+                lot: lot._id,
                 type: 'deal'
             });
         }
