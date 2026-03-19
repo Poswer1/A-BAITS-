@@ -14,6 +14,26 @@ export interface NotificationTypes {
     lot?:string
 }
 
+export interface ChatTypes {
+  _id: string;
+  userFrom: string;
+  userTo: string;
+  type: string;
+  lot: string;
+  status: string;
+  messages: {
+    from: string;
+    to: string;
+    message: string;
+    read: boolean;
+    createdAt: string;
+  }[];
+  reviews: {
+    from: string;
+    to: string;
+  }[];
+}
+
 export interface ReviewTypes {
     _id:string,
     to:string,

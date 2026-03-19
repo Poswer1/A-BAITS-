@@ -53,7 +53,7 @@ export default function Layout({children}: {children: React.ReactNode}) {
         </div>
       ): (
         <>
-          <h1 className='2xl:text-2xl lg:text-xl mb-5'>{user?.name} | {acitveLink} </h1>
+          <h1 className='text-xl 2xl:text-2xl md:text-xl mb-5'>{user?.name} | {acitveLink} </h1>
           <div className='flex flex-col justify-start items-start w-full gap-5'>
           <Sidebar mode='sidebarProfile' active={acitveLink} name={username}/>
             <div className='flex flex-col justify-start items-start gap-2 w-full'>

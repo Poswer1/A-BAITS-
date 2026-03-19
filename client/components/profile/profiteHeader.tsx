@@ -10,14 +10,16 @@ export default function ProfiteHeader({user} : {user: any}) {
   const {t} = useTranslation()
 
   return (
-    <div className={`${blockClass}`}>
-        <AvatarBlock avatar={user?.avatar } size="80"/>
+    <div className={`flex w-full p-2 bg-white justify-start gap-5 rounded-md flex-col items-start md:items-center md:flex-row`}>
+        <div className="flex justify-center items-center gap-5">
+          <AvatarBlock avatar={user?.avatar } size="80"/>
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-lg">{user?.name }</h1>
             <OlnlineUser id={user?.id}/>
           </div>
+        </div>
           <Rating rating={user?.rating} showRatingNumber={true} size={18}/>
-        <span className="flex text-sm justify-center items-center gap-1 text-base bg-red-500/20  text-red-500 p-1 rounded-md"><AlertTriangle size={18}/>{t('profile', 'LotsOfComplaints')}</span>
+        {/* <span className="flex text-sm justify-center items-center gap-1 text-base bg-red-500/20  text-red-500 p-1 rounded-md"><AlertTriangle size={18}/>{t('profile', 'LotsOfComplaints')}</span> */}
     </div>
   )
 }

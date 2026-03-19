@@ -16,13 +16,13 @@ exports.ChatController = void 0;
 const common_1 = require("@nestjs/common");
 const chat_service_1 = require("./chat.service");
 const jwt_auth_guard_1 = require("../auth/jwt/jwt-auth-guard");
+const current_user_decorator_1 = require("../../decorator/current-user.decorator");
 let ChatController = class ChatController {
     chatService;
     constructor(chatService) {
         this.chatService = chatService;
     }
-    async getMyChat(req) {
-        const userId = req.user._id;
+    async getMyChat(userId) {
         return this.chatService.getMyChat(userId);
     }
 };
@@ -30,9 +30,9 @@ exports.ChatController = ChatController;
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('getMyChat'),
-    __param(0, (0, common_1.Req)()),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "getMyChat", null);
 exports.ChatController = ChatController = __decorate([

@@ -1,37 +1,33 @@
 'use client'
 
 import Image from 'next/image'
-import { Search, Menu, User, X, Globe, ChevronDown, Bell} from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { Search, Menu,X, Bell} from 'lucide-react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { arrowActive, hover} from '@/styles/style';
+import { hover} from '@/styles/style';
 import { getUserById } from '@/services/user';
 import { useParams, usePathname, useRouter } from 'next/navigation';
 import { useTranslation } from '@/app/context/TranslationProvider';
 import CategoryList from './CategoryList';
 import SearchValue from './SearchValue';
 import OpenProfile from './OpenProfile';
-import {useClickOutside} from '@/utils/useClickOutside';
-import { avatarBlock } from '@/styles/global';
 import AvatarBlock from '../ui/avatar';
 import { hoverSub } from '@/styles/categoryList';
 import OpenNotification from './openNotification';
 import { useSocketContext } from '@/app/context/SocketIo';
 import ChangeLanguage from './changeLanguage';
+import SearchSection from './SearchSection';
 
 
 function Header() {
 
-    const pathname = usePathname()
     const params = useParams()
     const lang = params.lang as string
-    const router = useRouter()
     const {socket} = useSocketContext()
 
     const [openCategory, setOpenCategory] = useState(false)
     const [openSearch, setOpenSearch] = useState(false)
     const [search, setSearch] = useState('')
-    const [openLanguage, setOpenLanguage] = useState(false)
     const [openProfile, setOpenProfile] = useState(false)
     const [openNotification, setOpenNotification] = useState(false)
     const [read, setRead] = useState(false)
@@ -69,15 +65,11 @@ function Header() {
 
     }, [socket])
 
-    const handleSearch = (search:string) => {
-        router.push(`/${lang}/${search}`)
-        setOpenSearch(false)
-        setSearch('')
-    }
+ 
 
   return (
     <div className='flex flex-col justify-center items-center w-full z-20'>
-        <div className='flex flex-col justify-center items-center w-[90%] p-2 relative'>
+        <div className='flex flex-col justify-center items-center w-full md:w-[90%] p-2 relative'>
             <div className='flex justify-between items-center w-full p-2'>
                 <Link href={`/${lang}`}>
                     <Image 
@@ -85,66 +77,51 @@ function Header() {
                         alt=''
                         width={200}
                         height={200}
-                        className='w-[150px] h-auto'
+                        className={`w-[500px] md:w-[150px] h-auto ${openSearch ? 'hidden md:block' : 'block'}`}
                     />
                 </Link>
                 <div className='flex justify-center items-center gap-3 w-full'>
-                    <button onClick={() => setOpenCategory(prev => !prev)} className={`font-medium flex justify-center items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}><Menu size={20}/>{t('header','category')}</button>
-                    <div className='flex flex-col justify-center items-center lg:w-[60%] 2xl:w-[40%] relative'>
-                        <div className={`flex justify-start items-center p-2 gap-2 bg-gray-100 rounded-md border border-gray-200 w-full ${openSearch && 'z-90'}`}>
-                            <Search size={20} className='text-gray-500'/>
-                            <input 
-                            placeholder={t('header','searchPlaceholder')} 
-                            className='text-base outline-none w-full' 
-                            onChange={(e) => {setSearch(e.target.value), 
-                            setOpenSearch(true)}} 
-                            value={search} 
-                            onKeyDown={(e) => {
-                                if(e.key === 'Enter') {
-                                    handleSearch(search)
-                                }
-                            }}/>
-                            {openSearch && search.length > 0 &&(
-                            <X className={hover} onClick={() => {setSearch(''), setOpenSearch(false)}}/>
-                            )}
-                        </div>
-                        {openSearch && search.length > 0 &&(
-                            <SearchValue setOpenSearch={setOpenSearch} search={search} setSearch={setSearch}/>
-                        )}
-                    </div>
+                    <button onClick={() => setOpenCategory(prev => !prev)} className={`font-medium md:flex hidden md:block justify-center items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}>
+                        <Menu size={20}/>{t('header','category')}
+                    </button>
+                    <SearchSection openSearch={openSearch} setOpenSearch={setOpenSearch} lang={lang} setSearch={setSearch} search={search}/>
                 </div>
                 <div className='flex justify-center items-center gap-5 whitespace-nowrap relative'>
 
-                        <ChangeLanguage />
+                        <ChangeLanguage openSearch={openSearch}/>
+                        
+                        {openSearch ? (
+                            search.length === 0 && (
+                             <X className='text-gray-500 ml-2 md:hidden' onClick={() => setOpenSearch(false)}/>
+                            )
+                        ): (
+                            <Search className='text-black md:hidden' onClick={() => setOpenSearch(true)}/>
+                        )}
                                 
-                        <Bell className={`${hoverSub} ${read ? 'text-orange-600': 'text-gray-500'}`} onClick={() => setOpenNotification(prev => !prev)}/>
+                        <Bell className={`${hoverSub} ${openSearch ? 'hidden md:block' : 'block'} ${read ? 'text-orange-600': 'text-gray-500'}`} onClick={() => setOpenNotification(prev => !prev)}/>
 
-                        <div className={`flex justify-center items-center gap-5`}>
-                            <div className='flex flex-col justify-center items-start relative'>
-                                <div className={`${hover} flex justify-center items-center gap-2`} onClick={() => setOpenProfile(prev => !prev)}>
-                                    <AvatarBlock avatar={avatar} size="32"/>
-                                    <span>{name || t('header','userNameNotFound')}</span>
-                                </div>
-                                {openProfile && (
-                                    <OpenProfile setOpenProfile={setOpenProfile} name={name}/>
-                                )}
+                        <div className={`flex flex-col justify-center items-start relative ${openSearch ? 'hidden md:block' : 'block'}`}>
+                            <div className={`${hover} flex justify-center items-center gap-2`} onClick={() => setOpenProfile(prev => !prev)}>
+                                <AvatarBlock avatar={avatar} size="32"/>
+                                <span className='text-black hidden md:block'>{name || t('header','userNameNotFound')}</span>
                             </div>
+                            {openProfile && (
+                                <OpenProfile setOpenProfile={setOpenProfile} name={name}/>
+                            )}
                         </div>
                        
                         {/* <>
                             <Link href="/auth/register" className={`p-2 px-4 bg-orange-600 rounded-md ${hover} text-white font-medium`}>{t('header','register')}</Link>
                             <Link href="/auth/login" className={`p-2 px-4 rounded-md ${hover} bg-gray-100`}>{t('header','login')}</Link>
                         </> */}
-                    {openNotification && (
-                        <OpenNotification setOpen={setOpenNotification} lang={lang} setRead={setRead}/>
-                    )}
+                        {openNotification && (
+                            <OpenNotification setOpen={setOpenNotification} lang={lang} setRead={setRead}/>
+                        )}
                 </div>
             </div>
             {openCategory && (
                <CategoryList setOpenCategory={setOpenCategory} openFrom='header'/>
             )}
-            
-        
         </div>
     </div>
   )

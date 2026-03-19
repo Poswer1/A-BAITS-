@@ -1,6 +1,8 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { ChatModel } from "src/models/chat.model";
 import { Types } from "mongoose";
+import { LotModel } from "src/models/lot.model";
+import { log } from "console";
 
 @Injectable()
 export class ChatService {
@@ -16,10 +18,11 @@ export class ChatService {
         }) 
 
         if(!chat) {
+            const lotDoc = await LotModel.findOne({ lotNumber: data.numberLot }).select('_id');
             chat = await ChatModel.create({
                 userFrom: new Types.ObjectId(userId),
                 userTo: new Types.ObjectId(data.toUserId),
-                lot: data.numberLot,
+                lot: lotDoc?._id,
                 type: 'default',
                 messages: []
             })
@@ -48,8 +51,8 @@ export class ChatService {
                     {userTo: userId}
                 ]
             })
-            .populate('userFrom', 'name avatar')
-            .populate('userTo', 'name avatar')
+            .populate('userFrom userTo', 'name avatar')
+            .populate('lot', 'name images')
             return chats
         } catch (error) {
             throw new BadRequestException('Ошибка при получение всех моих чатов',error)
@@ -64,10 +67,10 @@ export class ChatService {
                     {userFrom: userId, userTo: toUserId},
                 ],
                 type: type
-            })
+            }).populate('lot', 'name images startPrice lotNumber')
             if(!history) return {historyMessage: [], numberLot: null};
             const hadReview = history.reviews.some(obj => obj.to.toString() === userId)
-            return {historyMessage: history.messages, numberLot: history.lot, type: history.type, hadReview, status: history.status}
+            return {history, hadReview}
         } catch (error) {
             throw new BadRequestException('Ошибка при получение истории чата',error)
         }

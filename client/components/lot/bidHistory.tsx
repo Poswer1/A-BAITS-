@@ -23,9 +23,9 @@ export default function BidHistory({userHistory}:BidHistoryProps) {
 
     const {t} = useTranslation()
   return (
-    <div className={`${columnBlock}`}>
+    <div className={`${columnBlock} w-full md:w-auto text-black`}>
       <h1 className="font-bold">{t('lot', 'lot-historyBid')}</h1>
-      <div className="flex flex-col justify-start items-start overflow-auto max-h-full gap-5 custom-scrollbar">
+      <div className="flex flex-col justify-start items-start overflow-auto max-h-90 md:max-h-full gap-5 custom-scrollbar">
         {userHistory.length === 0 ? (
             <span className="text-gray-500">Ставок пока что нету</span>
           ): (

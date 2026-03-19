@@ -6,7 +6,7 @@ const ChatSchema = new mongoose_1.Schema({
     userFrom: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     userTo: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
     type: { type: String, default: 'default' },
-    lot: { type: String },
+    lot: { type: mongoose_1.Schema.Types.ObjectId, ref: "Lot", },
     status: { type: String, default: 'Active' },
     reviews: [{
             from: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },

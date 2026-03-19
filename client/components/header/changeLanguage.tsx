@@ -1,10 +1,15 @@
-import { arrowActive } from '@/styles/style'
+import { animationOpacity, arrowActive } from '@/styles/style'
 import { useClickOutside } from '@/utils/useClickOutside'
 import { ChevronDown, Globe } from 'lucide-react'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
 
-export default function ChangeLanguage() {
+import { useState } from 'react'
+
+interface ChangeLanguageProps {
+  openSearch:boolean
+}
+
+export default function ChangeLanguage({openSearch}:ChangeLanguageProps) {
   const pathname = usePathname()
   const search = useSearchParams()
   const router = useRouter()
@@ -31,12 +36,12 @@ export default function ChangeLanguage() {
   }
 
   return (
-    <div onClick={() => setOpen(prev => !prev)}className='flex justify-center items-center gap-2 cursor-pointer relative '>
-        <Globe />
-        {pathname.startsWith('/uk') ? 'Українська' : 'Русский'}
-        <ChevronDown  className={arrowActive(open)}/>
+    <div onClick={() => setOpen(prev => !prev)}className='flex justify-center items-center gap-1 md:gap-2 cursor-pointer relative'>
+        <Globe className={`text-black ${openSearch ? "hidden md:block" : "block"}`}/>
+        <span className='hidden md:block'>{pathname.startsWith('/uk') ? 'Українська' : 'Русский'}</span>
+        <ChevronDown  className={`${arrowActive(open)} text-black hidden md:block`}/>
         {open && (
-          <div ref={modalRef} onClick={(e) => e.stopPropagation()} className='w-full p-2 absolute top-[100%] flex flex-col justify-center items-start z-10 bg-white text-black rounded-xl gap-2'>
+          <div ref={modalRef} onClick={(e) => e.stopPropagation()} className={`${animationOpacity} w-auto md:w-full p-2 absolute left-0 top-[100%] flex flex-col justify-center items-start z-10 bg-white text-black rounded-xl gap-2`}>
             {listLang.map((item, index) => (
               <span key={index} onClick={() => handleChangeLang(item.value)}>{item.name}</span>
             ))}

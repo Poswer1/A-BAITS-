@@ -42,7 +42,7 @@ function layout({children}: {children: React.ReactNode}) {
   }, [pathname, t])
 
   return (
-    <div className='flex justify-center items-center h-250 w-full bg-gray-100'>
+    <div className='flex flex-col md:flex-row justify-start items-start md:h-250 text-black w-full bg-gray-100 overflow-x-hidden'>
       {loading ? (
         <div className={loadingBlock}>
           <Loading />

@@ -6,7 +6,7 @@ import Image from "next/image"
 
 function Footer() {
 
-  const column = 'flex flex-col justify-center items-start text-white w-1/5 gap-2 p-10'
+  const column = 'flex flex-col justify-center items-start text-white w-full md:w-1/5 gap-2 p-10'
 
   const { t } = useTranslation()
 
@@ -45,7 +45,7 @@ function Footer() {
 
   return (
     <div className="flex justify-start items-start w-full bg-[#0F0F0F]">
-      <div className="flex justify-start items-start w-[90%] lg:gap-10 2xl:gap-20">
+      <div className="flex flex-col md:flex-row justify-start items-start w-[90%] lg:gap-10 2xl:gap-20">
         <div className={`${column} h-full  relative`}>
            <Image src={'/images/Footer/logo.png'} alt="" width={150} height={150} className="w-[150px] h-auto"/>
             <span className="text-white 2xl:text-base lg:text-sm">© 2026  A-BAITS UKRAINE | All rights reserved</span>

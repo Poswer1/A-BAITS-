@@ -113,31 +113,31 @@ function page() {
                 <div className="flex flex-col justify-start items-start lg:w-full 2xl:w-4/5 gap-5">
                   
                   <div className={blockClass}>
-                        <div className="relative">
+                        <div className="relative ">
                           <AvatarBlock avatar={avatar} size="120" preview={preview}/>
                         </div>
                         <div className="flex flex-col justify-center items-start">
-                          <h1 className="text-xl">{username}</h1>
-                          <span className="text-gray-500 text-sm">{city || t('profile', 'cityNotSelected')}</span>
-                          <div className="flex justify-center items-center gap-2 mt-1">
-                            <label htmlFor="selectPhoto" className={`${button} !p-2`}>{t('profile', 'changeAvatar')}</label>
+                          <h1 className="text-xl hidden md:block">{username}</h1>
+                          <span className="text-gray-500 text-sm hidden md:block">{city || t('profile', 'cityNotSelected')}</span>
+                          <div className="flex flex-col md:flex-row justify-center text-center items-center gap-2 mt-1">
+                            <label htmlFor="selectPhoto" className={`${button} !p-2 text-sm md:text-base`}>{t('profile', 'changeAvatar')}</label>
                             <input type="file" id="selectPhoto" onChange={handleFile} className="hidden"/>
-                            <button className={`${buttonWithoutBg} !p-2`} onClick={handleDefaultAvatar}>{t('profile', 'defultAvatar')}</button>
+                            <button className={`${buttonWithoutBg} !p-2 text-sm md:text-base`} onClick={handleDefaultAvatar}>{t('profile', 'defultAvatar')}</button>
                           </div>
                         </div>
                   </div>
                   {(message || error) && (
                     <span className={`${message ? 'text-green-600' : 'text-red-600'} ${animationOpacity}`}>{message || error}</span>
                   )}
-                  <div className="flex justify-center items-center w-full gap-5">
+                  <div className="flex flex-col md:flex-row justify-center items-center w-full gap-5">
                     <InputField value={username} onChange={setUsername} placeholder={t('profile', 'firstName')} label={t('profile', 'firstName')}/>
                     <InputField value={surname} onChange={setSurname} placeholder={t('profile', 'lastName')} label={t('profile', 'lastName')}/>
                   </div>
-                  <div className="flex w-1/2">
+                  <div className="flex w-full md:w-1/2">
                     <SelectionField title={t('profile', 'selectCity')} placeholder={t('profile', 'selectCity')} setValue={setLocation} value={location} list={LocationList}/>
                   </div>
 
-                  <button onClick={handleUpdate} className={`${button} ${hover} mb-2`}>{t('profile', 'saveChanges')}</button>
+                  <button onClick={handleUpdate} className={`${button} ${hover} mb-2 w-full md:w-auto`}>{t('profile', 'saveChanges')}</button>
               </div>
             </>
         )}

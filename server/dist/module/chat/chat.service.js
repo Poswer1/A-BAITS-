@@ -10,6 +10,7 @@ exports.ChatService = void 0;
 const common_1 = require("@nestjs/common");
 const chat_model_1 = require("../../models/chat.model");
 const mongoose_1 = require("mongoose");
+const lot_model_1 = require("../../models/lot.model");
 let ChatService = class ChatService {
     async newMessage(userId, data) {
         if (!userId || !data)
@@ -22,10 +23,11 @@ let ChatService = class ChatService {
             type: data.type
         });
         if (!chat) {
+            const lotDoc = await lot_model_1.LotModel.findOne({ lotNumber: data.numberLot }).select('_id');
             chat = await chat_model_1.ChatModel.create({
                 userFrom: new mongoose_1.Types.ObjectId(userId),
                 userTo: new mongoose_1.Types.ObjectId(data.toUserId),
-                lot: data.numberLot,
+                lot: lotDoc?._id,
                 type: 'default',
                 messages: []
             });
@@ -49,8 +51,8 @@ let ChatService = class ChatService {
                     { userTo: userId }
                 ]
             })
-                .populate('userFrom', 'name avatar')
-                .populate('userTo', 'name avatar');
+                .populate('userFrom userTo', 'name avatar')
+                .populate('lot', 'name images');
             return chats;
         }
         catch (error) {
@@ -65,11 +67,11 @@ let ChatService = class ChatService {
                     { userFrom: userId, userTo: toUserId },
                 ],
                 type: type
-            });
+            }).populate('lot', 'name images startPrice lotNumber');
             if (!history)
                 return { historyMessage: [], numberLot: null };
             const hadReview = history.reviews.some(obj => obj.to.toString() === userId);
-            return { historyMessage: history.messages, numberLot: history.lot, type: history.type, hadReview, status: history.status };
+            return { history, hadReview };
         }
         catch (error) {
             throw new common_1.BadRequestException('Ошибка при получение истории чата', error);

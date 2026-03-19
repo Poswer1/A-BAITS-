@@ -37,7 +37,7 @@ function page() {
 
   return (
     <div className='flex flex-col justify-center items-center h-[80vh] w-full'>
-        <div className='flex flex-col justify-center items-center w-[20%] rounded-md p-5 gap-5'>
+        <div className='flex flex-col justify-center items-center md:w-[20%] rounded-md p-5 gap-5'>
             {message && (
                 <div style={{backgroundColor: 'rgba(255, 0, 0, 0.1)', color: 'red'}} className={message}>
                     {message}

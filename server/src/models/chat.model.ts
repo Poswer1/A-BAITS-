@@ -18,7 +18,7 @@ export interface ReviewsType {
    userFrom: Types.ObjectId,
    userTo: Types.ObjectId,
    type: string,
-   lot: string,
+   lot: Types.ObjectId,
    status: string,
    reviews: ReviewsType[],
    messages: Message[];
@@ -29,7 +29,7 @@ export interface ReviewsType {
       userFrom: {type: Schema.Types.ObjectId, ref: "User", required: true},
       userTo: {type: Schema.Types.ObjectId, ref: "User", required: true},
       type: {type:String, default: 'default'},
-      lot: {type: String},
+      lot: {type: Schema.Types.ObjectId, ref: "Lot",},
       status: {type:String, default: 'Active'},
       reviews:[{
         from: {type: Schema.Types.ObjectId, ref: "User", required: true},

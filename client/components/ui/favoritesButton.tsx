@@ -38,6 +38,6 @@ export default function FavoritesButton({id}: FavoritesButtonProps) {
     }
 
   return (
-    <span onClick={(e) => {handleAddFavorite(), e.preventDefault()}} className="flex whitespace-nowrap cursor-pointer justify-center items-center gap-2 p-2 rounded-md bg-orange-600/10 text-orange-600"><Star /> {favorite ? t('lot', 'AlreadyFavoritre') : t('lot', 'lot-favorite')}</span>
+    <span onClick={(e) => {handleAddFavorite(), e.preventDefault()}} className="flex md:whitespace-nowrap  text-center cursor-pointer justify-center items-center gap-2 p-2 rounded-md bg-orange-600/10 text-orange-600 w-full md:w-auto"><Star /> {favorite ? t('lot', 'AlreadyFavoritre') : t('lot', 'lot-favorite')}</span>
   )
 }

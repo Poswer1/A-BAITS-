@@ -34,7 +34,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
 
   return (
     <div className={pageContainerClass}> 
-        <h1 className="2xl:text-2xl lg:text-xl mb-5">{mode === 'buy' ? t('profile', 'buy') : t('profile', 'sell')} | {slug === 'active' ? t('profile', 'active') : slug === 'archive' ? t('profile', 'archived') : slug === 'completed' ? t('profile', 'completed') : t('profile', 'sold')} {t('global', 'lot')}</h1>
+        <h1 className="text-xl 2xl:text-2xl lg:text-xl mb-5">{mode === 'buy' ? t('profile', 'buy') : t('profile', 'sell')} | {slug === 'active' ? t('profile', 'active') : slug === 'archive' ? t('profile', 'archived') : slug === 'completed' ? t('profile', 'completed') : t('profile', 'sold')} {t('global', 'lot')}</h1>
         <div className="w-full flex flex-col justify-start items-start gap-5">
           <Sidebar mode={mode} active={active}/>
           <div className={lotListClass}>

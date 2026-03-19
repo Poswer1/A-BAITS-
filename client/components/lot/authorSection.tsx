@@ -30,9 +30,9 @@ export default function AuthorSection({lot}:any) {
     }, [lot.author._id])
 
   return (
-    <div className={`${columnBlock} w-full`}>
+    <div className={`${columnBlock} w-full text-black`}>
         <h1 className='font-bold'>Автор</h1>
-        <div className="flex justify-between items-center w-full">
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-2">
             <Link href={`/${lang}/profile/${lot.author.name}`} className="flex justify-between items-center gap-2 cursor-pointer">
                 <AvatarBlock avatar={lot.author.avatar} size="45"/>
                 <div className="flex flex-col justify-start items-start">
@@ -42,13 +42,13 @@ export default function AuthorSection({lot}:any) {
             </Link>
           <Rating rating={lot.author.rating} showRatingNumber={true} size={16}/>
         </div>
-           <Link href={`/${lang}/profile/chat?id=${lot.author._id}&lotId=${lot.lotNumber}`} className={`${button} gap-1 !w-full text-md ${hover}`}>{t('lot', 'lot-message')} {lot.author.name}<MessageCircle size={17}/></Link>
+           <Link href={`/${lang}/profile/chat?id=${lot.author._id}&lotId=${lot.lotNumber}`} className={`${button} gap-1 !w-full text-md ${hover}`}>{t('lot', 'lot-message')}<MessageCircle size={17}/></Link>
             <h1 className='font-bold mt-3'>{t('lot', 'lot-lastReview')}</h1>
             {review ? (
                 <div className="flex flex-col justify-center items-start gap-2">
                     <div className="flex justify-center items-center gap-2 cursor-pointer">
-                        <AvatarBlock avatar={review?.from.avatar} size="32"/>
-                        <span className="text-sm">{review?.from.name}</span>
+                        <AvatarBlock avatar={review?.from?.avatar} size="32"/>
+                        <span className="text-sm">{review?.from?.name}</span>
                     </div>
                     <Rating rating={review?.rating} size={14}/>
                     <p className="text-sm">{review?.comment}</p>

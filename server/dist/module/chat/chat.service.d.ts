@@ -17,14 +17,18 @@ export declare class ChatService {
     getChatHistory(toUserId: string, type: string, userId: string): Promise<{
         historyMessage: never[];
         numberLot: null;
-        type?: undefined;
+        history?: undefined;
         hadReview?: undefined;
-        status?: undefined;
     } | {
-        historyMessage: import("src/models/chat.model").Message[];
-        numberLot: string;
-        type: string;
+        history: import("mongoose").Document<unknown, {}, import("src/models/chat.model").Chat, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/chat.model").Chat & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        } & {
+            id: string;
+        };
         hadReview: boolean;
-        status: string;
+        historyMessage?: undefined;
+        numberLot?: undefined;
     }>;
 }

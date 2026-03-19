@@ -46,7 +46,7 @@ export default function OpenNotification({setOpen, lang, setRead}: OpenNotificat
     const modalRef = useClickOutside(setOpen)
 
   return (
-    <div ref={modalRef} className='flex flex-col justify-start items-start bg-white p-2 w-100 absolute top-[100%] left-0 rounded-md gap-2 z-30'>
+    <div ref={modalRef} className='flex flex-col justify-start items-start bg-white p-2 w-100 absolute top-[100%] left-[full] md:left-0 rounded-md gap-2 z-30 text-black'>
         {loading ? (
             <h1>{t('header', 'loading')}</h1>
         ): (

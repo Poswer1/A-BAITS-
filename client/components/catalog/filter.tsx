@@ -108,7 +108,11 @@ export default function Filter({maxPriceLot}: FilterProps) {
   }
 
   return (
-    <div className={`${open ? 'w-100' : 'w-20'} transition-all duration-300 ease-in-out flex flex-col bg-white justify-start items-start h-screen p-5 gap-4 border-r border-gray-300`}>
+    <>
+    <div className="bg-orange-600 md:hidden fixed top-1/2 p-1 flex rounded-r-2xl">
+      <Sliders className='text-white cursor-pointer' size={35} onClick={() => setOpen(prev => !prev)}/>
+    </div>
+    <div className={`${open ? 'w-full top-0 fixed md:static md:w-100 p-5' : 'w-0 md:w-20'} md:p-5 transition-all duration-300 ease-in-out flex flex-col bg-white justify-start items-start h-screen gap-4 border-r border-gray-300`}>
       <div className={`flex ${open ? 'justify-between' : 'justify-center'} items-center w-full`}>
         {open && (
           <div className="flex flex-col justify-center items-start">
@@ -149,6 +153,7 @@ export default function Filter({maxPriceLot}: FilterProps) {
         </div>
       
     </div>
+    </>
   )
 }
 

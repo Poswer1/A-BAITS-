@@ -5,19 +5,18 @@ import ChatList from '@/components/profile/chatList';
 import AvatarBlock from '@/components/ui/avatar'
 import OlnlineUser from '@/components/ui/onlineUser';
 import { getRelativeTime } from '@/components/ui/relativeTime';
-import { getLot } from '@/services/lot';
 import { getUserById } from '@/services/user';
 import { input } from '@/styles/createLot';
 import { blockClass, pageContainerClass } from '@/styles/profile/profile'
-import { animationOpacity, animationScale, hover } from '@/styles/style';
-import { Check, MoreVertical,Send} from "lucide-react";
+import { hover } from '@/styles/style';
+import { Check, MoreVertical,Send, X} from "lucide-react";
 import Link from 'next/link';
 import { useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTranslation } from '@/app/context/TranslationProvider';
-import { button } from '@/styles/global';
-import { data } from 'react-router-dom';
+import { button, buttonWithoutBg } from '@/styles/global';
+import { ChatTypes } from '@/types/types';
 
 function page() {
 
@@ -28,8 +27,8 @@ function page() {
   const {socket} = useSocketContext()
   const {t} = useTranslation()
 
-  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<string[]>([])
+  const [chat, setChat] = useState<ChatTypes | null>(null)
   const [message, setMessage] = useState('')
   const [selectChat, setSelectChat] = useState('')
   const [user, setUser] = useState<any | null>(null)
@@ -41,6 +40,7 @@ function page() {
   const [typeChat, setTypeChat] = useState('')
   const [haveReview, setHaveReview] = useState(false)
   const [status, setStatus] = useState('')
+  const chatRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if(!selectIdChat) return
@@ -48,16 +48,10 @@ function page() {
   }, [selectIdChat])
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({behavior: 'smooth' })
-  }, [messages])
+    if (!chatRef.current) return;
 
-  useEffect(() => {
-    if(!lotNumber) return
-    getLot(lotNumber)
-    .then(data => {
-      setLot(data)
-    })
-  }, [lotNumber])
+    chatRef.current.scrollTop = chatRef.current.scrollHeight
+  }, [messages])
 
   useEffect(() => {
     if(!selectChat) return
@@ -70,15 +64,13 @@ function page() {
   useEffect(() => {    
     if(!socket) return
     socket.on('getHistory', (data) => {
-      if(data && Array.isArray(data.historyMessage)) {
-        setMessages(data.historyMessage)
-        setTypeChat(data.type)
+      if(data) {
+        setChat(data.history)
+        setMessages(data.history.messages)
         setHaveReview(data.hadReview)
-        setStatus(data.status)
-        setLotNumber(data.numberLot)
         console.log('data')
       } else {
-        setMessages([])
+        setChat(null)
       }
     })
 
@@ -107,14 +99,13 @@ function page() {
   }
 
   return (
-    <div className={pageContainerClass}>
-      <h1 className='2xl:text-2xl xl:text-xl'>Чат</h1>
-      <div className='flex justify-center items-start gap-2'>
-        
-        <ChatList setSelectChat={setSelectChat} setTypeChat={setTypeChat}/>
+    <div className={`${pageContainerClass}`}>
+      <h1 className={`text-xl 2xl:text-2xl lg:text-xl mb-5`}>Чат</h1>
+      <div className='flex justify-start items-start gap-2 w-full'>
+        <ChatList setSelectChat={setSelectChat} setTypeChat={setTypeChat} selectChat={selectChat}/>
 
-        <div className={`${blockClass} flex-col min-h-150 3xl:w-300 2xl:!w-250 !gap-0`}>
-          {selectChat.length === 0 ? (
+        <div className={`${blockClass} ${!selectChat ? 'hidden md:block': 'fixed top-0 left-0 md:static'} h-screen md:h-160 2xl:h-190 flex-col xl:w-2/3 2xl:!w-3/5 !gap-0 `}>
+          {!selectChat ? (
             <h1>чат не выбран</h1>
           ): (
             <>
@@ -123,30 +114,31 @@ function page() {
                 <AvatarBlock avatar={user?.avatar} size="50"/>
                 <div className='flex flex-col justify-center items-start'>
                   <h1>{user?.name}</h1>
+                  <span>{lot?.name}</span>
                   <OlnlineUser id={user?._id}/>
                 </div>
               </Link>
               <MoreVertical className={hover}/>
             </div>
-            {lot && (
-              <Link href={`/${lang}/lot/${lotNumber}`} className='flex justify-start items-start w-full border-b border-gray-300 p-2 gap-2 cursor-pointer'>
-                <img src={lot?.images?.[0] ? `${BASE_URL}${lot?.images[0]}` : ''} className='w-15 rounded-md'/>
+            {chat?.lot && (
+              <Link href={`/${lang}/lot/${chat?.lot?.lotNumber}`} className='flex justify-start items-start w-full border-b border-gray-300 p-2 gap-2 cursor-pointer'>
+                <img src={chat?.lot?.images?.[0] ? `${BASE_URL}${chat?.lot?.images[0]}` : ''} className='w-15 rounded-md'/>
                 <div className='flex flex-col justify-center items-start'>
-                  <h1 className='text-gray-500'>{lot?.name}</h1>
-                  <span>{lot?.startPrice} ₴</span>
+                  <h1 className='text-gray-500'>{chat?.lot?.name}</h1>
+                  <span>{chat?.lot?.startPrice} ₴</span>
                 </div>
               </Link>
             )}
 
-            <div className='flex flex-col justify-start items-start overflow-auto h-150 max-h-150 w-full mt-2 noScrollbar gap-2'>
-              {typeChat === 'deal' && (
+            <div ref={chatRef} className='flex flex-col justify-start items-start overflow-auto max-h-full h-full w-full mt-2 noScrollbar gap-2'>
+              {chat?.type === 'deal' && (
                 <div className={`w-full flex flex-col justify-center items-center text-center`}>
                    <Image src={'/images/chat/deal.png'} alt='' width={200} height={200} className='w-[200px]'/>
                    <h1 className='text-xl'>{t('chat', 'successDeal1')}</h1>
-                   <p className='w-2/3'>{t('chat', 'successDeal2')}</p>
+                   <p className='w-full text-sm md:text-base md:w-2/3'>{t('chat', 'successDeal2')}</p>
                    <div className='flex justify-center items-center gap-2 mt-1'>
-                    <Link href={`/${lang}/review/${selectChat}`} className={button}>{t('chat', 'ExchangeReview')}</Link>
-                    <button className={`${button} !text-black bg-transparent border border-orange-600`}>{t('chat', 'InviteModer')}</button>
+                    <Link href={`/${lang}/review/${selectChat}`} className={`${button} !p-1`}>{t('chat', 'ExchangeReview')}</Link>
+                    <button className={`${buttonWithoutBg} !p-1`}>{t('chat', 'InviteModer')}</button>
                   </div>
                 </div>
               )}
@@ -165,18 +157,18 @@ function page() {
                        {getRelativeTime(msg.createdAt, lang)}
                       </span>
                     </div>
-                    <div ref={messagesEndRef}/>
+                    
                     </>
                   )
               })}
               {haveReview  && (
                 <div className={`flex flex-col justify-center items-center w-full`}>
-                  <h1 className='text-xl'>{t('chat', 'NewReview')}</h1>
-                  <p>{t('chat', 'NewReviewDesc')}</p>
+                  <h1 className='text-base md:text-xl text-center'>{t('chat', 'NewReview')}</h1>
+                  {/* <p className='text-center text-sm md:text-base'>{t('chat', 'NewReviewDesc')}</p> */}
                 </div>
               )}
             </div>
-            {status === 'Active' ? (
+            {chat?.status !== 'Close' ? (
               <div className='flex justify-center items-center w-full gap-2'>
                 <input className={`${input}`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder='Напишите сообщение'/>
                 <button onClick={() => {
@@ -187,7 +179,7 @@ function page() {
                 </button>
               </div>
             ): (
-              <h1 className={`text-xl flex justify-center items-center gap-1`}>Сделка успешно завершена! <Check className='text-orange-600'/></h1>
+              <h1 className={`text-xl flex justify-center items-center gap-1`}>{t('chat', 'successDeal')}<Check className='text-orange-600'/></h1>
             )}
             </>
           )}

@@ -4,5 +4,5 @@ export const getValueByLang = (
   lang: string
 ) => {
   const valueObj = list.find(obj => obj.name === value)
-  return lang === 'ru' ? valueObj?.ru : valueObj?.uk
+  return lang === 'ru' ? valueObj?.ru || valueObj?.lang  : valueObj?.uk || valueObj?.lang
 }

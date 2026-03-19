@@ -18,11 +18,13 @@
     "lot-views": "Просмотров",
     "lot-favoriteCount": "Добавлено в избранное",
     "lot-myBet": "Моя последняя ставка",
-    "lot-message": "Сообщение",
+    "lot-message": "Сообщение автору",
     "LotAlreadySold": "Лот уже куплен",
     "NoMoney": "У вас недостаточно средств",
     "desc": "Описание лота",
     "AlreadyFavoritre": "Уже в избранном!",
     "timeIsUp": "Время вышло!",
-    "reviewNotFound": "Отзывов ещё нету"
+    "reviewNotFound": "Отзывов ещё нету",
+    "AboutLot": "О лоте",
+    "userMadeNewBid": "сделал новую ставку!"
 }

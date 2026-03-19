@@ -12,8 +12,8 @@ function Navbar() {
     const [openContact, setOpenContact] = useState(false)
 
   return (
-    <div className='flex w-full bg-[#0F0F0F]  p-2 justify-center'>
-        <div className='flex justify-start items-center gap-5 text-white w-[90%]'>
+    <div className='flex w-full bg-[#0F0F0F] p-2 justify-center'>
+        <div className='flex justify-start items-center gap-6 md:gap-5 text-white w-full md:w-[90%] overflow-x-auto whitespace-nowrap'>
             <span className={hoverLink}>{t('navbar', 'newLot')}</span>
             <span className={hoverLink}>{t('navbar','lotfrom1UAH')}</span>
             <span className={hoverLink}>Топ {t('global','lot')}</span>

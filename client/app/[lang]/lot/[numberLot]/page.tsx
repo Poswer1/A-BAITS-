@@ -12,10 +12,18 @@ import { useEffect, useState } from "react"
 import { useSocketContext } from "@/app/context/SocketIo"
 import { LotTypes } from "@/types/types"
 import DescriptioSection from "@/components/lot/descriptioSection"
+import { columnBlock } from "@/styles/lot"
+import { overlay } from "@/styles/global"
+import AvatarBlock from "@/components/ui/avatar"
+import { animationScale } from "@/styles/style"
+import { useTranslation } from "@/app/context/TranslationProvider"
+
 
 function page() {
 
     const params = useParams()
+    const {t} = useTranslation()
+    const lang = params.lang as string
     const numberLot = params.numberLot as string
     console.log(numberLot)
 
@@ -23,9 +31,11 @@ function page() {
     const [currentPrice, setCurrentPrice] = useState(0)
     const [userHistory, setUserHistory] = useState<any[]>([])
     const [status, setStatus] = useState('')
+    const [newBid, setNewBid] = useState('')
     const [value, setValue] = useState(0)
     const { socket } = useSocketContext()
 
+  
     useEffect(() => {
 
         if(!socket) return
@@ -37,9 +47,13 @@ function page() {
               setCurrentPrice(data.newPrice)
               setValue(data.newPrice)
               setUserHistory(prev => [...prev, data.lastBid])
+              setNewBid(data.lastBid)
             }
             const audio = new Audio('/sounds/bid.mp3')
             audio.play()
+            setTimeout(() => {
+              setNewBid('')
+            }, 2000)
         })
 
         socket.emit('HistoryBid', numberLot)
@@ -68,23 +82,36 @@ function page() {
 
 
   return (
-    <div className="flex flex-col justify-center items-center w-full relative mt-5 min-h-150">
+    <div className="flex flex-col justify-center items-center w-full relative min-h-150">
       {!lot ? (
         <Loading />
       ): (
         <>
-          <HeaderLot lot={lot}/>
-          <div className="flex justify-start items-start 2xl:w-[80%] lg:w-[90%] py-2 gap-2 h-200">
+          <div className="hidden md:block w-full sticky top-0 z-10">
+            <HeaderLot lot={lot}/>
+          </div>
+          <div className="flex flex-col md:flex-row justify-start items-start 2xl:w-[80%] lg:w-[90%] py-2 md:gap-2 min-h-200 md:h-200">
               <PhotoSection lot={lot}/>
-              <div className="flex flex-col justify-start items-start">
+              <div className="flex flex-col justify-start items-start w-full md:w-auto">
+                <div className={`md:hidden`}>
+                  <HeaderLot lot={lot} />
+                </div>
+
                 <InfoSection lot={lot} socket={socket} currentPrice={currentPrice} setCurrentPrice={setCurrentPrice} value={value} setValue={setValue} status={status} setStatus={setStatus}/>
+
                 <AuthorSection lot={lot}/> 
+                <DescriptioSection lot={lot}/>
               </div>
               <BidHistory lot={lot} socket={socket} userHistory={userHistory}/>
           </div>
-          <DescriptioSection lot={lot}/>
         </>
       )}
+      {newBid && (
+        <div className={`${overlay} flex-col gap-2`}>
+          <AvatarBlock avatar={newBid?.avatar} size="110"/>
+          <h1 className={`text-white text-xl text-center font-bold ${animationScale}`}><span className="text-orange-600">{newBid?.name || 'Пользователь'} </span>{t('lot', 'userMadeNewBid')}</h1>
+        </div>
+      )}  
     </div>
   )
 }

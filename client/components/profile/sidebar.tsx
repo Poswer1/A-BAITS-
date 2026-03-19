@@ -66,15 +66,21 @@ export default function Sidebar({mode, active, setActive, name} : SidebarProps) 
   )}
 
   return (
-    <div className={`bg-white h-full flex ${mode === 'sidebarMain' && 'flex-col'} justify-start items-start lg:min-w-60 2xl:min-w-70 ${mode !== 'sidebarMain' && '!h-auto'}`}>
+    <div 
+      className={`bg-white text-black w-screen md:w-auto overflow-x-auto md:h-full flex ${mode === 'sidebarMain' && 'md:flex-col'} 
+      justify-start items-start 
+      ${mode === 'sidebarMain'? (active === 'Чат'? 'md:w-20 2xl:w-25': 'md:w-60 2xl:w-70'): ''} 
+      transition-[width] duration-500 ease-in-out overflow-hidden 
+      ${mode !== 'sidebarMain' && '!h-auto'}`}
+    >
       {listLinks.map(link => (
             <Link
               key={link.link}
               href={`/${lang}/profile/${link.link}`}
-              className={`${hoverCat} lg:px-7 2xl:px-10 py-4 border-r-2 border-transparent flex justify-start items-center w-full gap-2 ${active === link.name && linkActiveClass}`}
+              className={`${hoverCat} px-5 lg:px-7 2xl:px-10 py-4 border-r-2 border-transparent flex justify-start items-center w-full gap-2 ${active === link.name && linkActiveClass}`}
             >
-              {link.icon}
-              {link.name}
+              <div className="transition-all duration-300">{link.icon}</div>
+              <span className={`${(active === 'Чат' && mode === 'sidebarMain') ? 'md:opacity-0 md:absolute' : 'opacity-100 transition-all duration-300 ease-in-out'}`}>{link.name}</span>
             </Link>
         ))}
     </div>
