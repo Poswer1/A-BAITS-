@@ -20,9 +20,6 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat}: ChatL
         .then(data => {
             setMyId(data._id)
         })
-    }, [])
-
-    useEffect(() => {
         getMyChats()
         .then(data => {
             setAllChats(data)
@@ -31,7 +28,7 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat}: ChatL
 
 
   return (
-    <div className={`flex flex-col justify-start items-center gap-2 bg-white w-full md:w-auto`}>
+    <div className={`flex flex-col justify-start items-start gap-2 bg-white w-full md:w-auto`}>
         {allChats.map((chat) => {
             if(!myId) return null;
             const user = chat.userTo?._id.toString() === myId ? chat.userFrom : chat.userTo;

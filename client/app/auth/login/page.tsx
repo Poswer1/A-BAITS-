@@ -36,14 +36,14 @@ function page() {
     }
 
   return (
-    <div className='flex flex-col justify-center items-center h-[80vh] w-full'>
-        <div className='flex flex-col justify-center items-center md:w-[20%] rounded-md p-5 gap-5'>
+    <div className='flex flex-col justify-center items-center h-screen w-full text-black'>
+        <div className='flex flex-col justify-center items-center sm:w-2/5 xl:w-2/6 2xl:w-1/4 rounded-md p-5 gap-5'>
             {message && (
                 <div style={{backgroundColor: 'rgba(255, 0, 0, 0.1)', color: 'red'}} className={message}>
                     {message}
                 </div>
             )}
-            <h1 className='text-black font-bold text-3xl'>Увійти до аккаунту</h1>
+            <h1 className='text-black text-center font-bold text-2xl md:text-2xl xl:text-3xl'>Увійти до аккаунту</h1>
             
             <div className={customInput}>
                 <input placeholder='Введіть Email' value={email} onChange={(e) => setEmail(e.target.value)} className={input}/>

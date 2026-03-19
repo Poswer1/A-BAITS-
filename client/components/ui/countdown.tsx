@@ -33,7 +33,7 @@ export default function Countdown({date}: {date:string}) {
   return (
     <div>
       {timeLeft > 0 ? (
-        <span className="text-base font-bold ">{t('lot', 'lot-dateStop')} <span className="text-orange-600">{days}д {hours}ч {minutes}м {seconds}с</span></span>
+        <span className={`text-base`}>{t('lot', 'lot-dateStop')} <span className="text-orange-600">{days}д {hours}ч {minutes}м {seconds}с</span></span>
       ) : (
         <span>{t('lot', 'timeIsUp')}</span>
       )}

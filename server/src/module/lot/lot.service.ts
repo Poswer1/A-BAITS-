@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
 import { LotModel } from 'src/models/lot.model';
 import { ProccessImages } from 'src/utils/files-upload';
-import { Types } from 'mongoose';
+import { isValidObjectId, Types } from 'mongoose';
 import { UserModel } from 'src/models/user.model';
 import { SortOrder } from 'mongoose'
 
@@ -185,8 +185,15 @@ export class LotService {
   }
 
   async getLot (numberLot:string) {
+
+    const orQuery:any[] = [{ lotNumber: numberLot }];
+
+    if (isValidObjectId(numberLot)) {
+      orQuery.push({ _id: new Types.ObjectId(numberLot) });
+    }
+
     try {
-      const lot = await LotModel.findOne({lotNumber: numberLot}).populate('author', 'avatar name rating')
+      const lot = await LotModel.findOne({$or: orQuery}).populate('author', 'avatar name rating')
       return lot
     } catch (error) {
        throw new BadRequestException('Ошибка при получение товара',error)

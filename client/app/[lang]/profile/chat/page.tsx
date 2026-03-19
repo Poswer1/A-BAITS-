@@ -36,9 +36,7 @@ function page() {
   const searchParams = useSearchParams()
   const selectIdChat = searchParams.get('id') || ''
   const lotId = searchParams.get('lotId')
-  const [lotNumber, setLotNumber] = useState(lotId || '')
   const [typeChat, setTypeChat] = useState('')
-  const [haveReview, setHaveReview] = useState(false)
   const [status, setStatus] = useState('')
   const chatRef = useRef<HTMLDivElement>(null);
 
@@ -67,15 +65,19 @@ function page() {
       if(data) {
         setChat(data.history)
         setMessages(data.history.messages)
-        setHaveReview(data.hadReview)
         console.log('data')
       } else {
         setChat(null)
       }
     })
 
-    socket.on('newReview', () => {
-      setHaveReview(true)
+    socket.on('newReview', (data) => {
+      setMessages(prev => {
+        const exist = prev.some(msg => msg._id === data.newMessage._id)
+        if(exist) return prev
+        return [...prev, data.newMessage]
+      })
+      setStatus(data.chatStatusText)
     })
 
     socket.on('message', (data) => {
@@ -124,11 +126,12 @@ function page() {
               <Link href={`/${lang}/lot/${chat?.lot?.lotNumber}`} className='flex justify-start items-start w-full border-b border-gray-300 p-2 gap-2 cursor-pointer'>
                 <img src={chat?.lot?.images?.[0] ? `${BASE_URL}${chat?.lot?.images[0]}` : ''} className='w-15 rounded-md'/>
                 <div className='flex flex-col justify-center items-start'>
-                  <h1 className='text-gray-500'>{chat?.lot?.name}</h1>
+                  <h1 className='text-gray-500 md:hidden'>{chat?.lot?.name.length >= 20 ? chat?.lot?.name.slice(0, 20) + '...' : chat?.lot?.name}</h1>
+                  <h1 className='text-gray-500 hidden md:flex'>{chat?.lot?.name}</h1>
                   <span>{chat?.lot?.startPrice} ₴</span>
                 </div>
               </Link>
-            )}
+            )} 
 
             <div ref={chatRef} className='flex flex-col justify-start items-start overflow-auto max-h-full h-full w-full mt-2 noScrollbar gap-2'>
               {chat?.type === 'deal' && (
@@ -136,20 +139,30 @@ function page() {
                    <Image src={'/images/chat/deal.png'} alt='' width={200} height={200} className='w-[200px]'/>
                    <h1 className='text-xl'>{t('chat', 'successDeal1')}</h1>
                    <p className='w-full text-sm md:text-base md:w-2/3'>{t('chat', 'successDeal2')}</p>
-                   <div className='flex justify-center items-center gap-2 mt-1'>
-                    <Link href={`/${lang}/review/${selectChat}`} className={`${button} !p-1`}>{t('chat', 'ExchangeReview')}</Link>
-                    <button className={`${buttonWithoutBg} !p-1`}>{t('chat', 'InviteModer')}</button>
+                   <div className='flex flex-col md:flex-row w-full justify-center items-center gap-2 mt-1'>
+                    <Link href={`/${lang}/review/${selectChat}/${chat?.lot?._id}`} className={`${button} w-full md:w-auto`}>{t('chat', 'ExchangeReview')}</Link>
+                    <button className={`${buttonWithoutBg} w-full md:w-auto`}>{t('chat', 'InviteModer')}</button>
                   </div>
                 </div>
               )}
               {messages?.map((msg, index) => {
-                  const isMyMessage =
-                    msg.to?.toString() === user?._id?.toString()
 
+                const isMyMessage =
+                  msg.to?.toString() === user?._id?.toString()
+
+                  if(msg.from === '507f1f77bcf86cd799439011') {
+                    return (
+                      msg.to !== user?._id && (
+                        <div className='flex justify-center items-center w-full py-5'>
+                            <h1 className='text-base text-center'>{t('chat', 'NewReview')}</h1>
+                        </div>
+                      )
+                    )
+                  }
                   return (
                     <>
                     <div key={msg._id || index} className={`max-w-3/6 ${ isMyMessage ? 'self-end text-end': 'self-start text-start'}`}>
-                      <p className={`rounded-md p-2 ${ isMyMessage ? 'bg-orange-800/10 text-start' : 'bg-gray-100'}`}>
+                      <p className={`rounded-md p-2 ${isMyMessage ? 'bg-orange-600/10 text-start' : 'bg-gray-100'}`}>
                         {msg?.message}
                       </p>
 
@@ -161,12 +174,6 @@ function page() {
                     </>
                   )
               })}
-              {haveReview  && (
-                <div className={`flex flex-col justify-center items-center w-full`}>
-                  <h1 className='text-base md:text-xl text-center'>{t('chat', 'NewReview')}</h1>
-                  {/* <p className='text-center text-sm md:text-base'>{t('chat', 'NewReviewDesc')}</p> */}
-                </div>
-              )}
             </div>
             {chat?.status !== 'Close' ? (
               <div className='flex justify-center items-center w-full gap-2'>
@@ -179,7 +186,7 @@ function page() {
                 </button>
               </div>
             ): (
-              <h1 className={`text-xl flex justify-center items-center gap-1`}>{t('chat', 'successDeal')}<Check className='text-orange-600'/></h1>
+              <h1 className={`text-xl flex justify-center items-center gap-1 mt-2`}>{t('chat', 'successDeal')}<Check className='text-orange-600'/></h1>
             )}
             </>
           )}

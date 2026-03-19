@@ -60,9 +60,9 @@ export default function Home() {
           </div>
           
         </div>
-        <div className="flex flex-col justify-center items-center md:items-start w-full md:w-[90%]">
+        <div className="flex flex-col justify-start items-center md:items-start w-full md:w-[90%]">
            <h1 className="text-3xl font-bold text-black"><span className="text-orange-600">Топ </span>{t('global','lot')}</h1>
-           <div className="flex justify-start items-start w-full overflow-x-auto md:overflow-x-visible gap-5 px-10 py-5 2xl:gap-15 lg:gap-10">
+           <div className="flex justify-start items-start w-full overflow-x-auto md:overflow-x-visible gap-5 px-4 md:px-10 py-5 2xl:gap-15 lg:gap-10">
             {allLot.slice(0, 4).map((lot) => (
               <LotCard lot={lot}/>
             ))}

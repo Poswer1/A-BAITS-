@@ -69,7 +69,10 @@ function Header() {
 
   return (
     <div className='flex flex-col justify-center items-center w-full z-20'>
-        <div className='flex flex-col justify-center items-center w-full md:w-[90%] p-2 relative'>
+        <div className='flex flex-col justify-center items-start w-full md:w-[90%] p-2 relative'>
+            <button onClick={() => setOpenCategory(prev => !prev)} className={`font-medium flex md:hidden justify-start items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}>
+                <Menu size={20}/>{t('header','category')}
+            </button>
             <div className='flex justify-between items-center w-full p-2'>
                 <Link href={`/${lang}`}>
                     <Image 
@@ -87,7 +90,7 @@ function Header() {
                     <SearchSection openSearch={openSearch} setOpenSearch={setOpenSearch} lang={lang} setSearch={setSearch} search={search}/>
                 </div>
                 <div className='flex justify-center items-center gap-5 whitespace-nowrap relative'>
-
+                        
                         <ChangeLanguage openSearch={openSearch}/>
                         
                         {openSearch ? (

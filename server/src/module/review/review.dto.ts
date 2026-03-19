@@ -8,6 +8,9 @@ export class reviewDto {
     @IsString()
     comment:string
 
+    @IsString()
+    lotId:string
+
     @IsNumber()
     rating:number
 }

@@ -163,8 +163,12 @@ let LotService = class LotService {
         return { lots, totalLot, maxPriceLot };
     }
     async getLot(numberLot) {
+        const orQuery = [{ lotNumber: numberLot }];
+        if ((0, mongoose_1.isValidObjectId)(numberLot)) {
+            orQuery.push({ _id: new mongoose_1.Types.ObjectId(numberLot) });
+        }
         try {
-            const lot = await lot_model_1.LotModel.findOne({ lotNumber: numberLot }).populate('author', 'avatar name rating');
+            const lot = await lot_model_1.LotModel.findOne({ $or: orQuery }).populate('author', 'avatar name rating');
             return lot;
         }
         catch (error) {

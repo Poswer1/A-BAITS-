@@ -18,7 +18,6 @@ export declare class ChatService {
         historyMessage: never[];
         numberLot: null;
         history?: undefined;
-        hadReview?: undefined;
     } | {
         history: import("mongoose").Document<unknown, {}, import("src/models/chat.model").Chat, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/chat.model").Chat & Required<{
             _id: Types.ObjectId;
@@ -27,7 +26,6 @@ export declare class ChatService {
         } & {
             id: string;
         };
-        hadReview: boolean;
         historyMessage?: undefined;
         numberLot?: undefined;
     }>;

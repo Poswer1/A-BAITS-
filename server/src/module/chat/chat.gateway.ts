@@ -2,6 +2,7 @@ import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSo
 import { ChatService } from "./chat.service";
 import { JwtService } from "@nestjs/jwt";
 import { Server, Socket } from "socket.io";
+import { Schema } from "mongoose";
 
 @WebSocketGateway({cors:true}) // говорим что эта папка испозует webSocket
 export class ChatGateway {
@@ -13,8 +14,8 @@ export class ChatGateway {
     @WebSocketServer()
     server:Server
 
-    async newReview(to:string) {
-        this.server.to(to).emit('newReview')
+    async newReview(to:string, newMessage:any, chatStatusText:string) {
+        this.server.to(to).emit('newReview', {newMessage, chatStatusText})
     }
     
     @SubscribeMessage('newMessage')

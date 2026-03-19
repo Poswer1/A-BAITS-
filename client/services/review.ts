@@ -1,13 +1,13 @@
 import { BASE_URL, dataReturn } from "./utils"
 
-export async function newReview(to:string, comment:string, rating:number) {
+export async function newReview(to:string, comment:string, rating:number, lotId:string) {
     const res = await fetch(`${BASE_URL}/review/newReview`, {
         method: 'POST',
         credentials: 'include', // говорит отпровлять куки
         headers: {
            'Content-Type': 'application/json'
         },
-        body: JSON.stringify({to, comment, rating})
+        body: JSON.stringify({to, comment, rating, lotId})
     })
 
     return dataReturn(res)

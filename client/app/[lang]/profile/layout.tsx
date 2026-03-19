@@ -49,7 +49,7 @@ function layout({children}: {children: React.ReactNode}) {
         </div>
       ): (
         <>
-          <div className={`${(!name || name === username) ? '' : 'invisible'} h-full`}>
+          <div className={`${(!name || name === username) ? '' : 'hidden md:invisible md:flex'} h-full`}>
             <Sidebar mode='sidebarMain' active={activeLink} name={username}/>
           </div>
           {children}

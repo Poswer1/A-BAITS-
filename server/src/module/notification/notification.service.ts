@@ -28,7 +28,7 @@ export class NotificationService {
 
     async createNotification(lotId:string, from:string, to:string, notification:string) {
         
-        const lot = await LotModel.findOne({lotNumber:lotId})
+        const lot = await LotModel.findById(lotId)
         if(!lot) {
             console.log('лот не найден при отправке уведомления')
             return

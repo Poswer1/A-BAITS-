@@ -14,7 +14,7 @@ export class PaymentService {
 
         const {lotId, price} = dto
 
-        const lot = await LotModel.findOne({lotNumber: lotId})
+        const lot = await LotModel.findById(lotId)
         if(!lot) {
             console.log('лот не найден при покупки')
             return
@@ -34,7 +34,7 @@ export class PaymentService {
         }
 
         const updateLot = await LotModel.updateOne(
-            {lotNumber:lotId, winner: { $exists: false }, status: 'Active'}, //условие
+            {_id:lotId, winner: { $exists: false }, status: 'Active'}, //условие
             {$set: { winner: userId, status: 'Completed' }} 
         )
         if(updateLot.modifiedCount === 0) {
@@ -57,7 +57,7 @@ export class PaymentService {
                 {
                     userTo:lot.author,
                     userFrom: userId,
-                    lot: lot.lotNumber,
+                    lot: lot._id,
                     type: 'deal'
                 }
             )

@@ -13,20 +13,21 @@ export class ReviewService {
 
     async newReview(userId:string, dto:reviewDto) {
 
-        const {to, comment, rating} = dto
+        const {to, comment, rating, lotId} = dto
 
         const user = await UserModel.findOne({_id: to})
         if(!user) throw new BadRequestException('UserNotFound')
 
         if(user._id.toString() === userId) throw new BadRequestException('ReviewYourself')
         
-        const exestingReview = await ReviewModel.findOne({from:userId, to: user._id})
+        const exestingReview = await ReviewModel.findOne({from:userId, to: user._id, lot: lotId})
         if(exestingReview) throw new BadRequestException('AlreadyReview')
 
         const review = await ReviewModel.create(
             {
                 to: user._id,
                 from: userId,
+                lot: lotId,
                 comment: comment,
                 rating: rating
             }
@@ -47,9 +48,10 @@ export class ReviewService {
             return
         }
 
-        chat.reviews.push({from: new Types.ObjectId(userId), to: user._id})
+        chat.reviews.push(new Types.ObjectId(userId));
+        chat.messages.push({from: new Types.ObjectId('507f1f77bcf86cd799439011'), to: user._id, message: 'NewReview', read:true, createdAt: new Date()})
 
-        const chatStatus = chat.reviews.some(obj => obj.to.toString() === userId)
+        const chatStatus = chat.reviews.some(obj => obj.toString() === user._id.toString())
 
         if(chatStatus) {
             chat.status = 'Close'
@@ -57,9 +59,12 @@ export class ReviewService {
 
         await chat.save()
 
-        this.chatGateWay.newReview(user._id.toString())
+        const newMessage = chat.messages[chat.messages.length - 1]
+        const chatStatusText = chatStatus ? 'Close' : 'Active'
 
-        return
+        this.chatGateWay.newReview(user._id.toString(), newMessage, chatStatusText)
+
+        return {success: true}
     }
 
     async getReviewUser(query: getReviewDto) {

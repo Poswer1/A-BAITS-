@@ -8,10 +8,7 @@ const ChatSchema = new mongoose_1.Schema({
     type: { type: String, default: 'default' },
     lot: { type: mongoose_1.Schema.Types.ObjectId, ref: "Lot", },
     status: { type: String, default: 'Active' },
-    reviews: [{
-            from: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
-            to: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
-        }],
+    reviews: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
     messages: [{
             from: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
             to: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },

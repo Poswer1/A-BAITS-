@@ -22,18 +22,19 @@ let ReviewService = class ReviewService {
         this.chatGateWay = chatGateWay;
     }
     async newReview(userId, dto) {
-        const { to, comment, rating } = dto;
+        const { to, comment, rating, lotId } = dto;
         const user = await user_model_1.UserModel.findOne({ _id: to });
         if (!user)
             throw new common_1.BadRequestException('UserNotFound');
         if (user._id.toString() === userId)
             throw new common_1.BadRequestException('ReviewYourself');
-        const exestingReview = await review_1.ReviewModel.findOne({ from: userId, to: user._id });
+        const exestingReview = await review_1.ReviewModel.findOne({ from: userId, to: user._id, lot: lotId });
         if (exestingReview)
             throw new common_1.BadRequestException('AlreadyReview');
         const review = await review_1.ReviewModel.create({
             to: user._id,
             from: userId,
+            lot: lotId,
             comment: comment,
             rating: rating
         });
@@ -48,14 +49,17 @@ let ReviewService = class ReviewService {
             console.log('чат не найден');
             return;
         }
-        chat.reviews.push({ from: new mongoose_1.Types.ObjectId(userId), to: user._id });
-        const chatStatus = chat.reviews.some(obj => obj.to.toString() === userId);
+        chat.reviews.push(new mongoose_1.Types.ObjectId(userId));
+        chat.messages.push({ from: new mongoose_1.Types.ObjectId('507f1f77bcf86cd799439011'), to: user._id, message: 'NewReview', read: true, createdAt: new Date() });
+        const chatStatus = chat.reviews.some(obj => obj.toString() === user._id.toString());
         if (chatStatus) {
             chat.status = 'Close';
         }
         await chat.save();
-        this.chatGateWay.newReview(user._id.toString());
-        return;
+        const newMessage = chat.messages[chat.messages.length - 1];
+        const chatStatusText = chatStatus ? 'Close' : 'Active';
+        this.chatGateWay.newReview(user._id.toString(), newMessage, chatStatusText);
+        return { success: true };
     }
     async getReviewUser(query) {
         const { name, page } = query;

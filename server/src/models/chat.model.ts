@@ -9,10 +9,7 @@ export interface Message {
     createdAt:Date
 }
 
-export interface ReviewsType {
-  from: Types.ObjectId;
-  to:Types.ObjectId;
-}
+
 
  export interface Chat extends Document {
    userFrom: Types.ObjectId,
@@ -20,7 +17,7 @@ export interface ReviewsType {
    type: string,
    lot: Types.ObjectId,
    status: string,
-   reviews: ReviewsType[],
+   reviews: Types.ObjectId[],
    messages: Message[];
  }
 
@@ -31,10 +28,7 @@ export interface ReviewsType {
       type: {type:String, default: 'default'},
       lot: {type: Schema.Types.ObjectId, ref: "Lot",},
       status: {type:String, default: 'Active'},
-      reviews:[{
-        from: {type: Schema.Types.ObjectId, ref: "User", required: true},
-        to: {type: Schema.Types.ObjectId, ref: "User", required: true},
-      }],
+      reviews: [{ type: Schema.Types.ObjectId, ref: 'User' }],
       messages: [{
          from:{ type: Schema.Types.ObjectId, ref: "User", required: true},
          to:{ type: Schema.Types.ObjectId, ref: "User", required: true},

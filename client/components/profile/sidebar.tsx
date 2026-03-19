@@ -71,7 +71,7 @@ export default function Sidebar({mode, active, setActive, name} : SidebarProps) 
       justify-start items-start 
       ${mode === 'sidebarMain'? (active === 'Чат'? 'md:w-20 2xl:w-25': 'md:w-60 2xl:w-70'): ''} 
       transition-[width] duration-500 ease-in-out overflow-hidden 
-      ${mode !== 'sidebarMain' && '!h-auto'}`}
+      ${mode !== 'sidebarMain' && '!h-auto '}`}
     >
       {listLinks.map(link => (
             <Link

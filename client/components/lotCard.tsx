@@ -6,6 +6,8 @@ import { Star } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import FavoritesButton from "./ui/favoritesButton"
+import { getValueByLang } from "@/utils/translateValue"
+import ListLocation from '../data/citiesUK.json'
 
 interface LotCardProps {
     lot:any
@@ -16,6 +18,8 @@ function LotCard({lot}: LotCardProps) {
     const params = useParams()
     const lang = params.lang as string
     const BASE_URL = process.env.NEXT_PUBLIC_URL
+
+    const city = getValueByLang(ListLocation, lot.location, lang)
  
     return (
         <Link href={`/${lang}/lot/${lot.lotNumber}`} className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg text-black`}>
@@ -25,11 +29,11 @@ function LotCard({lot}: LotCardProps) {
                     <h1 className="line-clamp-1">{lot.name}</h1>
                     <span className="font-bold">№ {t('lot', 'lot-number')} <span className="text-orange-600">{lot.lotNumber || '11111111'}</span>
                     </span>
-                    <span className="text-gray-500">
-                      {t('lot', 'lot-current-bid')}: <span className="text-xl font-bold text-green-700">{lot.startPrice} ₴</span>
+                    <span className="text-black">
+                      {t('lot', 'lot-current-bid')}: <span className="text-xl font-bold text-orange-600">{lot.startPrice} ₴</span>
                     </span>
-                    <span className="text-gray-500">
-                      {t('lot', 'lot-location')}: <span className="font-bold text-black">{lot.location}</span>
+                    <span className="text-black">
+                      {t('lot', 'lot-location')}: <span className="font-bold text-black">{city || lot.location}</span>
                     </span>
                     <div className="flex flex-col justify-center items-start gap-2 w-full">
                         <button className={`${hover} p-2 bg-orange-600 rounded-md text-white w-full md:w-auto`}>

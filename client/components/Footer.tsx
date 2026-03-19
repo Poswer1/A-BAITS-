@@ -44,7 +44,7 @@ function Footer() {
   ]
 
   return (
-    <div className="flex justify-start items-start w-full bg-[#0F0F0F]">
+    <div className="flex justify-start items-start w-full bg-[#0F0F0F] z-10">
       <div className="flex flex-col md:flex-row justify-start items-start w-[90%] lg:gap-10 2xl:gap-20">
         <div className={`${column} h-full  relative`}>
            <Image src={'/images/Footer/logo.png'} alt="" width={150} height={150} className="w-[150px] h-auto"/>

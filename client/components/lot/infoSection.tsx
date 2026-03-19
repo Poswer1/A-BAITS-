@@ -61,7 +61,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     setProgress(true)
     timerRef.current = setTimeout(async () => {
         try {
-            const data = await buyNow( lot.lotNumber, value)
+            const data = await buyNow(lot._id, value)
             if (data?.success) setStatus('Completed')
             setProgress(false)
         } catch (error:any) {
@@ -119,7 +119,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                 )}
 
                 <button onClick={handleBid} className={`${button} w-full ${hover} text-lg`}>{t('lot', 'lot-doBid')}</button>
-                <button onMouseDown={handleBuyNow} onMouseLeave={handleLeaveBuyNow} onMouseUp={handleLeaveBuyNow} className={`w-full ${hover} text-black border-orange-600 border !text-orange-600 rounded-md p-2 text-lg relative`}>
+                <button onMouseDown={handleBuyNow} onMouseLeave={handleLeaveBuyNow} onMouseUp={handleLeaveBuyNow} onTouchStart={handleBuyNow} onTouchEnd={handleLeaveBuyNow} onTouchCancel={handleLeaveBuyNow} className={`w-full user-select-none ${hover} text-black border-orange-600 border !text-orange-600 rounded-md p-2 text-lg relative`}>
                     {t('lot', 'lot-buyNow')} <span className="font-bold">( {lot.blitzPrice} ₴ )</span>
                     <div className={`absolute top-0 left-0 h-full bg-orange-600/50 ${progress ? 'w-full transition-all duration-[3000ms] ease-in' : 'w-0'}`}/>
                 </button>

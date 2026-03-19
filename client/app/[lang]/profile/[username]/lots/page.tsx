@@ -1,4 +1,5 @@
 import LotCardV2 from '@/components/lotCardV2'
+import Pagination from '@/components/ui/pagination'
 import { getLotByUser } from '@/services/lot'
 import { LotTypes } from '@/types/types'
 
@@ -16,6 +17,7 @@ async function page({params, searchParams}: pageProps) {
 
     const param = await params
     const search = await searchParams
+    const page = search.page as number
   
     const lang = param.lang as string
     const name = decodeURIComponent(param.username as string)
@@ -37,6 +39,7 @@ async function page({params, searchParams}: pageProps) {
       {data?.allLots.map((lot) => (
         <LotCardV2 key={lot._id} lot={lot}/>
       ))}
+      <Pagination total={data.totalLots} maxLot={4}/>
     </div>
   )
 }

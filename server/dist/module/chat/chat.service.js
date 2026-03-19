@@ -67,11 +67,10 @@ let ChatService = class ChatService {
                     { userFrom: userId, userTo: toUserId },
                 ],
                 type: type
-            }).populate('lot', 'name images startPrice lotNumber');
+            }).populate('lot', 'name images startPrice lotNumber _id');
             if (!history)
                 return { historyMessage: [], numberLot: null };
-            const hadReview = history.reviews.some(obj => obj.to.toString() === userId);
-            return { history, hadReview };
+            return { history };
         }
         catch (error) {
             throw new common_1.BadRequestException('Ошибка при получение истории чата', error);

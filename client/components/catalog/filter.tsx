@@ -9,7 +9,7 @@ import listLocation from '../../data/citiesUK.json'
 import { hover } from "@/styles/style";
 import { button } from "@/styles/global";
 import { hoverCat } from "@/styles/categoryList";
-import { useParams, usePathname, useRouter, useSearchParams } from "next/navigation";
+import {  usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface FilterProps {
   maxPriceLot:number
@@ -18,11 +18,12 @@ interface FilterProps {
 export default function Filter({maxPriceLot}: FilterProps) {
   const {t} = useTranslation()
   const searchParams = useSearchParams()
-  const params = useParams()
   const router = useRouter()
   const path = usePathname()
 
   const [open, setOpen] = useState(true)
+  const [openMobile, setOpenMobile] = useState(false)
+  const isOpen = window.innerWidth >= 768 ? open : openMobile
   const [cityValue, setCityValue] = useState('')
   const [sortValue, setSortValue] = useState('')
   const [minPrice, setMinPrice] = useState(0)
@@ -107,23 +108,39 @@ export default function Filter({maxPriceLot}: FilterProps) {
     router.push(`?${params.toString()}`)
   }
 
+  useEffect(() => {
+    
+    const mobile = window.innerWidth <= 768
+
+    if(isOpen && mobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    }
+
+  }, [isOpen])
+
   return (
     <>
-    <div className="bg-orange-600 md:hidden fixed top-1/2 p-1 flex rounded-r-2xl">
-      <Sliders className='text-white cursor-pointer' size={35} onClick={() => setOpen(prev => !prev)}/>
+    <div className={`${isOpen ? 'opacity-0' : 'opacity-100'} bg-orange-600 p-1 text-white fixed top-1/2 z-20 md:hidden rounded-r-2xl`} onClick={() => setOpenMobile(true)}>
+      <Sliders size={35}/>
     </div>
-    <div className={`${open ? 'w-full top-0 fixed md:static md:w-100 p-5' : 'w-0 md:w-20'} md:p-5 transition-all duration-300 ease-in-out flex flex-col bg-white justify-start items-start h-screen gap-4 border-r border-gray-300`}>
-      <div className={`flex ${open ? 'justify-between' : 'justify-center'} items-center w-full`}>
-        {open && (
+    <div className={`${isOpen ? 'w-full top-0 fixed md:static md:w-100 p-5 ' : 'w-0 md:w-20'} md:p-5  transition-all duration-300 ease-in-out flex flex-col bg-white justify-start items-start h-screen gap-4 border-r border-gray-300 text-black`}>
+      <div className={`flex ${isOpen ? 'justify-between' : 'justify-center'} items-center w-full`}>
+        {isOpen && (
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-black text-lg">{t('catalog','Filter')}</h1>
             <span className={`text-sm text-orange-600 ${hover}`}>{t('catalog', 'resetFilter')}</span>
           </div>
         )}
-        <Sliders className='text-orange-600 cursor-pointer' size={25} onClick={() => setOpen(prev => !prev)}/>
+        <Sliders className='text-orange-600 cursor-pointer' size={25} onClick={() => {setOpen(prev => !prev), setOpenMobile(prev => !prev)}}/>
       </div>
       
-        <div className={`${open ? 'opacity-100 duration-1000' : 'opacity-0 duration-100'}`}>
+        <div className={`${isOpen ? 'opacity-100 duration-1000' : 'opacity-0 duration-100'}`}>
           <SelectionField title={t('catalog', 'FilterByCity')} placeholder={t('catalog', 'SelectCity')} list={listLocation} setValue={setCityValue} value={cityValue}/>
           <SelectionField title={t('catalog', 'sort')} placeholder={t('catalog', 'LowToUp')} list={listLowToUpPrice} setValue={setSortValue} value={sortValue}/>
           <div className="flex flex-col justify-center items-center w-full gap-1">
