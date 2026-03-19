@@ -14,7 +14,7 @@ export interface Chat extends Document {
     userFrom: Types.ObjectId;
     userTo: Types.ObjectId;
     type: string;
-    lot: string;
+    lot: Types.ObjectId;
     status: string;
     reviews: ReviewsType[];
     messages: Message[];
