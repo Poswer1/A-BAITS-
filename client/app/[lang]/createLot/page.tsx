@@ -11,17 +11,20 @@ import PriceSections from "@/components/createLot/priceSections"
 import StateSections from "@/components/createLot/stateSections"
 import Summary from "@/components/createLot/summary"
 import CategoryList from "@/components/header/CategoryList"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ChevronDown } from "lucide-react"
 import { hover } from "@/styles/style"
 import { createLot } from "@/services/lot"
 import Loading from "@/components/ui/loadig"
 import Success from "@/components/createLot/success"
+import { getStatusAuth } from "@/services/auth"
+import { useRouter } from "next/navigation"
+import { loadingBlock } from "@/styles/global"
 
 function page() {
 
     const {t} = useTranslation()
-
+    const router = useRouter()
 
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -45,7 +48,22 @@ function page() {
 
     const [openCategory, setOpenCategory] = useState(false)
     const [confirmCreateOrder, setConfirmCreateOrder] = useState(false)
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(true)
+
+
+      useEffect(() => {
+      const checkAuth = async () => {
+        const isAuth = await getStatusAuth()
+
+        if (!isAuth) {
+          router.push('/auth/login')
+        }
+        setLoading(false)
+      }
+
+      checkAuth()
+    }, [])
+
 
     const handleClear = () => {
       setName('')
@@ -130,11 +148,17 @@ function page() {
 
   }
 
+  const handleBack = () => {
+    router.back()
+  }
+
 
   return (
-  <div className="flex flex-col justify-center items-center w-full gap-10 min-h-[70vh] bg-gray-100">
+  <div className="flex flex-col justify-center items-center w-full gap-10 bg-white md:bg-gray-100 text-black">
     {loading ? (
-      <Loading />
+      <div className={loadingBlock}>
+        <Loading />
+      </div>
     ): (
       <>
       {confirmCreateOrder && (
@@ -142,9 +166,9 @@ function page() {
       )}
         <div className="flex justify-between items-center w-[90%] mt-10">
           <h1 className="text-orange-600 text-3xl font-bold gap-2">{t('createLot','createLot-title')} <span className="text-black">лоту</span></h1>
-          <span className={`${hover} flex justify-center items-center`}><ChevronDown className="rotate-90"/> Назад</span>
+          <span onClick={handleBack} className={`${hover} flex justify-center items-center`}><ChevronDown className="rotate-90"/> Назад</span>
         </div>
-          <div className="flex flex-col justify-center items-start w-2/3  rounded-xl gap-4">
+          <div className="flex flex-col justify-center items-start w-full md:w-2/3 rounded-xl md:gap-4">
             
             <MainInfoSections openCategory={openCategory} setOpenCategory={setOpenCategory} name={name} setName={setName} category={category}  subCategory={subCategory}  subSubCategory={subSubCategory} />
 

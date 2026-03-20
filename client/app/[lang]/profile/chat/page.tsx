@@ -6,7 +6,6 @@ import AvatarBlock from '@/components/ui/avatar'
 import OlnlineUser from '@/components/ui/onlineUser';
 import { getRelativeTime } from '@/components/ui/relativeTime';
 import { getUserById } from '@/services/user';
-import { input } from '@/styles/createLot';
 import { blockClass, pageContainerClass } from '@/styles/profile/profile'
 import { hover } from '@/styles/style';
 import { Check, MoreVertical,Send, X} from "lucide-react";
@@ -177,7 +176,7 @@ function page() {
             </div>
             {chat?.status !== 'Close' ? (
               <div className='flex justify-center items-center w-full gap-2'>
-                <input className={`${input}`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder='Напишите сообщение'/>
+                <input className={`w-full outline-none`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder='Напишите сообщение'/>
                 <button onClick={() => {
                   handleSendNewMessage()
                   setMessage('')

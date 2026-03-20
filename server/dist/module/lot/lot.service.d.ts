@@ -1,14 +1,14 @@
 import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
-import { Types } from 'mongoose';
+import mongoose, { Types } from 'mongoose';
 export declare class LotService {
-    createLot(dto: LotDto, files: Express.Multer.File[], userId: string): Promise<import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
+    createLot(dto: LotDto, files: Express.Multer.File[], userId: string): Promise<mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;
     } & {
         __v: number;
     } & {
         id: string;
     }>;
-    getAllLot(): Promise<(import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
+    getAllLot(): Promise<(mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;
     } & {
         __v: number;
@@ -19,7 +19,7 @@ export declare class LotService {
         name: string;
         page: number;
     }): Promise<{
-        allLots: (import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
+        allLots: (mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
             _id: Types.ObjectId;
         } & {
             __v: number;
@@ -29,7 +29,7 @@ export declare class LotService {
         totalLots: number;
     } | undefined>;
     getMyLots(query: getMyLotsDto, userId: string): Promise<{
-        allLots: (import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
+        allLots: (mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
             _id: Types.ObjectId;
         } & {
             __v: number;
@@ -39,7 +39,7 @@ export declare class LotService {
         totalLot: number;
     }>;
     getFilterLot(query: filterLot): Promise<{
-        lots: (import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
+        lots: (mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
             _id: Types.ObjectId;
         } & {
             __v: number;
@@ -49,14 +49,14 @@ export declare class LotService {
         totalLot: number;
         maxPriceLot: number;
     }>;
-    getLot(numberLot: string): Promise<(import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
+    getLot(numberLot: string): Promise<(mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;
     } & {
         __v: number;
     } & {
         id: string;
     }) | null>;
-    myHistoryLot(userId: string): Promise<(import("mongoose").Document<unknown, {}, import("src/models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
+    myHistoryLot(userId: string): Promise<(mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;
     } & {
         __v: number;
@@ -76,7 +76,7 @@ export declare class LotService {
             currentBid: number;
             dateBid: Date | undefined;
         };
-    } | null | undefined>;
+    } | null>;
     getHistoryBid(lotId: string): Promise<{
         historyUser: {
             authorId: Types.ObjectId;

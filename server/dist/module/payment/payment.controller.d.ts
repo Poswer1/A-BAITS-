@@ -5,5 +5,5 @@ export declare class PaymentController {
     constructor(paymentService: PaymentService);
     buyLot(req: any, dto: BuyLotDto): Promise<{
         success: boolean;
-    } | undefined>;
+    }>;
 }

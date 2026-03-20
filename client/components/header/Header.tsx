@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'
-import { Search, Menu,X, Bell} from 'lucide-react';
+import { Search, Menu,X, Bell, LogIn} from 'lucide-react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { hover} from '@/styles/style';
@@ -17,7 +17,7 @@ import OpenNotification from './openNotification';
 import { useSocketContext } from '@/app/context/SocketIo';
 import ChangeLanguage from './changeLanguage';
 import SearchSection from './SearchSection';
-
+import { getStatusAuth } from '@/services/auth';
 
 function Header() {
 
@@ -31,6 +31,7 @@ function Header() {
     const [openProfile, setOpenProfile] = useState(false)
     const [openNotification, setOpenNotification] = useState(false)
     const [read, setRead] = useState(false)
+    const [auth, setAuth] = useState(false)
 
     const [name, setName] = useState('')
     const [avatar, setAvatar] = useState('')
@@ -43,6 +44,9 @@ function Header() {
             const data = await getUserById();
             setName(data.name);
             setAvatar(data.avatar);
+            const isAuth = await getStatusAuth();
+            setAuth(isAuth);   
+            console.log(isAuth)
             } catch (err: any) {
             console.error('Помилка при отриманні користувача:', err.message);
             }
@@ -50,6 +54,7 @@ function Header() {
 
         fetchUser();
     }, []);
+
 
     useEffect(() => {
         if(!socket) return
@@ -70,9 +75,6 @@ function Header() {
   return (
     <div className='flex flex-col justify-center items-center w-full z-20'>
         <div className='flex flex-col justify-center items-start w-full md:w-[90%] p-2 relative'>
-            <button onClick={() => setOpenCategory(prev => !prev)} className={`font-medium flex md:hidden justify-start items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}>
-                <Menu size={20}/>{t('header','category')}
-            </button>
             <div className='flex justify-between items-center w-full p-2'>
                 <Link href={`/${lang}`}>
                     <Image 
@@ -101,29 +103,32 @@ function Header() {
                             <Search className='text-black md:hidden' onClick={() => setOpenSearch(true)}/>
                         )}
                                 
-                        <Bell className={`${hoverSub} ${openSearch ? 'hidden md:block' : 'block'} ${read ? 'text-orange-600': 'text-gray-500'}`} onClick={() => setOpenNotification(prev => !prev)}/>
-
-                        <div className={`flex flex-col justify-center items-start relative ${openSearch ? 'hidden md:block' : 'block'}`}>
-                            <div className={`${hover} flex justify-center items-center gap-2`} onClick={() => setOpenProfile(prev => !prev)}>
-                                <AvatarBlock avatar={avatar} size="32"/>
-                                <span className='text-black hidden md:block'>{name || t('header','userNameNotFound')}</span>
+                        {!auth ? (
+                            <Link href="/auth/login" className={`p-2 px-4 rounded-md ${hover} bg-orange-600 text-white flex gap-1 justify-center items-center`}><LogIn size={20}/>{t('header','login')}</Link>
+                        ): (
+                            <>
+                            <Bell className={`${hoverSub} hidden md:flex ${read ? 'text-orange-600': 'text-gray-500'}`} onClick={() => setOpenNotification(prev => !prev)}/>
+                            <span onClick={() => setOpenCategory(prev => !prev)} className={`bg-orange-600 p-1 rounded-md md:hidden ${openSearch ? 'hidden' : 'flex'}`}>
+                              <Menu className='text-white'/>
+                            </span>
+                            <div className={`flex flex-col justify-center items-start relative ${openSearch ? 'hidden md:block' : 'block'}`}>
+                                <div className={`${hover} flex justify-center items-center gap-2`} onClick={() => setOpenProfile(prev => !prev)}>
+                                    <AvatarBlock avatar={avatar} size="32"/>
+                                    <span className='text-black hidden md:block'>{name || t('header','userNameNotFound')}</span>
                             </div>
-                            {openProfile && (
-                                <OpenProfile setOpenProfile={setOpenProfile} name={name}/>
-                            )}
-                        </div>
-                       
-                        {/* <>
-                            <Link href="/auth/register" className={`p-2 px-4 bg-orange-600 rounded-md ${hover} text-white font-medium`}>{t('header','register')}</Link>
-                            <Link href="/auth/login" className={`p-2 px-4 rounded-md ${hover} bg-gray-100`}>{t('header','login')}</Link>
-                        </> */}
+
+                            <OpenProfile setOpenProfile={setOpenProfile} open={openProfile} name={name}/>
+                               
+                            </div>
+                            </>
+                        )}
                         {openNotification && (
                             <OpenNotification setOpen={setOpenNotification} lang={lang} setRead={setRead}/>
                         )}
                 </div>
             </div>
             {openCategory && (
-               <CategoryList setOpenCategory={setOpenCategory} openFrom='header'/>
+               <CategoryList setOpenCategory={setOpenCategory} openFrom='header' />
             )}
         </div>
     </div>

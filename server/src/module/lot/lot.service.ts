@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
 import { LotModel } from 'src/models/lot.model';
 import { ProccessImages } from 'src/utils/files-upload';
-import { isValidObjectId, Types } from 'mongoose';
+import mongoose, { isValidObjectId, Types } from 'mongoose';
 import { UserModel } from 'src/models/user.model';
 import { SortOrder } from 'mongoose'
 
@@ -211,11 +211,11 @@ export class LotService {
   }
 
   async placeBid(data: {lotId: string, bid: number}, userId: string) {
+    try {
     const lot = await LotModel.findOne({lotNumber: data.lotId})
 
     if (!lot) {
-      console.log('лот не найден') 
-      return
+      throw new BadRequestException('lotNotFound')
     }
 
     if(lot.winner) {
@@ -230,35 +230,50 @@ export class LotService {
 
     const user = await UserModel.findById(userId)
     if(!user) {
-      console.log('пользователь не найден при ставке')
-      return
+      throw new BadRequestException('UserNotFound')
     }
 
-    if(data.bid >= user?.balance) {
+   if (user.balance < data.bid) {
       throw new BadRequestException('NoMoney')
     }
-
-    lot.startPrice = data.bid
-
-    lot.historyBid.push({author: new Types.ObjectId(userId), currentBid: data.bid})
 
     const nowDate = new Date()
     const differenceDate = lot.date.getTime() - nowDate.getTime()
     const fiveMinutes = 300000
 
-    if(differenceDate <= fiveMinutes) {
-      lot.date = new Date(lot.date.getTime() + fiveMinutes)
-    }
+    const update = await LotModel.updateOne(
+      {
+        _id: lot._id,
+        winner: { $exists: false },
+        startPrice: lot.startPrice
+      },
+      {
+        $set: { 
+          startPrice: data.bid,
+          ...(differenceDate <= fiveMinutes && {
+            date: new Date(lot.date.getTime() + fiveMinutes)
+          })
+        },
+        $push: {
+          historyBid: {
+            author: new Types.ObjectId(userId),
+            currentBid: data.bid
+          }
+        }
+      }
+    )
 
-    await lot.save()
+    if (update.modifiedCount === 0) {
+      throw new BadRequestException('Ставка уже перебита')
+    }
 
     const updateLot = await LotModel.findById(lot._id)
     .populate('historyBid.author', 'name avatar');
 
     const lastBidRaw = updateLot?.historyBid[updateLot.historyBid.length - 1]
-    
-    if (!lastBidRaw) return null;
 
+    if (!lastBidRaw) return null;
+    
     const lastBid = {
         authorId: (lastBidRaw.author as any)._id,   
         name: (lastBidRaw.author as any).name,    
@@ -266,12 +281,15 @@ export class LotService {
         currentBid: lastBidRaw.currentBid,        
         dateBid: lastBidRaw.createdAt            
     };
-    
-    return {
-      lotId: lot.lotNumber,
-      newPrice: lot.startPrice,
-      lastBid:lastBid
-    }
+
+      return {
+        lotId: updateLot.lotNumber,
+        newPrice: updateLot.startPrice,
+        lastBid:lastBid
+      }
+    } catch (error) {
+      throw error
+    } 
 
   }
 

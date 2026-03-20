@@ -64,11 +64,11 @@ export default function PhotoSections({setFile, file, preview, setPreview}:Photo
     <div className={block}>
        <div className={Blockinput}>
           <span className={nameInput}>Фото</span>
-          <p className={nameInput}>{t('createLot','createLot-firstPhoto')}</p>
-          <div className="flex flex-wrap justify-start items-center w-full gap-3">
+          <p className={'text-gray-500 text-sm'}>{t('createLot','createLot-firstPhoto')}</p>
+          <div className="flex overflow-x-auto md:flex-wrap justify-start items-center w-full gap-3">
            <input type="file" multiple id="fileInput" onChange={handleFile} className="hidden"/>
             {Array.from({ length: 8 }).map((_, index) => (
-              <label htmlFor="fileInput" key={index} className="flex justify-center items-center bg-gray-100 h-35 w-1/5 cursor-pointer relative overflow-hidden">
+              <label htmlFor="fileInput" key={index} className="flex justify-center items-center bg-gray-100 h-32 w-1/2 md:w-1/5 cursor-pointer relative overflow-hidden">
                 {preview[index] ? (
                   <>
                     <div onDrop={() => handleDrop(index)} draggable  onDragStart={() => setDragIndex(index)}  onDragOver={(e) => e.preventDefault()} className="w-full h-full">

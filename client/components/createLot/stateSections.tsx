@@ -23,10 +23,10 @@ export default function StateSections({stateLot, setStateLot, mode}:StateSection
     <div className={block}>
         <div className={Blockinput}>
             <span className={nameInput}>{mode === 'state' ? t('createLot','createLot-state-title') : t('createLot','create-delivary-title')}</span>
-            <div className="flex justify-start items-center gap-5">
+            <div className="flex overflow-x-auto w-full justify-start items-center gap-5">
                 {statesLot.map((state, index) => (
                     <>
-                    <span key={index} className={`${hover} ${index === 3 && mode !=='state' && 'hidden'} ${stateLot === state.state && 'bg-orange-600 text-white'} bg-gray-100 p-2 w-40 text-center rounded-md`} onClick={() => setStateLot(state.state)}>{state.state}</span>
+                    <span key={index} className={`whitespace-nowrap ${hover} ${index === 3 && mode !=='state' && 'hidden'} ${stateLot === state.state && 'bg-orange-600 text-white'} bg-gray-100 p-2 w-40 text-center rounded-md`} onClick={() => setStateLot(state.state)}>{state.state}</span>
                     </>
                  ))}
             </div>

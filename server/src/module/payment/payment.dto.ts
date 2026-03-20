@@ -1,4 +1,5 @@
 import { IsNumber, IsOptional, IsString } from "class-validator";
+import { ClientSession } from "mongoose";
 
 export class BuyLotDto {
     @IsString()
@@ -7,4 +8,5 @@ export class BuyLotDto {
     @IsNumber()
     @IsOptional()
     price?:number
+
 }

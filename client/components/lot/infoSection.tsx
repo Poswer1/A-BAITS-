@@ -4,13 +4,14 @@ import { useTranslation } from "@/app/context/TranslationProvider"
 import { animate, button, customInput } from "@/styles/global"
 import { columnBlock} from "@/styles/lot"
 import { animationOpacity, hover } from "@/styles/style"
-import { Plus, Minus } from "lucide-react"
+import { Plus, Minus, LogIn } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Socket } from "socket.io-client"
 import { buyNow } from "@/services/payment"
 import { LotTypes } from "@/types/types"
 import Countdown from "../ui/countdown"
 import { useSwipeable } from "react-swipeable"
+import { useRouter } from "next/navigation"
 
 interface InfoSectionProps {
     lot: LotTypes,
@@ -21,17 +22,22 @@ interface InfoSectionProps {
     setCurrentPrice: (t:number) => void
     value:number,
     setValue: React.Dispatch<React.SetStateAction<Number>>
+    auth:boolean
 }
 
-export default function InfoSection({lot, socket, currentPrice, setCurrentPrice, value, setValue, setStatus, status}: InfoSectionProps) {
+export default function InfoSection({lot, socket, currentPrice, setCurrentPrice, value, setValue, setStatus, status, auth}: InfoSectionProps) {
 
     const {t} = useTranslation()
     const [message, setMessage] = useState('')
     const [progress, setProgress] = useState(false)
     const [open, setOpen] = useState(false)
+    const router = useRouter()
 
     const handleBid = () => {
         if(!socket) return
+        if(!auth) {
+            router.push('/auth/login')
+        }
             socket.emit('placeBid',
             {
                 lotId: lot.lotNumber, 
@@ -104,25 +110,24 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
 
         {status === 'Active' && (
             <>
-                <Countdown date={lot.date.toString()}/>
+            <Countdown date={lot.date.toString()}/>
                 <div className={`${customInput} py-2`}>
                     <span className="font-bold">₴</span>
-                    <input placeholder="950" className="w-full outline-none" value={value}/>
-                    <div className="flex justify-center items-center gap-2">
-                        <Minus className={`${buttonInput} ${hover}`} onClick={handleMinus}/>
-                        <Plus className={`${buttonInput} ${hover}`} onClick={handlePlus}/>
-                    </div>
-                </div> 
+                        <input placeholder="950" className="w-full outline-none" value={value}/>
+                            <div className="flex justify-center items-center gap-2">
+                                <Minus className={`${buttonInput} ${hover}`} onClick={handleMinus}/>
+                                <Plus className={`${buttonInput} ${hover}`} onClick={handlePlus}/>
+                            </div>
+                        </div> 
+                        {message && (
+                            <p className={`${animationOpacity} text-orange-600 mt-2`}>{message}</p>
+                        )}
 
-                {message && (
-                    <p className={`${animationOpacity} text-orange-600 mt-2`}>{message}</p>
-                )}
-
-                <button onClick={handleBid} className={`${button} w-full ${hover} text-lg`}>{t('lot', 'lot-doBid')}</button>
-                <button onMouseDown={handleBuyNow} onMouseLeave={handleLeaveBuyNow} onMouseUp={handleLeaveBuyNow} onTouchStart={handleBuyNow} onTouchEnd={handleLeaveBuyNow} onTouchCancel={handleLeaveBuyNow} className={`w-full user-select-none ${hover} text-black border-orange-600 border !text-orange-600 rounded-md p-2 text-lg relative`}>
-                    {t('lot', 'lot-buyNow')} <span className="font-bold">( {lot.blitzPrice} ₴ )</span>
+                    <button onClick={handleBid} className={`${button} w-full ${hover} text-lg`}>{t('lot', 'lot-doBid')}</button>
+                    <button onMouseDown={handleBuyNow} onMouseLeave={handleLeaveBuyNow} onMouseUp={handleLeaveBuyNow} onTouchStart={handleBuyNow} onTouchEnd={handleLeaveBuyNow} onTouchCancel={handleLeaveBuyNow} className={`w-full user-select-none ${hover} text-black border-orange-600 border !text-orange-600 rounded-md p-2 text-lg relative`}>
+                        {t('lot', 'lot-buyNow')} <span className="font-bold">( {lot.blitzPrice} ₴ )</span>
                     <div className={`absolute top-0 left-0 h-full bg-orange-600/50 ${progress ? 'w-full transition-all duration-[3000ms] ease-in' : 'w-0'}`}/>
-                </button>
+                    </button>            
             </>
         )} 
     </div>

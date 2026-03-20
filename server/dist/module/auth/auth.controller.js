@@ -24,6 +24,10 @@ let AuthController = class AuthController {
     async register(dto) {
         return this.authService.register(dto);
     }
+    getStatusAuth(req) {
+        const token = req.cookies['token'];
+        return { isLoggedIn: !!token };
+    }
     async login(dto, res) {
         const data = await this.authService.login(dto);
         res.cookie('token', data.token, {
@@ -43,6 +47,13 @@ __decorate([
     __metadata("design:paramtypes", [create_auth_dto_1.Auth]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
+__decorate([
+    (0, common_1.Get)('getStatusAuth'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], AuthController.prototype, "getStatusAuth", null);
 __decorate([
     (0, common_1.Post)('login'),
     __param(0, (0, common_1.Body)()),

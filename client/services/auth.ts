@@ -1,3 +1,4 @@
+import { NextApiRequest, NextApiResponse } from "next"
 import { BASE_URL, dataReturn } from "./utils"
 
 
@@ -11,6 +12,17 @@ export async function register(email:string, password:string) {
     })
 
     return dataReturn(res)
+}
+
+export async function getStatusAuth() {
+    const res = await fetch(`${BASE_URL}/auth/getStatusAuth`, {
+        method: 'GET',
+        credentials: 'include', // говорит отпровлять куки
+        
+    })
+
+    const data = await res.json();
+    return data.isLoggedIn;
 }
 
 export async function login(email:string, password:string) {

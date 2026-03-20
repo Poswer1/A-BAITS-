@@ -76,7 +76,7 @@ function CategoryList({setOpenCategory, openFrom} : CategoryList) {
   return (
     <>
     <div className={`${overlay}`} onClick={() => setOpenCategory(false)}>
-          <div onClick={(e) => e.stopPropagation()} className={`w-full md:w-2/3 bg-white rounded-md ${openFrom === 'header' && 'top-0 md:top-[8%] absolute' }  flex flex-col md:flex-row justify-start items-start z-30 text-black`}>
+          <div onClick={(e) => e.stopPropagation()} className={`${animationOpacity} w-full md:w-2/3 bg-white rounded-md ${openFrom === 'header' && 'top-0 md:top-[8%] absolute' }  flex flex-col md:flex-row justify-start items-start z-30 text-black`}>
             
           <div className="flex justify-between items-center w-full text-black border-b border-gray-300 p-2 md:hidden bg-white">
                 {category && (

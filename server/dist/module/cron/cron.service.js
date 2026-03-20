@@ -33,33 +33,41 @@ let CronSerivce = class CronSerivce {
             if (expiredLots.length === 0)
                 return;
             for (const lot of expiredLots) {
-                if (lot.historyBid.length > 0) {
-                    const winner = lot.historyBid[0];
-                    await this.paymentService.buyLot(winner.author.toString(), { lotId: lot.lotNumber.toString(), price: winner.currentBid });
-                }
-                else {
-                    if (lot.autoReExtension) {
-                        const oneDayMs = 24 * 60 * 60 * 1000;
-                        const sevenDaysMs = 7 * oneDayMs;
-                        const newDate = new Date(lot.date.getTime() + sevenDaysMs);
-                        const [hours, minutes] = lot.dateTime.split(':').map(Number);
-                        newDate.setHours(hours, minutes, 0, 0);
-                        lot.date = newDate;
-                        await this.notificationGateWay.sendNotification({ lotId: lot.lotNumber, to: lot.author.toString(), notification: 'lotRelisted' });
-                        console.log('лот перевыставлен');
+                try {
+                    if (lot.historyBid.length > 0) {
+                        const winner = lot.historyBid[0];
+                        await this.paymentService.buyLot(winner.author.toString(), { lotId: lot.lotNumber.toString(), price: winner.currentBid });
                     }
                     else {
-                        lot.status = 'Archive';
+                        if (lot.autoReExtension) {
+                            const oneDayMs = 24 * 60 * 60 * 1000;
+                            const sevenDaysMs = 7 * oneDayMs;
+                            const newDate = new Date(lot.date.getTime() + sevenDaysMs);
+                            const [hours, minutes] = lot.dateTime.split(':').map(Number);
+                            newDate.setHours(hours, minutes, 0, 0);
+                            lot.date = newDate;
+                            console.log('лот перевыставлен');
+                        }
+                        else {
+                            lot.status = 'Archive';
+                            console.log(`Лот ${lot._id} завершён без ставок`);
+                        }
+                    }
+                    await lot.save();
+                    if (lot.historyBid.length === 0 && lot.autoReExtension) {
+                        await this.notificationGateWay.sendNotification({ lotId: lot.lotNumber, to: lot.author.toString(), notification: 'lotRelisted' });
+                    }
+                    else if (lot.historyBid.length === 0 && !lot.autoReExtension) {
                         await this.notificationGateWay.sendNotification({ lotId: lot.lotNumber, to: lot.author.toString(), notification: 'lotNotRedeemed' });
-                        console.log(`Лот ${lot._id} завершён без ставок`);
                     }
                 }
-                await lot.save();
+                catch (error) {
+                    console.error('CRON ошибка лота', lot._id, error);
+                }
             }
         }
         catch (error) {
-            console.log('ошибка работы CRON');
-            return;
+            throw error;
         }
     }
 };

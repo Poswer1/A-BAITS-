@@ -17,6 +17,7 @@ import { overlay } from "@/styles/global"
 import AvatarBlock from "@/components/ui/avatar"
 import { animationScale } from "@/styles/style"
 import { useTranslation } from "@/app/context/TranslationProvider"
+import { getStatusAuth } from "@/services/auth"
 
 
 function page() {
@@ -32,6 +33,7 @@ function page() {
     const [userHistory, setUserHistory] = useState<any[]>([])
     const [status, setStatus] = useState('')
     const [newBid, setNewBid] = useState('')
+    const [auth, setAuth] = useState(false)
     const [value, setValue] = useState(0)
     const { socket } = useSocketContext()
 
@@ -78,6 +80,10 @@ function page() {
             setStatus(data.status)
             setValue(data.startPrice + data.stepPrice)
         })
+        getStatusAuth()
+        .then(data => {
+          setAuth(data);   
+        })
     }, [numberLot])
 
 
@@ -97,12 +103,12 @@ function page() {
                   <HeaderLot lot={lot} />
                 </div>
 
-                <InfoSection lot={lot} socket={socket} currentPrice={currentPrice} setCurrentPrice={setCurrentPrice} value={value} setValue={setValue} status={status} setStatus={setStatus}/>
+                <InfoSection lot={lot} socket={socket} currentPrice={currentPrice} setCurrentPrice={setCurrentPrice} value={value} setValue={setValue} status={status} setStatus={setStatus} auth={auth}/>
 
                 <AuthorSection lot={lot}/> 
                 <DescriptioSection lot={lot}/>
               </div>
-              <BidHistory lot={lot} socket={socket} userHistory={userHistory}/>
+              <BidHistory lot={lot} socket={socket} userHistory={userHistory} auth={auth}/>
           </div>
         </>
       )}

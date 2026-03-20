@@ -1,7 +1,7 @@
-import { Body, Controller, Post, Res} from '@nestjs/common';
+import { Body, Controller, Get, Post, Res, Req} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Auth } from './dto/create-auth.dto';
-import type { Response } from 'express';
+import type { Response, Request} from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -10,6 +10,12 @@ export class AuthController {
   @Post('register')
   async register(@Body() dto: Auth) {
     return this.authService.register(dto)
+  }
+
+  @Get('getStatusAuth')
+  getStatusAuth(@Req() req: Request) {
+    const token = req.cookies['token']
+    return {isLoggedIn: !!token}
   }
 
   @Post('login')

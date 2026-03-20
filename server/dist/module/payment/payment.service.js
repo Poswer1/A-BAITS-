@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PaymentService = void 0;
 const common_1 = require("@nestjs/common");
@@ -15,6 +18,7 @@ const lot_model_1 = require("../../models/lot.model");
 const user_model_1 = require("../../models/user.model");
 const notification_gateway_1 = require("../notification/notification.gateway");
 const chat_model_1 = require("../../models/chat.model");
+const mongoose_1 = __importDefault(require("mongoose"));
 let PaymentService = class PaymentService {
     notificationGateWay;
     constructor(notificationGateWay) {
@@ -22,47 +26,47 @@ let PaymentService = class PaymentService {
     }
     async buyLot(userId, dto) {
         const { lotId, price } = dto;
-        const lot = await lot_model_1.LotModel.findById(lotId);
-        if (!lot) {
-            console.log('лот не найден при покупки');
-            return;
-        }
-        const user = await user_model_1.UserModel.findById(userId);
-        if (!user) {
-            console.log('пользователь не найден при покупки');
-            return;
-        }
-        const lotPrice = price ?? lot.blitzPrice;
-        if (!lotPrice)
-            return;
-        if (user.balance < lotPrice) {
-            console.log('NoMoney');
-            throw new common_1.BadRequestException('NoMoney');
-        }
-        const updateLot = await lot_model_1.LotModel.updateOne({ _id: lotId, winner: { $exists: false }, status: 'Active' }, { $set: { winner: userId, status: 'Completed' } });
-        if (updateLot.modifiedCount === 0) {
-            console.log('LotAlreadySold');
-            throw new common_1.BadRequestException('LotAlreadySold');
-        }
-        const userUpdate = await user_model_1.UserModel.updateOne({ _id: userId, balance: { $gte: lotPrice } }, { $inc: { balance: -lotPrice } });
-        if (userUpdate.modifiedCount === 0) {
-            console.log('NoMoney');
-            throw new common_1.BadRequestException('NoMoney');
-        }
+        const session = await mongoose_1.default.startSession();
         try {
-            await chat_model_1.ChatModel.create({
-                userTo: lot.author,
-                userFrom: userId,
-                lot: lot._id,
-                type: 'deal'
+            session.startTransaction();
+            const lot = await lot_model_1.LotModel.findById(lotId).session(session);
+            if (!lot)
+                throw new Error('лот не найден');
+            const lotPrice = price ?? lot.blitzPrice;
+            if (!lotPrice)
+                throw new Error('нет цены');
+            const updateLot = await lot_model_1.LotModel.updateOne({ _id: lotId, winner: { $exists: false }, status: 'Active' }, { $set: { winner: userId, status: 'Completed' } }, { session });
+            if (updateLot.modifiedCount === 0) {
+                throw new common_1.BadRequestException('LotAlreadySold');
+            }
+            const userUpdate = await user_model_1.UserModel.updateOne({ _id: userId, balance: { $gte: lotPrice } }, { $inc: { balance: -lotPrice } }, { session });
+            if (userUpdate.modifiedCount === 0) {
+                throw new common_1.BadRequestException('NoMoney');
+            }
+            await chat_model_1.ChatModel.create([
+                {
+                    userTo: lot.author,
+                    userFrom: userId,
+                    lot: lot._id,
+                    type: 'deal'
+                }
+            ], { session });
+            await session.commitTransaction();
+            this.notificationGateWay.sendNotification({
+                lotId,
+                to: lot.author.toString(),
+                from: userId.toString(),
+                notification: 'lotPurchased'
             });
+            return { success: true };
         }
         catch (error) {
-            console.log('ошибка при создание чата сделки', error);
-            return;
+            await session.abortTransaction();
+            throw error;
         }
-        this.notificationGateWay.sendNotification({ lotId, to: lot.author.toString(), from: userId.toString(), notification: 'lotPurchased' });
-        return { success: true };
+        finally {
+            session.endSession();
+        }
     }
 };
 exports.PaymentService = PaymentService;

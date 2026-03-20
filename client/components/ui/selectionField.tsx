@@ -14,7 +14,6 @@ interface SelectionFieldProps {
     setValue: (v:string) => void
     value: string
     list: any[]
-    handle?:() => void
 }
 
 export default function SelectionField({title, placeholder, list, setValue, value}:SelectionFieldProps) {
@@ -30,7 +29,7 @@ export default function SelectionField({title, placeholder, list, setValue, valu
     
     return (
     <div className='flex flex-col justify-start items-start w-full relative'>
-      <span>{title}</span>
+      <span className='md:text-sm'>{title}</span>
         <div onClick={() => setOpen(prev => !prev)} className={` p-2 bg-gray-100 w-full flex justify-between rounded-md cursor-pointer relative`}>
             {valueName || placeholder}
             <ChevronDown className={arrowActive(open)}/>

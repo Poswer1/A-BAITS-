@@ -17,16 +17,16 @@ export default function Summary({reservPrice, autoReExtension, advertising, hand
 
   return (
     <div className={`${block} gap-1`}>
-      <h1 className="font-bold text-md">{t('createLot','create-Total-Amount')}: 50 ₴</h1>
+      <h1 className="font-bold text-md">{t('createLot','create-Total-Amount')}: <span className="text-orange-600">50 ₴</span></h1>
       <span className='text-black'>{t('createLot','create-SelectedPrivileges')}</span>
       {autoReExtension && (
-        <span className={`${nameInput} ${animationOpacity}`}>{t('createLot','create-autoReExtension')} - 10 ₴</span>
+        <span className={`text-gray-500 text-sm ${animationOpacity}`}>{t('createLot','create-autoReExtension')} - <span className="text-orange-600">10 ₴</span></span>
       )}
       {advertising && (
-        <span className={`${nameInput} ${animationOpacity}`}>Реклама - 20 ₴</span>
+        <span className={`text-gray-500 text-sm ${animationOpacity}`}>Реклама - <span className="text-orange-600">20 ₴</span></span>
       )}
       {reservPrice > 0 && (
-        <span className={`${nameInput} ${animationOpacity}`}>{t('createLot','createLot-ReservePrice')} - 20 ₴</span>
+        <span className={`text-gray-500 text-sm ${animationOpacity}`}>{t('createLot','createLot-ReservePrice')} - <span className="text-orange-600">20 ₴</span></span>
       )}
       <button onClick={handleCreateOrUpdate} className={`${button} ${hover} `}>{t('createLot','create-post-lot')}</button>
       {message && (
