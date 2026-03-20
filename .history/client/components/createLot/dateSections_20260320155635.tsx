@@ -1,0 +1,26 @@
+import { useTranslation } from "@/app/context/TranslationProvider"
+import { block, Blockinput, input, nameInput } from "@/styles/createLot"
+import InputField from "../ui/inputFields";
+
+interface DateSectionsProps {
+    date:number,
+    setDate: (t:number) => void,
+    time:number,
+    setTime: (t:number) => void,
+}
+
+export default function DateSections({date, setDate, time, setTime}: DateSectionsProps) {
+
+    const {t} = useTranslation() 
+
+  return (
+    <div className={`${block} flex-row !justify-start gap-10`}>
+      <InputField label={t('createLot','createLot-Date')} value={date} onChange={setDate} type="number" placeholder={t('createLot','createLot-ReservePrice-descriptions')}/>
+      <InputField label={t('createLot','createLot-DateTime')} value={date} onChange={setDate} type="time" placeholder={t('createLot','createLot-DateTime')}/>
+        <div className={`${Blockinput} !w-1/4`}>
+          <input type="time" step={60} placeholder={t('createLot','createLot-DateTime')} className={`${input} border border-gray-400 `} value={time} onChange={(e) => setTime(e.target.value)}/>
+          <span className={nameInput}>{t('createLot','createLot-DateTime-descriptions')}</span>
+        </div>
+      </div>
+  )
+}

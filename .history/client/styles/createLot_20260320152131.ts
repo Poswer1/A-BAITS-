@@ -1,0 +1,6 @@
+export const Blockinput = 'flex flex-col justify-center items-start w-3/5 gap-1'
+export const nameInput = 'text-gray-500 text-sm'
+export const input = 'p-2 flex justify-start items-center outline-none rounded-md border-gray-100 w-full'
+export const block = 'flex flex-col justify-center items-start w-full bg-white p-5 rounded-xl'
+export const selectBlock = 'flex justify-between items-center w-1/2 bg-gray-100 p-2 rounded-md'
+export const openBlock = 'flex flex-col justify-start items-start p-2 bg-gray-100 rounded-md absolute top-[100%] max-h-40 overflow-y-auto gap-2 custom-scrollbar'

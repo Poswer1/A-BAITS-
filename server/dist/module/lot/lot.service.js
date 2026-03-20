@@ -187,52 +187,70 @@ let LotService = class LotService {
         }
     }
     async placeBid(data, userId) {
-        const lot = await lot_model_1.LotModel.findOne({ lotNumber: data.lotId });
-        if (!lot) {
-            console.log('лот не найден');
-            return;
+        try {
+            const lot = await lot_model_1.LotModel.findOne({ lotNumber: data.lotId });
+            if (!lot) {
+                throw new common_1.BadRequestException('lotNotFound');
+            }
+            if (lot.winner) {
+                throw new common_1.BadRequestException('LotAlreadySold');
+            }
+            const minBid = lot.startPrice + lot.stepPrice;
+            if (data.bid < minBid) {
+                throw new common_1.BadRequestException(`Минимальная ставка ${minBid}`);
+            }
+            const user = await user_model_1.UserModel.findById(userId);
+            if (!user) {
+                throw new common_1.BadRequestException('UserNotFound');
+            }
+            if (user.balance < data.bid) {
+                throw new common_1.BadRequestException('NoMoney');
+            }
+            const nowDate = new Date();
+            const differenceDate = lot.date.getTime() - nowDate.getTime();
+            const fiveMinutes = 300000;
+            const update = await lot_model_1.LotModel.updateOne({
+                _id: lot._id,
+                winner: { $exists: false },
+                startPrice: lot.startPrice
+            }, {
+                $set: {
+                    startPrice: data.bid,
+                    ...(differenceDate <= fiveMinutes && {
+                        date: new Date(lot.date.getTime() + fiveMinutes)
+                    })
+                },
+                $push: {
+                    historyBid: {
+                        author: new mongoose_1.Types.ObjectId(userId),
+                        currentBid: data.bid
+                    }
+                }
+            });
+            if (update.modifiedCount === 0) {
+                throw new common_1.BadRequestException('Ставка уже перебита');
+            }
+            const updateLot = await lot_model_1.LotModel.findById(lot._id)
+                .populate('historyBid.author', 'name avatar');
+            const lastBidRaw = updateLot?.historyBid[updateLot.historyBid.length - 1];
+            if (!lastBidRaw)
+                return null;
+            const lastBid = {
+                authorId: lastBidRaw.author._id,
+                name: lastBidRaw.author.name,
+                avatar: lastBidRaw.author.avatar,
+                currentBid: lastBidRaw.currentBid,
+                dateBid: lastBidRaw.createdAt
+            };
+            return {
+                lotId: updateLot.lotNumber,
+                newPrice: updateLot.startPrice,
+                lastBid: lastBid
+            };
         }
-        if (lot.winner) {
-            throw new common_1.BadRequestException('LotAlreadySold');
+        catch (error) {
+            throw error;
         }
-        const minBid = lot.startPrice + lot.stepPrice;
-        if (data.bid < minBid) {
-            throw new common_1.BadRequestException(`Минимальная ставка ${minBid}`);
-        }
-        const user = await user_model_1.UserModel.findById(userId);
-        if (!user) {
-            console.log('пользователь не найден при ставке');
-            return;
-        }
-        if (data.bid >= user?.balance) {
-            throw new common_1.BadRequestException('NoMoney');
-        }
-        lot.startPrice = data.bid;
-        lot.historyBid.push({ author: new mongoose_1.Types.ObjectId(userId), currentBid: data.bid });
-        const nowDate = new Date();
-        const differenceDate = lot.date.getTime() - nowDate.getTime();
-        const fiveMinutes = 300000;
-        if (differenceDate <= fiveMinutes) {
-            lot.date = new Date(lot.date.getTime() + fiveMinutes);
-        }
-        await lot.save();
-        const updateLot = await lot_model_1.LotModel.findById(lot._id)
-            .populate('historyBid.author', 'name avatar');
-        const lastBidRaw = updateLot?.historyBid[updateLot.historyBid.length - 1];
-        if (!lastBidRaw)
-            return null;
-        const lastBid = {
-            authorId: lastBidRaw.author._id,
-            name: lastBidRaw.author.name,
-            avatar: lastBidRaw.author.avatar,
-            currentBid: lastBidRaw.currentBid,
-            dateBid: lastBidRaw.createdAt
-        };
-        return {
-            lotId: lot.lotNumber,
-            newPrice: lot.startPrice,
-            lastBid: lastBid
-        };
     }
     async getHistoryBid(lotId) {
         const lot = await lot_model_1.LotModel.findOne({ lotNumber: lotId }).populate('historyBid.author', 'name avatar');

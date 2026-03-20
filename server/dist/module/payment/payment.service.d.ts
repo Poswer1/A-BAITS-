@@ -5,5 +5,5 @@ export declare class PaymentService {
     constructor(notificationGateWay: NotificationGateway);
     buyLot(userId: string, dto: BuyLotDto): Promise<{
         success: boolean;
-    } | undefined>;
+    }>;
 }

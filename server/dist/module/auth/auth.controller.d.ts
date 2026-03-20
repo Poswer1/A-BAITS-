@@ -1,6 +1,6 @@
 import { AuthService } from './auth.service';
 import { Auth } from './dto/create-auth.dto';
-import type { Response } from 'express';
+import type { Response, Request } from 'express';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
@@ -11,6 +11,9 @@ export declare class AuthController {
     } & {
         id: string;
     }>;
+    getStatusAuth(req: Request): {
+        isLoggedIn: boolean;
+    };
     login(dto: Auth, res: Response): Promise<{
         ok: boolean;
     }>;

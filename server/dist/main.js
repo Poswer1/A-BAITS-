@@ -46,7 +46,7 @@ async function Main() {
     app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
     app.use((0, cookie_parser_1.default)());
     app.enableCors({
-        origin: 'http://192.168.0.100:3000',
+        origin: ['http://192.168.0.103:3000', 'http://localhost:3000'],
         credentials: true
     });
     await app.listen(3002, '0.0.0.0');

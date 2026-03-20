@@ -1,0 +1,48 @@
+import { useTranslation } from "@/app/context/TranslationProvider"
+
+import { arrowActive, hover } from "@/styles/style"
+import { AlertTriangle, ChevronDown } from "lucide-react"
+import InputField from "../ui/inputFields"
+
+interface MainInfoProps {
+    name:String
+    setName:(value:string) => void
+    openCategory:boolean
+    setOpenCategory: (value:boolean) => void
+    category:string
+    subCategory:string
+    subSubCategory:string
+}
+
+export default function MainInfoSections({name, setName, openCategory, setOpenCategory, category, subCategory, subSubCategory} : MainInfoProps) {
+
+    const {t} = useTranslation() 
+    const Blockinput = 'flex flex-col justify-center items-start w-3/5 gap-1'
+    const nameInput = 'text-gray-500 text-sm'
+    const block = 'flex flex-col justify-center items-start w-full bg-white p-5 rounded-xl'
+    const selectBlock = 'flex justify-between items-center w-1/2 bg-gray-100 p-2 rounded-md'
+
+  return (
+    <div className={block}>
+        <div className={Blockinput}>
+            <InputField label={t('createLot','createLot-name')} value={name} onChange={setName} placeholder={t('createLot','createLot-nameInput')} type="text" maxLength={70}/>
+        </div>
+         <div className={Blockinput}>
+            <span className={nameInput}>{t('createLot','createLot-category')}</span>
+            <div onClick={() => setOpenCategory(prev => !prev)} className={` ${hover} ${selectBlock} ${(category && subCategory) && 'bg-orange-600/10'}`}>
+                {(category && subCategory) ? (
+                    <div className="flex flex-col justify-center items-start gap-1">
+                        <span className="font-bold">{category}</span>
+                        <span className="text-gray-500">{subCategory}{subSubCategory && `/${subSubCategory}`}</span>
+                    </div>
+                ): (
+                    <span>{t('createLot','createLot-selectCategory')}</span>
+                )}
+                <ChevronDown className={arrowActive(openCategory)}/> 
+            </div>
+        </div>
+      </div>
+  )
+}
+
+
