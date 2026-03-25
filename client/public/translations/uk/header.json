@@ -10,6 +10,11 @@
     "modalProfile-history": "Історія ставок",
     "modalProfile-support": "Допомога",
     "modalProfile-createLot": "Створити лот",
-    "modalProfile-logout": "Вийти"
-
+    "modalProfile-logout": "Вийти",
+    "notification": "Сповіщення",
+    "lotPurchased": "Ваш лот був успішно придбаний - ",
+    "lotRelisted": "Ваш лот не був куплений, і був повторно виставлений",
+    "lotNotRedeemed": "Ваш лот не був викуплений, і знятий з торгів",
+    "notificationNoYet": "Сповіщень поки немає",
+    "loading": "Завантаження..."
 }

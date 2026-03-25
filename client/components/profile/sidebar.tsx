@@ -67,7 +67,7 @@ export default function Sidebar({mode, active, setActive, name} : SidebarProps) 
 
   return (
     <div 
-      className={`bg-white text-black w-screen md:w-auto overflow-x-auto md:h-screen flex ${mode === 'sidebarMain' && 'md:flex-col'} 
+      className={`bg-white text-black w-screen md:w-auto  overflow-x-auto flex ${mode === 'sidebarMain' && 'md:flex-col md:h-300'} 
       justify-start items-start 
       ${mode === 'sidebarMain'? (active === 'Чат'? 'md:w-20 2xl:w-25': 'md:w-60 2xl:w-70'): ''} 
       transition-[width] duration-500 ease-in-out overflow-hidden 

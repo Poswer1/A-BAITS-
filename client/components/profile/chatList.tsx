@@ -33,7 +33,10 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot
         if(!socket) return
         socket.on('readChat', (data) => {
             setUnReadChats(prev => prev.filter(chat => chat._id !== data._id))
-            setReadChats(prev => [...prev, data])
+            setReadChats(prev => {
+                if (prev.some(c => c._id === data._id)) return prev;
+                return [...prev, data];
+            });
         })
 
         return () => {
@@ -71,7 +74,7 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot
             if (!user) return null;
             const lastMessage = chat.messages[chat.messages.length - 1]
             return (
-                <div onClick={() => {setSelectChat(user._id), setTypeChat(chat.type), setLot(chat.lot._id)}} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-3 transition-all  duration-300  border-b border-t 2 w-full  2xl:w-90 border-gray-300 bg-white relative`}>
+                <div onClick={() => {setSelectChat(user._id); setTypeChat(chat.type); setLot(chat.lot._id)}} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-3 transition-all  duration-300  border-b border-t 2 w-full  2xl:w-90 border-gray-300 bg-white relative`}>
                         <div className='flex justify-center items-center gap-2'>
                             <AvatarBlock avatar={chat.lot?.images?.[0] ? chat.lot.images[0] : user?.avatar}  size="50"/>
                             <div className={`flex flex-col  justify-center items-start `}>
@@ -88,28 +91,32 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot
     )}
 
   return (
-    <div className={`flex flex-col justify-start items-start w-full md:w-auto bg-white md:min-w-80`}>
+    <div className={`flex flex-col justify-start items-start w-full md:w-auto  md:min-w-80 ${selectChat && 'hidden md:flex'}`}>
         <h1 className='mb-1 px-2'>{t('chat', 'UnreadChats')}</h1>
-        {loading ? (
-        renderSkeleton()
-        ): (
-        unReadChats?.length === 0 ? (
-            <span className='text-gray-500 text-sm p-4 w-full text-center'>{t('chat', 'AllChatsBeenRead')}</span>
-            ) : (
-            renderChats(unReadChats)
-        )
-        )}
+        <div className='flex flex-col w-full overflow-y-auto max-h-100 custom-scrollbar'>
+            {loading ? (
+            renderSkeleton()
+            ): (
+            unReadChats?.length === 0 ? (
+                <span className='text-gray-500 text-sm p-4 w-full text-center'>{t('chat', 'AllChatsBeenRead')}</span>
+                ) : (
+                renderChats(unReadChats)
+            )
+            )}
+        </div>
 
         <h1 className='mb-1 mt-1 px-2'>{t('chat', 'ReadChats')}</h1>
-        {loading ? (
-        renderSkeleton()
-        ): (
-        readChats?.length === 0 ? (
-            <span className='text-gray-500 text-sm p-4 w-full text-center'>{t('chat', 'DontHaveChat')}</span>
-            ) : (
-            renderChats(readChats)
-        )
-        )}
+        <div className='flex flex-col w-full overflow-y-auto max-h-100 custom-scrollbar'>
+            {loading ? (
+            renderSkeleton()
+            ): (
+            readChats?.length === 0 ? (
+                <span className='text-gray-500 text-sm p-4 w-full text-center'>{t('chat', 'DontHaveChat')}</span>
+                ) : (
+                renderChats(readChats)
+            )
+            )}
+        </div>
     </div>
   )
 }

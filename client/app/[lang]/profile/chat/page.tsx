@@ -94,7 +94,7 @@ function page() {
     if(!selectChat || !socket) return
     socket.emit('getChatHistory', {toUserId:selectChat, type:typeChat, lot:lot})
     socket.emit('readChat', {toUserId:selectChat, type:typeChat, lot:chat?.lot})
-  }, [selectChat, typeChat, socket, chat])
+  }, [selectChat, typeChat, socket])
 
   const handleSendNewMessage = () => {
     if(!socket) return
@@ -109,6 +109,7 @@ function page() {
     <div className={`${pageContainerClass}`}>
       <h1 className={`text-xl 2xl:text-2xl lg:text-xl p-2 py-4 md:p-0 md:mb-2`}>Чат</h1>
       <div className='flex justify-start items-start gap-2 w-full'>
+
         <ChatList setSelectChat={setSelectChat} setTypeChat={setTypeChat} selectChat={selectChat} setLot={setLot}/>
 
         <div className={`${blockClass} ${!selectChat ? 'hidden md:block': 'fixed top-0 left-0 md:static'} h-screen md:h-160 2xl:h-190 flex-col xl:w-2/3 2xl:!w-3/5 !gap-0 `}>
@@ -138,7 +139,7 @@ function page() {
               </Link>
             )} 
 
-            <div ref={chatRef} className='flex flex-col justify-start items-start overflow-auto max-h-full h-full w-full mt-2 noScrollbar gap-2'>
+            <div ref={chatRef} className='flex flex-col justify-start items-start overflow-y-auto max-h-full h-full w-full mt-2 noScrollbar gap-2'>
               {chat?.type === 'deal' && (
                 <div className={`w-full flex flex-col justify-center items-center text-center`}>
                    <Image src={'/images/chat/deal.png'} alt='' width={200} height={200} className='w-[200px]'/>

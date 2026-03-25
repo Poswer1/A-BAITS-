@@ -41,14 +41,14 @@ function layout({children}: {children: React.ReactNode}) {
   }, [pathname, t])
 
   return (
-    <div className='flex flex-col md:flex-row justify-start items-start md:min-h-250 text-black w-full bg-gray-100 overflow-x-hidden'>
+    <div className='flex flex-col md:flex-row justify-start min-h-screen items-start overflow-hidden text-black w-full bg-gray-100 overflow-x-hidden'>
       {loading ? (
         <div className={loadingBlock}>
           <Loading />
         </div>
       ): (
         <>
-          <div className={`${(!name || name === username) ? '' : 'hidden md:invisible md:flex'} h-full`}>
+          <div className={`${(!name || name === username) ? '' : 'hidden md:invisible md:flex'}`}>
             <Sidebar mode='sidebarMain' active={activeLink} name={username}/>
           </div>
           {children}

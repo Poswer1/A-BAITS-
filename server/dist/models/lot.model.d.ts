@@ -14,7 +14,6 @@ export interface Lot {
     startPrice: number;
     stepPrice: number;
     blitzPrice?: number;
-    reservPrice?: number;
     images: string[];
     autoReExtension: boolean;
     descriptions: string;

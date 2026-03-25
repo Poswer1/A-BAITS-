@@ -9,11 +9,9 @@ interface PriceSectionsProps {
     setPriceStep: (type:number) => void
     blitzPrice:Number,
     setBlitzPrice: (type:number) => void,
-    reservPrice:Number,
-    setReservPrice: (type:number) => void,
 }
 
-export default function PriceSections({price, setPrice, priceStep, setPriceStep, blitzPrice, setBlitzPrice, reservPrice, setReservPrice}: PriceSectionsProps) {
+export default function PriceSections({price, setPrice, priceStep, setPriceStep, blitzPrice, setBlitzPrice}: PriceSectionsProps) {
 
     const {t} = useTranslation()
 

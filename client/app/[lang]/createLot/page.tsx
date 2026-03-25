@@ -11,7 +11,7 @@ import PriceSections from "@/components/createLot/priceSections"
 import StateSections from "@/components/createLot/stateSections"
 import Summary from "@/components/createLot/summary"
 import CategoryList from "@/components/header/CategoryList"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { ChevronDown } from "lucide-react"
 import { hover } from "@/styles/style"
 import { createLot } from "@/services/lot"
@@ -36,7 +36,6 @@ function page() {
     const [price, setPrice] = useState(1)
     const [priceStep, setPriceStep] = useState(1)
     const [blitzPrice, setBlitzPrice] = useState(1)
-    const [reservPrice, setReservPrice] = useState(1)
     const [date, setDate] = useState(0)
     const [time, setTime] = useState('21:00')
     const [location, setLocation] = useState('')
@@ -61,7 +60,7 @@ function page() {
     const transleteSubCategory = getValueByLang(activeCategory?.subcategories, subCategory, lang)
     const transleteSubSubCategory = getValueByLang(activeCategory?.subcategories?.find(sc => sc.name === subCategory)?.subcategories, subSubCategory, lang)
 
-      useEffect(() => {
+    useEffect(() => {
       const checkAuth = async () => {
         const isAuth = await getStatusAuth()
 
@@ -81,7 +80,6 @@ function page() {
       setPrice(0)
       setPriceStep(0)
       setBlitzPrice(0)
-      setReservPrice(0)
       setDate(0)
       setTime('')
       setLocation('')
@@ -96,7 +94,7 @@ function page() {
     }
 
     const handleCreateOrUpdate = async () => {
-       if (!name || !description || !stateLot || !location || !delivery || !price || !priceStep || !date || !time || !file || file.length === 0) {
+       if (!name || !description || !stateLot || !location || !delivery || !price || !priceStep || !date || !time || !file || file.length === 0 || !category) {
           setMessage('Будь ласка, заповніть всі дані')
           setTimeout(() => {
             setMessage('')
@@ -131,15 +129,14 @@ function page() {
         if(subSubCategory)formData.append('subSubCategory', subSubCategory)
         formData.append('stepPrice', priceStep.toString())
         if (blitzPrice)formData.append('blitzPrice', blitzPrice.toString())
-        if (reservPrice)formData.append('reservPrice', reservPrice.toString())
-        formData.append('autoReExtension', autoReExtension.toString())  
+        if(autoReExtension)formData.append('autoReExtension', autoReExtension.toString())  
         formData.append('descriptions', description)
         formData.append('state', stateLot)
         formData.append('date', date.toString())
         formData.append('dateTime', time)
         formData.append('location', location)
         formData.append('delivary', delivery)
-        formData.append('Advertising', advertising.toString())
+        if(advertising)formData.append('Advertising', advertising.toString())
 
         file?.forEach(f => formData.append('images', f))
 
@@ -150,13 +147,13 @@ function page() {
           setLoading(false)
         } catch (error:any) {
           setLoading(false)
-          setMessage(error.message)
+          setMessage(t('createLot', error.message))
           setTimeout(() => {
             setMessage('')
-          }, 3000)
+          }, 5000)
         }
-
   }
+
 
   const handleBack = () => {
     router.back()
@@ -164,7 +161,7 @@ function page() {
 
 
   return (
-  <div className="flex flex-col justify-center items-center w-full gap-5 md:gap-10 bg-white md:bg-gray-100 text-black">
+  <div className="flex flex-col justify-center items-center w-full gap-5 md:gap-10 md:min-h-120 xl:min-h-200 bg-white md:bg-gray-100 text-black">
     {loading ? (
       <div className={loadingBlock}>
         <Loading />
@@ -181,28 +178,68 @@ function page() {
         </div>
           <div className="flex flex-col justify-center items-start w-full md:w-2/3 rounded-xl md:gap-4">
             
-            <MainInfoSections openCategory={openCategory} setOpenCategory={setOpenCategory} name={name} setName={setName} createLotCategory={transleteCategory}  createLotSubCategory={transleteSubCategory}  createLotSubSubCategory={transleteSubSubCategory} />
+            <MainInfoSections 
+            openCategory={openCategory} 
+            setOpenCategory={setOpenCategory} 
+            name={name} 
+            setName={setName} 
+            createLotCategory={transleteCategory}  
+            createLotSubCategory={transleteSubCategory}  
+            createLotSubSubCategory={transleteSubSubCategory} />
 
-            <PriceSections price={price} setPrice={setPrice} priceStep={priceStep} setPriceStep={setPriceStep} blitzPrice={blitzPrice} setBlitzPrice={setBlitzPrice} reservPrice={reservPrice} setReservPrice={setReservPrice}/>
+            <PriceSections 
+            price={price} 
+            setPrice={setPrice} 
+            priceStep={priceStep} 
+            setPriceStep={setPriceStep} 
+            blitzPrice={blitzPrice} 
+            setBlitzPrice={setBlitzPrice}/>
 
-            <PhotoSections setFile={setFile} file={file} preview={preview} setPreview={setPreview}/>
+            <PhotoSections 
+            setFile={setFile} 
+            file={file} 
+            preview={preview} 
+            setPreview={setPreview}/>
 
-            <AutoReExtension check={autoReExtension} setCheck={setAutoReExtensio} mode="autoReExtension"/>
+            <AutoReExtension 
+            check={autoReExtension} 
+            setCheck={setAutoReExtensio} 
+            mode="autoReExtension"/>
             
-            <DescriptionSections description={description} setDescription={setDescription}/>
+            <DescriptionSections 
+            description={description} 
+            setDescription={setDescription}/>
 
-            <StateSections stateLot={stateLot} setStateLot={setStateLot} mode="state"/>
+            <StateSections 
+            stateLot={stateLot} 
+            setStateLot={setStateLot} 
+            mode="state"/>
 
-            <DateSections date={date} setDate={setDate} time={time} setTime={setTime}/>
+            <DateSections 
+            date={date} 
+            setDate={setDate} 
+            time={time} 
+            setTime={setTime}/>
 
-            <LocationSections location={location} setLocation={setLocation}/>
+            <LocationSections 
+            location={location} 
+            setLocation={setLocation}/>
 
-            <StateSections stateLot={delivery} setStateLot={setDelivery} mode="delivery"/>
+            <StateSections 
+            stateLot={delivery} 
+            setStateLot={setDelivery} 
+            mode="delivery"/>
 
-            <AutoReExtension check={advertising} setCheck={setAdvertising} mode="advertising"/>
+            <AutoReExtension 
+            check={advertising} 
+            setCheck={setAdvertising} 
+            mode="advertising"/>
           
-            <Summary reservPrice={reservPrice} autoReExtension={autoReExtension} advertising={advertising} handleCreateOrUpdate={handleCreateOrUpdate} message={message}/>
-          
+            <Summary 
+            autoReExtension={autoReExtension} 
+            advertising={advertising} 
+            handleCreateOrUpdate={handleCreateOrUpdate} 
+            message={message} />
           </div>
         </>
       )}

@@ -33,8 +33,11 @@
   "create-advertising-descriptions": "Ваш лот буде в топі - більше переглядів та ставок",
   "create-Total-Amount": "Загальна сума",
   "create-SelectedPrivileges": "Вибрані превелегії",
-  "create-post-lot": "Виставити лот",
-  "NOTmore8Photo": "Не можна додавати більше 8 фото",
+    "create-post-lot": "Виставити лот",
+    "NOTmore8Photo": "Не можна додавати більше 8 фото",
+    "formatFile": "Завантаження файлів формату .webp недоступна. Будь ласка, використовуйте PNG або JPG",
+    "onlyPhoto": "Завантажувати можна тільки фото",
+    "lotSuccess": "Спасибо! Лот успішно創ений та опублікований",
   "create-back": "Повернутися на головну",
   "create-succes": "Товар успішно",
   "create-succesCreate": "Cтворено"

@@ -17,7 +17,7 @@ export default function Success({title}: SuccessProps) {
     }
   return (
     <div className={`${animationOpacity} flex justify-center items-center w-full md:h-full`}>
-      <div className="flex flex-col justify-center items-center w-full md:w-1/3 bg-white h-100 rounded-xl gap-1">
+      <div className="flex flex-col justify-center items-center w-full md:w-1/2 xl:w-1/3 bg-white h-100 rounded-xl gap-1">
         <Check className="text-green-600" size={90}/>
         <h1 className="text-2xl text-center">{title}</h1>
         <span onClick={back} className={`border-b ${hover} text-gray-500 text-center`}>{t('global', 'back')}</span>

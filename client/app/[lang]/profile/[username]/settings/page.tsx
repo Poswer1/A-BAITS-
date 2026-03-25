@@ -101,7 +101,7 @@ function page() {
   
 
   return (
-    <div className={`${blockClass} flex-col !items-start`}>
+    <div className={`${blockClass} flex-col !items-start mb-20 md:mb-0`}>
               <>
                 <div className="flex flex-col justify-start items-start w-full 2xl:w-4/5 gap-5">
                   

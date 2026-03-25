@@ -11,7 +11,7 @@ import { SortOrder } from 'mongoose'
 
 export class LotService {
   async createLot(dto: LotDto, files: Express.Multer.File[], userId:string) {
-    
+
     const images = files ? await ProccessImages(files, '/uploads/lots/') : [] 
 
     const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString(); //10000000 — минимальное 8-значное число 90000000 — диапазон до 99999999
@@ -25,18 +25,62 @@ export class LotService {
       newDate.setHours(hours, minutes, 0, 0)
     }
 
-    try {
-      const product = await LotModel.create({
-        ...dto,
-        author: userId,
-        images,
-        date: newDate,
-        dateTime: dto.dateTime,
-        lotNumber: Nlot
-      })
-      return product
+    let summaryPrice = 0
+    if(dto.Advertising) {
+      summaryPrice += 20
+    }
+    if(dto.autoReExtension) {
+      summaryPrice += 10
+    }
+    console.log(summaryPrice)
+
+    const session = await mongoose.startSession()
+      try {
+        session.startTransaction()
+          if(summaryPrice > 0) {
+            const userUpdate = await UserModel.updateOne(
+            {
+              _id:userId,
+              balance: {$gte: summaryPrice}
+            },
+            {
+             $inc: { balance: -summaryPrice }
+            },
+            {session}
+          )
+          if(userUpdate.modifiedCount === 0) {
+            throw new Error('NoMoney')
+          }
+        }
+      
+        const [product] = await LotModel.create( 
+          // когда делаем [product] говорим то что берем первый элемент
+          //  массива что бы вернуть обьект а не массив на фронт
+          [
+            {
+              ...dto,
+              author: userId,
+              images,
+              date: newDate,
+              dateTime: dto.dateTime,
+              lotNumber: Nlot
+            }
+          ],
+          { session }
+        )
+        
+        await session.commitTransaction()
+        return product
+
     } catch (error) {
-      throw new BadRequestException('Не вдалося створити товар',error.message)
+      await session.abortTransaction()
+      console.log(error)
+      if(error.message === 'NoMoney') {
+        throw new BadRequestException('NoMoney')
+      }
+      throw new BadRequestException('ErrorCreate')
+    } finally {
+      session.endSession()
     }
   }
 

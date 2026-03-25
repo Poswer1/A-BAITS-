@@ -52,7 +52,7 @@ export class ChatService {
                 ],
             })
             .populate('userFrom userTo', 'name avatar')
-            .populate('lot', 'name images type status id')
+            .populate('lot', 'name images type status')
             
             const unReadChats: typeof allChats = [];
             const readChats: typeof allChats = [];

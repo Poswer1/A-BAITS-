@@ -16,7 +16,6 @@ const LotSchema = new mongoose_1.Schema({
     startPrice: { type: Number, required: true },
     stepPrice: { type: Number, required: true },
     blitzPrice: { type: Number },
-    reservPrice: { type: Number },
     images: { type: [String], required: true },
     autoReExtension: { type: Boolean, default: false },
     descriptions: { type: String, required: true },

@@ -33,10 +33,10 @@ export default function LotCardV2({lot, show}: LotCardV2Props) {
     const state = getValueByLang(stateList, lot.state, lang)
     const city = getValueByLang(listLocation, lot.location, lang)
 
-    const columnClass = `flex flex-col justify-start items-start gap-1 w-full`
+    const columnClass = `flex flex-col justify-start items-start gap-1 w-full md:w-45 xl:w-55 2xl:w-70 overflow-hidden`
 
   return (
-    <Link href={`/${lang}/lot/${lot.lotNumber}`} className={`cursor-pointer border-t border-b border-gray-200 flex flex-col md:flex-row justify-start items-start md:items-center gap-2 md:gap-10  bg-white w-full md:rounded-md text-base text-black`}>
+    <Link href={`/${lang}/lot/${lot.lotNumber}`} className={`cursor-pointer border-t border-b border-gray-200 flex flex-col md:flex-row justify-start items-start md:items-center gap-2 md:gap-10 bg-white w-full md:rounded-md text-base text-black overflow-hidden`}>
         <div className={`${columnClass} md:hidden px-2 mt-2 bg-white `}>
             <h1 className="font-bold text-orange-600">{`${lot.name.length >=30 ? lot.name.slice(0, 30) + '...' : lot.name}`}</h1>
             <span>{t('lot', 'lot-number')} <span className="text-orange-600">{lot.lotNumber}</span></span>
