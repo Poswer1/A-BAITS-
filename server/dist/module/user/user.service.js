@@ -40,13 +40,15 @@ let UserService = class UserService {
             console.log('пользователь не найден при обновление профиля');
             return;
         }
-        try {
-            const filePath = path_1.default.join(process.cwd(), user?.avatar.slice(1));
-            await promises_1.default.access(filePath);
-            await promises_1.default.unlink(filePath);
-        }
-        catch (error) {
-            console.log('Старого аватара нету');
+        if (user?.avatar && !user?.avatar.includes('defaultAvatar')) {
+            try {
+                const filePath = path_1.default.join(process.cwd(), user?.avatar.slice(1));
+                await promises_1.default.access(filePath);
+                await promises_1.default.unlink(filePath);
+            }
+            catch (error) {
+                console.log('Старого аватара нету');
+            }
         }
         const image = file && await (0, files_upload_1.ProccessImages)([file], '/uploads/avatar/');
         const updateUser = await user_model_1.UserModel.findByIdAndUpdate(userId, {

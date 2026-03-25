@@ -42,11 +42,20 @@ let ChatGateway = class ChatGateway {
         }
         return chat;
     }
+    async readChat(data, client) {
+        const userId = client.data.userId;
+        if (!userId)
+            return console.log('айди не найден при прочтения чата');
+        const updateChat = await this.chatService.readChat(data.toUserId, userId, data.type, data.lot);
+        if (updateChat) {
+            client.emit('readChat', updateChat);
+        }
+    }
     async getChatHistory(data, client) {
         const userId = this.activeUser.get(client.id);
         if (!userId || !data.toUserId)
             return console.log('ошибка при получение истории чата');
-        const history = await this.chatService.getChatHistory(data.toUserId, data.type, userId);
+        const history = await this.chatService.getChatHistory(data.toUserId, data.type, userId, data.lot);
         client.emit('getHistory', history);
     }
     async handleConnection(client) {
@@ -80,6 +89,14 @@ __decorate([
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "newMessage", null);
+__decorate([
+    (0, websockets_1.SubscribeMessage)('readChat'),
+    __param(0, (0, websockets_1.MessageBody)()),
+    __param(1, (0, websockets_1.ConnectedSocket)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
+    __metadata("design:returntype", Promise)
+], ChatGateway.prototype, "readChat", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('getChatHistory'),
     __param(0, (0, websockets_1.MessageBody)()),

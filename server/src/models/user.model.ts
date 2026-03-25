@@ -25,7 +25,7 @@ const UserSchema = new Schema<User>({
     role:{type:String, required:true},
     rating: {type:Number, default: 1},
     favorites: {type: [Schema.Types.ObjectId], ref: 'Lot'},
-    avatar: {type:String, default: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?semt=ais_hybrid&w=740&q=80'},
+    avatar: {type:String, default: '/uploads/defaultAvatar/avatar1.webp'},
 },
 {timestamps: true,}
 )

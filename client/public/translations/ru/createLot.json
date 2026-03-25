@@ -20,7 +20,7 @@
   "createLot-Blitz": "Блиц-цена",
   "createLot-ReservePrice": "Резервная цена",
   "createLot-ReservePrice-descriptions": "Цена за которую вы готовы отдать товар",
-  "createLot-Date": "Дата и время окончания",
+  "createLot-Date": "Длитильность аукциона",
   "createLot-Date-descriptions": "Минимум 1 день, максимум 7 дней",
   "createLot-DateTime": "Выбор времени",
   "createLot-DateTime-descriptions": "Если время завершения не выбрано — лот завершится в 21:00 по киевскому времени",
@@ -34,5 +34,8 @@
   "create-Total-Amount": "Общая сумма",
   "create-SelectedPrivileges": "Выбранные привилегии",
   "create-post-lot": "Выставить лот",
-  "NOTmore8Photo": "Нельзя добавлять больше 8 фото"
+  "NOTmore8Photo": "Нельзя добавлять больше 8 фото",
+  "formatFile": "Загрузка файлов формата .webp недоступна. Пожалуйста, используйте PNG или JPG",
+  "onlyPhoto": "Загружать можно только фотки",
+  "lotSuccess": "Спасибо! Лот успешно создан и опубликован"
 }

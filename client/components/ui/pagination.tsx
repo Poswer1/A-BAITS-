@@ -41,7 +41,7 @@ export default function Pagination({total, maxLot}:PaginationProps) {
   return (
     <>
     {total > maxLot && (
-      <div className='flex justify-center items-center gap-2 w-full'>
+      <div className='flex justify-center items-center gap-2 w-full p-5'>
           <span onClick={handleBack} className={` ${Number(page) === 1 ? 'opacity-50' : `${hover}`} bg-orange-600 p-1 text-white rounded-full`}>
               <ArrowLeft />
           </span>

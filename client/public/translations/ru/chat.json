@@ -6,5 +6,12 @@
     "NewReview": "Ваш собеседник уже оставил отзыв!",
     "NewReviewDesc": "для завершения сделки обменяйтесь отзывами",
     "successDeal": "Сделка успешно завершена!",
-    "closeChat": "Закрыть чат"
+    "closeChat": "Закрыть чат",
+    "NoLatestMessages": "Ещё нету сообщений",
+    "ReadChats": "Прочитаные",
+    "UnreadChats": "Непрочитаные",
+    "AllChatsBeenRead": "Все чаты прочитаны",
+    "DontHaveChat": "У вас ещё нету чатов",
+    "victorious": "Победный",
+    "NotActive": "Неактивный"
 }

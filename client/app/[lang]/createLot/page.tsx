@@ -16,15 +16,19 @@ import { ChevronDown } from "lucide-react"
 import { hover } from "@/styles/style"
 import { createLot } from "@/services/lot"
 import Loading from "@/components/ui/loadig"
-import Success from "@/components/createLot/success"
 import { getStatusAuth } from "@/services/auth"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { loadingBlock } from "@/styles/global"
+import Success from "@/components/ui/success"
+import { getValueByLang } from "@/utils/translateValue"
+import { categoriesWithIcons } from "@/category/category"
 
 function page() {
 
     const {t} = useTranslation()
     const router = useRouter()
+    const params = useParams()
+    const lang = params.lang as string
 
     const [name, setName] = useState('')
     const [description, setDescription] = useState('')
@@ -34,7 +38,7 @@ function page() {
     const [blitzPrice, setBlitzPrice] = useState(1)
     const [reservPrice, setReservPrice] = useState(1)
     const [date, setDate] = useState(0)
-    const [time, setTime] = useState('')
+    const [time, setTime] = useState('21:00')
     const [location, setLocation] = useState('')
     const [delivery, setDelivery] = useState('')
     const [autoReExtension, setAutoReExtensio] = useState(false)
@@ -50,6 +54,12 @@ function page() {
     const [confirmCreateOrder, setConfirmCreateOrder] = useState(false)
     const [loading, setLoading] = useState(true)
 
+
+    const activeCategory = categoriesWithIcons.find(obg => obg.name === category)
+    
+    const transleteCategory = getValueByLang(categoriesWithIcons, category, lang)
+    const transleteSubCategory = getValueByLang(activeCategory?.subcategories, subCategory, lang)
+    const transleteSubSubCategory = getValueByLang(activeCategory?.subcategories?.find(sc => sc.name === subCategory)?.subcategories, subSubCategory, lang)
 
       useEffect(() => {
       const checkAuth = async () => {
@@ -154,23 +164,24 @@ function page() {
 
 
   return (
-  <div className="flex flex-col justify-center items-center w-full gap-10 bg-white md:bg-gray-100 text-black">
+  <div className="flex flex-col justify-center items-center w-full gap-5 md:gap-10 bg-white md:bg-gray-100 text-black">
     {loading ? (
       <div className={loadingBlock}>
         <Loading />
       </div>
     ): (
       <>
-      {confirmCreateOrder && (
-        <Success />
-      )}
-        <div className="flex justify-between items-center w-[90%] mt-10">
+      {confirmCreateOrder ? (
+       <Success title={t('createLot', 'lotSuccess')}/>
+      ): (
+        <>
+        <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-[90%] mt-5 md:mt-10 gap-5 md:gap-0">
           <h1 className="text-orange-600 text-3xl font-bold gap-2">{t('createLot','createLot-title')} <span className="text-black">лоту</span></h1>
           <span onClick={handleBack} className={`${hover} flex justify-center items-center`}><ChevronDown className="rotate-90"/> Назад</span>
         </div>
           <div className="flex flex-col justify-center items-start w-full md:w-2/3 rounded-xl md:gap-4">
             
-            <MainInfoSections openCategory={openCategory} setOpenCategory={setOpenCategory} name={name} setName={setName} category={category}  subCategory={subCategory}  subSubCategory={subSubCategory} />
+            <MainInfoSections openCategory={openCategory} setOpenCategory={setOpenCategory} name={name} setName={setName} createLotCategory={transleteCategory}  createLotSubCategory={transleteSubCategory}  createLotSubSubCategory={transleteSubSubCategory} />
 
             <PriceSections price={price} setPrice={setPrice} priceStep={priceStep} setPriceStep={setPriceStep} blitzPrice={blitzPrice} setBlitzPrice={setBlitzPrice} reservPrice={reservPrice} setReservPrice={setReservPrice}/>
 
@@ -193,10 +204,17 @@ function page() {
             <Summary reservPrice={reservPrice} autoReExtension={autoReExtension} advertising={advertising} handleCreateOrUpdate={handleCreateOrUpdate} message={message}/>
           
           </div>
+        </>
+      )}
        </>
     )}
     {openCategory && (
-      <CategoryList setOpenCategory={setOpenCategory} openFrom="createLot" category={category} setCategory={setCategory} subCategory={subCategory} setSubCategory={setSubCategory} subSubCategory={subSubCategory} setSubSubCategory={setSubSubCategory}/>
+      <CategoryList 
+      setOpenCategory={setOpenCategory} 
+      openFrom="createLot" 
+      createLotSetCategory={setCategory} 
+      createLotSetSubCategory={setSubCategory} 
+      createLotSetSubSubCategory={setSubSubCategory}/>
     )}
   </div>
   )

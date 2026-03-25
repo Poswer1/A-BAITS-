@@ -1,5 +1,5 @@
 import { useTranslation } from "@/app/context/TranslationProvider";
-import { avatarBlock, button } from "@/styles/global";
+import { button } from "@/styles/global";
 import { columnBlock } from "@/styles/lot";
 import { hover } from "@/styles/style";
 import { ArrowRight, MessageCircle } from "lucide-react";
@@ -7,12 +7,16 @@ import { useEffect, useState } from "react";
 import AvatarBlock from "../ui/avatar";
 import { useParams } from "next/navigation";
 import Link from 'next/link';
-import OlnlineUser from "../ui/onlineUser";
-import Rating from "../ui/rating";
-import { ReviewTypes } from "@/types/types";
+import Rating from "../review/rating";
+import { LotTypes, ReviewTypes } from "@/types/types";
 import { getRandomReview } from "@/services/review";
+import Online from "../ui/onlineUser";
 
-export default function AuthorSection({lot}:any) {
+interface AuthorSectionProps {
+lot:LotTypes,
+}
+
+export default function AuthorSection({lot}:AuthorSectionProps) {
 
     const params = useParams()
     const lang = params.lang as string
@@ -37,7 +41,7 @@ export default function AuthorSection({lot}:any) {
                 <AvatarBlock avatar={lot.author.avatar} size="45"/>
                 <div className="flex flex-col justify-start items-start">
                   <span>{lot.author.name}</span>
-                    <OlnlineUser id={lot}/>
+                    <Online id={lot.author._id}/>
                 </div>
             </Link>
           <Rating rating={lot.author.rating} showRatingNumber={true} size={16}/>

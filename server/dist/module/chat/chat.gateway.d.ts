@@ -20,9 +20,15 @@ export declare class ChatGateway {
         read: boolean;
         createdAt: Date;
     }>;
+    readChat(data: {
+        toUserId: string;
+        type: string;
+        lot: string;
+    }, client: Socket): Promise<void>;
     getChatHistory(data: {
         toUserId: string;
         type: string;
+        lot: string;
     }, client: Socket): Promise<void>;
     handleConnection(client: Socket): Promise<void>;
 }

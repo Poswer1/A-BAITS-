@@ -98,7 +98,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     const buttonInput = 'bg-gray-200 flex justify-center items-center text-black rounded-md'
 
   return ( 
-    <div {...handlers} className={`${columnBlock} rounded-t-2xl w-full text-black fixed md:static bg-white z-20 md:z-0 bottom-0 ${open ? '!h-80 md:!h-full' : '!h-35 md:!h-full'} ${animate}`}>
+    <div {...handlers} className={`${columnBlock} rounded-t-2xl w-full md:min-w-80 text-black fixed md:static bg-white z-20 md:z-0 bottom-0 ${open ? '!h-80 md:!h-full' : '!h-35 md:!h-full'} ${animate}`}>
         {status !== 'Active' ? (
             <h1 className="font-bold text-2xl text-gray-500">Лот куплен</h1>
         ): (

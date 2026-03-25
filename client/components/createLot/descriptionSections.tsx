@@ -12,10 +12,12 @@ export default function DescriptionSections({description, setDescription}:Descri
 
     const {t} = useTranslation() 
 
+    const hTextArea = window.innerWidth <= 768 ? 50 : 70
+
   return (
     <div className={block}>
         <div className={Blockinput}>
-           <InputField label={t('createLot','createLot-descriptions')} value={description} placeholder={t('createLot','createLot-descriptions')} onChange={setDescription} textarea={true} hTextArea='70' maxLength={1200}/>
+           <InputField label={t('createLot','createLot-descriptions')} value={description} placeholder={t('createLot','createLot-descriptions')} onChange={setDescription} textarea={true} hTextArea={hTextArea} maxLength={1200}/>
         </div>
    </div> 
   )

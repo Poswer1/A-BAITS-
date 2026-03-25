@@ -45,28 +45,73 @@ export class ChatService {
 
     async getMyChat(userId:string) {
         try {
-            const chats = await ChatModel.find({
+            const allChats = await ChatModel.find({
                 $or: [
                     {userFrom: userId},
                     {userTo: userId}
-                ]
+                ],
             })
             .populate('userFrom userTo', 'name avatar')
-            .populate('lot', 'name images')
-            return chats
+            .populate('lot', 'name images type status id')
+            
+            const unReadChats: typeof allChats = [];
+            const readChats: typeof allChats = [];
+
+            allChats.forEach(chat => {
+                const hasUnread = chat.messages.some(
+                    msg => msg.to.toString() === userId && !msg.read
+                );
+                if (hasUnread) {
+                    unReadChats.push(chat); // чаты с непрочитанными
+                } else {
+                     readChats.push(chat); // все остальные чаты
+                }
+            });
+            return {unReadChats, readChats}
+
         } catch (error) {
             throw new BadRequestException('Ошибка при получение всех моих чатов',error)
         }
     }
 
-    async getChatHistory(toUserId:string, type:string, userId:string) {
+    async readChat(toUserId:string, fromUserId:string, type:string, lot:string) {
+        const updateChat = await ChatModel.findOneAndUpdate(
+        {
+            $or: [
+            { userFrom: fromUserId, userTo: toUserId },
+            { userFrom: toUserId, userTo: fromUserId }
+            ],
+            type,
+            lot,
+            "messages.to": fromUserId,
+            "messages.read": false
+        },
+        {
+            $set: {
+            "messages.$[elem].read": true
+            }
+        },
+        {
+        arrayFilters: [
+        { "elem.to": fromUserId, "elem.read": false } // берет каждый элемент массива и выполняет $set там где подходит наши условия
+        ],
+        returnDocument: 'after'
+        }
+        )
+        .populate('userFrom userTo', 'name avatar')
+        .populate('lot', 'name images startPrice lotNumber _id')
+        return updateChat
+    }
+
+    async getChatHistory(toUserId:string, type:string, userId:string, lot:string) {
         try {
             const history = await ChatModel.findOne({
                 $or: [
                     {userFrom: toUserId, userTo: userId},
                     {userFrom: userId, userTo: toUserId},
                 ],
-                type: type
+                type: type,
+                lot:lot,
             }).populate('lot', 'name images startPrice lotNumber _id')
             if(!history) return {historyMessage: [], numberLot: null};
             return {history}

@@ -3,7 +3,7 @@ import OlnlineUser from "../ui/onlineUser";
 import AvatarBlock from "../ui/avatar";
 import { AlertTriangle } from "lucide-react";
 import { useTranslation } from "@/app/context/TranslationProvider";
-import Rating from "../ui/rating";
+import Rating from "../review/rating";
 
 export default function ProfiteHeader({user} : {user: any}) {
 
@@ -15,7 +15,7 @@ export default function ProfiteHeader({user} : {user: any}) {
           <AvatarBlock avatar={user?.avatar } size="80"/>
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-lg">{user?.name }</h1>
-            <OlnlineUser id={user?.id}/>
+            <OlnlineUser id={user?._id}/>
           </div>
         </div>
           <Rating rating={user?.rating} showRatingNumber={true} size={18}/>

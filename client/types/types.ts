@@ -38,6 +38,7 @@ export interface ReviewTypes {
     _id:string,
     to:string,
     from:string,
+    lot:string,
     comment:string,
     rating:number,
     createdAt: Date

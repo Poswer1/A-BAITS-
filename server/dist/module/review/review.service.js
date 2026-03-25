@@ -73,6 +73,7 @@ let ReviewService = class ReviewService {
         const [allReview, totalReview] = await Promise.all([
             review_1.ReviewModel.find({ to: user._id })
                 .populate('from', 'name avatar')
+                .populate('lot', 'images name lotNumber')
                 .limit(limit)
                 .skip((currentPage - 1) * limit),
             review_1.ReviewModel.countDocuments({ to: user._id })
@@ -81,7 +82,8 @@ let ReviewService = class ReviewService {
     }
     async getRandomReview(id) {
         const populatedReview = await review_1.ReviewModel.findOne({ to: id })
-            .populate('from', 'name avatar');
+            .populate('from', 'name avatar')
+            .populate('lot', 'name lotNumber images');
         return populatedReview;
     }
 };

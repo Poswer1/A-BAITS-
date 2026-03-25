@@ -11,7 +11,7 @@ export default function ClientLayout({children}: {children: React.ReactNode}) {
 
   const path = usePathname()
   
-  const hidden = path.includes('profile') || path.includes('review')
+  const hidden = path.includes('profile') || path.includes('review') || path.includes('auth')
   const hiddenFooter = path.includes('createLot') || path.includes('profile') || path.includes('review')
 
   return (

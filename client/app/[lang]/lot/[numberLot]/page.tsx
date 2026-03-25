@@ -12,7 +12,6 @@ import { useEffect, useState } from "react"
 import { useSocketContext } from "@/app/context/SocketIo"
 import { LotTypes } from "@/types/types"
 import DescriptioSection from "@/components/lot/descriptioSection"
-import { columnBlock } from "@/styles/lot"
 import { overlay } from "@/styles/global"
 import AvatarBlock from "@/components/ui/avatar"
 import { animationScale } from "@/styles/style"
@@ -33,6 +32,7 @@ function page() {
     const [userHistory, setUserHistory] = useState<any[]>([])
     const [status, setStatus] = useState('')
     const [newBid, setNewBid] = useState('')
+    const [loading, setLoading] = useState(true)
     const [auth, setAuth] = useState(false)
     const [value, setValue] = useState(0)
     const { socket } = useSocketContext()
@@ -79,6 +79,7 @@ function page() {
             setCurrentPrice(data.startPrice)
             setStatus(data.status)
             setValue(data.startPrice + data.stepPrice)
+            setLoading(false)
         })
         getStatusAuth()
         .then(data => {
@@ -88,9 +89,27 @@ function page() {
 
 
   return (
-    <div className="flex flex-col justify-center items-center w-full relative min-h-150">
-      {!lot ? (
-        <Loading />
+    <div className="flex flex-col justify-center items-center w-full relative min-h-150 h-auto">
+      {loading ? (
+        <div className="flex flex-col md:flex-row justify-start items-start w-full 2xl:w-[80%] lg:w-[90%] py-2 gap-2 min-h-200 md:h-200">
+          <div className="flex flex-col w-full md:w-1/2 gap-2">
+            <div className="h-90 md:h-130 skeleton w-full"></div>
+            <div className="flex md:justify-start justify-center md:flex-wrap w-full gap-4 md:gap-5">
+              {Array.from({length: 8}).map((_, index) => (
+                <div key={index} className="w-20 md:w-1/6 2xl:w-1/7 h-26 skeleton hidden md:flex"></div>
+              ))}
+              {Array.from({length: 4}).map((_, index) => (
+                <div key={index} className="w-20 md:w-1/6 2xl:w-1/7 h-20 md:h-24  skeleton md:hidden"></div>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-col w-full md:w-1/4 gap-2">
+            <div className="h-70 skeleton w-full"></div>
+            <div className="h-55 skeleton w-full"></div>
+          </div>
+          <div className="md:w-1/5 h-full skeleton">
+          </div>
+        </div>
       ): (
         <>
           <div className="hidden md:block w-full sticky top-0 z-10">

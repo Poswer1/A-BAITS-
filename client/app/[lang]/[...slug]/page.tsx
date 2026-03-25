@@ -94,7 +94,7 @@ export default async function page({params, searchParams}: pageProps) {
     }
 
   return (
-    <div className='flex justify-start items-start w-full h-full relative gap-2'>
+    <div className='flex justify-start items-start w-full h-full relative '>
         <Filter maxPriceLot={allLots.maxPriceLot}/>
         <Catalog category={langCategory} subCategory={langSubCategory} subSubCategory={langSubSubCategory} city={langCity} lots={allLots.lots} total={allLots.totalLot} searchValue={searchValue?.toString()}/>
     </div>

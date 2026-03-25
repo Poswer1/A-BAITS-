@@ -11,7 +11,7 @@ export interface Lot {
   author:Types.ObjectId,
   lotNumber:string,
   category:string;
-  subCategory:string;
+  subCategory?:string;
   subSubCategory?:string
   startPrice: number;
   stepPrice: number;
@@ -41,9 +41,9 @@ const HistoryBidSchema = new Schema<HistoryBid>({
 const LotSchema = new Schema<Lot>({
   name: { type: String, required: true },
   author: {type: Types.ObjectId, ref: 'User', required: true},  //ref говорит Mongoose, к какой коллекции относится этот ObjectId 
-  lotNumber: {type: String, required: true},
-  category: { type: String, required: true },
-  subCategory: { type: String, required: true },
+  lotNumber: {type: String},
+  category: { type: String, required: true},
+  subCategory: { type: String},
   subSubCategory: { type: String, default: null},
   startPrice: { type: Number, required: true },
   stepPrice: { type: Number, required: true },
@@ -53,7 +53,7 @@ const LotSchema = new Schema<Lot>({
   autoReExtension: { type: Boolean, default: false },
   descriptions: { type: String, required: true },
   state: { type: String, required: true },
-  status: { type: String, default: 'active' },
+  status: { type: String, default: 'Active' },
   date: { type: Date, required: true },
   dateTime: { type: String, default: '21:00' },
   location: { type: String, required: true },

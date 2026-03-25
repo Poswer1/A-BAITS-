@@ -8,9 +8,9 @@ import { getRelativeTime } from '@/components/ui/relativeTime';
 import { getUserById } from '@/services/user';
 import { blockClass, pageContainerClass } from '@/styles/profile/profile'
 import { hover } from '@/styles/style';
-import { Check, MoreVertical,Send, X} from "lucide-react";
+import { Check, ChevronLeft, MoreVertical,Send, X} from "lucide-react";
 import Link from 'next/link';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTranslation } from '@/app/context/TranslationProvider';
@@ -22,6 +22,7 @@ function page() {
   const BASE_URL = process.env.NEXT_PUBLIC_URL
 
   const param = useParams()
+  const router = useRouter()
   const lang = param.lang as string
   const {socket} = useSocketContext()
   const {t} = useTranslation()
@@ -31,7 +32,7 @@ function page() {
   const [message, setMessage] = useState('')
   const [selectChat, setSelectChat] = useState('')
   const [user, setUser] = useState<any | null>(null)
-  const [lot, setLot] = useState<any | null>(null)
+  const [lot, setLot] = useState('')
   const searchParams = useSearchParams()
   const selectIdChat = searchParams.get('id') || ''
   const lotId = searchParams.get('lotId')
@@ -91,19 +92,24 @@ function page() {
 
   useEffect(() => {
     if(!selectChat || !socket) return
-    socket.emit('getChatHistory', {toUserId:selectChat, type:typeChat})
-  }, [selectChat, typeChat, socket])
+    socket.emit('getChatHistory', {toUserId:selectChat, type:typeChat, lot:lot})
+    socket.emit('readChat', {toUserId:selectChat, type:typeChat, lot:chat?.lot})
+  }, [selectChat, typeChat, socket, chat])
 
   const handleSendNewMessage = () => {
     if(!socket) return
     socket.emit('newMessage', {toUserId: selectChat, message:message, numberLot: lotId, type:typeChat})
   }
 
+  const handleBack = () => {
+    router.back()
+  }
+
   return (
     <div className={`${pageContainerClass}`}>
-      <h1 className={`text-xl 2xl:text-2xl lg:text-xl mb-5`}>Чат</h1>
+      <h1 className={`text-xl 2xl:text-2xl lg:text-xl p-2 py-4 md:p-0 md:mb-2`}>Чат</h1>
       <div className='flex justify-start items-start gap-2 w-full'>
-        <ChatList setSelectChat={setSelectChat} setTypeChat={setTypeChat} selectChat={selectChat}/>
+        <ChatList setSelectChat={setSelectChat} setTypeChat={setTypeChat} selectChat={selectChat} setLot={setLot}/>
 
         <div className={`${blockClass} ${!selectChat ? 'hidden md:block': 'fixed top-0 left-0 md:static'} h-screen md:h-160 2xl:h-190 flex-col xl:w-2/3 2xl:!w-3/5 !gap-0 `}>
           {!selectChat ? (
@@ -111,11 +117,11 @@ function page() {
           ): (
             <>
             <div className='flex justify-between items-center w-full border-b border-b-gray-200 pb-2'>
-              <Link href={`/${lang}/profile/${user?.name}`} className='flex gap-2'>
+              <Link href={`/${lang}/profile/${user?.name}`} className='flex gap-2 justify-center items-center'>
+                <ChevronLeft onClick={handleBack} className='md:hidden'/>
                 <AvatarBlock avatar={user?.avatar} size="50"/>
                 <div className='flex flex-col justify-center items-start'>
                   <h1>{user?.name}</h1>
-                  <span>{lot?.name}</span>
                   <OlnlineUser id={user?._id}/>
                 </div>
               </Link>

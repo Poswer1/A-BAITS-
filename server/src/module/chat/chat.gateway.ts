@@ -37,11 +37,22 @@ export class ChatGateway {
         return chat
     }
 
+
+    @SubscribeMessage('readChat')
+    async readChat(@MessageBody() data:{toUserId:string, type:string, lot:string}, @ConnectedSocket() client:Socket) {
+        const userId = client.data.userId
+        if(!userId) return console.log('айди не найден при прочтения чата')
+        const updateChat = await this.chatService.readChat(data.toUserId, userId, data.type, data.lot)
+        if (updateChat) {
+        client.emit('readChat', updateChat);
+        }
+    }
+
     @SubscribeMessage('getChatHistory')
-    async getChatHistory(@MessageBody() data:{toUserId:string, type:string}, @ConnectedSocket() client:Socket) {
+    async getChatHistory(@MessageBody() data:{toUserId:string, type:string, lot:string}, @ConnectedSocket() client:Socket) {
         const userId = this.activeUser.get(client.id)
         if(!userId || !data.toUserId) return console.log('ошибка при получение истории чата')
-        const history = await this.chatService.getChatHistory(data.toUserId, data.type, userId)
+        const history = await this.chatService.getChatHistory(data.toUserId, data.type, userId, data.lot)
 
         client.emit('getHistory', history) // отдаем текущему пользователю
     }

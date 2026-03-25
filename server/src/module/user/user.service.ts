@@ -33,16 +33,17 @@ export class UserService {
       console.log('пользователь не найден при обновление профиля')
       return
     }
-
-    try {
-      const filePath = path.join(process.cwd(), user?.avatar.slice(1)) 
-      // path.join соеденяет пути в один 
-      // process.cwd() корневой путь
-      // .slice(1) делаем что бы взять путь к файлу без первого /
-      await fs.access(filePath) //access проверяет существует ли файл
-      await fs.unlink(filePath)
-    } catch (error) {
-      console.log('Старого аватара нету')
+    if(user?.avatar && !user?.avatar.includes('defaultAvatar')) {
+      try {
+        const filePath = path.join(process.cwd(), user?.avatar.slice(1)) 
+        // path.join соеденяет пути в один 
+        // process.cwd() корневой путь
+        // .slice(1) делаем что бы взять путь к файлу без первого /
+        await fs.access(filePath) //access проверяет существует ли файл
+        await fs.unlink(filePath)
+      } catch (error) {
+        console.log('Старого аватара нету')
+      }
     }
 
     const image = file && await ProccessImages([file], '/uploads/avatar/')

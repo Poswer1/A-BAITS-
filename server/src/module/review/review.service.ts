@@ -79,6 +79,7 @@ export class ReviewService {
         const [allReview, totalReview] = await Promise.all([
             ReviewModel.find({to:user._id})
             .populate('from', 'name avatar')
+            .populate('lot', 'images name lotNumber')
             .limit(limit)
             .skip((currentPage - 1) * limit),
 
@@ -91,6 +92,7 @@ export class ReviewService {
     async getRandomReview(id:string) {
          const populatedReview = await ReviewModel.findOne({to:id})
         .populate('from', 'name avatar')
+        .populate('lot', 'name lotNumber images')
 
         return populatedReview
     }

@@ -2,13 +2,13 @@ import { NextApiRequest, NextApiResponse } from "next"
 import { BASE_URL, dataReturn } from "./utils"
 
 
-export async function register(email:string, password:string) {
+export async function register(email:string, password:string, name:string) {
     const res = await fetch(`${BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({email, password})
+        body: JSON.stringify({email, password, name})
     })
 
     return dataReturn(res)

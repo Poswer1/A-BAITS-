@@ -1,10 +1,11 @@
 import AvatarBlock from '@/components/ui/avatar'
 import Link from 'next/link'
-import Rating from '@/components/ui/rating'
+import Rating from '@/components/review/rating'
 import { ReviewTypes } from '@/types/types'
 import { getReviewUser } from '@/services/review'
 import { getRelativeTime } from '@/components/ui/relativeTime'
 import Pagination from '@/components/ui/pagination'
+import ReviewBlock from '@/components/review/reviewBlock'
 
 interface pageProps {
   params: {
@@ -36,24 +37,12 @@ async function page({params, searchParams}: pageProps) {
   }
 
   return (
-    <div className={`flex gap-2 flex-col w-full`}>
-      <h1>Найдено: {date.totalReview}</h1>
+    <div className={`flex flex-col w-full`}>
+      <h1 className='px-2 mb-4 md:p-0'>Найдено: {date.totalReview}</h1>
       {date?.allReview.map((review) => (
-        <div className="flex flex-col justify-center items-start gap-2 bg-white p-4 rounded-md w-full">
-          <Link href={`/${lang}/profile/${review.from?.name}`} className="flex justify-center items-center gap-2 cursor-pointer">
-            <AvatarBlock avatar={review.from?.avatar} size="32"/> 
-            <span className="text-sm">{review.from?.name}</span>
-          </Link>
-          <div className='flex justify-center items-center gap-1'>
-          <Rating rating={review.rating} size={16}/>
-          </div>
-          <p className="text-sm">{review.comment}</p>
-          <span className='text-sm text-gray-500'>{getRelativeTime(review.createdAt, lang)}</span>
-        </div>
+        <ReviewBlock key={review._id} review={review}/>
       ))}
-
       <Pagination total={date?.totalReview} maxLot={4}/>
-
     </div>
   )
 }

@@ -19,25 +19,24 @@ export default function PriceSections({price, setPrice, priceStep, setPriceStep,
 
   return (
     <div className={`${block} gap-5`}>
-        <div className={`${block} md:flex-row !justify-start gap-5 !p-0`}>
+        <div className="flex w-full flex-wrap gap-5">
           <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>
-            <InputField 
-            type="number" 
-            value={price} 
-            onChange={setPrice} 
-            label={`${t('createLot','createLot-StartingPrice')} ₴`}
-            placeholder={t('createLot','createLot-StartingPrice')}/>
-          </div>
-          <div className={`${Blockinput}  md:!w-2/6 2xl:!w-1/4`}>
               <InputField 
               type="number" 
-              value={priceStep} 
-              onChange={setPriceStep} 
-              label={`${t('createLot','createLot-step')} ₴`} 
-              placeholder={t('createLot','createLot-step')}/>
-          </div>
+              value={price} 
+              onChange={setPrice} 
+              label={`${t('createLot','createLot-StartingPrice')} ₴`}
+              placeholder={t('createLot','createLot-StartingPrice')}/>
+            </div>
+            <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>
+                <InputField 
+                type="number" 
+                value={priceStep} 
+                onChange={setPriceStep} 
+                label={`${t('createLot','createLot-step')} ₴`} 
+                placeholder={t('createLot','createLot-step')}/>
+            </div>
         </div>
-        <div className={`${block} flex-row !justify-start gap-10 !p-0`}>
           <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>
               <InputField 
               type="number" 
@@ -46,7 +45,6 @@ export default function PriceSections({price, setPrice, priceStep, setPriceStep,
               label={`${t('createLot','createLot-Blitz')} ₴ (${t('global','NotNecessary')})`} 
               placeholder={t('createLot','createLot-Blitz-descriptions')}/>
           </div>
-        </div>
       </div>
   )
 }

@@ -1,17 +1,21 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
+import { data } from "react-router-dom"
 import { io, Socket } from "socket.io-client"
 
 interface SocketProps {
     socket: Socket | null
+    onlineUser: string[]
 }
 
 const SocketContext = createContext<SocketProps>({
-    socket: null
+    socket: null,
+    onlineUser:[]
 })
 
 export default function SocketIo({children}: {children:ReactNode}) {
     const BASE_URL = process.env.NEXT_PUBLIC_URL
     const [socket, setSocket] = useState<Socket | null>(null)
+    const [onlineUser, setOnlineUser] = useState<string[]>([])
 
     useEffect(() => {
         const s = io(BASE_URL, {
@@ -21,13 +25,21 @@ export default function SocketIo({children}: {children:ReactNode}) {
         })
         setSocket(s)
         
+        s.on('current-online', (data) => {
+            setOnlineUser(data)
+        })
+        s.on('user-online', (data) => {
+            setOnlineUser(prev => [...prev, data])
+        })
+       
+
         return () => {
             s.disconnect()
         }
     }, [BASE_URL])
 
   return (
-   <SocketContext.Provider value={{socket}}>
+   <SocketContext.Provider value={{ socket, onlineUser}}>
     {children}
    </SocketContext.Provider>
   )

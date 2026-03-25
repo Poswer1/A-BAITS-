@@ -104,7 +104,7 @@ function Header() {
                         )}
                                 
                         {!auth ? (
-                            <Link href="/auth/login" className={`p-2 px-4 rounded-md ${hover} bg-orange-600 text-white flex gap-1 justify-center items-center`}><LogIn size={20}/>{t('header','login')}</Link>
+                            <Link href={`/${lang}/auth/login`} className={`p-2 px-4 rounded-md ${hover} bg-orange-600 text-white flex gap-1 justify-center items-center`}><LogIn size={20}/>{t('header','login')}</Link>
                         ): (
                             <>
                             <Bell className={`${hoverSub} hidden md:flex ${read ? 'text-orange-600': 'text-gray-500'}`} onClick={() => setOpenNotification(prev => !prev)}/>

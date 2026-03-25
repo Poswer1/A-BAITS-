@@ -47,8 +47,8 @@ function Footer() {
     <div className="flex justify-start items-start w-full bg-[#0F0F0F] z-10">
       <div className="flex flex-col md:flex-row justify-start items-start w-[90%] lg:gap-10 2xl:gap-20">
         <div className={`${column} h-full  relative`}>
-           <Image src={'/images/Footer/logo.png'} alt="" width={150} height={150} className="w-[150px] h-auto"/>
-            <span className="text-white 2xl:text-base lg:text-sm">© 2026  A-BAITS UKRAINE | All rights reserved</span>
+          <Image src={'/images/Footer/logo.png'} alt="" width={150} height={150} className="w-[150px] h-auto"/>
+          <span className="text-white text-sm">© 2026  A-BAITS UKRAINE | All rights reserved</span>
         </div>
         {sections.map((item, idx) => (
           <div className={`${column}`} key={idx}>

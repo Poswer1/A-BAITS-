@@ -5,7 +5,6 @@ import Sidebar from '@/components/profile/sidebar'
 import Loading from '@/components/ui/loadig'
 import { getUserById } from '@/services/user'
 import { loadingBlock } from '@/styles/global'
-import { UserTypes } from '@/types/types'
 import { useParams, usePathname } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
@@ -42,7 +41,7 @@ function layout({children}: {children: React.ReactNode}) {
   }, [pathname, t])
 
   return (
-    <div className='flex flex-col md:flex-row justify-start items-start md:h-250 text-black w-full bg-gray-100 overflow-x-hidden'>
+    <div className='flex flex-col md:flex-row justify-start items-start md:min-h-250 text-black w-full bg-gray-100 overflow-x-hidden'>
       {loading ? (
         <div className={loadingBlock}>
           <Loading />

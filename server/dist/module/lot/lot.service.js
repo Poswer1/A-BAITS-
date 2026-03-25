@@ -18,9 +18,11 @@ let LotService = class LotService {
         const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString();
         const nowDate = new Date();
         const oneDay = 24 * 60 * 60 * 1000;
-        const newDate = new Date(nowDate.getTime() + (oneDay * dto.date));
-        const [hours, minutes] = dto.dateTime.split(':').map(Number);
-        newDate.setHours(hours, minutes, 0, 0);
+        const newDate = new Date(nowDate.getTime() + (oneDay * Number(dto.date)));
+        if (dto.dateTime) {
+            const [hours, minutes] = dto.dateTime.split(':').map(Number);
+            newDate.setHours(hours, minutes, 0, 0);
+        }
         try {
             const product = await lot_model_1.LotModel.create({
                 ...dto,
@@ -33,7 +35,7 @@ let LotService = class LotService {
             return product;
         }
         catch (error) {
-            throw new common_1.BadRequestException('Не вдалося створити товар', error);
+            throw new common_1.BadRequestException('Не вдалося створити товар', error.message);
         }
     }
     async getAllLot() {

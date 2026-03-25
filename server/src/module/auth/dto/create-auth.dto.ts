@@ -8,5 +8,8 @@ export class Auth {
     password:string
 
     @IsString()
+    name:string
+
+    @IsString()
     adminPassword?:string
 }

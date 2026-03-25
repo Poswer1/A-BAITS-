@@ -1,7 +1,7 @@
 import { useTranslation } from "@/app/context/TranslationProvider"
 import { block, Blockinput, nameInput } from "@/styles/createLot"
 import { animationOpacity, hover } from "@/styles/style"
-import { Camera, Trash2} from "lucide-react"
+import { Camera, Image, Trash2} from "lucide-react"
 import { useState } from "react"
 
 interface PhotoSectionsProps {
@@ -22,6 +22,17 @@ export default function PhotoSections({setFile, file, preview, setPreview}:Photo
     const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
       if(!e.target.files) return
       const newFiles = Array.from(e.target.files)
+      
+      const exestingWebp = newFiles.find(file => file.type === 'image/webp')
+      const existingVideo = newFiles.find(file => file.type.startsWith('video/'))
+
+      if(exestingWebp || existingVideo) {
+        setMessage(exestingWebp ? t('createLot', 'formatFile') : existingVideo && t('createLot', 'onlyPhoto'))
+        setTimeout(() => {
+          setMessage('')
+        }, 3000)
+        return
+      }
 
       setFile(prev => [...prev, ...newFiles])
 
@@ -64,11 +75,15 @@ export default function PhotoSections({setFile, file, preview, setPreview}:Photo
     <div className={block}>
        <div className={Blockinput}>
           <span className={nameInput}>Фото</span>
-          <p className={'text-gray-500 text-sm'}>{t('createLot','createLot-firstPhoto')}</p>
-          <div className="flex overflow-x-auto md:flex-wrap justify-start items-center w-full gap-3">
+          <p className={`${file.length > 0 ? 'flex' : 'hidden md:flex'} text-gray-500 text-sm`}>{t('createLot','createLot-firstPhoto')}</p>
+          <label htmlFor="fileInput" className={`${file.length > 0 && 'hidden'} md:hidden border-dashed border-2 border-orange-600 flex flex-col gap-2 justify-center items-center h-50 bg-orange-600/10 w-full rounded-lg`}>
+            <Image className="text-orange-600/50" size={100}/>
+            <span className="rounded-xl">Добавить фото</span>
+          </label>
+          <div className={`${file.length > 0 ? 'flex' : 'hidden md:flex'} flex flex-wrap justify-start items-center w-full gap-3`}>
            <input type="file" multiple id="fileInput" onChange={handleFile} className="hidden"/>
             {Array.from({ length: 8 }).map((_, index) => (
-              <label htmlFor="fileInput" key={index} className="flex justify-center items-center bg-gray-100 h-32 w-1/2 md:w-1/5 cursor-pointer relative overflow-hidden">
+              <label htmlFor="fileInput" key={index} className="flex justify-center items-center bg-gray-100 h-32 w-[47%] md:w-1/5 cursor-pointer relative overflow-hidden">
                 {preview[index] ? (
                   <>
                     <div onDrop={() => handleDrop(index)} draggable  onDragStart={() => setDragIndex(index)}  onDragOver={(e) => e.preventDefault()} className="w-full h-full">
@@ -76,7 +91,7 @@ export default function PhotoSections({setFile, file, preview, setPreview}:Photo
                     </div>
                     {hoverFile === index && (
                     <div className={` ${animationOpacity} absolute`} onClick={(e) => {e.preventDefault(), handleDeleteFile(index)}} onMouseLeave={() => setHoverFile('')}>
-                      <Trash2 className={`${hover} bg-white rounded-full p-2 overflow-hidden`}size={40}/>
+                      <Trash2 className={`${hover} bg-white rounded-full p-2 overflow-hidden`} size={40}/>
                     </div>
                     )}
                   </>
@@ -90,7 +105,7 @@ export default function PhotoSections({setFile, file, preview, setPreview}:Photo
             ))}
           </div>
             {message && (
-              <span className="text-orange-600">{message}</span>
+              <span className="text-red-600">{message}</span>
             )}
         </div>
       </div> 

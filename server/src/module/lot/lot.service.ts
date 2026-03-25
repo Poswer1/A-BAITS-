@@ -19,12 +19,11 @@ export class LotService {
     const nowDate = new Date()
     const oneDay = 24 * 60 * 60 * 1000
     
-    const newDate = new Date(nowDate.getTime() + (oneDay * dto.date))
-
-    const [hours, minutes] = dto.dateTime.split(':').map(Number)
-
-    newDate.setHours(hours, minutes, 0, 0)
-
+    const newDate = new Date(nowDate.getTime() + (oneDay * Number(dto.date)))
+    if(dto.dateTime) {
+      const [hours, minutes] = dto.dateTime.split(':').map(Number)
+      newDate.setHours(hours, minutes, 0, 0)
+    }
 
     try {
       const product = await LotModel.create({
@@ -37,7 +36,7 @@ export class LotService {
       })
       return product
     } catch (error) {
-      throw new BadRequestException('Не вдалося створити товар',error)
+      throw new BadRequestException('Не вдалося створити товар',error.message)
     }
   }
 

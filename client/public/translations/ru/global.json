@@ -3,5 +3,6 @@
     "NotNecessary": "Необязательно",
     "PaidFeature": "ПЛАТНАЯ ФУНКЦИЯ",
     "loading": "Загрузка",
-    "accountNotFound": "Войдите в аккаунт"
+    "accountNotFound": "Войдите в аккаунт",
+    "back": "Вернуться назад"
 }

@@ -14,9 +14,12 @@ import { useTranslation } from "@/app/context/TranslationProvider";
 interface CategoryList {
     setOpenCategory: (type:boolean) => void
     openFrom:string
+    createLotSetCategory:(v:string) => void,
+    createLotSetSubCategory:(v:string) => void,
+    createLotSetSubSubCategory:(v:string) => void,
 }
 
-function CategoryList({setOpenCategory, openFrom} : CategoryList) {
+function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLotSetSubCategory, createLotSetSubSubCategory} : CategoryList) {
   if(!categoriesWithIcons) return
 
   const params = useParams()
@@ -44,14 +47,19 @@ function CategoryList({setOpenCategory, openFrom} : CategoryList) {
   }
 
   const handleClick = () => {
-    let path = `/${lang}`
 
-    if(category)path += `/${category}`
-    if(subCategory)path += `/${subCategory}`
-    if(subSubCategory)path += `/${subSubCategory}`
+    if(openFrom === 'header') {
+      let path = `/${lang}`
+      if(category)path += `/${category}`
+      if(subCategory)path += `/${subCategory}`
+      if(subSubCategory)path += `/${subSubCategory}`
+      router.push(`${path}`)
+    } else if(openFrom === 'createLot') {
+      if(category)createLotSetCategory(category)
+      if(subCategory)createLotSetSubCategory(subCategory)
+      if(subSubCategory)createLotSetSubSubCategory(subSubCategory)
+    }
     setOpenCategory(false)
-
-    router.push(`${path}`)
   }
 
   useEffect(() => {
@@ -76,7 +84,7 @@ function CategoryList({setOpenCategory, openFrom} : CategoryList) {
   return (
     <>
     <div className={`${overlay}`} onClick={() => setOpenCategory(false)}>
-          <div onClick={(e) => e.stopPropagation()} className={`${animationOpacity} w-full md:w-2/3 bg-white rounded-md ${openFrom === 'header' && 'top-0 md:top-[8%] absolute' }  flex flex-col md:flex-row justify-start items-start z-30 text-black`}>
+      <div onClick={(e) => e.stopPropagation()} className={`${animationOpacity} w-full md:w-2/3  ${openFrom === 'header' ? 'md:absolute top-15' : ''} bg-white rounded-md flex flex-col md:flex-row justify-start items-start z-30 text-black h-full md:h-auto`}>
             
           <div className="flex justify-between items-center w-full text-black border-b border-gray-300 p-2 md:hidden bg-white">
                 {category && (

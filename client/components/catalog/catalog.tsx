@@ -16,13 +16,13 @@ interface CatalogProps {
 export default function Catalog({category, subCategory, subSubCategory, city, lots, total, searchValue}:CatalogProps) {
   
   return (
-    <div className='flex flex-col p-2 justify-start items-start w-full mt-2 md:min-h-200'>
-        <h1 className='text-md text-gray-500'>{category && `${category} |`} {subCategory && `${subCategory} |`} {subSubCategory && `${subSubCategory} |`} {city && `${city}`}</h1>
+    <div className='flex flex-col md:p-2 justify-start items-start w-full mt-2 md:min-h-200'>
+        <h1 className='text-md text-gray-500 px-2 md:p-0'>{category && `${category} |`} {subCategory && `${subCategory} |`} {subSubCategory && `${subSubCategory} |`} {city && `${city}`}</h1>
         {searchValue && (
-          <h1 className='text-black text-xl md:text-2xl'>Результаты по поиску <span className='text-orange-600'>{`${searchValue.length >= 30 ? searchValue.slice(0, 30) + '...' : searchValue}`.toUpperCase()}</span></h1>
+          <h1 className='text-black text-xl md:text-2xl px-2 md:p-0'>Результаты по поиску <span className='text-orange-600'>{`${searchValue.length >= 30 ? searchValue.slice(0, 30) + '...' : searchValue}`.toUpperCase()}</span></h1>
         )}
-        <span className='text-gray-500 text-sm'>Найдено лотов: {total}</span>
-        <div className='flex flex-col justify-start items-start gap-2 w-full mt-2'>
+        <span className='text-gray-500 text-sm  px-2 md:p-0'>Найдено лотов: {total}</span>
+        <div className='flex flex-col justify-start items-start w-full mt-2'>
           {lots.map(l => (
             <LotCardV2 lot={l}/>
           ))}

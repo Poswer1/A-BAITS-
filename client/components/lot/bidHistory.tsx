@@ -30,7 +30,7 @@ export default function BidHistory({userHistory, auth}:BidHistoryProps) {
           <Link href="/auth/login" className={`${button} gap-1 w-full`}><LogIn size={20}/>{t('header','login')}</Link>
         </div>
       ): (
-          <div className="flex flex-col justify-start items-start w-full overflow-auto max-h-90 md:max-h-full gap-5 custom-scrollbar">
+          <div className="flex flex-col justify-start items-start w-full overflow-y-auto overflow-x-hidden max-h-90 md:max-h-full gap-5 custom-scrollbar">
             {userHistory.length === 0 ? (
                 <span className="text-gray-500">Ставок пока что нету</span>
               ): (

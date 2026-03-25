@@ -16,8 +16,10 @@ export class AuthService {
   async register (dto: Auth) {
     const exesting = await UserModel.findOne({email:dto.email})
     if(exesting) { 
-      throw new BadRequestException('Такий користувач вже зареєстрований')
+      throw new BadRequestException('userExesting')
     }
+    const exestingName = await UserModel.findOne({name:dto.name})
+    if(exestingName) throw new BadRequestException('NameIsAlready')
     
     const password = dto.password
     const salt = await bcrypt.genSalt(10)
@@ -34,7 +36,7 @@ export class AuthService {
     try {
       const user = await UserModel.create({
         email:normalRegisterEmail,
-        name:normalRegisterEmail,
+        name:dto.name,
         password: hash,
         role:role
       }) 
@@ -42,27 +44,24 @@ export class AuthService {
       return user
     } catch (error) {
        console.log(error)
-       throw new BadRequestException('Помилка при реєстрації')
+       throw new BadRequestException('ErrorRegister')
     }
 
   }
 
   async login (dto: Auth) {
-    try {
+    
       const user = await UserModel.findOne({email:dto.email})
-      if(!user) throw new UnauthorizedException('Пользователь не знайден')
+      if(!user) throw new UnauthorizedException('UserNotFound')
       
       const isValidPassword = await bcrypt.compare(dto.password, user.password)
-      if(!isValidPassword) throw new UnauthorizedException('Данні не вірні')
+      if(!isValidPassword) throw new UnauthorizedException('dateIsInCorrect')
 
       const payload = {_id:user._id, role:user.role}
       const token = this.jwtService.sign(payload)
       const { password, ...userData } = user.toObject(); // ... говорят взять всё кроме password и положить в userData
       return {token, userData}
 
-    } catch (error) {
-      console.log(error)
-      throw new BadRequestException('Помилка при вході')
-    }
+    
   }
 }
