@@ -52,7 +52,7 @@ let ChatService = class ChatService {
                 ],
             })
                 .populate('userFrom userTo', 'name avatar')
-                .populate('lot', 'name images type status _id');
+                .populate('lot', 'name images type status');
             const unReadChats = [];
             const readChats = [];
             allChats.forEach(chat => {

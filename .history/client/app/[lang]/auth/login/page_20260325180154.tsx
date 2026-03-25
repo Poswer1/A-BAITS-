@@ -48,7 +48,7 @@ function page() {
              {message && (
               <span className={`${animationScale} text-red-500`}>{message}</span>
              )}
-            <h1 className='text-black text-center font-bold text-2xl text-3xl'>{t('auth', 'LoginInAccount')}</h1>
+            <h1 className='text-black text-center font-bold text-2xl md:text-3xl'>{t('auth', 'LoginInAccount')}</h1>
             
             <div className={customInput}>
                 <input placeholder={t('auth', 'EnterEmail')} value={email} onChange={(e) => setEmail(e.target.value)} className={input}/>
