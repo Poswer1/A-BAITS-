@@ -28,8 +28,11 @@ let AuthService = class AuthService {
     async register(dto) {
         const exesting = await user_model_1.UserModel.findOne({ email: dto.email });
         if (exesting) {
-            throw new common_1.BadRequestException('Такий користувач вже зареєстрований');
+            throw new common_1.BadRequestException('userExesting');
         }
+        const exestingName = await user_model_1.UserModel.findOne({ name: dto.name });
+        if (exestingName)
+            throw new common_1.BadRequestException('NameIsAlready');
         const password = dto.password;
         const salt = await bcrypt_1.default.genSalt(10);
         const hash = await bcrypt_1.default.hash(password, salt);
@@ -41,7 +44,7 @@ let AuthService = class AuthService {
         try {
             const user = await user_model_1.UserModel.create({
                 email: normalRegisterEmail,
-                name: normalRegisterEmail,
+                name: dto.name,
                 password: hash,
                 role: role
             });
@@ -49,26 +52,20 @@ let AuthService = class AuthService {
         }
         catch (error) {
             console.log(error);
-            throw new common_1.BadRequestException('Помилка при реєстрації');
+            throw new common_1.BadRequestException('ErrorRegister');
         }
     }
     async login(dto) {
-        try {
-            const user = await user_model_1.UserModel.findOne({ email: dto.email });
-            if (!user)
-                throw new common_1.UnauthorizedException('Пользователь не знайден');
-            const isValidPassword = await bcrypt_1.default.compare(dto.password, user.password);
-            if (!isValidPassword)
-                throw new common_1.UnauthorizedException('Данні не вірні');
-            const payload = { _id: user._id, role: user.role };
-            const token = this.jwtService.sign(payload);
-            const { password, ...userData } = user.toObject();
-            return { token, userData };
-        }
-        catch (error) {
-            console.log(error);
-            throw new common_1.BadRequestException('Помилка при вході');
-        }
+        const user = await user_model_1.UserModel.findOne({ email: dto.email });
+        if (!user)
+            throw new common_1.UnauthorizedException('UserNotFound');
+        const isValidPassword = await bcrypt_1.default.compare(dto.password, user.password);
+        if (!isValidPassword)
+            throw new common_1.UnauthorizedException('dateIsInCorrect');
+        const payload = { _id: user._id, role: user.role };
+        const token = this.jwtService.sign(payload);
+        const { password, ...userData } = user.toObject();
+        return { token, userData };
     }
 };
 exports.AuthService = AuthService;

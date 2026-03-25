@@ -14,6 +14,7 @@ const class_validator_1 = require("class-validator");
 class Auth {
     email;
     password;
+    name;
     adminPassword;
 }
 exports.Auth = Auth;
@@ -25,6 +26,10 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], Auth.prototype, "password", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], Auth.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)

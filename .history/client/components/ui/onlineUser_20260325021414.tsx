@@ -1,0 +1,15 @@
+import { useSocketContext } from '@/app/context/SocketIo'
+
+export default function Online({id}: {id:string}) {
+
+  const { onlineUser } = useSocketContext()
+
+  const isOnline = Array.isArray(onlineUser) && onlineUser.includes(id)
+
+  return (
+    <span className="text-sm flex justify-center items-center gap-1">
+     <span className={`${isOnline ? 'bg-green-600' : 'bg-red-500'} rounded-full p-1`}></span>
+     {isOnline(id) ? 'Онлайн': 'Офлайн'}
+   </span>
+  )
+}

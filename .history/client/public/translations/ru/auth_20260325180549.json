@@ -1,0 +1,20 @@
+{
+    "EnterEmail": "Введите Email",
+    "EnterPassword": "Введите пароль",
+    "ConfirmPassword": "Подтвердите пароль",
+    "LoginInAccount": "Войти в аккаунт",
+    "EnterYourName": "Введите ваше имя",
+    "Login": "Войти",
+    "pesonalDate": "Ваши персональные данные не будут переданы третьим лицам. Спасибо за доверие!",
+    "forgotPassword": "Забыли пароль?",
+    "DontHaveAccount": "Нету аккаунта?",
+    "alreadyRegistered": "Уже зарегестрирован?",
+    "Register": "Зарегистрироваться",
+    "Register2": "Регистрация",
+    "ErrorRegister": "Ошибка при регистрации, попробуйте позже",
+    "UserNotFound": "Пользователь не найден",
+    "dateIsInCorrect": "Данные не верные",
+    "FillInAllDetails": "Заполните все данные",
+    "PasswordDontMatch": "Пароли не совподают",
+    "NameIsAlready": "Т"
+}

@@ -9,7 +9,7 @@ export interface Lot {
     author: Types.ObjectId;
     lotNumber: string;
     category: string;
-    subCategory: string;
+    subCategory?: string;
     subSubCategory?: string;
     startPrice: number;
     stepPrice: number;

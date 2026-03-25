@@ -13,7 +13,7 @@ const UserSchema = new mongoose_1.Schema({
     role: { type: String, required: true },
     rating: { type: Number, default: 1 },
     favorites: { type: [mongoose_1.Schema.Types.ObjectId], ref: 'Lot' },
-    avatar: { type: String, default: 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?semt=ais_hybrid&w=740&q=80' },
+    avatar: { type: String, default: '/uploads/defaultAvatar/avatar1.webp' },
 }, { timestamps: true, });
 exports.UserModel = (0, mongoose_1.model)('User', UserSchema);
 //# sourceMappingURL=user.model.js.map

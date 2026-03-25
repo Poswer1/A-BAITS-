@@ -1,0 +1,33 @@
+import { WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { UserService } from "./user.service";
+import { Server, Socket } from "socket.io";
+
+@WebSocketGateway({cors:true})
+
+export class UserGateway {
+
+    private onlineUser: Map<string, string> = new Map()
+
+    @WebSocketServer()
+    server:Server
+
+    async handleConnection(client:Socket) {
+         const cookies = client.handshake.headers.cookie || ''
+         const token = cookies
+        .split('; ')
+        .find(c => c.startsWith('token='))
+        ?.split('=')[1]; 
+        // в cookies токен выглядт так token=a3223 
+        // тут разделяем его по = получим token отедельно и a3223 и берем [1]
+
+        if(!token) {
+            console.log('JWT не предоставлен');
+            client.disconnect();
+            return
+        }
+
+        
+    }
+
+
+}

@@ -45,28 +45,64 @@ let ChatService = class ChatService {
     }
     async getMyChat(userId) {
         try {
-            const chats = await chat_model_1.ChatModel.find({
+            const allChats = await chat_model_1.ChatModel.find({
                 $or: [
                     { userFrom: userId },
                     { userTo: userId }
-                ]
+                ],
             })
                 .populate('userFrom userTo', 'name avatar')
-                .populate('lot', 'name images');
-            return chats;
+                .populate('lot', 'name images type status _id');
+            const unReadChats = [];
+            const readChats = [];
+            allChats.forEach(chat => {
+                const hasUnread = chat.messages.some(msg => msg.to.toString() === userId && !msg.read);
+                if (hasUnread) {
+                    unReadChats.push(chat);
+                }
+                else {
+                    readChats.push(chat);
+                }
+            });
+            return { unReadChats, readChats };
         }
         catch (error) {
             throw new common_1.BadRequestException('Ошибка при получение всех моих чатов', error);
         }
     }
-    async getChatHistory(toUserId, type, userId) {
+    async readChat(toUserId, fromUserId, type, lot) {
+        const updateChat = await chat_model_1.ChatModel.findOneAndUpdate({
+            $or: [
+                { userFrom: fromUserId, userTo: toUserId },
+                { userFrom: toUserId, userTo: fromUserId }
+            ],
+            type,
+            lot,
+            "messages.to": fromUserId,
+            "messages.read": false
+        }, {
+            $set: {
+                "messages.$[elem].read": true
+            }
+        }, {
+            arrayFilters: [
+                { "elem.to": fromUserId, "elem.read": false }
+            ],
+            returnDocument: 'after'
+        })
+            .populate('userFrom userTo', 'name avatar')
+            .populate('lot', 'name images startPrice lotNumber _id');
+        return updateChat;
+    }
+    async getChatHistory(toUserId, type, userId, lot) {
         try {
             const history = await chat_model_1.ChatModel.findOne({
                 $or: [
                     { userFrom: toUserId, userTo: userId },
                     { userFrom: userId, userTo: toUserId },
                 ],
-                type: type
+                type: type,
+                lot: lot,
             }).populate('lot', 'name images startPrice lotNumber _id');
             if (!history)
                 return { historyMessage: [], numberLot: null };

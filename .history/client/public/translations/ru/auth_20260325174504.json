@@ -1,0 +1,13 @@
+{
+    "EnterEmail": "Введите Email",
+    "EnterPassword": "Введите пароль",
+    "ConfirmPassword": "Подтвердите пароль",
+    "LoginInAccount": "Войти в аккаунт",
+    "Login": "Войти",
+    "pesonalDate": "Ваши персональные данные не будут переданы третьим лицам. Спасибо за доверие!",
+    "forgotPassword": "Забыли пароль?",
+    "DontHaveAccount": "Нету аккаунта?",
+    "alreadyRegistered"
+    "Register": "Зарегистрироваться",
+    "Register2": "Регистрация"
+}
