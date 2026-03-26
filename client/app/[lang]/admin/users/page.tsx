@@ -10,7 +10,10 @@ export default async function page() {
   try {
     const cookieStore = await cookies()
     const token = cookieStore.get('token')?.value
-    if(!token) return
+    if(!token) {
+      console.log('токен не найден')
+      return
+    }
     listUser = await getAllUser(token) 
   } catch (error) {
     listUser = []

@@ -31,8 +31,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUser", null);
 exports.UserController = UserController = __decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UseGuards)(role_guards_1.RolesGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('ActionOnTheUser'),
     __metadata("design:paramtypes", [user_service_1.UserService])
 ], UserController);

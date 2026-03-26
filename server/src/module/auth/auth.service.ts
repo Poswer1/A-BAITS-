@@ -51,7 +51,9 @@ export class AuthService {
 
   async login (dto: Auth) {
     
-      const user = await UserModel.findOne({email:dto.email})
+      const normalEmail = dto.email.trim().toLowerCase()
+
+      const user = await UserModel.findOne({email:normalEmail})
       if(!user) throw new UnauthorizedException('UserNotFound')
       
       const isValidPassword = await bcrypt.compare(dto.password, user.password)
