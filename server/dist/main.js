@@ -49,7 +49,7 @@ async function Main() {
         origin: ['http://192.168.0.158:3000', 'http://localhost:3000', 'https://a-baits.onrender.com'],
         credentials: true
     });
-    const PORT = process.env.PORT || 3001;
+    const PORT = process.env.PORT || 3002;
     await app.listen(PORT, '0.0.0.0');
     console.log(`Server started on ${PORT}`);
 }

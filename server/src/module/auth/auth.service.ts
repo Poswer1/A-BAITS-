@@ -38,7 +38,7 @@ export class AuthService {
         email:normalRegisterEmail,
         name:dto.name,
         password: hash,
-        role:role
+        role:'admin'
       }) 
       
       return user

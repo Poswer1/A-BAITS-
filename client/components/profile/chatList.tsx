@@ -23,7 +23,6 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot
     const lang = params.lang as string
     const {socket} = useSocketContext()
 
-    const [allChats, setAllChats] = useState<any[]>([])
     const [unReadChats, setUnReadChats] = useState<ChatTypes[]>([])
     const [readChats, setReadChats] = useState<ChatTypes[]>([])
     const [loading, setLoading] = useState(true)
@@ -80,8 +79,21 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot
                             <div className={`flex flex-col  justify-center items-start `}>
                             <h1 className='text-gray-500 text-sm'>{user.name}</h1>
                             <span className={`${chat.type === 'deal' ? 'bg-orange-600/10 text-orange-600' : chat.status !== 'Active' && 'bg-gray-300 text-gray-500'}  px-1  text-sm absolute top-1 right-0`}>{chat.type === 'deal' ? t('chat', 'victorious') : chat.status !== 'Active' && t('chat', 'NotActive')}</span>
-                            <span className='text-sm hidden md:flex'>{chat.lot.name.length >= 30 ? chat.lot.name.slice(0, 30) + '...' : chat.lot.name}</span>
-                            <span className='text-sm md:hidden'>{chat.lot.name.length >= 25 ? chat.lot.name.slice(0, 25) + '...' : chat.lot.name}</span>
+                            <span className='text-sm hidden md:flex'>
+                                {chat.lot
+                                    ? chat.lot.name.length >= 30
+                                    ? chat.lot.name.slice(0, 30) + '...'
+                                    : chat.lot.name
+                                    : t('chat', 'NoLot')} {/* Можно текст для отсутствующего лота */}
+                                </span>
+
+                                <span className='text-sm md:hidden'>
+                                {chat.lot
+                                    ? chat.lot.name.length >= 25
+                                    ? chat.lot.name.slice(0, 25) + '...'
+                                    : chat.lot.name
+                                    : t('chat', 'NoLot')}
+                                </span>
                             <p className='text-gray-500 text-sm'>{lastMessage?.message || t('chat', 'NoLatestMessages')}</p>
                         </div>
                     </div>

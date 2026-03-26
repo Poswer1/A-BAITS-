@@ -15,6 +15,7 @@ import ukChat from '../../public/translations/uk/chat.json'
 import ukReview from '../../public/translations/uk/review.json'
 import ukCatalog from '../../public/translations/uk/catalog.json'
 import ukAuth from '../../public/translations/uk/auth.json'
+import ukAdmin from '../../public/translations/uk/admin.json'
 
 import ruHeader from '../../public/translations/ru/header.json'
 import ruFooter from '../../public/translations/ru/footer.json'
@@ -28,6 +29,7 @@ import ruChat from '../../public/translations/ru/chat.json'
 import ruReview from '../../public/translations/ru/review.json'
 import ruCatalog from '../../public/translations/ru/catalog.json'
 import ruAuth from '../../public/translations/ru/auth.json'
+import ruAdmin from '../../public/translations/ru/admin.json'
 
 import ClientLayout from "./clientLayout";
 import { useParams } from "next/navigation";
@@ -47,7 +49,8 @@ const translationsMap = {
         chat: ukChat,
         review: ukReview,
         catalog: ukCatalog,
-        auth: ukAuth
+        auth: ukAuth,
+        admin:ukAdmin
     },
     ru: {
         header: ruHeader,
@@ -61,7 +64,8 @@ const translationsMap = {
         chat: ruChat,
         review: ruReview,
         catalog: ruCatalog,
-        auth: ruAuth
+        auth: ruAuth,
+        admin:ruAdmin
     }
 }
 

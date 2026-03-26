@@ -39,7 +39,7 @@ export default function Layout({children}: {children: React.ReactNode}) {
       .then(data => {
         setUser(data)
         setLoading(false)
-      }).catch((error) => {
+      }).catch(() => {
         setLoading(false)
       })
     }, [username])
