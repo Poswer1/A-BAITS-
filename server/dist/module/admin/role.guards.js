@@ -12,8 +12,10 @@ let RolesGuard = class RolesGuard {
     canActivate(context) {
         const req = context.switchToHttp().getRequest();
         const user = req.user;
-        if (!user)
+        if (!user) {
+            console.log('пользователя нету при проверки роли');
             return false;
+        }
         return user.role === 'admin';
     }
 };

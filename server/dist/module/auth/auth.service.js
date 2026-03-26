@@ -56,7 +56,8 @@ let AuthService = class AuthService {
         }
     }
     async login(dto) {
-        const user = await user_model_1.UserModel.findOne({ email: dto.email });
+        const normalEmail = dto.email.trim().toLowerCase();
+        const user = await user_model_1.UserModel.findOne({ email: normalEmail });
         if (!user)
             throw new common_1.UnauthorizedException('UserNotFound');
         const isValidPassword = await bcrypt_1.default.compare(dto.password, user.password);

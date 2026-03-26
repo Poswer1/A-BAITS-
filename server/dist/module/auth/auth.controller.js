@@ -33,6 +33,7 @@ let AuthController = class AuthController {
         res.cookie('token', data.token, {
             httpOnly: true,
             sameSite: 'none',
+            secure: true,
             path: '/',
             maxAge: 1000 * 60 * 60 * 24 * 7
         });
