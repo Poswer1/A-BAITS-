@@ -13,7 +13,7 @@ import { getRandomReview } from "@/services/review";
 import Online from "../ui/onlineUser";
 
 interface AuthorSectionProps {
-lot:LotTypes,
+ lot: LotTypes | null,
 }
 
 export default function AuthorSection({lot}:AuthorSectionProps) {
@@ -26,12 +26,14 @@ export default function AuthorSection({lot}:AuthorSectionProps) {
     const {t} = useTranslation()
 
     useEffect(() => {
-      if(!lot.author._id) return
-      getRandomReview(lot.author._id)
+      if(!lot?.author._id) return
+      getRandomReview(lot?.author._id)
       .then(data => {
         setReview(data)
       })
-    }, [lot.author._id])
+    }, [lot?.author._id])
+
+    if (!lot) return null
 
   return (
     <div className={`${columnBlock} w-full text-black`}>

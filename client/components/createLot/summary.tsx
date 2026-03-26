@@ -8,7 +8,6 @@ interface Summary {
     advertising: boolean,
     handleCreateOrUpdate: () => void
     message:string
-    errorRef:React.RefObject<HTMLDivElement>;
 }
 
 export default function Summary({autoReExtension, advertising, handleCreateOrUpdate, message} : Summary) {

@@ -145,8 +145,22 @@ export default function Filter({maxPriceLot}: FilterProps) {
           <SelectionField title={t('catalog', 'sort')} placeholder={t('catalog', 'LowToUp')} list={listLowToUpPrice} setValue={setSortValue} value={sortValue}/>
           <div className="flex flex-col justify-center items-center w-full gap-1">
             <div className="flex justify-center items-center gap-2 w-full">
-              <InputField label={t('catalog', 'from')} type="number" onChange={setMinPrice} value={minPrice} maxTotal={maxPriceLot.toString()} />
-              <InputField label={t('catalog', 'to')} type="number" onChange={setMaxPrice} value={maxPrice} minTotal={maxPriceLot.toString()}/>
+              <InputField
+              label={t('catalog', 'from')} 
+              placeholder=""
+              type="number" 
+              onChange={v => setMinPrice(Number(v))}
+              value={minPrice} 
+              />
+
+              <InputField 
+              label={t('catalog', 'to')} 
+              placeholder={t('catalog', 'to')}
+              type="number" 
+              onChange={setMaxPrice} 
+              value={maxPrice} 
+              minTotal={maxPriceLot.toString()}
+              />
             </div>
             <input 
             type="range"  

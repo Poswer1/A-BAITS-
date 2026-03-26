@@ -128,7 +128,10 @@ function Header() {
                 </div>
             </div>
             {openCategory && (
-               <CategoryList setOpenCategory={setOpenCategory} openFrom='header' />
+                <CategoryList 
+                setOpenCategory={setOpenCategory}
+                openFrom='header' 
+                />
             )}
         </div>
     </div>

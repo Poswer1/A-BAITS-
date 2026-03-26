@@ -3,9 +3,11 @@
 import React from 'react'
 import { createContext, useContext } from 'react';
 
-const TranslationContext = createContext<Record<string, string>>({})  // рекорд это обьект с ключами и значениями
+  type Messages = Record<string, Record<string, string>>;
 
-export default function TranslationProvider({children, messages}: {children: React.ReactNode, messages: Record<string, any>}) {
+const TranslationContext = createContext<Messages | null>(null)  // рекорд это обьект с ключами и значениями
+
+export default function TranslationProvider({children, messages}: {children: React.ReactNode, messages: Messages}) {
   return (
     <TranslationContext.Provider value={messages}> 
       {children}
@@ -14,9 +16,13 @@ export default function TranslationProvider({children, messages}: {children: Rea
 }
 
 export function useTranslation() {
-  const messages = useContext(TranslationContext) // ПОЛУЧАЕМ ДАННЫЕ ИЗ Context в нашем случае messages
+  const messages = useContext(TranslationContext)  // ПОЛУЧАЕМ ДАННЫЕ ИЗ Context в нашем случае messages
 
-  const t = (block:string, key: string) => messages[block]?.[key] || [key];
+  if (!messages) {
+    throw new Error('TranslationContext не найден')
+  }
+
+  const t = (block:string, key: string) => messages[block]?.[key] || key;
 
   return{t}
 }

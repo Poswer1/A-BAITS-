@@ -17,7 +17,15 @@ export default function DescriptionSections({description, setDescription}:Descri
   return (
     <div className={block}>
         <div className={Blockinput}>
-           <InputField label={t('createLot','createLot-descriptions')} value={description} placeholder={t('createLot','createLot-descriptions')} onChange={setDescription} textarea={true} hTextArea={hTextArea} maxLength={1200}/>
+           <InputField 
+           label={t('createLot','createLot-descriptions')} 
+           value={description} 
+           type="text"
+           placeholder={t('createLot','createLot-descriptions')} 
+           onChange={setDescription} 
+           textarea={true} 
+           hTextArea={hTextArea}
+          maxLength={1200}/>
         </div>
    </div> 
   )

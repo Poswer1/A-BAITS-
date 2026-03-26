@@ -3,11 +3,11 @@ import { block, Blockinput, input, nameInput } from "@/styles/createLot"
 import InputField from "../ui/inputFields"
 
 interface PriceSectionsProps {
-    price:Number,
+    price:number,
     setPrice: (type:number) => void
-    priceStep:Number,
+    priceStep:number,
     setPriceStep: (type:number) => void
-    blitzPrice:Number,
+    blitzPrice:number,
     setBlitzPrice: (type:number) => void,
 }
 

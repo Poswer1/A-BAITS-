@@ -4,7 +4,7 @@ import { button } from '@/styles/global'
 import { NotificationTypes } from '@/types/types'
 import { useClickOutside } from '@/utils/useClickOutside'
 import Link from 'next/link'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 interface OpenNotification {
     setOpen:(t:boolean) => void

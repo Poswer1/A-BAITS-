@@ -6,7 +6,6 @@ import BidHistory from "@/components/lot/bidHistory"
 import HeaderLot from "@/components/lot/headerLot"
 import InfoSection from "@/components/lot/infoSection"
 import PhotoSection from "@/components/lot/photoSection"
-import Loading from "@/components/ui/loadig"
 import { useParams } from "next/navigation"
 import { useEffect, useState } from "react"
 import { useSocketContext } from "@/app/context/SocketIo"
@@ -18,6 +17,18 @@ import { animationScale } from "@/styles/style"
 import { useTranslation } from "@/app/context/TranslationProvider"
 import { getStatusAuth } from "@/services/auth"
 
+interface BidUser  {
+  avatar: string
+  name: string
+}
+
+interface UserHistory  {
+_id:string,
+avatar:string,
+name:string
+dateBid:Date,
+currentBid:number
+}
 
 function page() {
 
@@ -29,9 +40,9 @@ function page() {
 
     const [lot, setLot] = useState<LotTypes | null>(null)
     const [currentPrice, setCurrentPrice] = useState(0)
-    const [userHistory, setUserHistory] = useState<any[]>([])
+    const [userHistory, setUserHistory] = useState<UserHistory[]>([])
     const [status, setStatus] = useState('')
-    const [newBid, setNewBid] = useState('')
+    const [newBid, setNewBid] = useState<BidUser | null>(null)
     const [loading, setLoading] = useState(true)
     const [auth, setAuth] = useState(false)
     const [value, setValue] = useState(0)
@@ -54,7 +65,7 @@ function page() {
             const audio = new Audio('/sounds/bid.mp3')
             audio.play()
             setTimeout(() => {
-              setNewBid('')
+              setNewBid(null)
             }, 2000)
         })
 
@@ -116,7 +127,7 @@ function page() {
             <HeaderLot lot={lot}/>
           </div>
           <div className="flex flex-col md:flex-row justify-start items-start 2xl:w-[80%] lg:w-[90%] py-2 md:gap-2 min-h-200 md:h-200">
-              <PhotoSection lot={lot}/>
+              {lot && <PhotoSection lot={lot} />}
               <div className="flex flex-col justify-start items-start w-full md:w-auto">
                 <div className={`md:hidden`}>
                   <HeaderLot lot={lot} />
@@ -127,7 +138,7 @@ function page() {
                 <AuthorSection lot={lot}/> 
                 <DescriptioSection lot={lot}/>
               </div>
-              <BidHistory lot={lot} socket={socket} userHistory={userHistory} auth={auth}/>
+              <BidHistory userHistory={userHistory} auth={auth}/>
           </div>
         </>
       )}

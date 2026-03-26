@@ -14,9 +14,9 @@ import { useTranslation } from "@/app/context/TranslationProvider";
 interface CategoryList {
     setOpenCategory: (type:boolean) => void
     openFrom:string
-    createLotSetCategory:(v:string) => void,
-    createLotSetSubCategory:(v:string) => void,
-    createLotSetSubSubCategory:(v:string) => void,
+    createLotSetCategory?:(v:string) => void,
+    createLotSetSubCategory?:(v:string) => void,
+    createLotSetSubSubCategory?:(v:string) => void,
 }
 
 function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLotSetSubCategory, createLotSetSubSubCategory} : CategoryList) {
@@ -55,9 +55,9 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
       if(subSubCategory)path += `/${subSubCategory}`
       router.push(`${path}`)
     } else if(openFrom === 'createLot') {
-      if(category)createLotSetCategory(category)
-      if(subCategory)createLotSetSubCategory(subCategory)
-      if(subSubCategory)createLotSetSubSubCategory(subSubCategory)
+      if(category && createLotSetCategory)createLotSetCategory(category)
+      if(subCategory && createLotSetSubCategory)createLotSetSubCategory(subCategory)
+      if(subSubCategory && createLotSetSubSubCategory)createLotSetSubSubCategory(subSubCategory)
     }
     setOpenCategory(false)
   }

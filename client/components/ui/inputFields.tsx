@@ -1,19 +1,19 @@
 import { useTranslation } from "@/app/context/TranslationProvider";
 import { AlertTriangle } from "lucide-react";
 
-interface InputFieldProps {
+interface InputFieldProps<T extends string | number> {
   label: string;
-  value: string | number;
+  value: T;
   type: string; 
   placeholder: string;
-  onChange: (v: string | number) => void;
+  onChange: (v: T) => void;
   maxLength?: number;
   textarea?: boolean;
   hTextArea?:number
   minTotal?:string
 }
 
-export default function InputField({
+export default function InputField<T extends string | number>({
   label,
   value,
   placeholder,
@@ -23,7 +23,7 @@ export default function InputField({
   hTextArea,
   minTotal,
   onChange
-}: InputFieldProps) {
+}: InputFieldProps<T>) {
 
   const classInput = 'p-2 flex justify-start items-center outline-none rounded-m w-full';
   const stringValue = String(value); 
@@ -31,10 +31,11 @@ export default function InputField({
   const {t} = useTranslation()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const val = e.target.value
     if(type === 'number') {
-      onChange(Number(e.target.value));
+      onChange((val === '' ? '' : Number(val)) as T)
     } else {
-      onChange(e.target.value);
+      onChange(val as T)
     }
   }
 

@@ -11,7 +11,19 @@ export interface NotificationTypes {
     to:string,
     from:string,
     notification:string,
-    lot?:string
+    lot?:{
+    _id: string
+    name: string
+    lotNumber: string
+  }
+}
+
+export interface MessageType  {
+  _id: string
+  message: string
+  createdAt: string
+  from: string
+  to: string
 }
 
 export interface ChatTypes {
@@ -19,7 +31,13 @@ export interface ChatTypes {
   userFrom: string;
   userTo: string;
   type: string;
-  lot: string;
+  lot: {
+    _id: string
+    name: string
+    images: string[]
+    lotNumber: string
+    startPrice: number
+  }
   status: string;
   messages: {
     from: string;
@@ -36,9 +54,19 @@ export interface ChatTypes {
 
 export interface ReviewTypes {
     _id:string,
-    to:string,
-    from:string,
-    lot:string,
+    to:{
+      name:string,
+      avatar:string
+    },
+    from:{
+      name:string,
+      avatar:string
+    },
+    lot:{
+      name: string
+      images: string[]
+      lotNumber: string
+    },
     comment:string,
     rating:number,
     createdAt: Date
@@ -46,8 +74,16 @@ export interface ReviewTypes {
 
 export interface LotTypes {
     _id:string,
+    category:string,
+    subCategory:string,
+    subSubCategory:string
     name:string,
-    author:string,
+    author: {
+      _id: string
+      name: string
+      avatar: string
+      rating: number
+    }
     lotNumber:string,
     startPrice:number,
     stepPrice:number,

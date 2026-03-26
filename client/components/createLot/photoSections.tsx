@@ -8,7 +8,7 @@ interface PhotoSectionsProps {
   setFile: React.Dispatch<React.SetStateAction<File[]>>
   file:File[],
   preview:string[],
-  setPreview:(t:File[]) => void
+  setPreview:React.Dispatch<React.SetStateAction<string[]>>
 }
 
 export default function PhotoSections({setFile, file, preview, setPreview}:PhotoSectionsProps) {
@@ -27,7 +27,8 @@ export default function PhotoSections({setFile, file, preview, setPreview}:Photo
       const existingVideo = newFiles.find(file => file.type.startsWith('video/'))
 
       if(exestingWebp || existingVideo) {
-        setMessage(exestingWebp ? t('createLot', 'formatFile') : existingVideo && t('createLot', 'onlyPhoto'))
+        const message = exestingWebp ? t('createLot', 'formatFile') : existingVideo ? t('createLot', 'onlyPhoto') : ''
+        setMessage(message?.toString())
         setTimeout(() => {
           setMessage('')
         }, 3000)

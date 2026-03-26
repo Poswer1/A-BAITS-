@@ -8,7 +8,7 @@ interface MainInfoProps {
     name:String
     setName:(value:string) => void
     openCategory:boolean
-    setOpenCategory: (value:boolean) => void
+    setOpenCategory: React.Dispatch<React.SetStateAction<boolean>>
     createLotCategory:string
     createLotSubCategory:string
     createLotSubSubCategory:string
@@ -21,7 +21,12 @@ export default function MainInfoSections({name, setName, openCategory, setOpenCa
   return (
     <div className={`${block} gap-4`}>
         <div className={Blockinput}>
-            <InputField label={t('createLot','createLot-name')} value={name} onChange={setName} placeholder={t('createLot','createLot-nameInput')} type="text" maxLength={70}/>
+            <InputField label={t('createLot','createLot-name')} 
+            value={name.toString()} 
+            onChange={setName} 
+            placeholder={t('createLot','createLot-nameInput')} 
+            type="text" 
+            maxLength={70}/>
         </div>
 
          <div className={Blockinput}>

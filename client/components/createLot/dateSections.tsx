@@ -31,9 +31,21 @@ export default function DateSections({date, setDate, time, setTime}: DateSection
   return (
     <div className={`${block}`}>
         <div className={`${Blockinput} md:!flex-row gap-5`}>
-          <SelectionField placeholder={t('createLot','createLot-Date')} title={t('createLot','createLot-Date')} value={date} setValue={setDate} list={listSelectDay}/>
+          <SelectionField 
+            placeholder={t('createLot','createLot-Date')} 
+            title={t('createLot','createLot-Date')} 
+            value={date} 
+            setValue={setDate} 
+            list={listSelectDay}
+          />
           <div className="hidden md:flex w-full">
-            <InputField label={t('createLot','createLot-DateTime')} value={time} onChange={setTime} type="time" placeholder={t('createLot','createLot-DateTime')}/>
+            <InputField 
+              label={t('createLot','createLot-DateTime')} 
+              value={time} 
+              onChange={setTime} 
+              type="time" 
+              placeholder={t('createLot','createLot-DateTime')}
+            />
           </div>
           <div className="flex flex-col w-full gap-1 md:hidden">
             <input type="time" id="timeInput" className="absolute opacity-0 w-0 h-0 md:hidden" value={time} onChange={(e) => setTime(e.target.value)}/>

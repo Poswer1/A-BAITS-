@@ -8,15 +8,15 @@ import { ChevronDown } from 'lucide-react'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-interface SelectionFieldProps {
+interface SelectionFieldProps<T extends string | number> {
     title: string
     placeholder: string
-    setValue: (v:string) => void
-    value: string
+    setValue: (v:T) => void
+    value: T
     list: any[]
 }
 
-export default function SelectionField({title, placeholder, list, setValue, value}:SelectionFieldProps) {
+export default function SelectionField<T extends string | number>({title, placeholder, list, setValue, value}:SelectionFieldProps<T>) {
   
     const [open, setOpen] = useState(false)
     const params = useParams()

@@ -14,14 +14,14 @@ import { useSwipeable } from "react-swipeable"
 import { useRouter } from "next/navigation"
 
 interface InfoSectionProps {
-    lot: LotTypes,
-    socket: Socket,
+    lot: LotTypes | null,
+    socket: Socket | null,
     currentPrice: number,
     setStatus: (t:string) => void
     status:string
     setCurrentPrice: (t:number) => void
     value:number,
-    setValue: React.Dispatch<React.SetStateAction<Number>>
+    setValue: React.Dispatch<React.SetStateAction<number>>
     auth:boolean
 }
 
@@ -40,15 +40,16 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
         }
             socket.emit('placeBid',
             {
-                lotId: lot.lotNumber, 
+                lotId: lot?.lotNumber, 
                 bid: value
             })   
     }
 
-    const handlePlus = () => setValue((prev:any) => prev + lot.stepPrice)
+    const handlePlus = () => setValue(prev => prev + (lot?.stepPrice || 0))
 
     const handleMinus = () => {
-        setValue((prev:any) => {
+        if(!lot) return
+        setValue(prev => {
         if (prev - lot.stepPrice < (currentPrice + lot.stepPrice)) {
         setMessage(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
         setTimeout(() => {
@@ -63,7 +64,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     const timerRef = useRef<NodeJS.Timeout | null>(null)
 
     const handleBuyNow = async () => {
-
+    if(!lot) return
     setProgress(true)
     timerRef.current = setTimeout(async () => {
         try {
@@ -124,7 +125,15 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                         )}
 
                     <button onClick={handleBid} className={`${button} w-full ${hover} text-lg`}>{t('lot', 'lot-doBid')}</button>
-                    <button onMouseDown={handleBuyNow} onMouseLeave={handleLeaveBuyNow} onMouseUp={handleLeaveBuyNow} onTouchStart={handleBuyNow} onTouchEnd={handleLeaveBuyNow} onTouchCancel={handleLeaveBuyNow} className={`w-full user-select-none ${hover} text-black border-orange-600 border !text-orange-600 rounded-md p-2 text-lg relative`}>
+                    <button 
+                    onMouseDown={handleBuyNow} 
+                    onMouseLeave={handleLeaveBuyNow} 
+                    onMouseUp={handleLeaveBuyNow} 
+                    onTouchStart={handleBuyNow} 
+                    onTouchEnd={handleLeaveBuyNow} 
+                    onTouchCancel={handleLeaveBuyNow} 
+                    className={`w-full user-select-none ${hover} text-black border-orange-600 border !text-orange-600 rounded-md p-2 text-lg relative`}
+                    >
                         {t('lot', 'lot-buyNow')} <span className="font-bold">( {lot.blitzPrice} ₴ )</span>
                     <div className={`absolute top-0 left-0 h-full bg-orange-600/50 ${progress ? 'w-full transition-all duration-[3000ms] ease-in' : 'w-0'}`}/>
                     </button>            

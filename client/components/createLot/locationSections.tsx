@@ -1,5 +1,5 @@
 import { useTranslation } from "@/app/context/TranslationProvider"
-import { block, Blockinput, nameInput,selectBlock } from "@/styles/createLot"
+import { block, Blockinput } from "@/styles/createLot"
 import LocationList from '../../data/citiesUK.json'
 import SelectionField from "../ui/selectionField"
 

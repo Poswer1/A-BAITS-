@@ -57,8 +57,8 @@ function page() {
     const activeCategory = categoriesWithIcons.find(obg => obg.name === category)
     
     const transleteCategory = getValueByLang(categoriesWithIcons, category, lang)
-    const transleteSubCategory = getValueByLang(activeCategory?.subcategories, subCategory, lang)
-    const transleteSubSubCategory = getValueByLang(activeCategory?.subcategories?.find(sc => sc.name === subCategory)?.subcategories, subSubCategory, lang)
+    const transleteSubCategory = getValueByLang(activeCategory?.subcategories || [], subCategory, lang)
+    const transleteSubSubCategory = getValueByLang(activeCategory?.subcategories?.find(sc => sc.name === subCategory)?.subcategories || [], subSubCategory, lang)
 
     useEffect(() => {
       const checkAuth = async () => {
@@ -183,9 +183,9 @@ function page() {
             setOpenCategory={setOpenCategory} 
             name={name} 
             setName={setName} 
-            createLotCategory={transleteCategory}  
-            createLotSubCategory={transleteSubCategory}  
-            createLotSubSubCategory={transleteSubSubCategory} />
+            createLotCategory={transleteCategory || ''}  
+            createLotSubCategory={transleteSubCategory || ''}  
+            createLotSubSubCategory={transleteSubSubCategory || ''} />
 
             <PriceSections 
             price={price} 

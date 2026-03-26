@@ -1,3 +1,5 @@
+'use client'
+
 import TranslationProvider from "../context/TranslationProvider";
 
 
@@ -28,6 +30,7 @@ import ruCatalog from '../../public/translations/ru/catalog.json'
 import ruAuth from '../../public/translations/ru/auth.json'
 
 import ClientLayout from "./clientLayout";
+import { useParams } from "next/navigation";
 
 type Lang = 'uk' | 'ru'
 
@@ -62,10 +65,11 @@ const translationsMap = {
     }
 }
 
-export default async function LangLayout({children, params}: {children: React.ReactNode; params: { lang: string }}) {
+export default function LangLayout({children}: {children: React.ReactNode;}) {
     
-    const Params = await params
-    const lang = Params.lang as Lang || 'uk'
+    const params = useParams()
+
+    const lang = params.lang as Lang || 'uk'
 
     const messages = translationsMap[lang] ||  translationsMap.uk
 

@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTranslation } from '@/app/context/TranslationProvider';
 import { button, buttonWithoutBg } from '@/styles/global';
-import { ChatTypes } from '@/types/types';
+import { ChatTypes, MessageType } from '@/types/types';
 
 function page() {
 
@@ -27,7 +27,7 @@ function page() {
   const {socket} = useSocketContext()
   const {t} = useTranslation()
 
-  const [messages, setMessages] = useState<string[]>([])
+  const [messages, setMessages] = useState<MessageType[]>([])
   const [chat, setChat] = useState<ChatTypes | null>(null)
   const [message, setMessage] = useState('')
   const [selectChat, setSelectChat] = useState('')

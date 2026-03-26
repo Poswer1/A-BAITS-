@@ -3,10 +3,9 @@
 import { useTranslation } from "@/app/context/TranslationProvider"
 import AvatarBlock from "@/components/ui/avatar"
 import InputField from "@/components/ui/inputFields"
-import Loading from "@/components/ui/loadig"
 import SelectionField from "@/components/ui/selectionField"
 import { getUserById, updateUser} from "@/services/user"
-import { button,buttonWithoutBg,inputBlock, loadingBlock } from "@/styles/global"
+import { button,buttonWithoutBg} from "@/styles/global"
 import { blockClass } from "@/styles/profile/profile"
 import { animationOpacity, hover } from "@/styles/style"
 import { useEffect, useState } from "react"
@@ -123,8 +122,19 @@ function page() {
                     <span className={`${message ? 'text-green-600' : 'text-red-600'} ${animationOpacity}`}>{message || error}</span>
                   )}
                   <div className="flex flex-col md:flex-row justify-center items-center w-full gap-5">
-                    <InputField value={username} onChange={setUsername} placeholder={t('profile', 'firstName')} label={t('profile', 'firstName')}/>
-                     <SelectionField title={t('profile', 'selectCity')} placeholder={t('profile', 'selectCity')} setValue={setLocation} value={location} list={LocationList}/>
+                    <InputField 
+                    value={username}
+                    type="text" 
+                    onChange={setUsername} 
+                    placeholder={t('profile', 'firstName')} 
+                    label={t('profile', 'firstName')}/>
+                    
+                    <SelectionField 
+                    title={t('profile', 'selectCity')}
+                    placeholder={t('profile', 'selectCity')} 
+                    setValue={setLocation} 
+                    value={location} 
+                    list={LocationList}/>
                   </div>
                   <button onClick={handleUpdate} className={`${button} ${hover} mb-2 w-full md:w-auto`}>{t('profile', 'saveChanges')}</button>
               </div>

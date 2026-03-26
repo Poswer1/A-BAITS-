@@ -2,9 +2,10 @@ import { useState } from "react"
 import { Image, ChevronRight, ChevronLeft} from "lucide-react";
 import { animationOpacity, hover } from "@/styles/style";
 import { useSwipeable } from "react-swipeable";
+import { LotTypes } from "@/types/types";
 
 
-export default function PhotoSection({lot}:any) {
+export default function PhotoSection({lot}:{lot: LotTypes}) {
 
     const BASE_URL = process.env.NEXT_PUBLIC_URL
     const [selectPhoto, setSelectPhoto] = useState(0)
