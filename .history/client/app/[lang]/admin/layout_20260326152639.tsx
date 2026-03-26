@@ -1,0 +1,16 @@
+import SidebarAdmin from '@/components/admin/sidebarAdmin'
+import React from 'react'
+
+function layout({children}: {children: React.ReactNode}) {
+  return (
+    <div className='flex justify-start items-start bg-gray-100 h-screen'>
+      <SidebarAdmin />
+      <div className='w-full flex flex-col justify-start items-start p-5'>
+
+      </div>
+      {children}
+    </div>
+  )
+}
+
+export default layout
