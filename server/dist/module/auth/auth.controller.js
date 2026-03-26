@@ -32,13 +32,13 @@ let AuthController = class AuthController {
         const data = await this.authService.login(dto);
         res.cookie('token', data.token, {
             httpOnly: true,
-            sameSite: 'none',
-            secure: true,
+            sameSite: 'lax',
+            secure: false,
             path: '/',
             maxAge: 1000 * 60 * 60 * 24 * 7
         });
         console.log('cookies:', res.cookie);
-        return { ok: true };
+        return { ok: true, token: data.token };
     }
 };
 exports.AuthController = AuthController;
