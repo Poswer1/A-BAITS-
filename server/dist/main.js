@@ -46,11 +46,12 @@ async function Main() {
     app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
     app.use((0, cookie_parser_1.default)());
     app.enableCors({
-        origin: ['http://192.168.0.158:3000', 'http://localhost:3000'],
+        origin: ['http://192.168.0.158:3000', 'http://localhost:3000', 'https://a-baits.onrender.com'],
         credentials: true
     });
-    await app.listen(3002, '0.0.0.0');
-    console.log('Server started on http://localhost:3002');
+    const PORT = process.env.PORT || 3001;
+    await app.listen(PORT, '0.0.0.0');
+    console.log(`Server started on ${PORT}`);
 }
 Main();
 //# sourceMappingURL=main.js.map
