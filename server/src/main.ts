@@ -16,7 +16,9 @@ async function Main() {
     credentials: true // говорит принимать токен
   }
 )
-  await app.listen(3002, '0.0.0.0');
-  console.log('Server started on http://localhost:3002');
+
+const PORT = process.env.PORT || 3002
+  await app.listen(PORT, '0.0.0.0');
+  console.log(`Server started on ${PORT}`);
 }
 Main();
