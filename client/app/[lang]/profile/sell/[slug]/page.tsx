@@ -28,7 +28,10 @@ async function page({params, searchParams}: pageProps) {
   try {
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
-    if(!token) return
+    if(!token) {
+      console.log('ТОКЕН НЕ ПОЛУЧЕН')
+      return
+    }
     data = await getMyLots(token, slug, 'sell', search.page)
   } catch (error) {
     data = {allLots: [],totalLot: 0}}
