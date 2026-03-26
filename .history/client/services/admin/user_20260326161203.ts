@@ -7,6 +7,4 @@ export async function getAllUser(token:string) {
         'Authorization': `Bearer ${token}`
         }
     })
-
-    return dataReturn(res)
 }

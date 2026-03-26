@@ -3,7 +3,7 @@ import { RolesGuard } from "../role.guards";
 import { UserService } from "./user.service";
 import { JwtAuthGuard } from "src/module/auth/jwt/jwt-auth-guard";
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard())
 @UseGuards(RolesGuard)
 @Controller('ActionOnTheUser')
 export class UserController {

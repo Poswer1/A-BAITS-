@@ -13,6 +13,7 @@ exports.UserController = void 0;
 const common_1 = require("@nestjs/common");
 const role_guards_1 = require("../role.guards");
 const user_service_1 = require("./user.service");
+const jwt_auth_guard_1 = require("../../auth/jwt/jwt-auth-guard");
 let UserController = class UserController {
     userService;
     constructor(userService) {
@@ -30,6 +31,7 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUser", null);
 exports.UserController = UserController = __decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.UseGuards)(role_guards_1.RolesGuard),
     (0, common_1.Controller)('ActionOnTheUser'),
     __metadata("design:paramtypes", [user_service_1.UserService])
