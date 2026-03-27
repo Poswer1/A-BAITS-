@@ -15,6 +15,7 @@ export class AuthController {
   @Get('getStatusAuth')
   getStatusAuth(@Req() req: Request) {
     const token = req.cookies['token']
+   
     return {isLoggedIn: !!token}
   }
 

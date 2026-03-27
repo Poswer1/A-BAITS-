@@ -63,8 +63,8 @@ function page() {
     useEffect(() => {
       const checkAuth = async () => {
         const token = localStorage.getItem('token')
-        if(!token) return
-        const isAuth = await getStatusAuth(token)
+   
+        const isAuth = await getStatusAuth()
 
         if (!isAuth) {
           router.push('/auth/login')
