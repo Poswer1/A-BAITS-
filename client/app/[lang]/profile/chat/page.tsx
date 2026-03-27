@@ -5,7 +5,7 @@ import ChatList from '@/components/profile/chatList';
 import AvatarBlock from '@/components/ui/avatar'
 import OlnlineUser from '@/components/ui/onlineUser';
 import { getRelativeTime } from '@/components/ui/relativeTime';
-import { getUser, getUserById } from '@/services/user';
+import { getUserById } from '@/services/user';
 import { blockClass, pageContainerClass } from '@/styles/profile/profile'
 import { hover } from '@/styles/style';
 import { Check, ChevronLeft, MoreVertical,Send, X} from "lucide-react";
@@ -53,7 +53,7 @@ function page() {
 
   useEffect(() => {
     if(!selectChat) return
-    getUser(selectChat)
+    getUserById(selectChat)
     .then(data => {
       setUser(data)
     })
