@@ -6,4 +6,7 @@ export declare class UserService {
     } & {
         id: string;
     })[]>;
+    changeStatus(id: string): Promise<{
+        status: string;
+    }>;
 }

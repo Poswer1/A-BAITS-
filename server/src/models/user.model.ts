@@ -9,6 +9,7 @@ export interface User{
     balance:number,
     rating:number,
     location:string,
+    status: string
     avatar: string,
     role:string,
     favorites:Types.ObjectId[]
@@ -20,6 +21,7 @@ const UserSchema = new Schema<User>({
     location: {type:String},
     city: {type:String},
     email: {type:String, required:true},
+    status: {type: String, default: 'No restrictions'},
     password: {type:String, required:true},
     balance: {type:Number, default: 0},
     role:{type:String, required:true},

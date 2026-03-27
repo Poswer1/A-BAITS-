@@ -8,6 +8,7 @@ export interface User {
     balance: number;
     rating: number;
     location: string;
+    status: string;
     avatar: string;
     role: string;
     favorites: Types.ObjectId[];

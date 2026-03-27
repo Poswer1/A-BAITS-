@@ -22,6 +22,7 @@ export declare class AuthService {
             balance: number;
             rating: number;
             location: string;
+            status: string;
             avatar: string;
             role: string;
             favorites: import("mongoose").Types.ObjectId[];

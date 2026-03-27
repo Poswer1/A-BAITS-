@@ -9,4 +9,7 @@ export declare class UserController {
     } & {
         id: string;
     })[]>;
+    changeStatus(id: string): Promise<{
+        status: string;
+    }>;
 }

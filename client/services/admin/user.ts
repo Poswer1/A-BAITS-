@@ -10,3 +10,12 @@ export async function getAllUser(token:string) {
 
     return dataReturn(res)
 }
+
+export async function changeStatus(id:string) {
+    const res = await fetch(`${BASE_URL}/ActionOnTheUser/changeStatus/${id}`, {
+        method: 'PATCH',
+        credentials: 'include', 
+    })
+
+    return dataReturn(res)
+}
