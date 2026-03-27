@@ -14,7 +14,7 @@ export declare class UserService {
     } & {
         id: string;
     }) | null>;
-    updateProfile(dto: UpdateProfileDTO, userId: string, file: Express.Multer.File): Promise<(import("mongoose").Document<unknown, {}, import("src/models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/user.model").User & {
+    updateProfile(dto: UpdateProfileDTO, userId: string, file?: Express.Multer.File): Promise<(import("mongoose").Document<unknown, {}, import("src/models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/user.model").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;

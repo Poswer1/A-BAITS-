@@ -9,4 +9,7 @@ export declare class UserService {
     changeStatus(id: string): Promise<{
         status: string;
     }>;
+    deleteUser(id: string): Promise<{
+        success: boolean;
+    }>;
 }

@@ -26,7 +26,7 @@ export class UserService {
     }
   }
 
-  async updateProfile(dto: UpdateProfileDTO, userId:string, file: Express.Multer.File) {
+  async updateProfile(dto: UpdateProfileDTO, userId:string, file?: Express.Multer.File) {
   
     const user = await UserModel.findById(userId)
     if(!user) {

@@ -19,3 +19,13 @@ export async function changeStatus(id:string) {
 
     return dataReturn(res)
 }
+
+
+export async function deleteUser(id:string) {
+    const res = await fetch(`${BASE_URL}/ActionOnTheUser/deleteUser/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+    })
+
+    return dataReturn(res)
+}

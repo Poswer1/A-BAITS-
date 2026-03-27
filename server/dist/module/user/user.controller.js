@@ -25,8 +25,11 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    async getUserById(userId) {
-        return this.userService.getUserById(userId);
+    async getUserById(id, userId) {
+        const idUser = id ?? userId;
+        if (!idUser)
+            throw new common_1.BadRequestException('UserNotFound');
+        return this.userService.getUserById(idUser);
     }
     async getUser(id) {
         return this.userService.getUserById(id);
@@ -34,17 +37,21 @@ let UserController = class UserController {
     async getUserByName(name) {
         return this.userService.getUserByName(name);
     }
-    async updateProfile(dto, userId, file) {
-        return this.userService.updateProfile(dto, userId, file);
+    async updateProfile(dto, id, userId, file) {
+        const idUser = id ?? userId;
+        if (!idUser)
+            throw new common_1.BadRequestException('UserNotFound');
+        return this.userService.updateProfile(dto, idUser, file);
     }
 };
 exports.UserController = UserController;
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('getUserById'),
-    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(0, (0, common_1.Query)('id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserById", null);
 __decorate([
@@ -66,10 +73,11 @@ __decorate([
     (0, common_1.Patch)('updateProfile'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', (0, files_upload_1.ImagesInterceptor)('./uploads/avatar'))),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
-    __param(2, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Query)('id')),
+    __param(2, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(3, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.UpdateProfileDTO, String, Object]),
+    __metadata("design:paramtypes", [create_user_dto_1.UpdateProfileDTO, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateProfile", null);
 exports.UserController = UserController = __decorate([

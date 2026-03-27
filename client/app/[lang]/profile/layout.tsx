@@ -20,9 +20,7 @@ function layout({children}: {children: React.ReactNode}) {
   const {t} = useTranslation()
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if(!token) return
-    getUserById(token)
+    getUserById()
     .then(data => {
       setUsername(data.name)
       setLoading(false)

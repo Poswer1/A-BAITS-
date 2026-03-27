@@ -30,4 +30,17 @@ export class UserService {
         return {status:updatedUser.status}
     }
 
+    async deleteUser(id:string) {
+        try {
+          const deletedUser = await UserModel.findByIdAndDelete(id);
+            if (!deletedUser) {
+                throw new BadRequestException('UserNotFound');
+            }
+            return { success: true };
+        } catch (error) {
+            console.log('error delete user', error)
+            throw new BadRequestException('ErrorDeleteUser')
+        }
+    }
+
 }

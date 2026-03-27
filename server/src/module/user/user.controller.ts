@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, Req, UseGuards, Patch, Body, UseInterceptors, UploadedFile} from '@nestjs/common';
+import { Controller, Get, Param, Query, Req, UseGuards, Patch, Body, UseInterceptors, UploadedFile, BadRequestException} from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth-guard';
 import { UpdateProfileDTO } from './dto/create-user.dto';
@@ -13,8 +13,10 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('getUserById')
-  async getUserById(@CurrentUser('id') userId:string) {
-    return this.userService.getUserById(userId)
+  async getUserById(@Query('id') id?: string, @CurrentUser('id') userId?:string) {
+    const idUser = id ?? userId
+    if(!idUser) throw new BadRequestException('UserNotFound');
+    return this.userService.getUserById(idUser)
   }
 
   @Get('getUser/:id')
@@ -30,7 +32,9 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Patch('updateProfile')
   @UseInterceptors(FileInterceptor('image', ImagesInterceptor('./uploads/avatar')))
-  async updateProfile(@Body() dto: UpdateProfileDTO, @CurrentUser('id') userId:string, @UploadedFile() file: Express.Multer.File) {
-    return this.userService.updateProfile(dto, userId, file)
+  async updateProfile(@Body() dto: UpdateProfileDTO, @Query('id') id?: string, @CurrentUser('id') userId?:string, @UploadedFile() file?: Express.Multer.File) {
+    const idUser = id ?? userId
+    if(!idUser) throw new BadRequestException('UserNotFound');
+    return this.userService.updateProfile(dto, idUser, file)
   }
 }

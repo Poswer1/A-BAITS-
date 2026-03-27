@@ -1,6 +1,7 @@
 export interface UserTypes {
     _id: string
     status:string
+    location:string,
     name: string
     avatar: string
     balance:string
