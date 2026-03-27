@@ -31,9 +31,7 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
   const [username, setUsername] = useState('')
 
   useEffect(() => {
-    const token = localStorage.getItem('token')
-    if(!token) return
-    getUserById(token)
+    getUserById()
     .then(data => {
       setUsername(data.name)
     })
