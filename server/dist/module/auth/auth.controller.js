@@ -25,13 +25,7 @@ let AuthController = class AuthController {
         return this.authService.register(dto);
     }
     getStatusAuth(req) {
-        let token = req.cookies['token'];
-        if (!token && req.headers.authorization) {
-            const authHeader = req.headers.authorization;
-            if (authHeader.startsWith('Bearer ')) {
-                token = authHeader.split(' ')[1];
-            }
-        }
+        const token = req.cookies['token'];
         return { isLoggedIn: !!token };
     }
     async login(dto, res) {
