@@ -33,11 +33,10 @@ let AuthController = class AuthController {
         res.cookie('token', data.token, {
             httpOnly: true,
             sameSite: 'lax',
-            secure: true,
+            secure: false,
             path: '/',
             maxAge: 1000 * 60 * 60 * 24 * 7
         });
-        console.log('cookies:', res.cookie);
         return { ok: true, token: data.token };
     }
 };

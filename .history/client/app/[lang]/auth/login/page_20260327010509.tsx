@@ -32,7 +32,6 @@ function page() {
         }
         try {
             const data = await login(email, password)
-
             console.log(`токет ${data.token}`)
             localStorage.setItem('token', data.token)
             router.push('/')
