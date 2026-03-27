@@ -30,6 +30,19 @@ let UserService = class UserService {
         }
         return { status: updatedUser.status };
     }
+    async deleteUser(id) {
+        try {
+            const deletedUser = await user_model_1.UserModel.findByIdAndDelete(id);
+            if (!deletedUser) {
+                throw new common_1.BadRequestException('UserNotFound');
+            }
+            return { success: true };
+        }
+        catch (error) {
+            console.log('error delete user', error);
+            throw new common_1.BadRequestException('ErrorDeleteUser');
+        }
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([

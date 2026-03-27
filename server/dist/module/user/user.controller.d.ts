@@ -3,7 +3,7 @@ import { UpdateProfileDTO } from './dto/create-user.dto';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
-    getUserById(userId: string): Promise<(import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
+    getUserById(id?: string, userId?: string): Promise<(import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
@@ -24,7 +24,7 @@ export declare class UserController {
     } & {
         id: string;
     }) | null>;
-    updateProfile(dto: UpdateProfileDTO, userId: string, file: Express.Multer.File): Promise<(import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
+    updateProfile(dto: UpdateProfileDTO, id?: string, userId?: string, file?: Express.Multer.File): Promise<(import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
