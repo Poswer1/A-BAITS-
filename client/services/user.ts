@@ -1,35 +1,28 @@
 import { BASE_URL, dataReturn } from "./utils" 
 
-export async function getUserById(token:string) {
+export async function getUserById(id?:string) {
 
-   const res = await fetch(`${BASE_URL}/user/getUserById`, {
-    method: 'GET',
-     // credentials: 'include', 
-    headers: {
-        'Authorization': `Bearer ${token}`
+    let url = ''
+    if(id) {
+        url = `${BASE_URL}/user/getUserById?id=${id}`
+    } else {
+        url = `${BASE_URL}/user/getUserById`
     }
-   })
+
+    const res = await fetch(url, {
+        method: 'GET',
+        credentials: 'include', // говорит отпровлять куки
+    })
     
     return dataReturn(res)
 
 }
 
-export async function getUser(id:string) {
-     const res = await fetch(`${BASE_URL}/user/getUser/${id}`, {
-    method: 'GET',
-   })
-    
-    return dataReturn(res)
-}
-
-export async function updateUser(token:string, formData:FormData) {
+export async function updateUser(formData:FormData) {
     const res = await fetch(`${BASE_URL}/user/updateProfile`, {
         method: 'PATCH',
         body: formData,
-        // credentials: 'include', // говорит отпровлять куки
-        headers: {
-            'Authorization': `Bearer ${token}`
-        }
+        credentials: 'include', // говорит отпровлять куки
     })
 
     return dataReturn(res)

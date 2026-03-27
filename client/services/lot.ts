@@ -1,13 +1,10 @@
 
 import { BASE_URL, dataReturn } from "./utils"
 
-export async function createLot(token:string, formData:FormData) {
+export async function createLot(formData:FormData) {
     const res = await fetch(`${BASE_URL}/lot/createLot`, {
         method: 'POST',
-        // credentials: 'include',
-        headers: {
-        'Authorization': `Bearer ${token}`
-        }, // говорит отпровлять куки
+        credentials: 'include',// говорит отпровлять куки
         body: formData
     })
 
@@ -89,7 +86,7 @@ export async function getLot(numberLot:string) {
 export async function myHistoryLot() {
     const res = await fetch(`${BASE_URL}/lot/myHistoryLot`, {
         method: 'GET',
-        // credentials: 'include' // говорит отпровлять куки
+        credentials: 'include' // говорит отпровлять куки
     })
 
     return dataReturn(res)

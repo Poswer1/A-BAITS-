@@ -44,13 +44,11 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot
     }, [socket])
 
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        if(!token) return
-        getUserById(token) 
+        getUserById() 
         .then(data => {
             setMyId(data._id)
         })
-        getMyChats(token)
+        getMyChats()
         .then(data => {
             setUnReadChats(data.unReadChats)
             setReadChats(data.readChats)
