@@ -31,7 +31,8 @@ function page() {
             return
         }
         try {
-            await login(email, password)
+            const data = await login(email, password)
+            localStorage.setItem('token', data.token)
             router.push('/')
            
         } catch (error:any) {

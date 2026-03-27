@@ -1,6 +1,6 @@
 import { BASE_URL, dataReturn } from "./utils" 
 
-export async function getUserById(id?:string) {
+export async function getUserById(token:string, id?:string) {
 
     let url = ''
     if(id) {
@@ -11,18 +11,24 @@ export async function getUserById(id?:string) {
 
     const res = await fetch(url, {
         method: 'GET',
-        credentials: 'include' // говорит отпровлять куки
+        credentials: 'include', // говорит отпровлять куки
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
     })
     
     return dataReturn(res)
 
 }
 
-export async function updateUser(formData:FormData) {
+export async function updateUser(token:string, formData:FormData) {
     const res = await fetch(`${BASE_URL}/user/updateProfile`, {
         method: 'PATCH',
         body: formData,
-        credentials: 'include' // говорит отпровлять куки
+        credentials: 'include', // говорит отпровлять куки
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
     })
 
     return dataReturn(res)

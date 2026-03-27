@@ -1,10 +1,13 @@
 
 import { BASE_URL, dataReturn } from "./utils"
 
-export async function createLot(formData:FormData) {
+export async function createLot(token:string, formData:FormData) {
     const res = await fetch(`${BASE_URL}/lot/createLot`, {
         method: 'POST',
-        credentials: 'include', // говорит отпровлять куки
+        credentials: 'include',
+        headers: {
+        'Authorization': `Bearer ${token}`
+        }, // говорит отпровлять куки
         body: formData
     })
 

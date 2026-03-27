@@ -41,10 +41,12 @@ function Header() {
     useEffect(() => {
         const fetchUser = async () => {
             try {
-            const data = await getUserById();
+            const token = localStorage.getItem('token')
+            if(!token) return
+            const data = await getUserById(token);
             setName(data.name);
             setAvatar(data.avatar);
-            const isAuth = await getStatusAuth();
+            const isAuth = await getStatusAuth(token);
             setAuth(isAuth);   
             console.log(isAuth)
             } catch (err: any) {

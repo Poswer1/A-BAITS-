@@ -33,7 +33,9 @@ export default function page() {
     const handleReview = async () => {
         
         try {
-            const data = await newReview(userId, comment, rating, lotId)
+            const token = localStorage.getItem('token')
+            if(!token) return
+            const data = await newReview(token, userId, comment, rating, lotId)
             if(data.success) {
                 setSuccessReview(true)
                 setRating(1)

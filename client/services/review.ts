@@ -1,11 +1,12 @@
 import { BASE_URL, dataReturn } from "./utils"
 
-export async function newReview(to:string, comment:string, rating:number, lotId:string) {
+export async function newReview(token:string, to:string, comment:string, rating:number, lotId:string) {
     const res = await fetch(`${BASE_URL}/review/newReview`, {
         method: 'POST',
         credentials: 'include', // говорит отпровлять куки
         headers: {
-           'Content-Type': 'application/json'
+           'Content-Type': 'application/json',
+           'Authorization': `Bearer ${token}`
         },
         body: JSON.stringify({to, comment, rating, lotId})
     })

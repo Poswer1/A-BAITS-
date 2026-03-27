@@ -53,7 +53,7 @@ function page() {
 
   useEffect(() => {
     if(!selectChat) return
-    getUserById(selectChat)
+    getUserById('', selectChat)
     .then(data => {
       setUser(data)
     })

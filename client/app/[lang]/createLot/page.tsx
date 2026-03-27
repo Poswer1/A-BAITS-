@@ -62,7 +62,9 @@ function page() {
 
     useEffect(() => {
       const checkAuth = async () => {
-        const isAuth = await getStatusAuth()
+        const token = localStorage.getItem('token')
+        if(!token) return
+        const isAuth = await getStatusAuth(token)
 
         if (!isAuth) {
           router.push('/auth/login')
@@ -141,7 +143,9 @@ function page() {
         file?.forEach(f => formData.append('images', f))
 
         try {
-          await createLot(formData)
+          const token = localStorage.getItem('token')
+          if(!token) return
+          await createLot(token, formData)
           handleClear()
           setConfirmCreateOrder(true)
           setLoading(false)

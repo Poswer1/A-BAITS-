@@ -14,7 +14,13 @@ export class AuthController {
 
   @Get('getStatusAuth')
   getStatusAuth(@Req() req: Request) {
-    const token = req.cookies['token']
+    let token = req.cookies['token']
+    if(!token && req.headers.authorization) {
+      const authHeader = req.headers.authorization;
+      if (authHeader.startsWith('Bearer ')) {
+        token = authHeader.split(' ')[1];
+      }
+    }
     return {isLoggedIn: !!token}
   }
 

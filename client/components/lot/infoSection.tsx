@@ -68,7 +68,9 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     setProgress(true)
     timerRef.current = setTimeout(async () => {
         try {
-            const data = await buyNow(lot._id, value)
+            const token = localStorage.getItem('token')
+            if(!token) return
+            const data = await buyNow(token, lot._id, value)
             if (data?.success) setStatus('Completed')
             setProgress(false)
         } catch (error:any) {

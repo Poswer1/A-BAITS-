@@ -47,10 +47,13 @@ let LotGateway = class LotGateway {
     }
     async handleConnection(client) {
         const cookies = client.handshake.headers.cookie || '';
-        const token = cookies
+        let token = cookies
             .split('; ')
             .find(c => c.startsWith('token='))
             ?.split('=')[1];
+        if (!token && client.handshake.auth?.token) {
+            token = client.handshake.auth.token?.replace('Bearer ', '');
+        }
         if (!token) {
             console.log('JWT не предоставлен');
             client.disconnect();

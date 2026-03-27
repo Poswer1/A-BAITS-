@@ -15,13 +15,17 @@ export class UserGateway {
     server:Server
 
     async handleConnection(client:Socket) {
-         const cookies = client.handshake.headers.cookie || ''
-         const token = cookies
+          const cookies = client.handshake.headers.cookie || ''
+        let token = cookies
         .split('; ')
         .find(c => c.startsWith('token='))
         ?.split('=')[1]; 
         // в cookies токен выглядт так token=a3223 
-        // тут разделяем его по = получим token отедельно и a3223 и берем [1]
+        // тут разделяем его по = получим token отедельно и a3223 и берем [1] 
+
+        if(!token && client.handshake.auth?.token) {
+            token = client.handshake.auth.token?.replace('Bearer ', '');
+        }
 
         if(!token) {
             console.log('JWT не предоставлен');

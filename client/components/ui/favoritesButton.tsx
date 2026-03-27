@@ -18,9 +18,9 @@ export default function FavoritesButton({id}: FavoritesButtonProps) {
     const [favorite, setFavorite] = useState(false)
 
     useEffect(() => {
-
-
-        getFavorite()
+        const token = localStorage.getItem('token')
+        if(!token) return            
+        getFavorite(token)
         .then(data => {
             const isFavorites = data.some((f:string) => f === id)
             if(isFavorites) {
@@ -30,10 +30,10 @@ export default function FavoritesButton({id}: FavoritesButtonProps) {
     }, [id])
 
     const handleAddFavorite = async () => {
-
-
+        const token = localStorage.getItem('token')
+        if(!token) return
         if(!id) return
-        const data = await addFavorite(id)
+        const data = await addFavorite(token, id)
         setFavorite(data.success)
     }
 

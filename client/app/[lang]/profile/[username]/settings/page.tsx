@@ -34,7 +34,9 @@ function page() {
   const city = getValueByLang(LocationList, location, lang)
 
   useEffect(() => {
-    getUserById()
+    const token = localStorage.getItem('token')
+    if(!token) return
+    getUserById(token)
     .then(data => {
       setUsername(data.name)
       setAvatar(data.avatar)
@@ -83,7 +85,9 @@ function page() {
     if(file)formData.append('image', file)
 
     try {
-      await updateUser(formData)
+      const token = localStorage.getItem('token')
+      if(!token) return
+      await updateUser(token,formData)
       setMessage(t('profile', 'ProfileUpdated'))
       setTimeout(() => (
         setMessage('')

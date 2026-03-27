@@ -18,10 +18,17 @@ export default function SocketIo({children}: {children:ReactNode}) {
     const [onlineUser, setOnlineUser] = useState<string[]>([])
 
     useEffect(() => {
+
+        const token = localStorage.getItem('token')
+        if(!token) return
+
         const s = io(BASE_URL, {
             path: '/socket.io',
             transports: ["websocket"],
-            withCredentials: true
+            withCredentials: true,
+            auth: {
+                token: token
+            }
         })
         setSocket(s)
         

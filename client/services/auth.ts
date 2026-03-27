@@ -14,10 +14,13 @@ export async function register(email:string, password:string, name:string) {
     return dataReturn(res)
 }
 
-export async function getStatusAuth() {
+export async function getStatusAuth(token:string) {
     const res = await fetch(`${BASE_URL}/auth/getStatusAuth`, {
         method: 'GET',
-        credentials: 'include', // говорит отпровлять куки
+        credentials: 'include',
+        headers: {
+        'Authorization': `Bearer ${token}`
+        } // говорит отпровлять куки
         
     })
 

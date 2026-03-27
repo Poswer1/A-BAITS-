@@ -92,7 +92,9 @@ function page() {
             setValue(data.startPrice + data.stepPrice)
             setLoading(false)
         })
-        getStatusAuth()
+        const token = localStorage.getItem('token')
+        if(!token) return
+        getStatusAuth(token)
         .then(data => {
           setAuth(data);   
         })
