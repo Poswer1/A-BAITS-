@@ -28,17 +28,15 @@ export class AuthController {
   async login(@Body() dto:Auth, @Res({passthrough: true}) res:Response) {
     const data = await this.authService.login(dto)
 
-    res.cookie('token', data.token, {
-      httpOnly: true,
-      sameSite: 'none',
-      secure: true, // для https
-      path: '/',        
-      maxAge: 1000*60*60*24*7
-    })
+    // res.cookie('token', data.token, {
+    //   httpOnly: true,
+    //   sameSite: 'none',
+    //   secure: true, // для https
+    //   path: '/',        
+    //   maxAge: 1000*60*60*24*7
+    // })
 
-    console.log('cookies:', res.cookie);
-
-    return { ok: true }
+    return { ok: true, token:data.token}
 
   }
 

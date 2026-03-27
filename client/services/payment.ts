@@ -3,7 +3,7 @@ import { BASE_URL, dataReturn } from "./utils"
 export async function buyNow(token:string, lotId:string, value:number) {
     const res = await fetch(`${BASE_URL}/payment/buyLot`, {
         method: 'PATCH',
-        credentials: 'include', // говорит отпровлять куки
+        // credentials: 'include', // говорит отпровлять куки
         headers: {
            'Content-Type': 'application/json',
            'Authorization': `Bearer ${token}`

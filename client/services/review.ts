@@ -3,7 +3,7 @@ import { BASE_URL, dataReturn } from "./utils"
 export async function newReview(token:string, to:string, comment:string, rating:number, lotId:string) {
     const res = await fetch(`${BASE_URL}/review/newReview`, {
         method: 'POST',
-        credentials: 'include', // говорит отпровлять куки
+        // credentials: 'include', // говорит отпровлять куки
         headers: {
            'Content-Type': 'application/json',
            'Authorization': `Bearer ${token}`

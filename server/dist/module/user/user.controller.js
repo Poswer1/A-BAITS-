@@ -25,9 +25,11 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    async getUserById(req, id) {
-        const userId = id ?? req.user._id;
+    async getUserById(userId) {
         return this.userService.getUserById(userId);
+    }
+    async getUser(id) {
+        return this.userService.getUserById(id);
     }
     async getUserByName(name) {
         return this.userService.getUserByName(name);
@@ -40,12 +42,18 @@ exports.UserController = UserController;
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('getUserById'),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Query)('id')),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, String]),
+    __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserById", null);
+__decorate([
+    (0, common_1.Get)('getUser/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUser", null);
 __decorate([
     (0, common_1.Get)('getUserByName/:name'),
     __param(0, (0, common_1.Param)('name')),

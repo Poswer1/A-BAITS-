@@ -13,9 +13,13 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('getUserById')
-  async getUserById(@Req() req: any, @Query('id') id?: string) {
-    const userId = id ?? (req.user as any)._id;
+  async getUserById(@CurrentUser('id') userId:string) {
     return this.userService.getUserById(userId)
+  }
+
+  @Get('getUser/:id')
+  async getUser(@Param('id') id:string) {
+    return this.userService.getUserById(id)
   }
 
   @Get('getUserByName/:name')

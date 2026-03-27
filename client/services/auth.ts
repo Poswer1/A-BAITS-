@@ -17,7 +17,7 @@ export async function register(email:string, password:string, name:string) {
 export async function getStatusAuth(token:string) {
     const res = await fetch(`${BASE_URL}/auth/getStatusAuth`, {
         method: 'GET',
-        credentials: 'include',
+        // credentials: 'include',
         headers: {
         'Authorization': `Bearer ${token}`
         } // говорит отпровлять куки

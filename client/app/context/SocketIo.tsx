@@ -25,7 +25,7 @@ export default function SocketIo({children}: {children:ReactNode}) {
         const s = io(BASE_URL, {
             path: '/socket.io',
             transports: ["websocket"],
-            withCredentials: true,
+            // withCredentials: true,
             auth: {
                 token: token
             }
