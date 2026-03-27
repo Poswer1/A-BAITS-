@@ -1,0 +1,13 @@
+{
+  "Users": "Пользователи",
+  "Lots": "Лоты",
+  "Auctions": "Аукционы",
+  "Finance": "Финансы",
+  "Notifications": "Уведомления",
+  "Reports": "Отчёты",
+  "Settings": "Настройки",
+  "Blocked": "Заблокировать",
+  "UnBlocked": "Разблокировать",
+  "UserSuccessBlocked": "Пользователь успешно заблокирован",
+  "UserSuccessUnBlocked": "Успешно разблокирован"
+}

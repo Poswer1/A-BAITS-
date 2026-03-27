@@ -8,6 +8,7 @@ const UserSchema = new mongoose_1.Schema({
     location: { type: String },
     city: { type: String },
     email: { type: String, required: true },
+    status: { type: String, default: 'No restrictions' },
     password: { type: String, required: true },
     balance: { type: Number, default: 0 },
     role: { type: String, required: true },

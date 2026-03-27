@@ -19,6 +19,17 @@ let UserService = class UserService {
             throw new common_1.BadRequestException('ErrorGetListUser');
         }
     }
+    async changeStatus(id) {
+        const user = await user_model_1.UserModel.findById(id);
+        if (!user) {
+            throw new common_1.BadRequestException('UserNotFound');
+        }
+        const updatedUser = await user_model_1.UserModel.findByIdAndUpdate(id, { $set: { status: user.status === 'Blocked' ? 'No restrictions' : 'Blocked' } }, { new: true });
+        if (!updatedUser) {
+            throw new common_1.BadRequestException('UserNotFound');
+        }
+        return { status: updatedUser.status };
+    }
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
