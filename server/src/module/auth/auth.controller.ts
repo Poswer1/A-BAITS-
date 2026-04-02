@@ -25,8 +25,8 @@ export class AuthController {
 
     res.cookie('token', data.token, {
       httpOnly: true,
-      sameSite: 'lax',
-      secure: false, // для https
+      sameSite: 'none',
+      secure:  true, // для https
       path: '/',        
       maxAge: 1000*60*60*24*7
     })
