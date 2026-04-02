@@ -8,9 +8,10 @@ interface Summary {
     advertising: boolean,
     handleCreateOrUpdate: () => void
     message:string
+    mode: 'create' | 'edit' | 'editAdmin', 
 }
 
-export default function Summary({autoReExtension, advertising, handleCreateOrUpdate, message} : Summary) {
+export default function Summary({autoReExtension, advertising, handleCreateOrUpdate, message, mode} : Summary) {
 
     const {t} = useTranslation()
 
@@ -33,7 +34,7 @@ export default function Summary({autoReExtension, advertising, handleCreateOrUpd
       {advertising && (
         <span className={`text-gray-500 text-sm ${animationOpacity}`}>Реклама - <span className="text-orange-600">20 ₴</span></span>
       )}
-      <button onClick={handleCreateOrUpdate} className={`${button} ${hover} `}>{t('createLot','create-post-lot')}</button>
+      <button onClick={handleCreateOrUpdate} className={`${button} ${hover} `}>{mode === 'create' ? t('createLot','create-post-lot') : t('createLot', 'create-update-lot')}</button>
       {message && (
         <span className="text-red-500">{message}</span>
       )}

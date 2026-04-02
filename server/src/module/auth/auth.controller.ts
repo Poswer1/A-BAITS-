@@ -1,15 +1,16 @@
 import { Body, Controller, Get, Post, Res, Req} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Auth } from './dto/create-auth.dto';
-import type { Response, Request} from 'express';
+import type { Response, Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() dto: Auth) {
-    return this.authService.register(dto)
+  async register(@Body() dto: Auth, @Req() req:Request) {
+    const ip = req.headers['x-forwarded-for']?.toString().split(',')[0] || req.socket.remoteAddress
+    return this.authService.register(dto, (ip || 'empty'))
   }
 
   @Get('getStatusAuth')
@@ -24,8 +25,8 @@ export class AuthController {
 
     res.cookie('token', data.token, {
       httpOnly: true,
-      sameSite: 'none',
-      secure: true, // для https
+      sameSite: 'lax',
+      secure: false, // для https
       path: '/',        
       maxAge: 1000*60*60*24*7
     })

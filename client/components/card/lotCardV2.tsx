@@ -1,21 +1,24 @@
 'use client'
 import { useTranslation } from "@/app/context/TranslationProvider"
 import { button} from "@/styles/global"
-import { Star } from "lucide-react"
+import { Edit, Edit2, Star, X } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import listLocation from '../data/citiesUK.json'
-import FavoritesButton from "./ui/favoritesButton"
-import Countdown from "./ui/countdown"
+import listLocation from '../../data/citiesUK.json'
+import FavoritesButton from "../ui/favoritesButton"
+import Countdown from "../ui/countdown"
 import { LotTypes } from "@/types/types"
 import { getValueByLang } from "@/utils/translateValue"
+import { hover } from "@/styles/style"
+import { closeLot } from "@/services/admin/lots"
 
 interface LotCardV2Props {
     lot:LotTypes
     show?:boolean
+    useFrom?:string
 }
 
-export default function LotCardV2({lot, show}: LotCardV2Props) {
+export default function LotCardV2({lot, show, useFrom}: LotCardV2Props) {
 
     const { t } = useTranslation()
     const params = useParams()
@@ -32,6 +35,17 @@ export default function LotCardV2({lot, show}: LotCardV2Props) {
     
     const state = getValueByLang(stateList, lot.state, lang)
     const city = getValueByLang(listLocation, lot.location, lang)
+
+    const handleCloseLot = async (id:string) => {
+        if(useFrom === 'admin') {
+            try {
+              await closeLot(id)
+              alert('успешно')
+            } catch (error:any) {
+                alert(error.mesasge)
+            }
+        }
+    }
 
     const columnClass = `flex flex-col justify-start items-start gap-1 w-full md:w-45 xl:w-55 2xl:w-70 overflow-hidden`
 
@@ -57,19 +71,29 @@ export default function LotCardV2({lot, show}: LotCardV2Props) {
                 <span>№ {t('lot', 'lot-number')} <span className="text-orange-600">{lot.lotNumber}</span></span>
             </div>
 
-            <div className={`${columnClass} hidden md:block md:flex`}>
+            <div className={`${columnClass} hidden md:flex`}>
                 <span>{t('lot', 'lot-state')}: <span className="text-orange-600">{state}</span></span>
                 <span>{t('lot', 'lot-location')}: {city}</span>
             </div>
             
-            <div className={`${columnClass} hidden md:block`}>
-                <Countdown date={lot.date.toString()}/>
+            <div className={`${columnClass} hidden md:block text-black`}>
+                    {t('lot', 'lot-dateStop')}
+                    <Countdown date={lot.date.toString()}/>
             </div> 
             
             <div className={`${columnClass} p-2 flex-col`}>
-                <h1 className="text-lg hidden md:block">{t('lot', 'lot-current-bid')}: <span className="text-orange-600 font-bold">{lot.startPrice} ₴</span></h1>
-                <button className={`${button} w-full md:w-auto`}>{t('lot', 'lot-doBid')}</button>
-                <FavoritesButton id={lot._id}/>
+                {useFrom === 'admin' ? (
+                    <>
+                     <Link href={`/${lang}/editLot/${lot.lotNumber}`} className={`${hover} rounded-md !p-2 bg-gray-100 text-black w-full text-center`}>{t('admin', 'edit')}</Link >
+                     <button onClick={() => handleCloseLot(lot._id)} className={`${button} w-full`}>{t('admin', 'close')}</button>
+                    </>
+                ): (
+                    <>
+                        <h1 className="text-lg hidden md:block">{t('lot', 'lot-current-bid')}: <span className="text-orange-600 font-bold">{lot.startPrice} ₴</span></h1>
+                        <button className={`${button} w-full md:w-auto`}>{t('lot', 'lot-doBid')}</button>
+                        <FavoritesButton id={lot._id}/>
+                    </>
+                )}
             </div>
         </div>
     </Link>

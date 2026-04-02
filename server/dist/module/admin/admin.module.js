@@ -9,12 +9,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.AdminModule = void 0;
 const common_1 = require("@nestjs/common");
 const user_module_1 = require("./user/user.module");
+const lots_module_1 = require("./lots/lots.module");
+const finance_module_1 = require("./finance/finance.module");
+const violations_module_1 = require("./violations/violations.module");
 let AdminModule = class AdminModule {
 };
 exports.AdminModule = AdminModule;
 exports.AdminModule = AdminModule = __decorate([
     (0, common_1.Module)({
-        imports: [user_module_1.UserModule]
+        imports: [user_module_1.UserModule, lots_module_1.LotsModule, finance_module_1.FinanceModule, violations_module_1.ViolationsModule]
     })
 ], AdminModule);
 //# sourceMappingURL=admin.module.js.map

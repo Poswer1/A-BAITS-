@@ -23,6 +23,16 @@ export async function getLotByUser(name:string, page:number) {
     return dataReturn(res)
 }
 
+export async function updateLot(formData:FormData, id:string) {
+    const res = await fetch(`${BASE_URL}/lot/updateLot/${id}`, {
+        method: 'PATCH',
+        credentials: 'include',
+        body: formData
+    })
+
+    return dataReturn(res)
+}
+
 export async function getMyLots(token:string, slug:string, mode:string, page?:number) {
 
     const params = new URLSearchParams()

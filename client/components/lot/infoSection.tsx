@@ -111,7 +111,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
 
         {status === 'Active' && (
             <>
-            <Countdown date={lot.date.toString()}/>
+            <span className="text-black flex gap-1">{t('lot', 'lot-dateStop')}<Countdown date={lot.date.toString()}/></span>
                 <div className={`${customInput} py-2`}>
                     <span className="font-bold">₴</span>
                         <input placeholder="950" className="w-full outline-none" value={value}/>

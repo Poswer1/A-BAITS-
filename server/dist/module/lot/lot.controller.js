@@ -25,8 +25,12 @@ let LotController = class LotController {
     constructor(lotService) {
         this.lotService = lotService;
     }
-    async createLot(req, dto, files, userId) {
+    async createLot(dto, files, userId) {
         return this.lotService.createLot(dto, files, userId);
+    }
+    async updateLot(req, preview, dto, id, files, userId) {
+        const previewArray = preview ? JSON.parse(preview) : [];
+        return this.lotService.updateLot(dto, id, files, previewArray, userId, req.user.role);
     }
     async getAllLot() {
         return this.lotService.getAllLot();
@@ -53,14 +57,27 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('createLot'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('images', 8, (0, files_upload_1.ImagesInterceptor)('./uploads/lots'))),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.UploadedFiles)()),
-    __param(3, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.UploadedFiles)()),
+    __param(2, (0, current_user_decorator_1.CurrentUser)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, lot_dto_1.LotDto, Array, String]),
+    __metadata("design:paramtypes", [lot_dto_1.LotDto, Array, String]),
     __metadata("design:returntype", Promise)
 ], LotController.prototype, "createLot", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Patch)('updateLot/:id'),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('images', 8, (0, files_upload_1.ImagesInterceptor)('./uploads/lots'))),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)('preview')),
+    __param(2, (0, common_1.Body)()),
+    __param(3, (0, common_1.Param)('id')),
+    __param(4, (0, common_1.UploadedFiles)()),
+    __param(5, (0, current_user_decorator_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, String, lot_dto_1.LotDto, String, Array, String]),
+    __metadata("design:returntype", Promise)
+], LotController.prototype, "updateLot", null);
 __decorate([
     (0, common_1.Get)('getAllLot'),
     __metadata("design:type", Function),

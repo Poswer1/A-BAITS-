@@ -4,6 +4,7 @@ import { UserModel } from 'src/models/user.model';
 import bcrypt from 'bcrypt'
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Request} from 'express';
 
 
 @Injectable()
@@ -13,7 +14,7 @@ export class AuthService {
     private jwtService: JwtService
   ) {} 
 
-  async register (dto: Auth) {
+  async register (dto: Auth, ip:string) {
     const exesting = await UserModel.findOne({email:dto.email})
     if(exesting) { 
       throw new BadRequestException('userExesting')
@@ -38,7 +39,8 @@ export class AuthService {
         email:normalRegisterEmail,
         name:dto.name,
         password: hash,
-        role:role
+        role:role,
+        ip
       }) 
       
       return user

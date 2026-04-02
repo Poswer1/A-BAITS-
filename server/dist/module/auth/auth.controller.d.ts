@@ -4,7 +4,7 @@ import type { Response, Request } from 'express';
 export declare class AuthController {
     private readonly authService;
     constructor(authService: AuthService);
-    register(dto: Auth): Promise<import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
+    register(dto: Auth, req: Request): Promise<import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;

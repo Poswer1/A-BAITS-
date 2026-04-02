@@ -28,7 +28,7 @@ export class CronSerivce {
                 try {
                  if (lot.historyBid.length > 0) {
                     const winner = lot.historyBid[0] 
-                    await this.paymentService.buyLot(winner.author.toString(), {lotId:lot.lotNumber.toString(), price: winner.currentBid})
+                    await this.paymentService.buyLot(winner.author.toString(), {lotId:lot._id.toString(), price: winner.currentBid})
                     } else {
                         if(lot.autoReExtension) {
                             const oneDayMs = 24 * 60 * 60 * 1000;

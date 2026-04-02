@@ -4,7 +4,7 @@ import { useTranslation } from "@/app/context/TranslationProvider"
 import { lotListClass, pageContainerClass } from "@/styles/profile/profile"
 import Sidebar from "./sidebar"
 import { LotTypes } from "@/types/types"
-import LotCardV2 from "../lotCardV2"
+import LotCardV2 from "../card/lotCardV2"
 import Pagination from "../ui/pagination"
 
 interface LotActivityProps {

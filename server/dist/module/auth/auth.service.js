@@ -25,7 +25,7 @@ let AuthService = class AuthService {
         this.configService = configService;
         this.jwtService = jwtService;
     }
-    async register(dto) {
+    async register(dto, ip) {
         const exesting = await user_model_1.UserModel.findOne({ email: dto.email });
         if (exesting) {
             throw new common_1.BadRequestException('userExesting');
@@ -46,7 +46,8 @@ let AuthService = class AuthService {
                 email: normalRegisterEmail,
                 name: dto.name,
                 password: hash,
-                role: role
+                role: role,
+                ip
             });
             return user;
         }

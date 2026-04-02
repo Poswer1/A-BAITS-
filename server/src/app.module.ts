@@ -13,6 +13,7 @@ import { CronSerivce } from './module/cron/cron.service';
 import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './module/cron/cron.module';
 import { AdminModule } from './module/admin/admin.module';
+import { EmailModule } from './module/email/email.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { AdminModule } from './module/admin/admin.module';
     ReviewModule,
     FavoritesModule,
     CronModule,
-    AdminModule
+    AdminModule,
+    EmailModule
   ],
   providers: [ConnectDB]
 })

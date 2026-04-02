@@ -1,5 +1,5 @@
 
-import LotCardV2 from '../lotCardV2';
+import LotCardV2 from '../card/lotCardV2';
 import { LotTypes } from '@/types/types';
 import Pagination from '../ui/pagination';
 

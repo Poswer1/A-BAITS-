@@ -6,8 +6,17 @@ export declare class UserService {
     } & {
         id: string;
     })[]>;
+    getAllUserCount(): Promise<number>;
+    getCountRegisteredUsers(): Promise<any>;
+    updateBalance(id: string, balance: number): Promise<{
+        balance: number;
+    }>;
     changeStatus(id: string): Promise<{
         status: string;
+    }>;
+    TemporaryBlock(id: string, day: number): Promise<{
+        status: string;
+        unBlockDate: Date;
     }>;
     deleteUser(id: string): Promise<{
         success: boolean;

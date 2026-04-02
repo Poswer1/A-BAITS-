@@ -26,5 +26,11 @@
     "LotsFound": "Найдено лотов",
     "defultAvatar": "Случайный аватар",
     "ProfileUpdated": "Профиль успешно обновлен",
-    "formatFile": "Загрузка файлов формата .webp недоступна. Пожалуйста, используйте PNG или JPG"
+    "formatFile": "Загрузка файлов формата .webp недоступна. Пожалуйста, используйте PNG или JPG",
+    "CurrentBalance": "Текущий баланс",
+    "replenishBalance": "Пополнить баланс",
+    "transactions": "Транзакции",
+    "balanceTitle": "Переведите сумму пополнения по QR-коду или по номеру карты",
+    "balanceDescription": "В описание укажите свой email или имя",
+    "balanceDescriptionAboutMoney": "Деньги поступят на баланс в течении 24 часов"
 }

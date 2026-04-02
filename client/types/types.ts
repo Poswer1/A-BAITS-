@@ -1,11 +1,53 @@
 export interface UserTypes {
     _id: string
+    ip:string
     status:string
     location:string,
     name: string
     avatar: string
     balance:string
-    role: string
+    role: string,
+    UnblockDate:Date,
+}
+
+export interface ViolationsTypes {
+  _id:string
+  user:{
+    avatar:string,
+    UnblockDate:Date,
+    name:string
+    status:string
+    _id:string
+    ip:string
+  }
+  lot: {
+    images:string[],
+    name:string,
+    lotNumber:string
+  }
+  repeated:number
+  violations:string
+  createdAt:Date
+}
+
+export interface TransactionTypes {
+    _id: string
+    lot: {
+      _id:string
+      author:string
+      images: string[]
+      name: string
+      lotNumber: string
+    },
+    status: string
+    user: {
+      name: string
+      avatar: string
+      _id:string
+    },
+    sum: number,
+    type: 'Charge' | 'Deposit',
+    createdAt: string,
 }
 
 export interface NotificationTypes {
@@ -91,6 +133,7 @@ export interface LotTypes {
     stepPrice:number,
     blitzPrice?:number,
     reservPrice?:number,
+    historyBid: []
     images: string[],
     autoReExtension?:boolean,
     descriptions:string,

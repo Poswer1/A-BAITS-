@@ -1,5 +1,6 @@
 {
   "createLot-title": "Создание",
+  "createLot-title-edit": "Редактирование",
   "createLot-category": "Категория",
   "createLot-lengthName": "Введите не более 70 символов",
   "createLot-lengthdescriptions": "Введите не более 1200 символов",
@@ -34,10 +35,13 @@
   "create-Total-Amount": "Общая сумма",
   "create-SelectedPrivileges": "Выбранные привилегии",
   "create-post-lot": "Выставить лот",
+  "create-update-lot": "Обновить лот",
   "NOTmore8Photo": "Нельзя добавлять больше 8 фото",
   "formatFile": "Загрузка файлов формата .webp недоступна. Пожалуйста, используйте PNG или JPG",
   "onlyPhoto": "Загружать можно только фотки",
   "lotSuccess": "Спасибо! Лот успешно создан и опубликован",
+  "lotSuccessUpdate": "Отлично! Лот успешно обновлен",
   "ErrorCreate": "Ошибка при создание товара, пожалуйста попробуйте позже...",
-  "NoMoney": "У вас недостаточно средств"
+  "NoMoney": "У вас недостаточно средств",
+  "createLot-haveHistoryBid": "У лота есть ставки, его нельзя редактировать"
 }

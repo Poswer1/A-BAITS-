@@ -1,14 +1,18 @@
 import { LotService } from './lot.service';
 import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
+import type { Request } from 'express';
 export declare class LotController {
     private readonly lotService;
     constructor(lotService: LotService);
-    createLot(req: any, dto: LotDto, files: Express.Multer.File[], userId: string): Promise<import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
+    createLot(dto: LotDto, files: Express.Multer.File[], userId: string): Promise<import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
     } & {
         id: string;
+    }>;
+    updateLot(req: Request, preview: string, dto: LotDto, id: string, files: Express.Multer.File[], userId: string): Promise<{
+        success: boolean;
     }>;
     getAllLot(): Promise<(import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
         _id: import("mongoose").Types.ObjectId;

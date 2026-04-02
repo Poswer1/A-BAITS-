@@ -5,11 +5,16 @@ import { BuyLotDto } from './payment.dto';
 import { NotificationGateway } from '../notification/notification.gateway';
 import { ChatModel } from 'src/models/chat.model';
 import mongoose from 'mongoose';
+import { TransactionModel } from 'src/models/transactions.model';
+import { EmailService } from '../email/email.service';
 
 @Injectable()
 export class PaymentService {
 
-    constructor(private readonly notificationGateWay: NotificationGateway) {}
+    constructor(
+        private readonly notificationGateWay: NotificationGateway,
+        private readonly emailService:EmailService
+    ) {}
     
     async buyLot(userId: string, dto: BuyLotDto) {
 
@@ -60,14 +65,25 @@ export class PaymentService {
         )
         
          await session.commitTransaction()
-        
 
-        this.notificationGateWay.sendNotification({
-        lotId,
-        to: lot.author.toString(),
-        from: userId.toString(),
-        notification: 'lotPurchased'
-        })
+        try {
+             await this.create(lot._id.toString(), lotPrice, userId)
+
+            await this.notificationGateWay.sendNotification({
+                lotId,
+                to: lot.author.toString(),
+                from: userId.toString(),
+                notification: 'lotPurchased'
+            })
+
+            await this.emailService.sendEmail(
+                'knozenko@gmail.com',
+                "привент",
+                '<h1>Тестовое письмо</h1>'
+            )
+        } catch (externalError) {
+            console.error('Ошибка внешних операций:', externalError);
+        }
 
         return { success: true }
 
@@ -77,5 +93,16 @@ export class PaymentService {
     } finally {
         session.endSession()
     }
+    }
+
+    async create(lot:string, sum:number, user:string) {
+        const createdTransaction = await TransactionModel.create({
+            lot,
+            sum,
+            user,
+            type: 'Approved'
+        })
+        if(!createdTransaction)throw new Error("Transaction creation failed");
+        return {success:true}
     }
 }

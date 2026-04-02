@@ -1,5 +1,6 @@
 import { Types } from "mongoose";
 export interface User {
+    ip: string;
     name: string;
     surname: string;
     email: string;
@@ -10,6 +11,7 @@ export interface User {
     location: string;
     status: string;
     avatar: string;
+    UnblockDate: Date;
     role: string;
     favorites: Types.ObjectId[];
 }

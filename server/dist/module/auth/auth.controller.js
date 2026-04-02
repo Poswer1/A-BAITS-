@@ -21,8 +21,9 @@ let AuthController = class AuthController {
     constructor(authService) {
         this.authService = authService;
     }
-    async register(dto) {
-        return this.authService.register(dto);
+    async register(dto, req) {
+        const ip = req.headers['x-forwarded-for']?.toString().split(',')[0] || req.socket.remoteAddress;
+        return this.authService.register(dto, (ip || 'empty'));
     }
     getStatusAuth(req) {
         const token = req.cookies['token'];
@@ -32,8 +33,8 @@ let AuthController = class AuthController {
         const data = await this.authService.login(dto);
         res.cookie('token', data.token, {
             httpOnly: true,
-            sameSite: 'none',
-            secure: true,
+            sameSite: 'lax',
+            secure: false,
             path: '/',
             maxAge: 1000 * 60 * 60 * 24 * 7
         });
@@ -44,8 +45,9 @@ exports.AuthController = AuthController;
 __decorate([
     (0, common_1.Post)('register'),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_auth_dto_1.Auth]),
+    __metadata("design:paramtypes", [create_auth_dto_1.Auth, Object]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "register", null);
 __decorate([

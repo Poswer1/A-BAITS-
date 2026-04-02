@@ -9,8 +9,17 @@ export declare class UserController {
     } & {
         id: string;
     })[]>;
+    getCountRegisteredUsers(): Promise<any>;
+    getCountUsers(): Promise<number>;
     changeStatus(id: string): Promise<{
         status: string;
+    }>;
+    TemporaryBlock(id: string, day: number): Promise<{
+        status: string;
+        unBlockDate: Date;
+    }>;
+    updateBalance(balance: number, id: string): Promise<{
+        balance: number;
     }>;
     deleteUser(id: string): Promise<{
         success: boolean;

@@ -3,7 +3,7 @@
 import { hover } from "@/styles/style";
 import Image from "next/image";
 import { ChevronDown, RefreshCcw, ShieldCheck, Truck} from "lucide-react";
-import LotCard from "@/components/lotCard";
+import LotCard from "@/components/card/lotCard";
 import { useTranslation } from "../context/TranslationProvider";
 import { useEffect, useState } from "react";
 import { getAllLot } from "@/services/lot";

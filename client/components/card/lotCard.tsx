@@ -5,9 +5,9 @@ import { hover } from "@/styles/style"
 import { Star } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import FavoritesButton from "./ui/favoritesButton"
+import FavoritesButton from "../ui/favoritesButton"
 import { getValueByLang } from "@/utils/translateValue"
-import ListLocation from '../data/citiesUK.json'
+import ListLocation from '../../data/citiesUK.json'
 
 interface LotCardProps {
     lot:any

@@ -25,6 +25,12 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
+    async getRoleUser(req) {
+        const { role } = req.user;
+        if (!role)
+            throw new common_1.BadRequestException('RoleNotFound');
+        return { role: role };
+    }
     async getUserById(id, userId) {
         const idUser = id ?? userId;
         if (!idUser)
@@ -45,6 +51,14 @@ let UserController = class UserController {
     }
 };
 exports.UserController = UserController;
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('getRoleUser'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getRoleUser", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('getUserById'),

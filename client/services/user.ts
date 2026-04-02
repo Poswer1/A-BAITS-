@@ -18,6 +18,17 @@ export async function getUserById(id?:string) {
 
 }
 
+export async function getRoleUser(token:string) {
+    const res = await fetch(`${BASE_URL}/user/getRoleUser`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        } 
+    })
+
+    return dataReturn(res)
+}
+
 export async function updateUser(formData:FormData, id?:string) {
 
     let url = ''

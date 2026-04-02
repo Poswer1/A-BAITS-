@@ -5,6 +5,7 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { ImagesInterceptor } from 'src/utils/files-upload';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth-guard';
 import { CurrentUser } from 'src/decorator/current-user.decorator';
+import type { Request } from 'express';
 
 
 @Controller('lot')
@@ -14,8 +15,16 @@ export class LotController {
   @UseGuards(JwtAuthGuard)
   @Post('createLot')
   @UseInterceptors(FilesInterceptor('images', 8, ImagesInterceptor('./uploads/lots')))
-  async createLot(@Req() req: any, @Body() dto: LotDto, @UploadedFiles() files: Express.Multer.File[], @CurrentUser('id') userId:string) {
+  async createLot(@Body() dto: LotDto, @UploadedFiles() files: Express.Multer.File[], @CurrentUser('id') userId:string) {
     return this.lotService.createLot(dto, files, userId)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('updateLot/:id')
+  @UseInterceptors(FilesInterceptor('images', 8, ImagesInterceptor('./uploads/lots')))
+  async updateLot(@Req() req: Request, @Body('preview') preview:string, @Body() dto: LotDto, @Param('id') id:string,  @UploadedFiles() files: Express.Multer.File[], @CurrentUser('id') userId:string) {
+    const previewArray = preview ? JSON.parse(preview) : []
+    return this.lotService.updateLot(dto, id, files, previewArray, userId, req.user.role)
   }
 
   @Get('getAllLot')

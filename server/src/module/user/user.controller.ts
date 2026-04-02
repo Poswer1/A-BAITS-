@@ -1,15 +1,24 @@
-import { Controller, Get, Param, Query, Req, UseGuards, Patch, Body, UseInterceptors, UploadedFile, BadRequestException} from '@nestjs/common';
+import { Controller, Get, Param, Query, Req, Patch, Body, UseInterceptors, UploadedFile, BadRequestException, UseGuards} from '@nestjs/common';
 import { UserService } from './user.service';
 import { JwtAuthGuard } from '../auth/jwt/jwt-auth-guard';
 import { UpdateProfileDTO } from './dto/create-user.dto';
 import { CurrentUser } from 'src/decorator/current-user.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ImagesInterceptor } from 'src/utils/files-upload';
+import type { Request } from 'express';
 
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getRoleUser')
+  async getRoleUser(@Req() req: Request & { user: { role: string; token: string } }) {
+    const { role } = req.user;
+    if (!role) throw new BadRequestException('RoleNotFound');
+    return { role: role };
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get('getUserById')

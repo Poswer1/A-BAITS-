@@ -9,8 +9,6 @@ export interface Message {
     createdAt:Date
 }
 
-
-
  export interface Chat extends Document {
    userFrom: Types.ObjectId,
    userTo: Types.ObjectId,

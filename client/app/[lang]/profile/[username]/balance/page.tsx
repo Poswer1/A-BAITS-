@@ -1,22 +1,21 @@
-'use client'
+import Balance from "@/components/profile/balance";
+import { getMyTransactions } from "@/services/admin/finance";
+import { cookies } from 'next/headers';
 
-import { blockClass } from '@/styles/profile/profile'
-import { animationOpacity} from '@/styles/style'
-import QRCode from 'react-qr-code'
-import { useState } from 'react'
-import Link from 'next/link'
-import { Copy } from 'lucide-react'
+export default async function page() {
+  
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+  if(!token) {
+    console.log('ТОКЕН НЕ ПОЛУЧЕН')
+    return
+  }
 
-function page() {
-  const qrValue = `https://send.monobank.ua/3Y9bBHwR4q`;
+  const allTransaction = await getMyTransactions(token)
 
   return (
-    <div className='flex justify-start items-center w-full'>
-      <div className='p-4 bg-white rounded-lg'>
-        <h1 className='text-gray-500'>Текущий баланс: <br/><span className='text-black text-xl'>50 ₴</span></h1>
-      </div>
-    </div>
+    <Balance allTransaction={allTransaction}/>
   )
 }
 
-export default page
+

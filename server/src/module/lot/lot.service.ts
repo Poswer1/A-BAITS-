@@ -5,11 +5,15 @@ import { ProccessImages } from 'src/utils/files-upload';
 import mongoose, { isValidObjectId, Types } from 'mongoose';
 import { UserModel } from 'src/models/user.model';
 import { SortOrder } from 'mongoose'
+import { ViolationsService } from '../admin/violations/violations.service';
 
 
 @Injectable()
 
 export class LotService {
+
+  constructor(private readonly violationsService:ViolationsService) {}
+
   async createLot(dto: LotDto, files: Express.Multer.File[], userId:string) {
 
     const images = files ? await ProccessImages(files, '/uploads/lots/') : [] 
@@ -82,6 +86,49 @@ export class LotService {
     } finally {
       session.endSession()
     }
+  }
+
+  async updateLot(dto: LotDto, id:string, files: Express.Multer.File[], preview: string[], userId:string, role:string) {
+
+      const lot = await LotModel.findOne({
+        lotNumber: id,
+      })
+      if(!lot)throw new BadRequestException('LotNotFound')
+      if ((lot?.historyBid?.length ?? 0) > 0 && role !== 'admin')throw new BadRequestException('LotAlreadyHaveBids')
+      const newImages = files ? await ProccessImages(files, '/uploads/lots/') : []
+      const existingImages = preview || []
+      let updatedImages:string[] = existingImages
+      if(newImages && newImages.length > 0) {
+       updatedImages = [...existingImages, ...newImages]
+      }
+      
+
+      const nowDate = new Date()
+      const oneDay = 24 * 60 * 60 * 1000
+
+      const newDate = new Date(nowDate.getTime() + (oneDay * dto.date))
+      if(dto.dateTime) {
+        const [hours, minutes] = dto.dateTime.split(':').map(Number)
+        newDate.setHours(hours, minutes, 0, 0)
+      }
+
+
+    const updateLot = await LotModel.findOneAndUpdate(
+      {
+        lotNumber: id,
+        author: userId
+      },
+      {
+        ...dto,
+        date: newDate,
+       images: updatedImages
+      }
+    )
+
+    if(!updateLot) throw new BadRequestException('ErrorUpdateLot')
+
+    return {success:true}
+
   }
 
   async getAllLot() {
@@ -311,11 +358,17 @@ export class LotService {
     }
 
     const updateLot = await LotModel.findById(lot._id)
-    .populate('historyBid.author', 'name avatar');
+    .populate('historyBid.author', 'name avatar')
 
     const lastBidRaw = updateLot?.historyBid[updateLot.historyBid.length - 1]
 
     if (!lastBidRaw) return null;
+    
+    const userAuthor = await UserModel.findById(updateLot.author)
+    if(!userAuthor) throw new BadRequestException('userAuthorNotfound')
+    if(user.ip === userAuthor?.ip) {
+      await this.violationsService.newViolations(user?._id.toString(), 'SelfBidding', updateLot?._id.toString())
+    }
     
     const lastBid = {
         authorId: (lastBidRaw.author as any)._id,   

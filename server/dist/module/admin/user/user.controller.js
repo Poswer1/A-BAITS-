@@ -25,8 +25,20 @@ let UserController = class UserController {
     async getAllUser() {
         return this.userService.getAllUser();
     }
+    async getCountRegisteredUsers() {
+        return this.userService.getCountRegisteredUsers();
+    }
+    async getCountUsers() {
+        return this.userService.getAllUserCount();
+    }
     async changeStatus(id) {
         return this.userService.changeStatus(id);
+    }
+    async TemporaryBlock(id, day) {
+        return this.userService.TemporaryBlock(id, day);
+    }
+    async updateBalance(balance, id) {
+        return this.userService.updateBalance(id, balance);
     }
     async deleteUser(id) {
         return this.userService.deleteUser(id);
@@ -40,12 +52,40 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUser", null);
 __decorate([
+    (0, common_1.Get)('getCountRegisteredUsers'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getCountRegisteredUsers", null);
+__decorate([
+    (0, common_1.Get)('getCountUsers'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getCountUsers", null);
+__decorate([
     (0, common_1.Patch)('changeStatus/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "changeStatus", null);
+__decorate([
+    (0, common_1.Patch)('TemporaryBlock/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('day')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Number]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "TemporaryBlock", null);
+__decorate([
+    (0, common_1.Patch)('updateBalance/:id'),
+    __param(0, (0, common_1.Body)('balance')),
+    __param(1, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updateBalance", null);
 __decorate([
     (0, common_1.Delete)('deleteUser/:id'),
     __param(0, (0, common_1.Param)('id')),

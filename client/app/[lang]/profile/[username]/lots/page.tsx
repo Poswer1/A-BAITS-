@@ -1,4 +1,4 @@
-import LotCardV2 from '@/components/lotCardV2'
+import LotCardV2 from '@/components/card/lotCardV2'
 import Pagination from '@/components/ui/pagination'
 import { getLotByUser } from '@/services/lot'
 import { LotTypes } from '@/types/types'

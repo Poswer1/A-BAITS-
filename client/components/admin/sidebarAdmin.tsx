@@ -3,7 +3,7 @@
 import { useTranslation } from '@/app/context/TranslationProvider'
 import { hoverCat } from '@/styles/categoryList'
 import { linkActiveClass } from '@/styles/profile/sidebar'
-import { User, Box, DollarSign, Bell, FileText, Settings, Gift } from 'lucide-react'
+import { User, Box, DollarSign, Bell, FileText, Settings, Gift, BarChart, ShieldCheck} from 'lucide-react'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 
@@ -18,10 +18,10 @@ export default function SidebarAdmin() {
   const listLinks = [
     { name: t('admin', 'Users'), icon: <User />, link: '/users' },
     { name: t('admin', 'Lots'), icon: <Box />, link: '/lots' },
-    { name: t('admin', 'Auctions'), icon: <Gift />, link: '/auctions' },
-    { name: t('admin', 'Finance'), icon: <DollarSign />, link: '/finance' },
+    { name: t('admin', 'Finance'), icon: <DollarSign />, link: '/finance/transactions' },
     { name: t('admin', 'Notifications'), icon: <Bell />, link: '/notifications' },
-    { name: t('admin', 'Reports'), icon: <FileText />, link: '/reports' },
+    { name: t('admin', 'Statistics'), icon: <BarChart />, link: '/statistics' },
+    { name: t('admin', 'ControlOfViolations'), icon: <ShieldCheck/>, link: '/controlOfViolations' },
     { name: t('admin', 'Settings'), icon: <Settings />, link: '/settings' }
   ]
 

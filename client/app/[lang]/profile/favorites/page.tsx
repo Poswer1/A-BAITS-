@@ -1,7 +1,7 @@
 'use client'
 
 import { useTranslation } from "@/app/context/TranslationProvider";
-import LotCard from "@/components/lotCard";
+import LotCard from "@/components/card/lotCard";
 import { getAllLot } from "@/services/lot";
 import { lotListClass, pageContainerClass } from "@/styles/profile/profile";
 import { useEffect, useState } from "react";

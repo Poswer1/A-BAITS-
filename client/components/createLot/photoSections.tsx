@@ -9,10 +9,11 @@ interface PhotoSectionsProps {
   file:File[],
   preview:string[],
   setPreview:React.Dispatch<React.SetStateAction<string[]>>
+  initialPreview:string[]
 }
 
-export default function PhotoSections({setFile, file, preview, setPreview}:PhotoSectionsProps) {
-
+export default function PhotoSections({setFile, file, preview, setPreview, initialPreview}:PhotoSectionsProps) {
+    const BASE_URL = process.env.NEXT_PUBLIC_URL
     const {t} = useTranslation()
 
     const [message, setMessage] = useState('')
@@ -88,7 +89,7 @@ export default function PhotoSections({setFile, file, preview, setPreview}:Photo
                 {preview[index] ? (
                   <>
                     <div onDrop={() => handleDrop(index)} draggable  onDragStart={() => setDragIndex(index)}  onDragOver={(e) => e.preventDefault()} className="w-full h-full">
-                      <img src={preview[index]} className="object-cover w-full h-full object-center rounded" onMouseEnter={() => setHoverFile(index)}/>
+                      <img src={initialPreview.length > 0 ? `${BASE_URL}${preview[index]}` : preview[index]} className="object-cover w-full h-full object-center rounded" onMouseEnter={() => setHoverFile(index)}/>
                     </div>
                     {hoverFile === index && (
                     <div className={` ${animationOpacity} absolute`} onClick={(e) => {e.preventDefault(), handleDeleteFile(index)}} onMouseLeave={() => setHoverFile('')}>

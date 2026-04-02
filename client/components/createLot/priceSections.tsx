@@ -18,14 +18,16 @@ export default function PriceSections({price, setPrice, priceStep, setPriceStep,
   return (
     <div className={`${block} gap-5`}>
         <div className="flex w-full flex-wrap gap-5">
-          <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>
-              <InputField 
-              type="number" 
-              value={price} 
-              onChange={setPrice} 
-              label={`${t('createLot','createLot-StartingPrice')} ₴`}
-              placeholder={t('createLot','createLot-StartingPrice')}/>
-            </div>
+            
+                <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>
+                    <InputField 
+                    type="number" 
+                    value={price} 
+                    onChange={setPrice} 
+                    label={`${t('createLot','createLot-StartingPrice')} ₴`}
+                    placeholder={t('createLot','createLot-StartingPrice')}/>
+                </div>
+           
             <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>
                 <InputField 
                 type="number" 
