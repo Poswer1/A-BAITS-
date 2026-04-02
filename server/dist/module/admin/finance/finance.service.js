@@ -1,0 +1,53 @@
+"use strict";
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.FinanceService = void 0;
+const common_1 = require("@nestjs/common");
+const transactions_model_1 = require("../../../models/transactions.model");
+const user_model_1 = require("../../../models/user.model");
+let FinanceService = class FinanceService {
+    async getAllTransactions() {
+        const allTransactions = await transactions_model_1.TransactionModel.find({})
+            .populate('user', 'name avatar')
+            .populate('lot', 'name lotNumber images author');
+        return allTransactions;
+    }
+    async getMyTransactions(userId) {
+        const allTransactions = await transactions_model_1.TransactionModel.find({ user: userId })
+            .populate('lot', 'images name lotNumber')
+            .populate('user', 'avatar name');
+        return allTransactions;
+    }
+    async returnMoney(dto) {
+        const { from, to, amount } = dto;
+        const session = await transactions_model_1.TransactionModel.startSession();
+        try {
+            session.startTransaction();
+            const updateFrom = await user_model_1.UserModel.findByIdAndUpdate(from, { $inc: { balance: -amount } }, { session });
+            if (!updateFrom)
+                throw new Error('user from not found');
+            const updateTo = await user_model_1.UserModel.findByIdAndUpdate(to, { $inc: { balance: amount } }, { session });
+            if (!updateTo)
+                throw new Error('user to not found');
+            const updateTransaction = await transactions_model_1.TransactionModel.findByIdAndUpdate(dto.transactionId, { $set: { status: 'Return' } }, { session });
+            if (!updateTransaction)
+                throw new Error('transaction not found');
+            await session.commitTransaction();
+            return { type: updateTransaction.type };
+        }
+        catch (error) {
+            await session.abortTransaction();
+            throw error;
+        }
+    }
+};
+exports.FinanceService = FinanceService;
+exports.FinanceService = FinanceService = __decorate([
+    (0, common_1.Injectable)()
+], FinanceService);
+//# sourceMappingURL=finance.service.js.map

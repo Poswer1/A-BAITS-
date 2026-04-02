@@ -1,0 +1,21 @@
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+
+interface ScheduleProps {
+    data: {
+        createdAt: string,
+        total: number
+    }[]
+}
+
+export default function Schedule({ data }: ScheduleProps) {
+  return (
+    <LineChart width={800} height={400} data={data} dataKey='startPrice' margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="createdAt"/>
+        <YAxis />
+        <Tooltip />
+        <Line type="stepBefore" dataKey="total" stroke="#ea580c" activeDot={{ r: 8 }} />
+    </LineChart>
+  )
+}
+

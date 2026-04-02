@@ -19,16 +19,83 @@ let UserService = class UserService {
             throw new common_1.BadRequestException('ErrorGetListUser');
         }
     }
+    async getAllUserCount() {
+        const countUser = await user_model_1.UserModel.countDocuments();
+        return countUser;
+    }
+    async getCountRegisteredUsers() {
+        const dateDay = new Date();
+        dateDay.setDate(dateDay.getDate() - 1);
+        const dateWeek = new Date();
+        dateWeek.setDate(dateWeek.getDate() - 7);
+        const dateMonth = new Date();
+        dateMonth.setDate(dateMonth.getDate() - 30);
+        const countUser = await user_model_1.UserModel.aggregate([
+            {
+                $match: {
+                    createdAt: { $gte: dateMonth }
+                }
+            },
+            {
+                $group: {
+                    _id: { $dateTrunc: { date: "$createdAt", unit: "day" } },
+                    value: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    createdAt: '$_id',
+                    value: 1
+                }
+            },
+            {
+                $sort: { createdAt: 1 }
+            },
+            {
+                $facet: {
+                    day: [{ $match: { createdAt: { $gte: dateDay } } }],
+                    week: [{ $match: { createdAt: { $gte: dateWeek } } }],
+                    month: []
+                }
+            }
+        ]);
+        return countUser[0];
+    }
+    async updateBalance(id, balance) {
+        const updateBalnce = await user_model_1.UserModel.findByIdAndUpdate(id, { $inc: { balance: balance } }, { returnDocument: 'after' });
+        if (!updateBalnce)
+            throw new common_1.BadRequestException('UpateBalanceError');
+        return { balance: updateBalnce.balance };
+    }
     async changeStatus(id) {
         const user = await user_model_1.UserModel.findById(id);
         if (!user) {
             throw new common_1.BadRequestException('UserNotFound');
         }
-        const updatedUser = await user_model_1.UserModel.findByIdAndUpdate(id, { $set: { status: user.status === 'Blocked' ? 'No restrictions' : 'Blocked' } }, { new: true });
+        const updatedUser = await user_model_1.UserModel.findByIdAndUpdate(id, { $set: { status: user.status === 'Blocked' ? 'No restrictions' : 'Blocked' } }, { returnDocument: 'after' });
         if (!updatedUser) {
             throw new common_1.BadRequestException('UserNotFound');
         }
         return { status: updatedUser.status };
+    }
+    async TemporaryBlock(id, day) {
+        const user = await user_model_1.UserModel.findById(id);
+        if (!user) {
+            throw new common_1.BadRequestException('UserNotFound');
+        }
+        const now = new Date();
+        now.setDate(now.getDate() + (Number(day) || 7));
+        const updatedUser = await user_model_1.UserModel.findByIdAndUpdate(id, {
+            $set: {
+                status: user.status === 'Temporary' ? 'No restrictions' : 'Temporary',
+                UnblockDate: user.status === 'Temporary' ? null : now
+            }
+        }, { returnDocument: 'after' });
+        if (!updatedUser) {
+            throw new common_1.BadRequestException('UserNotFound');
+        }
+        return { status: updatedUser.status, unBlockDate: updatedUser.UnblockDate };
     }
     async deleteUser(id) {
         try {

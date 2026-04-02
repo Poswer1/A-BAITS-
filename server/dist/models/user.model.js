@@ -4,12 +4,14 @@ exports.UserModel = void 0;
 const mongoose_1 = require("mongoose");
 const UserSchema = new mongoose_1.Schema({
     name: { type: String, required: true },
+    ip: { type: String, required: true },
     surname: { type: String },
     location: { type: String },
     city: { type: String },
     email: { type: String, required: true },
     status: { type: String, default: 'No restrictions' },
     password: { type: String, required: true },
+    UnblockDate: { type: Date },
     balance: { type: Number, default: 0 },
     role: { type: String, required: true },
     rating: { type: Number, default: 1 },

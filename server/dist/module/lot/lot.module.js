@@ -12,12 +12,13 @@ const lot_service_1 = require("./lot.service");
 const lot_controller_1 = require("./lot.controller");
 const lot_gateway_1 = require("./lot.gateway");
 const auth_module_1 = require("../auth/auth.module");
+const violations_module_1 = require("../admin/violations/violations.module");
 let LotModule = class LotModule {
 };
 exports.LotModule = LotModule;
 exports.LotModule = LotModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule],
+        imports: [auth_module_1.AuthModule, violations_module_1.ViolationsModule],
         controllers: [lot_controller_1.LotController],
         providers: [lot_service_1.LotService, lot_gateway_1.LotGateway],
     })

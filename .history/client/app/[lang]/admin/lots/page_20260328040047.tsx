@@ -1,0 +1,20 @@
+import Lots from "@/components/admin/lots"
+import { getLotsBySearch } from "@/services/admin/lots"
+import { getAllLot } from "@/services/lot"
+import { LotTypes } from "@/types/types"
+
+
+export default async function page() {
+
+  let listLots: LotTypes[] = []
+
+  try {
+    listLots = await getLotsBySearch()
+  } catch (error) {
+    listLots = []
+  }
+
+  return (
+    <Lots lots={listLots}/>
+  )
+}

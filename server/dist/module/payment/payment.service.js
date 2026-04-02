@@ -19,10 +19,14 @@ const user_model_1 = require("../../models/user.model");
 const notification_gateway_1 = require("../notification/notification.gateway");
 const chat_model_1 = require("../../models/chat.model");
 const mongoose_1 = __importDefault(require("mongoose"));
+const transactions_model_1 = require("../../models/transactions.model");
+const email_service_1 = require("../email/email.service");
 let PaymentService = class PaymentService {
     notificationGateWay;
-    constructor(notificationGateWay) {
+    emailService;
+    constructor(notificationGateWay, emailService) {
         this.notificationGateWay = notificationGateWay;
+        this.emailService = emailService;
     }
     async buyLot(userId, dto) {
         const { lotId, price } = dto;
@@ -52,12 +56,19 @@ let PaymentService = class PaymentService {
                 }
             ], { session });
             await session.commitTransaction();
-            this.notificationGateWay.sendNotification({
-                lotId,
-                to: lot.author.toString(),
-                from: userId.toString(),
-                notification: 'lotPurchased'
-            });
+            try {
+                await this.create(lot._id.toString(), lotPrice, userId);
+                await this.notificationGateWay.sendNotification({
+                    lotId,
+                    to: lot.author.toString(),
+                    from: userId.toString(),
+                    notification: 'lotPurchased'
+                });
+                await this.emailService.sendEmail('knozenko@gmail.com', "привент", '<h1>Тестовое письмо</h1>');
+            }
+            catch (externalError) {
+                console.error('Ошибка внешних операций:', externalError);
+            }
             return { success: true };
         }
         catch (error) {
@@ -68,10 +79,22 @@ let PaymentService = class PaymentService {
             session.endSession();
         }
     }
+    async create(lot, sum, user) {
+        const createdTransaction = await transactions_model_1.TransactionModel.create({
+            lot,
+            sum,
+            user,
+            type: 'Approved'
+        });
+        if (!createdTransaction)
+            throw new Error("Transaction creation failed");
+        return { success: true };
+    }
 };
 exports.PaymentService = PaymentService;
 exports.PaymentService = PaymentService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [notification_gateway_1.NotificationGateway])
+    __metadata("design:paramtypes", [notification_gateway_1.NotificationGateway,
+        email_service_1.EmailService])
 ], PaymentService);
 //# sourceMappingURL=payment.service.js.map

@@ -1,12 +1,18 @@
 import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
 import mongoose, { Types } from 'mongoose';
+import { ViolationsService } from '../admin/violations/violations.service';
 export declare class LotService {
+    private readonly violationsService;
+    constructor(violationsService: ViolationsService);
     createLot(dto: LotDto, files: Express.Multer.File[], userId: string): Promise<mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;
     } & {
         __v: number;
     } & {
         id: string;
+    }>;
+    updateLot(dto: LotDto, id: string, files: Express.Multer.File[], preview: string[], userId: string, role: string): Promise<{
+        success: boolean;
     }>;
     getAllLot(): Promise<(mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;

@@ -1,0 +1,19 @@
+import { useTranslation } from "@/app/context/TranslationProvider"
+import { TransactionTypes } from "@/types/types"
+
+
+interface TransactionProps {
+    allTransactions: TransactionTypes[]
+}
+
+export default function Transaction() {
+
+    const {t} = useTranslation()
+
+  return (
+    <div className="flex flex-col justify-start items-start">
+        <h1>{t('')}</h1>
+    </div>
+  )
+}
+

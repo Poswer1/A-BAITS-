@@ -5,7 +5,7 @@ export declare class AuthService {
     private configService;
     private jwtService;
     constructor(configService: ConfigService, jwtService: JwtService);
-    register(dto: Auth): Promise<import("mongoose").Document<unknown, {}, import("src/models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/user.model").User & {
+    register(dto: Auth, ip: string): Promise<import("mongoose").Document<unknown, {}, import("src/models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/user.model").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
@@ -15,6 +15,7 @@ export declare class AuthService {
     login(dto: Auth): Promise<{
         token: string;
         userData: {
+            ip: string;
             name: string;
             surname: string;
             email: string;
@@ -24,6 +25,7 @@ export declare class AuthService {
             location: string;
             status: string;
             avatar: string;
+            UnblockDate: Date;
             role: string;
             favorites: import("mongoose").Types.ObjectId[];
             _id: import("mongoose").Types.ObjectId;

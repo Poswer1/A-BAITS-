@@ -38,6 +38,9 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LotService = void 0;
 const common_1 = require("@nestjs/common");
@@ -45,7 +48,12 @@ const lot_model_1 = require("../../models/lot.model");
 const files_upload_1 = require("../../utils/files-upload");
 const mongoose_1 = __importStar(require("mongoose"));
 const user_model_1 = require("../../models/user.model");
+const violations_service_1 = require("../admin/violations/violations.service");
 let LotService = class LotService {
+    violationsService;
+    constructor(violationsService) {
+        this.violationsService = violationsService;
+    }
     async createLot(dto, files, userId) {
         const images = files ? await (0, files_upload_1.ProccessImages)(files, '/uploads/lots/') : [];
         const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString();
@@ -102,6 +110,39 @@ let LotService = class LotService {
         finally {
             session.endSession();
         }
+    }
+    async updateLot(dto, id, files, preview, userId, role) {
+        const lot = await lot_model_1.LotModel.findOne({
+            lotNumber: id,
+        });
+        if (!lot)
+            throw new common_1.BadRequestException('LotNotFound');
+        if ((lot?.historyBid?.length ?? 0) > 0 && role !== 'admin')
+            throw new common_1.BadRequestException('LotAlreadyHaveBids');
+        const newImages = files ? await (0, files_upload_1.ProccessImages)(files, '/uploads/lots/') : [];
+        const existingImages = preview || [];
+        let updatedImages = existingImages;
+        if (newImages && newImages.length > 0) {
+            updatedImages = [...existingImages, ...newImages];
+        }
+        const nowDate = new Date();
+        const oneDay = 24 * 60 * 60 * 1000;
+        const newDate = new Date(nowDate.getTime() + (oneDay * dto.date));
+        if (dto.dateTime) {
+            const [hours, minutes] = dto.dateTime.split(':').map(Number);
+            newDate.setHours(hours, minutes, 0, 0);
+        }
+        const updateLot = await lot_model_1.LotModel.findOneAndUpdate({
+            lotNumber: id,
+            author: userId
+        }, {
+            ...dto,
+            date: newDate,
+            images: updatedImages
+        });
+        if (!updateLot)
+            throw new common_1.BadRequestException('ErrorUpdateLot');
+        return { success: true };
     }
     async getAllLot() {
         try {
@@ -302,6 +343,12 @@ let LotService = class LotService {
             const lastBidRaw = updateLot?.historyBid[updateLot.historyBid.length - 1];
             if (!lastBidRaw)
                 return null;
+            const userAuthor = await user_model_1.UserModel.findById(updateLot.author);
+            if (!userAuthor)
+                throw new common_1.BadRequestException('userAuthorNotfound');
+            if (user.ip === userAuthor?.ip) {
+                await this.violationsService.newViolations(user?._id.toString(), 'SelfBidding', updateLot?._id.toString());
+            }
             const lastBid = {
                 authorId: lastBidRaw.author._id,
                 name: lastBidRaw.author.name,
@@ -338,6 +385,7 @@ let LotService = class LotService {
 };
 exports.LotService = LotService;
 exports.LotService = LotService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [violations_service_1.ViolationsService])
 ], LotService);
 //# sourceMappingURL=lot.service.js.map
