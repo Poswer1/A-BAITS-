@@ -12,7 +12,7 @@ import { useState } from 'react'
 import { changeStatus, TemporaryBlock } from '@/services/admin/user'
 import Countdown from '../ui/countdown'
 import { animationScale, hover } from '@/styles/style'
-import { X } from 'lucide-react'
+import { AlertTriangle, Ban, Unlock, X } from 'lucide-react'
 
 interface ControlOfViolationsProps {
     allViolations:ViolationsTypes[]
@@ -112,8 +112,8 @@ export default function ControlOfViolations({allViolations}: ControlOfViolations
                             <span className={textObj}>Тип <br /> <span className='text-red-500'>{v.violations}</span></span>
                             <span className={textObj}>{t('admin', 'Repeated')} <br /> <span className='text-black'>{v.repeated}</span></span>
                             <span className={textObj}>Дата <br /> <span className='text-black'>{date}</span></span>
-                            <button onClick={() => handleChangeStatus(v.user._id)} className={`${button} ${v.user.status === 'Blocked' ? '!bg-green-500' : '!bg-red-500'} ml-10 !p-2`}>{v.user.status === 'Blocked' ? t('admin', 'UnBlocked') : t('admin', 'Blocked')}</button>
-                            <button onClick={() => handleTemporary(v.user._id)} className={`${button} bg-yellow-400 !p-2`}>{v.user.status === 'Temporary' ? t('admin', 'TemporaryUnBlock'): t('admin', 'TemporaryBlock')}</button>
+                            <button onClick={() => handleChangeStatus(v.user._id)} className={`${button} ${v.user.status === 'Blocked' ? '!bg-green-500' : '!bg-red-500'} ml-10 !p-2`}>{v.user.status === 'Blocked' ? <Unlock /> : <Ban/>}</button>
+                            <button onClick={() => handleTemporary(v.user._id)} className={`${button} bg-yellow-400 !p-2`}>{v.user.status === 'Temporary' ? <Unlock /> : <AlertTriangle/>}</button>
                         </div>
                     </div>
                 )

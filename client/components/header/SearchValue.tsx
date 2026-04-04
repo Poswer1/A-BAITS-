@@ -1,5 +1,6 @@
 import { useTranslation } from "@/app/context/TranslationProvider"
 import { getAllLot } from "@/services/lot"
+import { BASE_URL } from "@/services/utils"
 import { hoverSub } from "@/styles/categoryList"
 import { overlay } from "@/styles/global"
 import { animationOpacity, hoverLink } from "@/styles/style"
@@ -39,7 +40,7 @@ function SearchValue({setOpenSearch, search, setSearch}: {setOpenSearch: (type: 
             {filterProducts.map((p) => (
                 <Link href={`/${params.lang}/${p.name}`} onClick={() => {setOpenSearch(false), setSearch('')}} className={`${animationOpacity} flex flex-col justify-center items-start cursor-pointer`}>
                   <span className={`${hoverSub} text-black`}>{p.name}</span>
-                  <p className="text-base text-gray-500">№ лота {p.lotNumber}</p>
+                  <p className="text-sm text-gray-500">№ лота {p.lotNumber}</p>
                 </Link>
             ))}
             <span className='text-gray-500'>

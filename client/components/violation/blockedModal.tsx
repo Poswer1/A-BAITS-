@@ -26,7 +26,7 @@ export default function BlockedModal({mode}:BlockedModalProps) {
 
      useEffect(() => {
     
-        if(open) {
+        if(open && status !== 'No restrictions') {
         document.body.style.overflow = 'hidden';
         } else {
         document.body.style.overflow = '';
@@ -36,7 +36,7 @@ export default function BlockedModal({mode}:BlockedModalProps) {
         document.body.style.overflow = '';
         }
 
-    }, [open])
+    }, [open, status])
 
     const handleBack = () => {
         router.back()
