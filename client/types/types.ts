@@ -3,11 +3,19 @@ export interface UserTypes {
     ip:string
     status:string
     location:string,
+    email:string,
     name: string
     avatar: string
+    rating:number,
     balance:string
     role: string,
     UnblockDate:Date,
+}
+
+export interface Templates {
+  _id:string,
+  subject:string,
+  html:string
 }
 
 export interface ViolationsTypes {

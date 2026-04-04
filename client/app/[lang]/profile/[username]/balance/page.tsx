@@ -11,10 +11,10 @@ export default async function page() {
     return
   }
 
-  const allTransaction = await getMyTransactions(token)
+  const data = await getMyTransactions(token)
 
   return (
-    <Balance allTransaction={allTransaction}/>
+    <Balance allTransaction={data.allTransactions} currentBalance={Number(data.currentBalance)}/>
   )
 }
 

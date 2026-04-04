@@ -18,6 +18,15 @@ export async function getUserById(id?:string) {
 
 }
 
+export async function getUserStatus() {
+    const res = await fetch(`${BASE_URL}/user/getUserStatus`, {
+        method: 'GET',
+        credentials: 'include', 
+    })
+
+    return dataReturn(res)
+}
+
 export async function getRoleUser(token:string) {
     const res = await fetch(`${BASE_URL}/user/getRoleUser`, {
         method: 'GET',

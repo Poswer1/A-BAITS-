@@ -13,9 +13,10 @@ import { animationScale } from '@/styles/style'
 
 interface BalanceProps {
   allTransaction: TransactionTypes[]
+  currentBalance:number
 }
 
-export default function Balance({allTransaction}: BalanceProps) {
+export default function Balance({allTransaction, currentBalance}: BalanceProps) {
     const qrValue = `https://send.monobank.ua/3Y9bBHwR4q`;
     const [openQr, setOpenQe] = useState(false)
 
@@ -24,18 +25,18 @@ export default function Balance({allTransaction}: BalanceProps) {
   return (
      <div className={`flex flex-col w-full gap-2` }>
       <div className='flex flex-col md:flex-row p-3 bg-white rounded-lg justify-between items-center w-full gap-2'>
-        <h1 className='text-gray-500 text-center md:text-start'>{t('profile', 'CurrentBalance')}: <br/><span className='text-black text-2xl md:text-xl'>50 ₴</span></h1>
+        <h1 className='text-gray-500 text-center md:text-start'>{t('profile', 'CurrentBalance')}: <br/><span className='text-black text-2xl md:text-xl'>{currentBalance} ₴</span></h1>
         <button onClick={() => setOpenQe(true)} className={`${button} w-full md:w-auto`}><DollarSign />{t('profile', 'replenishBalance')}</button>
       </div>
       <h1 className='text-xl md:text-xl p-2 py-4 md:p-0 md:mb-2'>{t('profile', 'transactions')}</h1>
       <div className='flex flex-col'>
-        {allTransaction.map((t) => (
+        {allTransaction?.map((t) => (
           <TransactionCard transaction={t}/>
         ))}
       </div>
       {openQr && (
         <div className={overlay} onClick={() => setOpenQe(false)}>
-          <div className={`${animationScale} flex flex-col justify-center items-center p-10 w-[90%] 2xl:w-1/3 bg-white rounded-xl gap-2`} onClick={(e) => e.stopPropagation()}>
+          <div className={`${animationScale} flex flex-col justify-center items-center p-5 md:p-10 w-[90%] 2xl:w-1/3 bg-white rounded-xl gap-2`} onClick={(e) => e.stopPropagation()}>
           <span className='text-black text-center'>{t('profile', 'balanceTitle')}</span>
           <span className='text-gray-500 text-center text-sm md:text-base'>{t('profile', 'balanceDescription')}</span>
           <Link href='https://send.monobank.ua/3Y9bBHwR4q' className='p-5 bg-gray-100 rounded-xl shadow-md'>

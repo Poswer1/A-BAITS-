@@ -1,10 +1,11 @@
 import LotForm from '@/components/createLot/lotForm'
-import React from 'react'
 
-function page() {
+export default async function page() {
+
   return (
-    <LotForm mode='create'/>
+    <>
+      <LotForm mode='create'/>
+    </>
   )
 }
 
-export default page

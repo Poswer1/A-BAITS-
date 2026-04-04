@@ -20,7 +20,7 @@ export default function Transaction({allTransactions}: TransactionProps) {
         <h1 className="text-xl">{t('admin', 'transactions')}</h1>
         <div className="flex flex-col justify-start items-start w-full">
             {transactions.map(transaction => (
-                <TransactionCard key={transaction._id} transaction={transaction} setTransactions={setTransactions}/>
+                <TransactionCard key={transaction._id} transaction={transaction} setTransactions={setTransactions} useFrom="admin"/>
             ))}
         </div>
     </div>

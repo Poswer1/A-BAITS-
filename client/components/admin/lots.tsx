@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react'
 import LotCardV2 from '../card/lotCardV2'
 
 import { usePathname, useRouter } from 'next/navigation'
+import SearchBlock from '../ui/search'
 
 interface LotsProps {
     lots: LotTypes[]
@@ -41,9 +42,8 @@ export default function Lots({lots}:LotsProps) {
              <span className={`${hover} flex justify-start items-center`} onClick={() => {setId(''), setEdit(false)}}><ChevronLeft /> Назад</span>
         )}
         <h1 className='text-xl'>{edit ? t('admin', 'editLots') : t('admin', 'lots')}</h1>
-        <div className='flex items-center p-2 border border-gray-300 gap-2 rounded-xl w-1/4'>
-            <Search className='text-gray-500' size={20}/>
-            <input className='outline-none w-full' value={searchValue} onChange={(e) => setSearchValue(e.target.value)} placeholder={t('admin', 'searchUser')}/>
+        <div className='flex w-1/4'>
+            <SearchBlock searchValue={searchValue} setSearchValue={setSearchValue} placeholder={t('admin', 'searchUser')}/>
         </div>
         {(message || error) && (
             <span className={`${animationScale} ${message ? 'text-green-500' : 'text-red-500'}`}>{message || error}</span>

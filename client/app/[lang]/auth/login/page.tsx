@@ -44,8 +44,8 @@ function page() {
     }
 
   return (
-    <div className='flex flex-col justify-center items-center md:h-150 xl:h-200 w-full text-black'>
-        <div className='flex flex-col justify-center items-center sm:w-2/5 xl:w-2/6 2xl:w-1/4 rounded-md p-5 gap-5'>
+    <div className='flex flex-col justify-center items-center h-screen w-full text-black '>
+        <div className='flex flex-col justify-center items-center sm:w-2/5 xl:w-2/6 2xl:w-1/4 p-5 gap-5 '>
              {message && (
               <span className={`${animationScale} text-red-500`}>{message}</span>
              )}

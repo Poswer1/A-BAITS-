@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable } from "@nestjs/common";
 import { TransactionModel } from "src/models/transactions.model";
 import { ReturnMoneyDto } from "./finance.dto";
 import { UserModel } from "src/models/user.model";
@@ -14,10 +14,12 @@ export class FinanceService {
     }
 
     async getMyTransactions(userId:string) {
+        const user = await UserModel.findById(userId)
+        if(!user) throw new BadRequestException('userNotFound')
         const allTransactions = await TransactionModel.find({user: userId})
         .populate('lot', 'images name lotNumber')
         .populate('user', 'avatar name')
-        return allTransactions
+        return {allTransactions:allTransactions, currentBalance: user.balance}
     }
 
     async returnMoney (dto:ReturnMoneyDto) {

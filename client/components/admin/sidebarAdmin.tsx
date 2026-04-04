@@ -3,7 +3,7 @@
 import { useTranslation } from '@/app/context/TranslationProvider'
 import { hoverCat } from '@/styles/categoryList'
 import { linkActiveClass } from '@/styles/profile/sidebar'
-import { User, Box, DollarSign, Bell, FileText, Settings, Gift, BarChart, ShieldCheck} from 'lucide-react'
+import { User, Box, DollarSign, Bell, Settings,BarChart, ShieldCheck,Terminal} from 'lucide-react'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 
@@ -22,6 +22,7 @@ export default function SidebarAdmin() {
     { name: t('admin', 'Notifications'), icon: <Bell />, link: '/notifications' },
     { name: t('admin', 'Statistics'), icon: <BarChart />, link: '/statistics' },
     { name: t('admin', 'ControlOfViolations'), icon: <ShieldCheck/>, link: '/controlOfViolations' },
+    { name: t('admin', 'Logging'), icon: <Terminal/>, link: '/logging' },
     { name: t('admin', 'Settings'), icon: <Settings />, link: '/settings' }
   ]
 

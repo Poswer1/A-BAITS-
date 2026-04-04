@@ -4,7 +4,7 @@ import { useTranslation } from "@/app/context/TranslationProvider"
 import { animate, button, customInput } from "@/styles/global"
 import { columnBlock} from "@/styles/lot"
 import { animationOpacity, hover } from "@/styles/style"
-import { Plus, Minus, LogIn } from "lucide-react"
+import { Plus, Minus, LogIn, AlertTriangle, Ban } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Socket } from "socket.io-client"
 import { buyNow } from "@/services/payment"
@@ -12,6 +12,7 @@ import { LotTypes } from "@/types/types"
 import Countdown from "../ui/countdown"
 import { useSwipeable } from "react-swipeable"
 import { useRouter } from "next/navigation"
+import GetStatusUser from "@/utils/getStatusUser"
 
 interface InfoSectionProps {
     lot: LotTypes | null,
@@ -32,6 +33,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     const [progress, setProgress] = useState(false)
     const [open, setOpen] = useState(false)
     const router = useRouter()
+    const { status: statusUser } = GetStatusUser()
 
     const handleBid = () => {
         if(!socket) return
@@ -112,9 +114,16 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
         {status === 'Active' && (
             <>
             <span className="text-black flex gap-1">{t('lot', 'lot-dateStop')}<Countdown date={lot.date.toString()}/></span>
-                <div className={`${customInput} py-2`}>
-                    <span className="font-bold">₴</span>
-                        <input placeholder="950" className="w-full outline-none" value={value}/>
+                    {statusUser === 'Temporary' ? (
+                        <div className="flex justify-start w-full gap-2 text-yellow-400">
+                            <AlertTriangle />
+                            <h1>{ t('violations', 'Temporary')}</h1>
+                        </div>
+                    ): (
+                    <>
+                        <div className={`${customInput} py-2`}>
+                            <span className="font-bold">₴</span>
+                            <input placeholder="950" className="w-full outline-none" value={value} onChange={(e) => setValue(Number(e.target.value))}/>
                             <div className="flex justify-center items-center gap-2">
                                 <Minus className={`${buttonInput} ${hover}`} onClick={handleMinus}/>
                                 <Plus className={`${buttonInput} ${hover}`} onClick={handlePlus}/>
@@ -123,20 +132,21 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                         {message && (
                             <p className={`${animationOpacity} text-orange-600 mt-2`}>{message}</p>
                         )}
-
-                    <button onClick={handleBid} className={`${button} w-full ${hover} text-lg`}>{t('lot', 'lot-doBid')}</button>
-                    <button 
-                    onMouseDown={handleBuyNow} 
-                    onMouseLeave={handleLeaveBuyNow} 
-                    onMouseUp={handleLeaveBuyNow} 
-                    onTouchStart={handleBuyNow} 
-                    onTouchEnd={handleLeaveBuyNow} 
-                    onTouchCancel={handleLeaveBuyNow} 
-                    className={`w-full user-select-none ${hover} text-black border-orange-600 border !text-orange-600 rounded-md p-2 text-lg relative`}
-                    >
+                        <button onClick={handleBid} className={`${button} w-full ${hover} text-lg`}>{t('lot', 'lot-doBid')}</button>
+                        <button 
+                        onMouseDown={handleBuyNow} 
+                        onMouseLeave={handleLeaveBuyNow} 
+                        onMouseUp={handleLeaveBuyNow} 
+                        onTouchStart={handleBuyNow} 
+                        onTouchEnd={handleLeaveBuyNow} 
+                        onTouchCancel={handleLeaveBuyNow} 
+                        className={`w-full user-select-none ${hover} text-black border-orange-600 border !text-orange-600 rounded-md p-2 text-lg relative`}
+                        >
                         {t('lot', 'lot-buyNow')} <span className="font-bold">( {lot.blitzPrice} ₴ )</span>
-                    <div className={`absolute top-0 left-0 h-full bg-orange-600/50 ${progress ? 'w-full transition-all duration-[3000ms] ease-in' : 'w-0'}`}/>
-                    </button>            
+                        <div className={`absolute top-0 left-0 h-full bg-orange-600/50 ${progress ? 'w-full transition-all duration-[3000ms] ease-in' : 'w-0'}`}/>
+                        </button>  
+                    </>
+                    )}  
             </>
         )} 
     </div>

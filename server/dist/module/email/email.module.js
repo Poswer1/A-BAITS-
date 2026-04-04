@@ -7,34 +7,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailModule = void 0;
-const mailer_1 = require("@nestjs-modules/mailer");
 const common_1 = require("@nestjs/common");
 const email_service_1 = require("./email.service");
+const email_controller_1 = require("./email.controller");
 let EmailModule = class EmailModule {
 };
 exports.EmailModule = EmailModule;
 exports.EmailModule = EmailModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            mailer_1.MailerModule.forRoot({
-                transport: {
-                    host: 'smtp.sendgrid.net',
-                    port: 587,
-                    auth: {
-                        user: 'apikey',
-                        pass: '12LYMBR7L2WHQHY1TM6FUZ4T',
-                    },
-                    tls: {
-                        rejectUnauthorized: false,
-                    },
-                },
-                defaults: {
-                    from: '"My Project" <no-reply@mydomain.com>',
-                },
-            })
-        ],
         providers: [email_service_1.EmailService],
-        exports: [email_service_1.EmailService]
+        exports: [email_service_1.EmailService],
+        controllers: [email_controller_1.EmailController]
     })
 ], EmailModule);
 //# sourceMappingURL=email.module.js.map

@@ -1,0 +1,20 @@
+import Logging from '@/components/admin/logging';
+import { getAllLogging } from '@/services/admin/logging';
+import { cookies } from 'next/headers';
+
+export default async function page() {
+
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token')?.value;
+    if(!token) {
+      console.log('ТОКЕН НЕ ПОЛУЧЕН')
+      return
+    }
+
+    const allLogging = await getAllLogging(token)
+
+  return (
+    <Logging allLogging={allLogging}/>
+  )
+}
+

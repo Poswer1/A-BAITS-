@@ -21,12 +21,15 @@ const chat_model_1 = require("../../models/chat.model");
 const mongoose_1 = __importDefault(require("mongoose"));
 const transactions_model_1 = require("../../models/transactions.model");
 const email_service_1 = require("../email/email.service");
+const logging_service_1 = require("../admin/logging/logging.service");
 let PaymentService = class PaymentService {
     notificationGateWay;
     emailService;
-    constructor(notificationGateWay, emailService) {
+    loggingService;
+    constructor(notificationGateWay, emailService, loggingService) {
         this.notificationGateWay = notificationGateWay;
         this.emailService = emailService;
+        this.loggingService = loggingService;
     }
     async buyLot(userId, dto) {
         const { lotId, price } = dto;
@@ -58,13 +61,14 @@ let PaymentService = class PaymentService {
             await session.commitTransaction();
             try {
                 await this.create(lot._id.toString(), lotPrice, userId);
+                await this.loggingService.newLog(userId, 'buyLot', lotId);
                 await this.notificationGateWay.sendNotification({
                     lotId,
                     to: lot.author.toString(),
                     from: userId.toString(),
                     notification: 'lotPurchased'
                 });
-                await this.emailService.sendEmail('knozenko@gmail.com', "привент", '<h1>Тестовое письмо</h1>');
+                await this.emailService.sendEmail('knozenko2@gmail.com', 'Тест Resend', '<h1>Лот куплен!</h1>');
             }
             catch (externalError) {
                 console.error('Ошибка внешних операций:', externalError);
@@ -95,6 +99,7 @@ exports.PaymentService = PaymentService;
 exports.PaymentService = PaymentService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [notification_gateway_1.NotificationGateway,
-        email_service_1.EmailService])
+        email_service_1.EmailService,
+        logging_service_1.LoggingService])
 ], PaymentService);
 //# sourceMappingURL=payment.service.js.map

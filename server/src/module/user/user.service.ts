@@ -17,6 +17,12 @@ export class UserService {
     }
   }
 
+  async getUserStatus(userId:string) {
+    const statusUser = await UserModel.findById(userId).populate('status UnblockDate')
+    if(!statusUser) throw new BadRequestException('userNotFound')
+    return {status: statusUser?.status, UnblockDate: statusUser?.UnblockDate}
+  }
+
   async getUserByName(name: string) {
     try {
       const user = await UserModel.findOne({name:name}).select('-password -email');

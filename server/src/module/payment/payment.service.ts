@@ -7,13 +7,15 @@ import { ChatModel } from 'src/models/chat.model';
 import mongoose from 'mongoose';
 import { TransactionModel } from 'src/models/transactions.model';
 import { EmailService } from '../email/email.service';
+import { LoggingService } from '../admin/logging/logging.service';
 
 @Injectable()
 export class PaymentService {
 
     constructor(
         private readonly notificationGateWay: NotificationGateway,
-        private readonly emailService:EmailService
+        private readonly emailService:EmailService,
+        private readonly loggingService:LoggingService
     ) {}
     
     async buyLot(userId: string, dto: BuyLotDto) {
@@ -67,7 +69,9 @@ export class PaymentService {
          await session.commitTransaction()
 
         try {
-             await this.create(lot._id.toString(), lotPrice, userId)
+            await this.create(lot._id.toString(), lotPrice, userId)
+
+            await this.loggingService.newLog(userId, 'buyLot', lotId)
 
             await this.notificationGateWay.sendNotification({
                 lotId,
@@ -75,12 +79,13 @@ export class PaymentService {
                 from: userId.toString(),
                 notification: 'lotPurchased'
             })
-
+            
             await this.emailService.sendEmail(
-                'knozenko@gmail.com',
-                "привент",
-                '<h1>Тестовое письмо</h1>'
+                'knozenko2@gmail.com',
+                'Тест Resend',
+                '<h1>Лот куплен!</h1>'
             )
+            
         } catch (externalError) {
             console.error('Ошибка внешних операций:', externalError);
         }

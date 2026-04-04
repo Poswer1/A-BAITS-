@@ -5,10 +5,11 @@ import { PaymentGateway } from './payment.gateway';
 import { AuthModule } from '../auth/auth.module';
 import { NotificationModule } from '../notification/notification.module';
 import { EmailModule } from '../email/email.module';
+import { LoggingModule } from '../admin/logging/logging.module';
 
 
 @Module({
-  imports: [AuthModule,NotificationModule, EmailModule],
+  imports: [AuthModule,NotificationModule, EmailModule, LoggingModule],
   controllers: [PaymentController],
   providers: [PaymentService, PaymentGateway],
   exports: [PaymentService]

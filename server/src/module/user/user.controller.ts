@@ -14,7 +14,7 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get('getRoleUser')
-  async getRoleUser(@Req() req: Request & { user: { role: string; token: string } }) {
+  async getRoleUser(@Req() req: Request) {
     const { role } = req.user;
     if (!role) throw new BadRequestException('RoleNotFound');
     return { role: role };
@@ -26,6 +26,12 @@ export class UserController {
     const idUser = id ?? userId
     if(!idUser) throw new BadRequestException('UserNotFound');
     return this.userService.getUserById(idUser)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('getUserStatus')
+  async getUserStatus(@CurrentUser('id') userId:string) {
+    return this.userService.getUserStatus(userId)
   }
 
   @Get('getUser/:id')

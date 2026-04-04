@@ -37,6 +37,9 @@ let UserController = class UserController {
             throw new common_1.BadRequestException('UserNotFound');
         return this.userService.getUserById(idUser);
     }
+    async getUserStatus(userId) {
+        return this.userService.getUserStatus(userId);
+    }
     async getUser(id) {
         return this.userService.getUserById(id);
     }
@@ -68,6 +71,14 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserById", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('getUserStatus'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "getUserStatus", null);
 __decorate([
     (0, common_1.Get)('getUser/:id'),
     __param(0, (0, common_1.Param)('id')),

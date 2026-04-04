@@ -8,7 +8,7 @@ import { getRelativeTime } from '@/components/ui/relativeTime';
 import { getUserById } from '@/services/user';
 import { blockClass, pageContainerClass } from '@/styles/profile/profile'
 import { hover } from '@/styles/style';
-import { Check, ChevronLeft, MoreVertical,Send, X} from "lucide-react";
+import { AlertTriangle, Check, ChevronLeft, MoreVertical,Send, X} from "lucide-react";
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -16,6 +16,7 @@ import Image from 'next/image';
 import { useTranslation } from '@/app/context/TranslationProvider';
 import { button, buttonWithoutBg } from '@/styles/global';
 import { ChatTypes, MessageType } from '@/types/types';
+import GetStatusUser from '@/utils/getStatusUser';
 
 function page() {
 
@@ -39,6 +40,7 @@ function page() {
   const [typeChat, setTypeChat] = useState('')
   const [status, setStatus] = useState('')
   const chatRef = useRef<HTMLDivElement>(null);
+  const {status: statusUser} = GetStatusUser()
 
   useEffect(() => {
     if(!selectIdChat) return
@@ -181,7 +183,12 @@ function page() {
                   )
               })}
             </div>
-            {chat?.status !== 'Close' ? (
+            {statusUser === 'Temporary' ? (
+                <div className="flex justify-center w-full gap-2 text-yellow-400">
+                    <AlertTriangle />
+                    <h1>{ t('violations', 'Temporary')}</h1>
+                </div>
+            ): chat?.status !== 'Close' ? (
               <div className='flex justify-center items-center w-full gap-2'>
                 <input className={`w-full outline-none`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder='Напишите сообщение'/>
                 <button onClick={() => {

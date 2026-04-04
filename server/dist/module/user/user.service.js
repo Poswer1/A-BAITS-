@@ -25,6 +25,12 @@ let UserService = class UserService {
             throw new common_1.BadRequestException('Помилка получення профилю');
         }
     }
+    async getUserStatus(userId) {
+        const statusUser = await user_model_1.UserModel.findById(userId).populate('status UnblockDate');
+        if (!statusUser)
+            throw new common_1.BadRequestException('userNotFound');
+        return { status: statusUser?.status, UnblockDate: statusUser?.UnblockDate };
+    }
     async getUserByName(name) {
         try {
             const user = await user_model_1.UserModel.findOne({ name: name }).select('-password -email');

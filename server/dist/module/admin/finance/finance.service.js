@@ -18,10 +18,13 @@ let FinanceService = class FinanceService {
         return allTransactions;
     }
     async getMyTransactions(userId) {
+        const user = await user_model_1.UserModel.findById(userId);
+        if (!user)
+            throw new common_1.BadRequestException('userNotFound');
         const allTransactions = await transactions_model_1.TransactionModel.find({ user: userId })
             .populate('lot', 'images name lotNumber')
             .populate('user', 'avatar name');
-        return allTransactions;
+        return { allTransactions: allTransactions, currentBalance: user.balance };
     }
     async returnMoney(dto) {
         const { from, to, amount } = dto;

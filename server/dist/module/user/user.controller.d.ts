@@ -4,12 +4,7 @@ import type { Request } from 'express';
 export declare class UserController {
     private readonly userService;
     constructor(userService: UserService);
-    getRoleUser(req: Request & {
-        user: {
-            role: string;
-            token: string;
-        };
-    }): Promise<{
+    getRoleUser(req: Request): Promise<{
         role: string;
     }>;
     getUserById(id?: string, userId?: string): Promise<(import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
@@ -19,6 +14,10 @@ export declare class UserController {
     } & {
         id: string;
     }) | null>;
+    getUserStatus(userId: string): Promise<{
+        status: string;
+        UnblockDate: Date;
+    }>;
     getUser(id: string): Promise<(import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {

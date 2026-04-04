@@ -75,7 +75,7 @@ export default function ControlOfViolations({allViolations}: ControlOfViolations
 
   
     return (
-    <div className='flex flex-col justify-start items-start gap-4 w-full'>
+    <div className='flex flex-col gap-2 w-full'>
         <div className='flex justify-stat items-center gap-5 w-full'>
             <h1 className='text-xl'>{t('admin', 'ControlOfViolations')}</h1>
             {(message || error) && (
@@ -83,36 +83,41 @@ export default function ControlOfViolations({allViolations}: ControlOfViolations
              )}
         </div>
         <div className='flex flex-col justify-start items-start w-full'>
-            {listAllViolations.map((v) => (
-                <div key={v._id} className={blockObj}>
-                    <div className='flex justify-start items-center gap-10'>
-                            <div className='flex justify-start items-center gap-2'>
-                            <AvatarBlock avatar={v.user.avatar} size='45'/>
-                            <div className='flex flex-col justify-center'>
-                                <h1>{v.user.name}</h1>
-                                <span className='text-sm'>Ip - <span className='text-orange-600'>{v.user.ip}</span></span>
+            {listAllViolations.map((v) => {
+                 const date = v.createdAt 
+                ? new Date(v.createdAt).toLocaleDateString('en-CA') 
+                : 'Даты нету';
+                return (
+                    <div key={v._id} className={blockObj}>
+                        <div className='flex justify-start items-center gap-10'>
+                                <div className='flex justify-start items-center gap-2'>
+                                <AvatarBlock avatar={v.user.avatar} size='45'/>
+                                <div className='flex flex-col justify-center'>
+                                    <h1>{v.user.name}</h1>
+                                    <span className='text-sm'>Ip - <span className='text-orange-600'>{v.user.ip}</span></span>
+                                </div>
                             </div>
+                            {v.user.status === 'Temporary' ? (
+                                <span className={textObj}>{t('admin', 'TimeTemporaryUnBlock')} <br />
+                                <span className='text-orange-600'><Countdown date={v.user.UnblockDate.toString()}/></span>
+                                </span>
+                            ): v.user.status === 'Blocked' &&(
+                                    <span className={textObj}>Статус <br/>
+                                        <span className='text-sm w-30 text-red-500'>{t('admin', 'Lock')}</span>
+                                </span>
+                            )}
                         </div>
-                        {v.user.status === 'Temporary' ? (
-                            <span className={textObj}>{t('admin', 'TimeTemporaryUnBlock')} <br />
-                            <span className='text-orange-600'><Countdown date={v.user.UnblockDate.toString()}/></span>
-                            </span>
-                        ): v.user.status === 'Blocked' &&(
-                                <span className={textObj}>Статус <br/>
-                                    <span className='text-sm w-30 text-red-500'>{t('admin', 'Lock')}</span>
-                            </span>
-                        )}
+                        <div className='flex justify-start items-center gap-2'>
+                            <Link href={`/${lang}/lot/${v.lot.lotNumber}`} className={textObj}>Лот <br /> <span className='text-black'>№</span> <span className='text-orange-600'>{v.lot.lotNumber}</span></Link>
+                            <span className={textObj}>Тип <br /> <span className='text-red-500'>{v.violations}</span></span>
+                            <span className={textObj}>{t('admin', 'Repeated')} <br /> <span className='text-black'>{v.repeated}</span></span>
+                            <span className={textObj}>Дата <br /> <span className='text-black'>{date}</span></span>
+                            <button onClick={() => handleChangeStatus(v.user._id)} className={`${button} ${v.user.status === 'Blocked' ? '!bg-green-500' : '!bg-red-500'} ml-10 !p-2`}>{v.user.status === 'Blocked' ? t('admin', 'UnBlocked') : t('admin', 'Blocked')}</button>
+                            <button onClick={() => handleTemporary(v.user._id)} className={`${button} bg-yellow-400 !p-2`}>{v.user.status === 'Temporary' ? t('admin', 'TemporaryUnBlock'): t('admin', 'TemporaryBlock')}</button>
+                        </div>
                     </div>
-                    <div className='flex justify-start items-center gap-2'>
-                        <Link href={`/${lang}/lot/${v.lot.lotNumber}`} className={textObj}>Лот <br /> <span className='text-black'>№</span> <span className='text-orange-600'>{v.lot.lotNumber}</span></Link>
-                        <span className={textObj}>Тип <br /> <span className='text-red-500'>{v.violations}</span></span>
-                        <span className={textObj}>{t('admin', 'Repeated')} <br /> <span className='text-black'>{v.repeated}</span></span>
-                        <span className={textObj}>Дата <br /> <span className='text-black'>{getRelativeTime(v.createdAt, lang)}</span></span>
-                        <button onClick={() => handleChangeStatus(v.user._id)} className={`${button} ${v.user.status === 'Blocked' ? '!bg-green-500' : '!bg-red-500'} ml-10 !p-2`}>{v.user.status === 'Blocked' ? t('admin', 'UnBlocked') : t('admin', 'Blocked')}</button>
-                        <button onClick={() => handleTemporary(v.user._id)} className={`${button} bg-yellow-400 !p-2`}>{v.user.status === 'Temporary' ? t('admin', 'TemporaryUnBlock'): t('admin', 'TemporaryBlock')}</button>
-                    </div>
-                </div>
-            ))}
+                )
+            })}
         </div>
     </div>
   )

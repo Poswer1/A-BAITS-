@@ -67,7 +67,8 @@ export default function page() {
     console.log(data)
 
   return (
-    <div className="flex flex-col justify-center items-start w-full gap-5">
+    <div className="flex flex-col justify-center items-start w-full gap-4">
+    <h1 className="text-xl">{t('admin', 'Statistics')}</h1>
       <div className="flex justify-start items-center w-full gap-5">
         {mainData.map(data => (
              <div className="flex flex-col justify-center items-start">

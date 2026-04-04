@@ -9,11 +9,12 @@ import { changeStatus, deleteUser, TemporaryBlock, updateBalance } from '@/servi
 import { useTranslation } from '@/app/context/TranslationProvider'
 import { animationScale, hover } from '@/styles/style'
 import Setting from '../profile/setting'
-import { ChevronLeft, Search, X } from 'lucide-react'
+import { AlertTriangle, Ban, ChevronLeft, Delete, Edit, Edit2, Search, Trash, Trash2, Unlock, Wallet, X } from 'lucide-react'
 import ConfirmWindow from './confirmWindow'
-import { blockObj, search, textObj } from '@/styles/admin'
+import { blockObj, textObj } from '@/styles/admin'
 import Countdown from '../ui/countdown'
 import { button } from '@/styles/global'
+import SearchBlock from '../ui/search'
 
 interface listUserProps {
     listUser: UserTypes[]
@@ -122,10 +123,9 @@ export default  function User({listUser}: listUserProps) {
             )}
             <h1 className='text-xl'>{edit ? t('admin', 'editUser') : t('admin', 'Users')}</h1>
             {!edit && (
-            <div className={search}>
-              <Search className='text-gray-500' size={20}/>
-              <input className='outline-none w-full' value={searchValue} onChange={(e) => setSearchValue(e.target.value)} placeholder={t('admin', 'searchUser')}/>
-            </div>
+              <div className='flex w-1/4'>
+                 <SearchBlock searchValue={searchValue} setSearchValue={setSearchValue} placeholder={t('admin', 'searchUser')}/>
+              </div>
             )}
             {(message || error) && (
               <span className={`${animationScale} ${message ? 'text-green-500' : 'text-red-500'}`}>{message || error}</span>
@@ -157,11 +157,11 @@ export default  function User({listUser}: listUserProps) {
                   )}
                 </div>
                 <div className={`justify-start items-center gap-4 ${user._id === balanceEdit ? 'hidden' : 'flex'}`}>
-                  <button onClick={() => setBalanceEdit(user._id)} className={`${hover} rounded-md !p-2 bg-gray-100`}>{t('admin', 'balance')}</button>
-                  <button className={`${user.status === 'Blocked' ? 'bg-green-500' : 'bg-red-500'} ${hover} p-2 text-white rounded-md`} onClick={() => handleChangeStatus(user._id)}>{user.status === 'Blocked' ? t('admin', 'UnBlocked') : t('admin', 'Blocked')}</button>
-                  <button onClick={() => handleTemporary(user._id)} className={`${button} bg-yellow-400 !p-2`}>{user.status === 'Temporary' ? t('admin', 'TemporaryUnBlock'): t('admin', 'TemporaryBlock')}</button>
-                  <button className={`${hover}`} onClick={() => {setId(user._id), setEdit(true)}}>{t('admin', 'edit')}</button>
-                  <span className={`${hover} text-red-500`} onClick={() => {setOpenConfirm(true), setId(user._id)}}>{t('admin', 'delete')}</span>
+                  <button onClick={() => setBalanceEdit(user._id)} className={`${hover} rounded-md !p-2 bg-gray-100`}><Wallet /></button>
+                  <button className={`${user.status === 'Blocked' ? 'bg-green-500' : 'bg-red-500'} ${hover} p-2 text-white rounded-md`} onClick={() => handleChangeStatus(user._id)}>{user.status === 'Blocked' ? <Unlock />: <Ban />}</button>
+                  <button onClick={() => handleTemporary(user._id)} className={`${button} bg-yellow-400 !p-2`}>{user.status === 'Temporary' ? <Unlock /> : <AlertTriangle />}</button>
+                  <button className={`${hover}`} onClick={() => {setId(user._id), setEdit(true)}}><Edit2/></button>
+                  <span className={`${hover} text-red-500`} onClick={() => {setOpenConfirm(true), setId(user._id)}}><Trash2 /></span>
                 </div>
                 <div className={`justify-start items-center gap-4 ${user._id === balanceEdit ? 'flex' : 'hidden'}`}>
                   <input type="number" className='outline-none border border-gray-300 rounded-md p-2' 

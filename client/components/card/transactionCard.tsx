@@ -10,6 +10,8 @@ import { hover } from '@/styles/style'
 import ConfirmWindow from '../admin/confirmWindow'
 import { moneyReturn } from '@/services/admin/finance'
 import { blockObj, textObj } from '@/styles/admin'
+import Image from 'next/image'
+import { CornerDownLeft, RefreshCcw, RefreshCw } from 'lucide-react'
 
 interface TransactionCardProps {
     transaction: TransactionTypes
@@ -37,6 +39,10 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
         }
     }
 
+     const date = transaction.createdAt 
+            ? new Date(transaction.createdAt).toLocaleDateString('en-CA') 
+            : 'Даты нету';
+
     return (
    <div key={transaction._id} className={`${blockObj}`}>
        <div className="flex justify-start items-center gap-2">
@@ -45,24 +51,35 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
                 <img src={`${BASE_URL}${transaction.lot?.images?.[0]}`} className="w-15"/>
             </Link>
             ) : (
+                useFrom === 'admin' ? (
                 <Link href={`/${lang}/profile/${transaction.user.name}`}>
                     <AvatarBlock avatar={transaction.user.avatar} size='45'/>
                 </Link>
+                ) : (
+                    <Image src={'/images/logo.png'} alt='' width={100} height={100} className='w-full object-cover'/>
+                )
             )}
 
             <div className="flex flex-col justify-center items-start">
-                <Link href={`/${lang}/profile/${transaction.user.name}`} className={`text-sm ${transaction.lot ? 'text-gray-500' : 'text-black'}`}>{transaction.user.name}</Link>
+                {useFrom === 'admin' && (
+                    <Link href={`/${lang}/profile/${transaction.user.name}`} className={`text-sm ${transaction.lot ? 'text-gray-500' : 'text-black'}`}>{transaction.user.name}</Link>
+                )}
                 {transaction.lot && (
+                    <>
                      <h1>{transaction.lot?.name?.length > 40 ? transaction.lot.name.slice(0,40) + '...' : transaction.lot.name}</h1>
+                     {useFrom !== 'admin' && (
+                       <span className={`text-sm`}>№ <span className='text-orange-600'>{transaction.lot?.lotNumber}</span></span>
+                     )}
+                    </>
                 )}
             </div>
         </div>
         <div className="flex justify-start items-center gap-10 ml-10 md:ml-0">
             <span className={textObj}>Статус: <br /> <span className='text-red-500'>{transaction.status || 'НЕТУ'}</span></span>
             <span className={textObj}>{transaction.type === 'Deposit' ? t('admin', 'deposit') : t('admin', 'withdrawal')}: <br /><span className={`${transaction.status === 'Return' && 'opacity-50'} ${transaction.type === 'Deposit' ? 'text-green-500' : 'text-red-500'} font-bold text-base`}>{transaction.type === 'Deposit' ? '+' : '-'} {transaction.sum} ₴</span></span>
-            <span className={textObj}>Дата: <br /> <span className="text-black">{getRelativeTime(transaction.createdAt, 'ru')}</span></span>
+            <span className={textObj}>Дата: <br /> <span className="text-black">{date}</span></span>
             {useFrom === 'admin' && (
-             <span onClick={() => setReturnMoney(true)} className={`${hover} p-2 bg-gray-100 rounded-md`}>{t('admin', 'return')}</span>
+             <span onClick={() => setReturnMoney(true)} className={`${hover} p-2 bg-gray-100 rounded-md`}><RefreshCw /></span>
             )}
         </div>
         {returnMoney && (

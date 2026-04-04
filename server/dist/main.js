@@ -46,7 +46,7 @@ async function Main() {
     app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
     app.use((0, cookie_parser_1.default)());
     app.enableCors({
-        origin: ['http://192.168.0.158:3000', 'http://localhost:3000', 'https://a-baits.onrender.com'],
+        origin: ['http://192.168.0.157:3000', 'http://localhost:3000', 'https://a-baits.onrender.com'],
         credentials: true
     });
     const PORT = process.env.PORT || 3002;
