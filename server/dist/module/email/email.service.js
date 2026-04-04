@@ -8,11 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailService = void 0;
 const common_1 = require("@nestjs/common");
-const resend_1 = require("resend");
 const templatesMessage_1 = require("../../models/templatesMessage");
 const user_model_1 = require("../../models/user.model");
 let EmailService = class EmailService {
-    resend = new resend_1.Resend('re_KM6fi1ap_JHxSaNSfZVsF35yBnpX7fvhF');
     async sendEmail(to, subject, html) {
         return this.resend.emails.send({
             from: "onboarding@resend.dev",
