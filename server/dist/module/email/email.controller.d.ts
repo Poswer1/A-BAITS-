@@ -4,6 +4,12 @@ export declare class EmailController {
     private readonly emailService;
     constructor(emailService: EmailService);
     sendEmail(dto: SendMessageDto): Promise<any>;
+    comparisonCode(code: string): Promise<{
+        success: boolean;
+    }>;
+    sendCode(email: string): Promise<{
+        success: boolean;
+    }>;
     newTemplate(subject: string, html: string): Promise<{
         success: boolean;
     }>;

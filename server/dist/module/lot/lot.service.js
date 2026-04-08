@@ -49,10 +49,16 @@ const files_upload_1 = require("../../utils/files-upload");
 const mongoose_1 = __importStar(require("mongoose"));
 const user_model_1 = require("../../models/user.model");
 const violations_service_1 = require("../admin/violations/violations.service");
+const finance_service_1 = require("../admin/finance/finance.service");
+const logging_service_1 = require("../admin/logging/logging.service");
 let LotService = class LotService {
     violationsService;
-    constructor(violationsService) {
+    financeService;
+    loggingService;
+    constructor(violationsService, financeService, loggingService) {
         this.violationsService = violationsService;
+        this.financeService = financeService;
+        this.loggingService = loggingService;
     }
     async createLot(dto, files, userId) {
         const images = files ? await (0, files_upload_1.ProccessImages)(files, '/uploads/lots/') : [];
@@ -67,9 +73,6 @@ let LotService = class LotService {
         let summaryPrice = 0;
         if (dto.Advertising) {
             summaryPrice += 20;
-        }
-        if (dto.autoReExtension) {
-            summaryPrice += 10;
         }
         console.log(summaryPrice);
         const session = await mongoose_1.default.startSession();
@@ -97,6 +100,13 @@ let LotService = class LotService {
                 }
             ], { session });
             await session.commitTransaction();
+            try {
+                await this.financeService.createTransaction(summaryPrice, userId, 'Debit', product._id.toString());
+                await this.loggingService.newLog(userId, 'createLot', product._id.toString());
+            }
+            catch (externalError) {
+                console.error('Ошибка внешних операций:', externalError);
+            }
             return product;
         }
         catch (error) {
@@ -109,6 +119,34 @@ let LotService = class LotService {
         }
         finally {
             session.endSession();
+        }
+    }
+    async closeLot(id) {
+        const close = await lot_model_1.LotModel.findByIdAndUpdate(id, {
+            $set: { status: 'Archive' }
+        });
+        if (!close)
+            throw new common_1.BadRequestException('errorCloseLot');
+        return { status: close.status };
+    }
+    async resumeLot(id) {
+        try {
+            await lot_model_1.LotModel.findByIdAndUpdate(id, {
+                $set: { status: 'Active' }
+            });
+            return { success: true };
+        }
+        catch (error) {
+            throw error;
+        }
+    }
+    async deleteLot(id) {
+        try {
+            await lot_model_1.LotModel.findByIdAndDelete(id);
+            return { success: true };
+        }
+        catch (error) {
+            throw error;
         }
     }
     async updateLot(dto, id, files, preview, userId, role) {
@@ -144,6 +182,14 @@ let LotService = class LotService {
             throw new common_1.BadRequestException('ErrorUpdateLot');
         return { success: true };
     }
+    async viewsCount(id, userId) {
+        try {
+            await lot_model_1.LotModel.updateOne({ _id: id }, { $addToSet: { views: userId } });
+        }
+        catch (error) {
+            throw error;
+        }
+    }
     async getAllLot() {
         try {
             const lot = await lot_model_1.LotModel.find({});
@@ -151,6 +197,63 @@ let LotService = class LotService {
         }
         catch (error) {
             throw new common_1.BadRequestException('Ошибка при получение всех товаров', error);
+        }
+    }
+    async getTopLot() {
+        try {
+            const lot = await lot_model_1.LotModel.aggregate([
+                { $match: { Advertising: { $eq: true } } },
+                { $sample: { size: 4 } }
+            ]);
+            return lot;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('topLotErrorFound');
+        }
+    }
+    async getLotFrom1UAH() {
+        try {
+            const lot = await lot_model_1.LotModel.aggregate([
+                { $match: { stepPrice: 1 } },
+                { $sample: { size: 4 } }
+            ]);
+            return lot;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('topLotErrorFound');
+        }
+    }
+    async getNewLot() {
+        try {
+            const now = new Date();
+            const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            const lot = await lot_model_1.LotModel.aggregate([
+                { $match: { createdAt: { $gte: oneDayAgo } } },
+                { $sample: { size: 4 } }
+            ]);
+            return lot;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('topLotErrorFound');
+        }
+    }
+    async getPopularLot() {
+        try {
+            const lot = await lot_model_1.LotModel.aggregate([
+                {
+                    $addFields: {
+                        viewsCount: { $size: { $ifNull: ['$views', []] } }
+                    }
+                },
+                {
+                    $sort: { favoritesCount: -1, viewsCount: -1 }
+                },
+                { $limit: 4 }
+            ]);
+            return lot;
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('topLotErrorFound');
         }
     }
     async getLotByUser(query) {
@@ -386,6 +489,8 @@ let LotService = class LotService {
 exports.LotService = LotService;
 exports.LotService = LotService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [violations_service_1.ViolationsService])
+    __metadata("design:paramtypes", [violations_service_1.ViolationsService,
+        finance_service_1.FinanceService,
+        logging_service_1.LoggingService])
 ], LotService);
 //# sourceMappingURL=lot.service.js.map

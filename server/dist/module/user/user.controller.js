@@ -46,6 +46,9 @@ let UserController = class UserController {
     async getUserByName(name) {
         return this.userService.getUserByName(name);
     }
+    async updatePassword(email, newPassword) {
+        return this.userService.updatePassword(email, newPassword);
+    }
     async updateProfile(dto, id, userId, file) {
         const idUser = id ?? userId;
         if (!idUser)
@@ -93,6 +96,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getUserByName", null);
+__decorate([
+    (0, common_1.Patch)('updatePassword'),
+    __param(0, (0, common_1.Body)('email')),
+    __param(1, (0, common_1.Body)('newPassword')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], UserController.prototype, "updatePassword", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)('updateProfile'),

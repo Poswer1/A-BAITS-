@@ -6,7 +6,7 @@ const TransactionSchema = new mongoose_1.Schema({
     sum: { type: Number, required: true },
     type: { type: String, required: true },
     status: { type: String, required: false, default: 'Approved' },
-    lot: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Lot', required: true },
+    lot: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Lot' },
     user: { type: mongoose_1.Schema.Types.ObjectId, ref: 'User', required: true },
 }, { timestamps: true });
 exports.TransactionModel = (0, mongoose_1.model)('transaction', TransactionSchema);

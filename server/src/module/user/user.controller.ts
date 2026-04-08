@@ -44,6 +44,11 @@ export class UserController {
     return this.userService.getUserByName(name)
   }
 
+  @Patch('updatePassword')
+  async updatePassword(@Body('email') email:string, @Body('newPassword') newPassword:string) {
+    return this.userService.updatePassword(email, newPassword)
+  }
+
   @UseGuards(JwtAuthGuard)
   @Patch('updateProfile')
   @UseInterceptors(FileInterceptor('image', ImagesInterceptor('./uploads/avatar')))

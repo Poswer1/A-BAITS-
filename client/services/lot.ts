@@ -11,6 +11,15 @@ export async function createLot(formData:FormData) {
     return dataReturn(res)
 }
 
+export async function viewsCount(lotId:string) {
+    const res = await fetch(`${BASE_URL}/lot/viewsCount/${lotId}`, {
+        method: "PATCH",
+        credentials: 'include',
+    })
+
+    return dataReturn(res)
+}
+
 export async function getLotByUser(name:string, page:number) {
     const params = new URLSearchParams()
 
@@ -18,6 +27,34 @@ export async function getLotByUser(name:string, page:number) {
     if(page) params.append('page', page.toString())
 
     const res = await fetch(`${BASE_URL}/lot/getLotByUser?${params}`, {
+        method: 'GET'
+    })    
+    return dataReturn(res)
+}
+
+export async function getTopLot() {
+    const res = await fetch(`${BASE_URL}/lot/getTopLot`, {
+        method: 'GET'
+    })    
+    return dataReturn(res)
+}
+
+export async function getLotFrom1UAH() {
+    const res = await fetch(`${BASE_URL}/lot/getLotFrom1UAH`, {
+        method: 'GET'
+    })    
+    return dataReturn(res)
+}
+
+export async function getNewLot() {
+    const res = await fetch(`${BASE_URL}/lot/getNewLot`, {
+        method: 'GET'
+    })    
+    return dataReturn(res)
+}
+
+export async function getPopularLot() {
+    const res = await fetch(`${BASE_URL}/lot/getPopularLot`, {
         method: 'GET'
     })    
     return dataReturn(res)
@@ -75,6 +112,31 @@ export async function getFilterLot(category?:string, subCategory?:string, subSub
 
     return dataReturn(res)
 
+}
+
+export async function deleteLot(id:string) {
+    const res = await fetch(`${BASE_URL}/lot/deleteLot/${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+    })
+
+    return dataReturn(res)
+}
+
+export async function resumeLot(id:string) {
+    const res = await fetch(`${BASE_URL}/lot/resumeLot/${id}`, {
+        method: 'PATCH',
+        credentials: 'include', 
+    })
+    return dataReturn(res)
+}
+
+export async function closeLot(id:string) {
+    const res = await fetch(`${BASE_URL}/lot/closeLot/${id}`, {
+        method: 'PATCH',
+        credentials: 'include', 
+    })
+    return dataReturn(res)
 }
 
 export async function getAllLot() {

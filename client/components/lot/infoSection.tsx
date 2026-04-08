@@ -4,7 +4,7 @@ import { useTranslation } from "@/app/context/TranslationProvider"
 import { animate, button, customInput } from "@/styles/global"
 import { columnBlock} from "@/styles/lot"
 import { animationOpacity, hover } from "@/styles/style"
-import { Plus, Minus, LogIn, AlertTriangle, Ban } from "lucide-react"
+import { Plus, Minus, LogIn, AlertTriangle, Ban, Hammer, Gavel } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
 import { Socket } from "socket.io-client"
 import { buyNow } from "@/services/payment"
@@ -13,6 +13,7 @@ import Countdown from "../ui/countdown"
 import { useSwipeable } from "react-swipeable"
 import { useRouter } from "next/navigation"
 import GetStatusUser from "@/utils/getStatusUser"
+import Toast from "../ui/toast"
 
 interface InfoSectionProps {
     lot: LotTypes | null,
@@ -30,15 +31,22 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
 
     const {t} = useTranslation()
     const [message, setMessage] = useState('')
+    const [error, setError] = useState('')
     const [progress, setProgress] = useState(false)
     const [open, setOpen] = useState(false)
     const router = useRouter()
     const { status: statusUser } = GetStatusUser()
 
     const handleBid = () => {
-        if(!socket) return
+        if(!socket || !lot) return
         if(!auth) {
             router.push('/auth/login')
+        }
+        if(value < currentPrice) {
+             setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
+            setTimeout(() => {
+                setError('')
+            }, 3000)
         }
             socket.emit('placeBid',
             {
@@ -53,9 +61,9 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
         if(!lot) return
         setValue(prev => {
         if (prev - lot.stepPrice < (currentPrice + lot.stepPrice)) {
-        setMessage(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
+        setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
         setTimeout(() => {
-            setMessage('')
+            setError('')
         }, 3000)
         return prev; 
         }
@@ -73,10 +81,14 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
             const data = await buyNow(lot._id, value)
             if (data?.success) setStatus('Completed')
             setProgress(false)
-        } catch (error:any) {
-            setMessage(t('lot', error.message))
+            setMessage(t("lot", "lotBuySucess"))
             setTimeout(() => {
                 setMessage('')
+            }, 3000)
+        } catch (error:any) {
+            setError(t('lot', error.message))
+            setTimeout(() => {
+                setError('')
             }, 3000)
         }
 
@@ -103,10 +115,10 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
   return ( 
     <div {...handlers} className={`${columnBlock} rounded-t-2xl w-full md:min-w-80 text-black fixed md:static bg-white z-20 md:z-0 bottom-0 ${open ? '!h-80 md:!h-full' : '!h-35 md:!h-full'} ${animate}`}>
         {status !== 'Active' ? (
-            <h1 className="font-bold text-2xl text-gray-500">Лот куплен</h1>
+            <h1 className="font-bold flex gap-2 text-2xl text-gray-500 items-center"><Gavel />Лот куплен</h1>
         ): (
             <div className="flex justify-between items-center w-full">
-                <h1 className="font-bold">{t('lot','lot-currentPrice')}<br/><span className="text-3xl">{currentPrice} ₴</span></h1>
+                <h1 className="font-bold gap-1">{t('lot','lot-currentPrice')}<br/><span className="text-3xl">{currentPrice} ₴</span></h1>
                 <button onClick={() => setOpen(true)} className={`${button} ${animate} ${open ? 'opacity-0' : 'opacity-100'} text-sm md:hidden`}>{t('lot', 'lot-doBid')}</button>
             </div>
         )}
@@ -129,10 +141,11 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                                 <Plus className={`${buttonInput} ${hover}`} onClick={handlePlus}/>
                             </div>
                         </div> 
-                        {message && (
-                            <p className={`${animationOpacity} text-orange-600 mt-2`}>{message}</p>
+                        {error && (
+                            <p className={`${animationOpacity} text-orange-600 mt-2`}>{error}</p>
                         )}
                         <button onClick={handleBid} className={`${button} w-full ${hover} text-lg`}>{t('lot', 'lot-doBid')}</button>
+                        {lot.blitzPrice !== 0 && (
                         <button 
                         onMouseDown={handleBuyNow} 
                         onMouseLeave={handleLeaveBuyNow} 
@@ -144,11 +157,13 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                         >
                         {t('lot', 'lot-buyNow')} <span className="font-bold">( {lot.blitzPrice} ₴ )</span>
                         <div className={`absolute top-0 left-0 h-full bg-orange-600/50 ${progress ? 'w-full transition-all duration-[3000ms] ease-in' : 'w-0'}`}/>
-                        </button>  
+                        </button>   
+                        )}
                     </>
                     )}  
             </>
         )} 
+        <Toast message={message} error={error}/>
     </div>
   )
 }

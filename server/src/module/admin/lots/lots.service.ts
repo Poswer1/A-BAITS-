@@ -30,13 +30,6 @@ export class LotsService {
         return allLots
     }
     
-    async closeLot(id:string) {
-        const close = await LotModel.findByIdAndUpdate(id, {
-            $set: {status: 'Archive'}
-        })
-        if(!close) throw new BadRequestException('errorCloseLot')
-        return {status:close.status}
-    }
 
     async getLotsCount() {
     const { dateDay, dateWeek, dateMonth } = this.getDateRanges();

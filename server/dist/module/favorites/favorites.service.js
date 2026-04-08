@@ -8,6 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.FavoritesService = void 0;
 const common_1 = require("@nestjs/common");
+const lot_model_1 = require("../../models/lot.model");
 const user_model_1 = require("../../models/user.model");
 let FavoritesService = class FavoritesService {
     async addFavorite(lotId, userId) {
@@ -15,9 +16,11 @@ let FavoritesService = class FavoritesService {
         const exist = user?.favorites.some(fav => fav.toString() === lotId);
         if (exist) {
             await user_model_1.UserModel.findByIdAndUpdate(userId, { $pull: { favorites: lotId } });
+            await lot_model_1.LotModel.findByIdAndUpdate(lotId, { $inc: { favoritesCount: -1 } });
             return { success: false };
         }
         await user_model_1.UserModel.findByIdAndUpdate(userId, { $addToSet: { favorites: lotId } });
+        await lot_model_1.LotModel.findByIdAndUpdate(lotId, { $inc: { favoritesCount: +1 } });
         return { success: true };
     }
     async getFavorite(userId) {

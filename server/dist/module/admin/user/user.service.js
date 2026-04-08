@@ -5,11 +5,20 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UserService = void 0;
 const common_1 = require("@nestjs/common");
+const lot_model_1 = require("../../../models/lot.model");
 const user_model_1 = require("../../../models/user.model");
+const finance_service_1 = require("../finance/finance.service");
 let UserService = class UserService {
+    financeService;
+    constructor(financeService) {
+        this.financeService = financeService;
+    }
     async getAllUser() {
         try {
             const listUser = await user_model_1.UserModel.find({});
@@ -66,7 +75,23 @@ let UserService = class UserService {
         const updateBalnce = await user_model_1.UserModel.findByIdAndUpdate(id, { $inc: { balance: balance } }, { returnDocument: 'after' });
         if (!updateBalnce)
             throw new common_1.BadRequestException('UpateBalanceError');
+        await this.financeService.createTransaction(balance, id, 'Deposit');
         return { balance: updateBalnce.balance };
+    }
+    async changeStatusLotAfterBlock(id, status) {
+        try {
+            const isBlocked = status === 'Blocked' || status === 'Temporary';
+            await lot_model_1.LotModel.updateMany(isBlocked
+                ? { author: id }
+                : { author: id, status: 'Blocked' }, {
+                $set: {
+                    status: isBlocked ? 'Blocked' : 'Archive'
+                }
+            });
+        }
+        catch (error) {
+            throw error;
+        }
     }
     async changeStatus(id) {
         const user = await user_model_1.UserModel.findById(id);
@@ -77,6 +102,7 @@ let UserService = class UserService {
         if (!updatedUser) {
             throw new common_1.BadRequestException('UserNotFound');
         }
+        await this.changeStatusLotAfterBlock(id, updatedUser.status);
         return { status: updatedUser.status };
     }
     async TemporaryBlock(id, day) {
@@ -95,6 +121,7 @@ let UserService = class UserService {
         if (!updatedUser) {
             throw new common_1.BadRequestException('UserNotFound');
         }
+        await this.changeStatusLotAfterBlock(id, updatedUser.status);
         return { status: updatedUser.status, unBlockDate: updatedUser.UnblockDate };
     }
     async deleteUser(id) {
@@ -113,6 +140,7 @@ let UserService = class UserService {
 };
 exports.UserService = UserService;
 exports.UserService = UserService = __decorate([
-    (0, common_1.Injectable)()
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [finance_service_1.FinanceService])
 ], UserService);
 //# sourceMappingURL=user.service.js.map

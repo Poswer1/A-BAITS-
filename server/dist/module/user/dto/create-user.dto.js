@@ -13,7 +13,9 @@ exports.UpdateProfileDTO = void 0;
 const class_validator_1 = require("class-validator");
 class UpdateProfileDTO {
     name;
-    surname;
+    password;
+    email;
+    code;
     defaultAvatar;
     location;
 }
@@ -27,7 +29,17 @@ __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", String)
-], UpdateProfileDTO.prototype, "surname", void 0);
+], UpdateProfileDTO.prototype, "password", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateProfileDTO.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], UpdateProfileDTO.prototype, "code", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
     (0, class_validator_1.IsOptional)(),

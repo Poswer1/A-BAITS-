@@ -6,13 +6,19 @@ import mongoose, { isValidObjectId, Types } from 'mongoose';
 import { UserModel } from 'src/models/user.model';
 import { SortOrder } from 'mongoose'
 import { ViolationsService } from '../admin/violations/violations.service';
+import { FinanceService } from '../admin/finance/finance.service';
+import { LoggingService } from '../admin/logging/logging.service';
 
 
 @Injectable()
 
 export class LotService {
 
-  constructor(private readonly violationsService:ViolationsService) {}
+  constructor(
+    private readonly violationsService:ViolationsService,
+    private readonly financeService:FinanceService,
+    private readonly loggingService:LoggingService
+  ) {}
 
   async createLot(dto: LotDto, files: Express.Multer.File[], userId:string) {
 
@@ -32,9 +38,6 @@ export class LotService {
     let summaryPrice = 0
     if(dto.Advertising) {
       summaryPrice += 20
-    }
-    if(dto.autoReExtension) {
-      summaryPrice += 10
     }
     console.log(summaryPrice)
 
@@ -74,9 +77,17 @@ export class LotService {
         )
         
         await session.commitTransaction()
+
+        try {
+          await this.financeService.createTransaction(summaryPrice, userId, 'Debit', product._id.toString())
+          await this.loggingService.newLog(userId, 'createLot', product._id.toString())
+        } catch (externalError) {
+          console.error('Ошибка внешних операций:', externalError);
+        }
+
         return product
 
-    } catch (error) {
+    } catch (error:any) {
       await session.abortTransaction()
       console.log(error)
       if(error.message === 'NoMoney') {
@@ -85,6 +96,34 @@ export class LotService {
       throw new BadRequestException('ErrorCreate')
     } finally {
       session.endSession()
+    }
+  }
+
+  async closeLot(id:string) {
+      const close = await LotModel.findByIdAndUpdate(id, {
+        $set: {status: 'Archive'}
+      })
+      if(!close) throw new BadRequestException('errorCloseLot')
+      return {status:close.status}
+  }
+
+  async resumeLot(id:string) {
+    try {
+      await LotModel.findByIdAndUpdate(id, {
+        $set: {status: 'Active'}
+      })
+      return {success:true}
+    } catch (error) {
+      throw error
+    }
+  }
+
+  async deleteLot(id:string) {
+    try {
+      await LotModel.findByIdAndDelete(id)
+      return {success:true}
+    } catch (error) {
+      throw error
     }
   }
 
@@ -131,12 +170,82 @@ export class LotService {
 
   }
 
+  async viewsCount(id:string, userId:string) {
+    try {
+      await LotModel.updateOne(
+        {_id:id},
+        { $addToSet: { views: userId } } // добавит только если его нету
+      )
+    } catch (error) {
+      throw error
+    }
+  }
+
   async getAllLot() {
     try {
       const lot = await LotModel.find({})
       return lot 
-    } catch (error) {
+    } catch (error:any) {
       throw new BadRequestException('Ошибка при получение всех товаров',error)
+    }
+  }
+
+  async getTopLot() {
+    try {
+      const lot = await LotModel.aggregate([
+        { $match: { Advertising: { $eq: true }} },
+        { $sample: { size: 4 } } // $sample возьми рандомные 4 лота
+      ])
+      return lot
+    } catch (error) {
+      throw new BadRequestException('topLotErrorFound')
+    }
+  }
+
+  async getLotFrom1UAH() {
+    try {
+      const lot = await LotModel.aggregate([
+        { $match: { stepPrice: 1 } },
+        { $sample: { size: 4 } } // $sample возьми рандомные 4 лота
+      ])
+      return lot
+    } catch (error) {
+      throw new BadRequestException('topLotErrorFound')
+    }
+  }
+
+  async getNewLot() {
+    try {
+      const now = new Date()
+      const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000)
+      const lot = await LotModel.aggregate([
+        { $match: { createdAt: { $gte: oneDayAgo }} },
+        { $sample: { size: 4 } } // $sample возьми рандомные 4 лота
+      ])
+      return lot
+    } catch (error) {
+      throw new BadRequestException('topLotErrorFound')
+    }
+  }
+
+   async getPopularLot() {
+    try {
+      const lot = await LotModel.aggregate([
+        {
+          $addFields: { //$addFields создает новое поле
+            viewsCount: {$size: {$ifNull: ['$views', []]}} 
+             // $size считаем длину массива просмотров
+             // $ifNull если поля views нету или null вернем пустой массив
+          }
+        },
+        {
+          $sort: {favoritesCount: -1, viewsCount: -1}
+        },
+        { $limit: 4 }
+      ])
+      return lot
+    } catch (error) {
+      throw new BadRequestException('topLotErrorFound')
     }
   }
 
@@ -285,7 +394,7 @@ export class LotService {
     try {
       const lot = await LotModel.findOne({$or: orQuery}).populate('author', 'avatar name rating')
       return lot
-    } catch (error) {
+    } catch (error:any) {
        throw new BadRequestException('Ошибка при получение товара',error)
     }
   }
@@ -295,7 +404,7 @@ export class LotService {
     try {
       const myHistoryLot = await LotModel.find({'historyBid.author': userId})
      return myHistoryLot
-    } catch (error) {
+    } catch (error:any) {
       throw new BadRequestException('Ошибка при получение истории лотов пользователя',error)
     }
   }

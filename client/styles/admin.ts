@@ -1,2 +1,2 @@
-export const blockObj = 'flex justify-between items-center gap-4 bg-white overflow-y-hidden overflow-x-auto w-full p-2 border-t border-b border-gray-200 h-20'
-export const textObj = 'text-sm w-20 md:w-30 text-gray-500'
+export const blockObj = 'flex justify-between items-center whitespace-nowrap gap-4 bg-white overflow-y-hidden overflow-x-auto w-full p-2 border-t border-b border-gray-200 h-20'
+export const textObj = 'text-sm w-30 text-gray-500'

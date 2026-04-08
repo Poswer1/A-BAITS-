@@ -12,12 +12,13 @@ const user_service_1 = require("./user.service");
 const user_controller_1 = require("./user.controller");
 const user_gateway_1 = require("./user.gateway");
 const auth_module_1 = require("../auth/auth.module");
+const email_module_1 = require("../email/email.module");
 let UserModule = class UserModule {
 };
 exports.UserModule = UserModule;
 exports.UserModule = UserModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule],
+        imports: [auth_module_1.AuthModule, email_module_1.EmailModule],
         controllers: [user_controller_1.UserController],
         providers: [user_service_1.UserService, user_gateway_1.UserGateway],
     })

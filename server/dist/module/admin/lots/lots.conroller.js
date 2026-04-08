@@ -31,9 +31,6 @@ let LotsController = class LotsController {
     async getAllTurnover() {
         return this.lotsService.getAllTurnover();
     }
-    async closeLot(id) {
-        return this.lotsService.closeLot(id);
-    }
 };
 exports.LotsController = LotsController;
 __decorate([
@@ -55,13 +52,6 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], LotsController.prototype, "getAllTurnover", null);
-__decorate([
-    (0, common_1.Patch)('closeLot/:id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], LotsController.prototype, "closeLot", null);
 exports.LotsController = LotsController = __decorate([
     (0, common_1.UseGuards)(role_guards_1.RolesGuard),
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),

@@ -17,6 +17,8 @@ export interface Lot {
   stepPrice: number;
   blitzPrice?: number;
   images: string[];
+  favoritesCount:number,
+  views:string[],
   autoReExtension: boolean;
   descriptions: string;
   state: string;
@@ -47,6 +49,8 @@ const LotSchema = new Schema<Lot>({
   startPrice: { type: Number, required: true },
   stepPrice: { type: Number, required: true },
   blitzPrice: { type: Number },
+  favoritesCount: { type: Number, default: 0 },
+  views: { type: [String]},
   images: { type: [String], required: true },
   autoReExtension: { type: Boolean, default: false },
   descriptions: { type: String, required: true },

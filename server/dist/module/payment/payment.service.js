@@ -19,16 +19,18 @@ const user_model_1 = require("../../models/user.model");
 const notification_gateway_1 = require("../notification/notification.gateway");
 const chat_model_1 = require("../../models/chat.model");
 const mongoose_1 = __importDefault(require("mongoose"));
-const transactions_model_1 = require("../../models/transactions.model");
 const email_service_1 = require("../email/email.service");
 const logging_service_1 = require("../admin/logging/logging.service");
+const finance_service_1 = require("../admin/finance/finance.service");
 let PaymentService = class PaymentService {
     notificationGateWay;
     emailService;
+    financeService;
     loggingService;
-    constructor(notificationGateWay, emailService, loggingService) {
+    constructor(notificationGateWay, emailService, financeService, loggingService) {
         this.notificationGateWay = notificationGateWay;
         this.emailService = emailService;
+        this.financeService = financeService;
         this.loggingService = loggingService;
     }
     async buyLot(userId, dto) {
@@ -47,9 +49,12 @@ let PaymentService = class PaymentService {
                 throw new common_1.BadRequestException('LotAlreadySold');
             }
             const userUpdate = await user_model_1.UserModel.updateOne({ _id: userId, balance: { $gte: lotPrice } }, { $inc: { balance: -lotPrice } }, { session });
-            if (userUpdate.modifiedCount === 0) {
+            if (userUpdate.modifiedCount === 0)
                 throw new common_1.BadRequestException('NoMoney');
-            }
+            const priceWithCommission = lotPrice - (lotPrice * 0.05);
+            const authorUpdate = await user_model_1.UserModel.updateOne({ _id: lot.author }, { $inc: { balance: +priceWithCommission } }, { session });
+            if (authorUpdate.modifiedCount === 0)
+                throw new common_1.BadRequestException('ErrorDepositAuthorLot');
             await chat_model_1.ChatModel.create([
                 {
                     userTo: lot.author,
@@ -60,7 +65,8 @@ let PaymentService = class PaymentService {
             ], { session });
             await session.commitTransaction();
             try {
-                await this.create(lot._id.toString(), lotPrice, userId);
+                await this.financeService.createTransaction(lotPrice, userId, 'Debit', lot._id.toString());
+                await this.financeService.createTransaction(priceWithCommission, lot.author.toString(), 'Deposit', lot._id.toString());
                 await this.loggingService.newLog(userId, 'buyLot', lotId);
                 await this.notificationGateWay.sendNotification({
                     lotId,
@@ -83,23 +89,13 @@ let PaymentService = class PaymentService {
             session.endSession();
         }
     }
-    async create(lot, sum, user) {
-        const createdTransaction = await transactions_model_1.TransactionModel.create({
-            lot,
-            sum,
-            user,
-            type: 'Approved'
-        });
-        if (!createdTransaction)
-            throw new Error("Transaction creation failed");
-        return { success: true };
-    }
 };
 exports.PaymentService = PaymentService;
 exports.PaymentService = PaymentService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [notification_gateway_1.NotificationGateway,
         email_service_1.EmailService,
+        finance_service_1.FinanceService,
         logging_service_1.LoggingService])
 ], PaymentService);
 //# sourceMappingURL=payment.service.js.map

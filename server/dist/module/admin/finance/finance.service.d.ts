@@ -17,6 +17,9 @@ export declare class FinanceService {
         })[];
         currentBalance: number;
     }>;
+    createTransaction(sum: number, user: string, type: string, lot?: string): Promise<{
+        success: boolean;
+    }>;
     returnMoney(dto: ReturnMoneyDto): Promise<{
         type: string;
     }>;

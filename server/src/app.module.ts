@@ -14,6 +14,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { CronModule } from './module/cron/cron.module';
 import { AdminModule } from './module/admin/admin.module';
 import { EmailModule } from './module/email/email.module';
+import { BlogModule } from './module/blog/blog.module';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { EmailModule } from './module/email/email.module';
     FavoritesModule,
     CronModule,
     AdminModule,
-    EmailModule
+    EmailModule,
+    BlogModule
   ],
   providers: [ConnectDB]
 })

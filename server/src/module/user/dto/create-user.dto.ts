@@ -8,7 +8,15 @@ export class UpdateProfileDTO {
 
     @IsString()
     @IsOptional()
-    surname?:string
+    password?:string
+
+    @IsString()
+    @IsOptional()
+    email?:string
+
+    @IsString()
+    @IsOptional()
+    code?:string
 
     @IsString()
     @IsOptional()

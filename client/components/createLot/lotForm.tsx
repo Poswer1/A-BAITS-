@@ -23,6 +23,7 @@ import Success from "@/components/ui/success"
 import { getValueByLang } from "@/utils/translateValue"
 import { categoriesWithIcons } from "@/category/category"
 import { LotTypes } from "@/types/types"
+import Toast from "../ui/toast"
 
 interface LotFormProps {
 mode: 'create' | 'edit' | 'editAdmin',
@@ -43,7 +44,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
     const [stateLot, setStateLot] = useState(initialData?.state || '')
     const [price, setPrice] = useState(1)
     const [priceStep, setPriceStep] = useState(initialData?.stepPrice || 1)
-    const [blitzPrice, setBlitzPrice] = useState(initialData?.blitzPrice || 1)
+    const [blitzPrice, setBlitzPrice] = useState(initialData?.blitzPrice || 0)
     const [date, setDate] = useState(initialData?.date || 0)
     const [time, setTime] = useState(initialData?.dateTime || '21:00')
     const [location, setLocation] = useState(initialData?.location || '')
@@ -102,7 +103,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
     }
 
     const handleCreateOrUpdate = async () => {
-       if (!name || !description || !stateLot || !location || !delivery || !price || !priceStep || !date || !time || !category || !preview || preview.length === 0) {
+       if (!name || !description || !stateLot || !location || !delivery || !price || !priceStep || !date || !time || !category || !subCategory || !preview || preview.length === 0) {
           setMessage('Будь ласка, заповніть всі дані')
           setTimeout(() => {
             setMessage('')
@@ -121,6 +122,14 @@ export default function LotForm({mode, initialData}:LotFormProps) {
       if(description.length > 1200) {
         setMessage(t('createLot', 'createLot-lengthdescriptions'))
         setTimeout(() => {
+            setMessage('')
+          }, 3000)
+          return
+      }
+
+      if(blitzPrice !== 0 && blitzPrice < price) {
+        setMessage(t('createLot', 'blitzPriceLow'))
+         setTimeout(() => {
             setMessage('')
           }, 3000)
           return
@@ -181,7 +190,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
 
 
   return (
-  <div className="flex flex-col justify-center items-center w-full gap-5 md:gap-10 md:min-h-120 xl:min-h-200 bg-white md:bg-gray-100 text-black">
+  <div className="flex flex-col justify-center items-center w-full gap-5 md:gap-10 min-h-screen bg-white md:bg-gray-100 text-black">
     {loading ? (
       <div className={loadingBlock}>
         <Loading />
@@ -191,7 +200,8 @@ export default function LotForm({mode, initialData}:LotFormProps) {
       {((initialData?.historyBid?.length ?? 0) > 0 && mode !== 'editAdmin') ? (
         <div className="flex flex-col justify-center items-center gap-2">
           <X size={70} className="text-red-500"/>
-          <h1 className="text-red-500 text-xl">{t('createLot', 'createLot-haveHistoryBid')}</h1>
+          <h1 className="text-red-500 text-xl md:text-2xl text-center">{t('createLot', 'createLot-haveHistoryBid')}</h1>
+          <span onClick={handleBack} className={`${hover} text-gray-500 border-b`}>Назад</span>
         </div>
       ) : (
       confirmCreateOrder ? (
@@ -267,7 +277,6 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             autoReExtension={autoReExtension} 
             advertising={advertising} 
             handleCreateOrUpdate={handleCreateOrUpdate} 
-            message={message} 
             mode={mode}
             />
           </div>
@@ -284,6 +293,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
       createLotSetSubCategory={setSubCategory} 
       createLotSetSubSubCategory={setSubSubCategory}/>
     )}
+    <Toast error={message} message=""/>
   </div>
   )
 }

@@ -12,6 +12,19 @@ export interface UserTypes {
     UnblockDate:Date,
 }
 
+export interface BlogTypes {
+  _id:string, 
+  images:string, 
+  slug:string,
+  author: {
+    avatar:string,
+    name:string
+  }
+  title:string,
+  descriptions:string, 
+  createdAt:Date
+}
+
 export interface Templates {
   _id:string,
   subject:string,
@@ -145,6 +158,8 @@ export interface LotTypes {
     images: string[],
     autoReExtension?:boolean,
     descriptions:string,
+    favoritesCount:number,
+    views:string[]
     state:string,
     status:string,
     date: Date,

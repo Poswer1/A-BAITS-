@@ -11,13 +11,6 @@ export async function getLotsBySearch(token:string, search:string) {
     return dataReturn(res)
 }
 
-export async function closeLot(id:string) {
-    const res = await fetch(`${BASE_URL}/ActionOnTheLots/closeLot/${id}`, {
-        method: 'PATCH',
-        credentials: 'include', 
-    })
-    return dataReturn(res)
-}
 
 export async function getLotsCount() {
     const res = await fetch(`${BASE_URL}/ActionOnTheLots/getLotsCount`, {

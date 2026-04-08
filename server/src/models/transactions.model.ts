@@ -12,7 +12,7 @@ const TransactionSchema = new Schema<TransactionType>({
     sum: {type:Number, required:true},
     type: {type:String, required:true},
     status: {type:String, required:false, default: 'Approved'},
-    lot: {type:Schema.Types.ObjectId, ref: 'Lot', required:true},
+    lot: {type:Schema.Types.ObjectId, ref: 'Lot'},
     user: {type:Schema.Types.ObjectId,ref: 'User', required:true},
 }, {timestamps: true})
 

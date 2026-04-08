@@ -8,6 +8,7 @@ import { login } from '@/services/auth';
 import { useParams, useRouter } from 'next/navigation';
 import { customInput, input } from '@/styles/auth';
 import { useTranslation } from '@/app/context/TranslationProvider';
+import Toast from '@/components/ui/toast';
 
 function page() {
 
@@ -33,7 +34,7 @@ function page() {
         try {
             const data = await login(email, password)
             localStorage.setItem('token', data.token)
-            router.push('/')
+            router.push(`/${lang}`)
            
         } catch (error:any) {
             setMessage(t('auth', error.message))
@@ -46,9 +47,6 @@ function page() {
   return (
     <div className='flex flex-col justify-center items-center h-screen w-full text-black '>
         <div className='flex flex-col justify-center items-center sm:w-2/5 xl:w-2/6 2xl:w-1/4 p-5 gap-5 '>
-             {message && (
-              <span className={`${animationScale} text-red-500`}>{message}</span>
-             )}
             <h1 className='text-black text-center font-bold text-2xl md:text-3xl'>{t('auth', 'LoginInAccount')}</h1>
             
             <div className={customInput}>
@@ -65,9 +63,10 @@ function page() {
             </div>
             <button onClick={handleLogin} className={`bg-orange-600 text-white text-md p-2 flex justify-center items-center rounded-md ${hover} w-full`}>{t('auth', 'Login')}</button>
             <p className='text-sm text-center text-gray-500'>{t('auth', 'pesonalDate')}</p>
-            <p className={`w-full text-end text-orange-600 ${hover} underline`}>{t('auth', 'forgotPassword')}</p>
+            <Link href={`/${lang}/auth/resetPassword`} className={`w-full text-end text-orange-600 ${hover} underline`}>{t('auth', 'forgotPassword')}</Link>
             <p className='w-full gap-1 text-gray-500'>{t('auth', 'DontHaveAccount')} <Link href={`/${lang}/auth/register`} className={`underline text-orange-600 ${hover}`}>{t('auth', 'Register')}</Link></p>
         </div>
+        <Toast error={message} message=''/>
     </div>
   )
 }

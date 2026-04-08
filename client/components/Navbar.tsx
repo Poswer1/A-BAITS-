@@ -3,11 +3,16 @@
 import { useTranslation } from '@/app/context/TranslationProvider';
 import { arrowActive, hover, hoverLink} from '@/styles/style';
 import { ChevronDown, Plus} from 'lucide-react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { useState } from 'react';
+
 
 function Navbar() {
 
     const {t} = useTranslation()
+    const params = useParams()
+    const lang = params.lang as string
 
     const [openContact, setOpenContact] = useState(false)
 
@@ -17,7 +22,7 @@ function Navbar() {
             <span className={hoverLink}>{t('navbar', 'newLot')}</span>
             <span className={hoverLink}>{t('navbar','lotfrom1UAH')}</span>
             <span className={hoverLink}>Топ {t('global','lot')}</span>
-            <span className={hoverLink}>{t('navbar','news')}</span>
+            <Link href={`/${lang}/blog`} className={hoverLink}>{t('navbar','news')}</Link>
             <span className={hoverLink}>Наш форум</span>
             <div className='relative'>   
                 <span onClick={() => setOpenContact(prev => !prev)} className={`${hoverLink} flex justify-center items-center gap-2`}>{t('navbar','contact')} <ChevronDown className={arrowActive(openContact)}/></span>

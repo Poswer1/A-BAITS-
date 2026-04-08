@@ -9,22 +9,47 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailService = void 0;
 const common_1 = require("@nestjs/common");
 const templatesMessage_1 = require("../../models/templatesMessage");
+const TemporaryCode_1 = require("../../models/TemporaryCode");
 const user_model_1 = require("../../models/user.model");
 let EmailService = class EmailService {
-    async sendEmail(to, subject, html) {
-        return this.resend.emails.send({
-            from: "onboarding@resend.dev",
-            to,
-            subject,
-            html
-        });
-    }
     async Newsletter(subject, html) {
         const allUser = await user_model_1.UserModel.find({});
         for (const user of allUser) {
             await this.sendEmail(user.email, subject, html);
         }
         return { success: true };
+    }
+    async comparisonCode(code) {
+        const comparison = await TemporaryCode_1.TempoparyCode.findOne({ code });
+        if (!comparison)
+            throw new common_1.BadRequestException('WrongCode');
+        try {
+            await TemporaryCode_1.TempoparyCode.findByIdAndDelete(comparison._id);
+        }
+        catch (error) {
+            throw error;
+        }
+        return { success: true };
+    }
+    async sendCode(email) {
+        const userExists = await user_model_1.UserModel.findOne({ email: email }, { _id: 1 });
+        if (!userExists)
+            throw new common_1.BadRequestException('thisEmailNotFound');
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+        await this.sendEmail(email, 'Сброс пароля', code);
+        try {
+            const existsCode = await TemporaryCode_1.TempoparyCode.findOne({ email });
+            if (existsCode) {
+                await TemporaryCode_1.TempoparyCode.findOneAndUpdate({ email }, { code, createdAt: new Date() });
+            }
+            else {
+                await TemporaryCode_1.TempoparyCode.create({ email, code });
+            }
+            return { success: true };
+        }
+        catch (error) {
+            throw error;
+        }
     }
     async newTemplate(subject, html) {
         try {

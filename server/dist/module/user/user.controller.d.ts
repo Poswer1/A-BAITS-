@@ -32,11 +32,14 @@ export declare class UserController {
     } & {
         id: string;
     }) | null>;
-    updateProfile(dto: UpdateProfileDTO, id?: string, userId?: string, file?: Express.Multer.File): Promise<(import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
+    updatePassword(email: string, newPassword: string): Promise<{
+        success: boolean;
+    }>;
+    updateProfile(dto: UpdateProfileDTO, id?: string, userId?: string, file?: Express.Multer.File): Promise<import("mongoose").Document<unknown, {}, import("../../models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/user.model").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {
         __v: number;
     } & {
         id: string;
-    }) | undefined>;
+    }>;
 }

@@ -31,13 +31,22 @@ let ReviewService = class ReviewService {
         const exestingReview = await review_1.ReviewModel.findOne({ from: userId, to: user._id, lot: lotId });
         if (exestingReview)
             throw new common_1.BadRequestException('AlreadyReview');
-        const review = await review_1.ReviewModel.create({
-            to: user._id,
-            from: userId,
-            lot: lotId,
-            comment: comment,
-            rating: rating
-        });
+        try {
+            await review_1.ReviewModel.create({
+                to: user._id,
+                from: userId,
+                lot: lotId,
+                comment: comment,
+                rating: rating
+            });
+        }
+        catch (error) {
+            throw new common_1.BadRequestException('errorCreateReview');
+        }
+        const allReview = await review_1.ReviewModel.countDocuments({ to: to });
+        const newRating = (user.rating * allReview + rating) / (allReview + 1);
+        user.rating = Number(Math.ceil(newRating * 10) / 10);
+        await user.save();
         const chat = await chat_model_1.ChatModel.findOne({
             $or: [
                 { userFrom: userId, userTo: user._id },

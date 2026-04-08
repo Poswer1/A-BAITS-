@@ -5,13 +5,15 @@ import bcrypt from 'bcrypt'
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request} from 'express';
+import { LoggingService } from '../admin/logging/logging.service';
 
 
 @Injectable()
 export class AuthService {
   constructor(
     private configService:ConfigService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private readonly loggingService:LoggingService
   ) {} 
 
   async register (dto: Auth, ip:string) {
@@ -43,6 +45,8 @@ export class AuthService {
         ip
       }) 
       
+      await this.loggingService.newLog(user._id.toString(), 'Register')
+
       return user
     } catch (error) {
        console.log(error)

@@ -27,6 +27,12 @@ let EmailController = class EmailController {
         const { to, subject, html } = dto;
         return this.emailService.sendEmail(to, subject, html);
     }
+    async comparisonCode(code) {
+        return this.emailService.comparisonCode(code);
+    }
+    async sendCode(email) {
+        return this.emailService.sendCode(email);
+    }
     async newTemplate(subject, html) {
         return this.emailService.newTemplate(subject, html);
     }
@@ -49,6 +55,22 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EmailController.prototype, "sendEmail", null);
 __decorate([
+    (0, common_1.Post)('comparisonCode'),
+    __param(0, (0, common_1.Body)('code')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], EmailController.prototype, "comparisonCode", null);
+__decorate([
+    (0, common_1.Post)('sendCode'),
+    __param(0, (0, common_1.Body)('email')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], EmailController.prototype, "sendCode", null);
+__decorate([
+    (0, common_1.UseGuards)(role_guards_1.RolesGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('newTemplate'),
     __param(0, (0, common_1.Body)('subject')),
     __param(1, (0, common_1.Body)('html')),
@@ -57,6 +79,8 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EmailController.prototype, "newTemplate", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guards_1.RolesGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)('Newsletter'),
     __param(0, (0, common_1.Body)('subject')),
     __param(1, (0, common_1.Body)('html')),
@@ -65,12 +89,16 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EmailController.prototype, "Newsletter", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guards_1.RolesGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('getAllTemplate'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], EmailController.prototype, "getAllTemplate", null);
 __decorate([
+    (0, common_1.UseGuards)(role_guards_1.RolesGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('getTemplateById/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -78,8 +106,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], EmailController.prototype, "getTemplateById", null);
 exports.EmailController = EmailController = __decorate([
-    (0, common_1.UseGuards)(role_guards_1.RolesGuard),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Controller)('email'),
     __metadata("design:paramtypes", [email_service_1.EmailService])
 ], EmailController);

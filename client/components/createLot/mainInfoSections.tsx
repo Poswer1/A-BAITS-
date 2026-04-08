@@ -31,8 +31,8 @@ export default function MainInfoSections({name, setName, openCategory, setOpenCa
 
          <div className={Blockinput}>
             <span className={nameInput}>{t('createLot','createLot-category')}</span>
-            <div onClick={() => setOpenCategory(prev => !prev)} className={` ${hover} flex justify-between items-center w-full md:w-1/2 bg-gray-100 text-black p-2 rounded-md ${(createLotCategory) && 'bg-orange-600/10'}`}>
-                {(createLotCategory) ? (
+            <div onClick={() => setOpenCategory(prev => !prev)} className={` ${hover} flex justify-between items-center w-full md:w-1/2 bg-gray-100 text-black p-2 rounded-md ${(createLotCategory && createLotSubCategory) && 'bg-orange-600/10'}`}>
+                {(createLotCategory && createLotSubCategory) ? (
                     <div className="flex flex-col justify-center items-start gap-1">
                         <span className="">{createLotCategory}</span>
                         <span className="text-gray-500">{createLotSubCategory} {createLotSubSubCategory && `| ${createLotSubSubCategory}`}</span>

@@ -3,6 +3,7 @@
 import { useTranslation } from '@/app/context/TranslationProvider'
 import InputField from '@/components/ui/inputFields'
 import Success from '@/components/ui/success'
+import Toast from '@/components/ui/toast'
 import { newReview } from '@/services/review'
 import { button} from '@/styles/global'
 import { animationOpacity, hover } from '@/styles/style'
@@ -52,7 +53,7 @@ export default function page() {
     }
 
   return (
-    <div className='w-full flex flex-col justify-center items-center bg-gray-100 h-auto md:h-150 xl:h-200 text-black gap-10'>
+    <div className='w-full flex flex-col justify-center items-center bg-gray-100 h-[90vh] text-black gap-10'>
             {successReview ? (
                 <Success title={t('review', 'ReviewSuccess')}/>
             ): (
@@ -64,15 +65,13 @@ export default function page() {
                         ))}
                     </div>
                     <InputField label='' value={comment} type='text' placeholder={t('review', 'shortComment')} onChange={setComment} textarea={true} hTextArea={50}/>
-                    {message && (
-                        <span className={`${animationOpacity} mt-1 w-full flex justify-start text-red-600`}>{message}</span>
-                    )}
                     <div className='flex w-full justify-center items-center'>
                         <span onClick={handleBack} className={`text-black flex gap-1 mr-4 ${hover}`}><ChevronLeft /> Назад</span>
                         <button onClick={handleReview} className={`${button} w-full mt-1`}>{t('review', 'leaveFeedback')}</button>
                     </div>
                 </div>
             )}
+        <Toast error={message} message=''/>
     </div>
   )
 }

@@ -1,6 +1,8 @@
 export declare class UpdateProfileDTO {
     name?: string;
-    surname?: string;
+    password?: string;
+    email?: string;
+    code?: string;
     defaultAvatar?: string;
     location?: string;
 }

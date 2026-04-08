@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Types } from 'mongoose';
+import { LotModel } from 'src/models/lot.model';
 import { UserModel } from 'src/models/user.model';
 
 @Injectable()
@@ -17,14 +18,22 @@ export class FavoritesService {
         await UserModel.findByIdAndUpdate(
             userId,
             { $pull: { favorites: lotId } }, // pull удалить
-            );
+        );
+        await LotModel.findByIdAndUpdate(
+            lotId,
+            {$inc: {favoritesCount: - 1}}
+        )
         return {success:false}
     }
 
-        await UserModel.findByIdAndUpdate(
-            userId,
-            { $addToSet: { favorites: lotId } }, // $addToSet сохранить
-        );
+    await UserModel.findByIdAndUpdate(
+        userId,
+        { $addToSet: { favorites: lotId } }, // $addToSet сохранить
+    );
+    await LotModel.findByIdAndUpdate(
+            lotId,
+            {$inc: {favoritesCount: + 1}}
+        )
     
     return {success:true}
     }

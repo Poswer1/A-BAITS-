@@ -2,7 +2,6 @@
 
 import { useTranslation } from "@/app/context/TranslationProvider"
 import { hover } from "@/styles/style"
-import { Star } from "lucide-react"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import FavoritesButton from "../ui/favoritesButton"
@@ -22,8 +21,8 @@ function LotCard({lot}: LotCardProps) {
     const city = getValueByLang(ListLocation, lot.location, lang)
  
     return (
-        <Link href={`/${lang}/lot/${lot.lotNumber}`} className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg text-black`}>
-            <div className="flex flex-col justify-center items-center w-60 md:w-65 2xl:w-95">
+        <Link href={`/${lang}/lot/${lot.lotNumber}`} className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg text-black w-[80%] md:w-1/4`}>
+            <div className="flex flex-col justify-center items-center w-full">
                 <img src={`${BASE_URL}${lot.images[0]}`} className="rounded-t-xl object-cover w-full h-55"/>
                 <div className="flex flex-col justify-center items-start p-2 w-full bg-gray-100 gap-2 rounded-b-xl">
                     <h1 className="line-clamp-1">{lot.name}</h1>

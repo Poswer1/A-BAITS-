@@ -28,14 +28,6 @@ let LotsService = class LotsService {
         });
         return allLots;
     }
-    async closeLot(id) {
-        const close = await lot_model_1.LotModel.findByIdAndUpdate(id, {
-            $set: { status: 'Archive' }
-        });
-        if (!close)
-            throw new common_1.BadRequestException('errorCloseLot');
-        return { status: close.status };
-    }
     async getLotsCount() {
         const { dateDay, dateWeek, dateMonth } = this.getDateRanges();
         const lotsCount = await lot_model_1.LotModel.aggregate([

@@ -1,9 +1,13 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { now } from "mongoose";
+import { LotModel } from "src/models/lot.model";
 import { UserModel } from "src/models/user.model";
+import { FinanceService } from "../finance/finance.service";
 
 @Injectable()
 export class UserService {
+
+    constructor(private readonly financeService:FinanceService) {}
 
     async getAllUser () {
         try {
@@ -68,7 +72,28 @@ export class UserService {
             { returnDocument: 'after' } 
         );
         if(!updateBalnce) throw new BadRequestException('UpateBalanceError')
+        await this.financeService.createTransaction(balance, id, 'Deposit')
         return {balance:updateBalnce.balance}
+    }
+
+    async changeStatusLotAfterBlock(id:string, status:string) {
+        try {
+            const isBlocked = status === 'Blocked' || status === 'Temporary'
+
+            await LotModel.updateMany(
+                isBlocked
+                    ? { author: id }
+                    : { author: id, status: 'Blocked' },
+                {
+                    $set: {
+                    status: isBlocked ? 'Blocked' : 'Archive'
+                    }
+                }
+            )
+
+        } catch (error) {
+            throw error
+        }
     }
 
     async changeStatus (id:string) {
@@ -81,10 +106,13 @@ export class UserService {
             { $set: { status: user.status === 'Blocked' ? 'No restrictions' : 'Blocked' } },
             { returnDocument: 'after' } 
         );
-
+        
         if (!updatedUser) {
             throw new BadRequestException('UserNotFound');
         }
+
+        await this.changeStatusLotAfterBlock(id, updatedUser.status)
+
         return {status:updatedUser.status}
     }
 
@@ -111,8 +139,12 @@ export class UserService {
         if (!updatedUser) {
             throw new BadRequestException('UserNotFound');
         }
+
+        await this.changeStatusLotAfterBlock(id, updatedUser.status)
+
         return {status:updatedUser.status, unBlockDate: updatedUser.UnblockDate}
     }
+    
 
     async deleteUser(id:string) {
         try {

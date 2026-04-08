@@ -15,6 +15,8 @@ export interface Lot {
     stepPrice: number;
     blitzPrice?: number;
     images: string[];
+    favoritesCount: number;
+    views: string[];
     autoReExtension: boolean;
     descriptions: string;
     state: string;

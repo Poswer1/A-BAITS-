@@ -27,5 +27,6 @@
     "reviewNotFound": "Отзывов ещё нету",
     "AboutLot": "О лоте",
     "userMadeNewBid": "сделал новую ставку!",
-    "IsNotLogged": "Вы не вошли в аккаунт"
+    "IsNotLogged": "Вы не вошли в аккаунт",
+    "lotBuySucess": "Поздровляем! лот успешно выкуплен!"
 }

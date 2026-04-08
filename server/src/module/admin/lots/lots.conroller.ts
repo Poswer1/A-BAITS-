@@ -24,9 +24,4 @@ export class LotsController {
     async getAllTurnover() {
         return this.lotsService.getAllTurnover()
     }
-
-    @Patch('closeLot/:id')
-    async closeLot(@Param('id') id:string) {
-        return this.lotsService.closeLot(id)
-    }
 }

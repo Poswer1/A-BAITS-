@@ -1,6 +1,11 @@
 export declare class EmailService {
-    sendEmail(to: string, subject: string, html: string): Promise<any>;
     Newsletter(subject: string, html: string): Promise<{
+        success: boolean;
+    }>;
+    comparisonCode(code: string): Promise<{
+        success: boolean;
+    }>;
+    sendCode(email: string): Promise<{
         success: boolean;
     }>;
     newTemplate(subject: string, html: string): Promise<{

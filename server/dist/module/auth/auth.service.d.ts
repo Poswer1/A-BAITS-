@@ -1,10 +1,12 @@
 import { Auth } from './dto/create-auth.dto';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { LoggingService } from '../admin/logging/logging.service';
 export declare class AuthService {
     private configService;
     private jwtService;
-    constructor(configService: ConfigService, jwtService: JwtService);
+    private readonly loggingService;
+    constructor(configService: ConfigService, jwtService: JwtService, loggingService: LoggingService);
     register(dto: Auth, ip: string): Promise<import("mongoose").Document<unknown, {}, import("src/models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/user.model").User & {
         _id: import("mongoose").Types.ObjectId;
     } & {

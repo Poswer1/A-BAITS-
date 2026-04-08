@@ -11,9 +11,6 @@ export declare class LotsService {
     } & {
         id: string;
     })[]>;
-    closeLot(id: string): Promise<{
-        status: string;
-    }>;
     getLotsCount(): Promise<any>;
     getAllTurnover(): Promise<any>;
 }

@@ -15,6 +15,8 @@ import { blockObj, textObj } from '@/styles/admin'
 import Countdown from '../ui/countdown'
 import { button } from '@/styles/global'
 import SearchBlock from '../ui/search'
+import Toast from '../ui/toast'
+import TitleSection from './titleSection'
 
 interface listUserProps {
     listUser: UserTypes[]
@@ -115,66 +117,65 @@ export default  function User({listUser}: listUserProps) {
     user.name.toLowerCase().includes(searchValue.toLowerCase())
   )
 
+
   return (
     <div className="flex flex-col w-full gap-2">
-        <div className='flex justify-start items-center gap-5 w-full'>
-            {(id && edit) && (
-             <span className={`${hover} flex justify-start items-center`} onClick={() => {setId(''), setEdit(false)}}><ChevronLeft /> Назад</span>
-            )}
-            <h1 className='text-xl'>{edit ? t('admin', 'editUser') : t('admin', 'Users')}</h1>
-            {!edit && (
-              <div className='flex w-1/4'>
-                 <SearchBlock searchValue={searchValue} setSearchValue={setSearchValue} placeholder={t('admin', 'searchUser')}/>
-              </div>
-            )}
-            {(message || error) && (
-              <span className={`${animationScale} ${message ? 'text-green-500' : 'text-red-500'}`}>{message || error}</span>
-            )}
-        </div>
+      <TitleSection 
+      title={edit ? t('admin', 'editUser') : t('admin', 'Users')} 
+      searchValue={searchValue} 
+      setSearchValue={setSearchValue} 
+      placeholderSearch={t('admin', 'searchUser')}
+      edit={edit}
+      setEdit={setEdit}
+      />
         {edit ? (
           <Setting id={id}/>
         ): (
           <div className="flex flex-col justify-start items-start">
-            {filterLots.map((user) => (
-              <div key={user._id} className={blockObj}>
-                <div className='flex justify-start items-center gap-4'>
-                  <Link href={`/${lang}/profile/${user.name}`} className="flex justify-start items-center gap-2 w-50">
-                    <AvatarBlock avatar={user.avatar} size="45"/>
-                    <div className='flex flex-col'>
-                      <span key={user._id}>{user.name}</span>
-                      <span className='text-sm'>Ip:<span className='text-orange-600'>{user.ip || 'empty'}</span></span>
-                    </div>
-                  </Link>
-                  <span className={textObj}>Баланс: <br /> <span className='text-orange-600'>{user.balance} ₴</span></span>
-                  {user.status === 'Temporary' ? (
-                    <span className={textObj}>{t('admin', 'TimeTemporaryUnBlock')} <br />
-                      <span className='text-orange-600'><Countdown date={user.UnblockDate.toString()}/></span>
-                    </span>
-                  ): user.status === 'Blocked' &&(
-                    <span className={textObj}>Статус <br/>
-                    <span className='text-sm w-30 text-red-500'>{t('admin', 'Lock')}</span>
-                    </span>
-                  )}
+            {filterLots.map((user) => {
+              const balanceUser = Math.floor(Number(user.balance) * 10) / 10
+              return (
+                <div key={user._id} className={blockObj}>
+                  <div className='flex justify-start items-center gap-4'>
+                    <Link href={`/${lang}/profile/${user.name}`} className="flex justify-start items-center gap-2 w-50">
+                      <AvatarBlock avatar={user.avatar} size="45"/>
+                      <div className='flex flex-col'>
+                        <span key={user._id}>{user.name}</span>
+                        <span className='text-sm'>Ip:<span className='text-orange-600'>{user.ip || 'empty'}</span></span>
+                      </div>
+                    </Link>
+                    <span className={textObj}>Баланс: <br /> <span className='text-orange-600'>{balanceUser} ₴</span></span>
+                    {user.status === 'Temporary' ? (
+                      <span className={textObj}>{t('admin', 'TimeTemporaryUnBlock')} <br />
+                        <span className='text-orange-600'><Countdown date={user.UnblockDate.toString()}/></span>
+                      </span>
+                    ): user.status === 'Blocked' &&(
+                      <span className={textObj}>Статус <br/>
+                      <span className='text-sm w-30 text-red-500'>{t('admin', 'Lock')}</span>
+                      </span>
+                    )}
+                  </div>
+                  <div className={`justify-start items-center gap-4 ${user._id === balanceEdit ? 'hidden' : 'flex'}`}>
+                    <button onClick={() => setBalanceEdit(user._id)} className={`${hover} rounded-md !p-2 bg-gray-100`}><Wallet /></button>
+                    <button className={`${user.status === 'Blocked' ? 'bg-green-500' : 'bg-red-500'} ${hover} p-2 text-white rounded-md`} onClick={() => handleChangeStatus(user._id)}>{user.status === 'Blocked' ? <Unlock />: <Ban />}</button>
+                    <button onClick={() => handleTemporary(user._id)} className={`${button} bg-yellow-400 !p-2`}>{user.status === 'Temporary' ? <Unlock /> : <AlertTriangle />}</button>
+                    <button className={`${hover}`} onClick={() => {setId(user._id), setEdit(true)}}><Edit2/></button>
+                    <span className={`${hover} text-red-500`} onClick={() => {setOpenConfirm(true), setId(user._id)}}><Trash2 /></span>
+                  </div>
+                  <div className={`justify-start items-center gap-4 ${user._id === balanceEdit ? 'flex' : 'hidden'}`}>
+                    <input type="number" className='outline-none border border-gray-300 rounded-md p-2' 
+                    defaultValue={user.balance} 
+                    value={newBalance}
+                    onChange={(e) => setNewBalance(Number(e.target.value))} />
+                    <button onClick={() => handleUpdateBalance(user._id)} className={`${hover} bg-gray-100 rounded-md !p-2`}>{t('admin', 'saveBalance')}</button>
+                    <X className={hover} onClick={() => setBalanceEdit('')}/>
+                  </div>
                 </div>
-                <div className={`justify-start items-center gap-4 ${user._id === balanceEdit ? 'hidden' : 'flex'}`}>
-                  <button onClick={() => setBalanceEdit(user._id)} className={`${hover} rounded-md !p-2 bg-gray-100`}><Wallet /></button>
-                  <button className={`${user.status === 'Blocked' ? 'bg-green-500' : 'bg-red-500'} ${hover} p-2 text-white rounded-md`} onClick={() => handleChangeStatus(user._id)}>{user.status === 'Blocked' ? <Unlock />: <Ban />}</button>
-                  <button onClick={() => handleTemporary(user._id)} className={`${button} bg-yellow-400 !p-2`}>{user.status === 'Temporary' ? <Unlock /> : <AlertTriangle />}</button>
-                  <button className={`${hover}`} onClick={() => {setId(user._id), setEdit(true)}}><Edit2/></button>
-                  <span className={`${hover} text-red-500`} onClick={() => {setOpenConfirm(true), setId(user._id)}}><Trash2 /></span>
-                </div>
-                <div className={`justify-start items-center gap-4 ${user._id === balanceEdit ? 'flex' : 'hidden'}`}>
-                  <input type="number" className='outline-none border border-gray-300 rounded-md p-2' 
-                  defaultValue={user.balance} 
-                  value={newBalance}
-                  onChange={(e) => setNewBalance(Number(e.target.value))} />
-                  <button onClick={() => handleUpdateBalance(user._id)} className={`${hover} bg-gray-100 rounded-md !p-2`}>{t('admin', 'saveBalance')}</button>
-                  <X className={hover} onClick={() => setBalanceEdit('')}/>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
+        <Toast message={message} error={error}/>
         {openConfirm && (
          <ConfirmWindow cancelAction={() => setOpenConfirm(false)} confirmAction={() => handleDeleteUser(id)} title={t('admin', 'confirmDeleteUser')}/>
         )}

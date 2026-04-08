@@ -6,10 +6,9 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { hover} from '@/styles/style';
 import { getUserById } from '@/services/user';
-import { useParams, usePathname, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import { useTranslation } from '@/app/context/TranslationProvider';
 import CategoryList from './CategoryList';
-import SearchValue from './SearchValue';
 import OpenProfile from './OpenProfile';
 import AvatarBlock from '../ui/avatar';
 import { hoverSub } from '@/styles/categoryList';
@@ -86,7 +85,7 @@ function Header() {
                     />
                 </Link>
                 <div className='flex justify-center items-center gap-3 w-full'>
-                    <button onClick={() => setOpenCategory(prev => !prev)} className={`font-medium md:flex hidden md:block justify-center items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}>
+                    <button onClick={() => setOpenCategory(prev => !prev)} className={`font-medium md:flex hidden justify-center items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}>
                         <Menu size={20}/>{t('header','category')}
                     </button>
                     <SearchSection openSearch={openSearch} setOpenSearch={setOpenSearch} lang={lang} setSearch={setSearch} search={search}/>

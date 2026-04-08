@@ -11,7 +11,4 @@ export declare class LotsController {
     })[]>;
     getLotsCount(): Promise<any>;
     getAllTurnover(): Promise<any>;
-    closeLot(id: string): Promise<{
-        status: string;
-    }>;
 }

@@ -18,6 +18,7 @@ export class AuthController {
     const token = req.cookies['token']
     return {isLoggedIn: !!token}
   }
+  
 
   @Post('login')
   async login(@Body() dto:Auth, @Res({passthrough: true}) res:Response) {

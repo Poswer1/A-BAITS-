@@ -15,12 +15,13 @@ const auth_module_1 = require("../auth/auth.module");
 const notification_module_1 = require("../notification/notification.module");
 const email_module_1 = require("../email/email.module");
 const logging_module_1 = require("../admin/logging/logging.module");
+const finance_module_1 = require("../admin/finance/finance.module");
 let PaymentModule = class PaymentModule {
 };
 exports.PaymentModule = PaymentModule;
 exports.PaymentModule = PaymentModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule, notification_module_1.NotificationModule, email_module_1.EmailModule, logging_module_1.LoggingModule],
+        imports: [auth_module_1.AuthModule, notification_module_1.NotificationModule, email_module_1.EmailModule, logging_module_1.LoggingModule, finance_module_1.FinanceModule],
         controllers: [payment_controller_1.PaymentController],
         providers: [payment_service_1.PaymentService, payment_gateway_1.PaymentGateway],
         exports: [payment_service_1.PaymentService]

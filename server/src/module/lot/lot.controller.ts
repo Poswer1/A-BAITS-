@@ -27,6 +27,12 @@ export class LotController {
     return this.lotService.updateLot(dto, id, files, previewArray, userId, req.user.role)
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Patch('viewsCount/:id')
+  async viewsCount(@Param('id') id:string, @CurrentUser('id') userId:string) {
+    return this.lotService.viewsCount(id, userId)
+  }
+
   @Get('getAllLot')
   async getAllLot() {
     return this.lotService.getAllLot()
@@ -35,6 +41,41 @@ export class LotController {
   @Get('getLotByUser')
   async getLotByUser(@Query() query:{name:string, page:number}) {
     return this.lotService.getLotByUser(query)
+  }
+
+  @Get('getTopLot')
+  async getTopLot() {
+    return this.lotService.getTopLot()
+  }
+  @Get('getNewLot')
+  async getNewLot() {
+    return this.lotService.getNewLot()
+  }
+  @Get('getLotFrom1UAH')
+  async getLotFrom1UAH() {
+    return this.lotService.getLotFrom1UAH()
+  }
+  @Get('getPopularLot')
+  async getPopularLot() {
+    return this.lotService.getPopularLot()
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('closeLot/:id')
+    async closeLot(@Param('id') id:string) {
+    return this.lotService.closeLot(id)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Delete('deleteLot/:id')
+  async deleteLot(@Param('id') id:string) {
+    return this.lotService.deleteLot(id)
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('resumeLot/:id')
+  async resumeLot(@Param('id') id:string) {
+    return this.lotService.resumeLot(id)
   }
 
   @UseGuards(JwtAuthGuard)

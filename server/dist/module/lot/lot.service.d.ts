@@ -1,9 +1,13 @@
 import { filterLot, getMyLotsDto, LotDto } from './dto/lot.dto';
 import mongoose, { Types } from 'mongoose';
 import { ViolationsService } from '../admin/violations/violations.service';
+import { FinanceService } from '../admin/finance/finance.service';
+import { LoggingService } from '../admin/logging/logging.service';
 export declare class LotService {
     private readonly violationsService;
-    constructor(violationsService: ViolationsService);
+    private readonly financeService;
+    private readonly loggingService;
+    constructor(violationsService: ViolationsService, financeService: FinanceService, loggingService: LoggingService);
     createLot(dto: LotDto, files: Express.Multer.File[], userId: string): Promise<mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;
     } & {
@@ -11,9 +15,19 @@ export declare class LotService {
     } & {
         id: string;
     }>;
+    closeLot(id: string): Promise<{
+        status: string;
+    }>;
+    resumeLot(id: string): Promise<{
+        success: boolean;
+    }>;
+    deleteLot(id: string): Promise<{
+        success: boolean;
+    }>;
     updateLot(dto: LotDto, id: string, files: Express.Multer.File[], preview: string[], userId: string, role: string): Promise<{
         success: boolean;
     }>;
+    viewsCount(id: string, userId: string): Promise<void>;
     getAllLot(): Promise<(mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;
     } & {
@@ -21,6 +35,10 @@ export declare class LotService {
     } & {
         id: string;
     })[]>;
+    getTopLot(): Promise<any[]>;
+    getLotFrom1UAH(): Promise<any[]>;
+    getNewLot(): Promise<any[]>;
+    getPopularLot(): Promise<any[]>;
     getLotByUser(query: {
         name: string;
         page: number;

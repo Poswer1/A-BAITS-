@@ -7,6 +7,7 @@ import { Eye, EyeOff} from 'lucide-react';import { register } from '@/services/a
 import { useParams, useRouter } from 'next/navigation';
 import { useTranslation } from '@/app/context/TranslationProvider';
 import { customInput, input } from '@/styles/auth';
+import Toast from '@/components/ui/toast';
 
 
 function page() {
@@ -57,11 +58,8 @@ function page() {
     }
 
   return (
-    <div className='flex flex-col justify-center items-center md:h-150 xl:h-200 w-full text-black'>
+    <div className='flex flex-col justify-center items-center h-screen w-full text-black'>
         <div className='flex flex-col justify-center items-center sm:w-2/5 xl:w-2/6 2xl:w-1/4 rounded-md p-5 gap-5'>
-            {message && (
-                <span className={`${animationScale} text-red-500`}>{message}</span>
-            )} 
             <h1 className='text-black text-center font-bold text-2xl md:text-3xl'>{t('auth', 'Register2')}</h1>     
             <div className={customInput}>
               <input placeholder={t('auth', 'EnterEmail')} value={email} onChange={(e) => setEmail(e.target.value)} className={input}/>
@@ -70,7 +68,6 @@ function page() {
             <div className={customInput}>
               <input placeholder={t('auth', 'EnterYourName')} value={name} onChange={(e) => setName(e.target.value)} className={input}/>
             </div>
-
 
             <div className={customInput}>
                 <input type={showPassword ? 'text': 'password'} placeholder={t('auth', 'EnterPassword')} value={password} onChange={(e) => setPassword(e.target.value)} className={input}/>
@@ -92,6 +89,7 @@ function page() {
             <p className='text-sm text-center text-gray-500'>{t('auth', 'pesonalDate')}</p>
             <p className='w-full gap-1 text-gray-500 text-center'>{t('auth','alreadyRegistered')} <Link href={`/${lang}/auth/login`} className={`underline text-orange-600 ${hover}`}>{t('auth','Login')}</Link ></p>
         </div>
+        <Toast error={message} message=''/>
     </div>
   )
 }

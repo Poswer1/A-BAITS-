@@ -28,12 +28,12 @@ export default function SidebarAdmin() {
 
 
   return (
-    <div className='flex flex-col justify-start items-start bg-white text-black w-screen h-screen md:w-80 overflow-x-auto'>
+    <div className='flex md:flex-col justify-start items-start bg-white text-black w-screen md:h-[92vh] md:w-80 overflow-y-hidden overflow-x-auto'>
       {listLinks.map(link => (
          <Link
             key={link.link}
             href={`/${lang}/admin/${link.link}`}
-            className={`${hoverCat} px-5 lg:px-7 2xl:px-10 py-4 border-r-2 border-transparent flex justify-start items-center w-full gap-2 ${path.includes(link.link) && linkActiveClass}`}
+            className={`${hoverCat} px-5 lg:px-7 2xl:px-10 py-4 border-r-2 whitespace-nowrap border-transparent flex justify-start items-center w-full gap-2 ${path.includes(link.link) && linkActiveClass}`}
           >
             <div className="transition-all duration-300">{link.icon}</div>
             <span>{link.name}</span>

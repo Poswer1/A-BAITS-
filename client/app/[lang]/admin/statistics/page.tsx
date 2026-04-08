@@ -6,7 +6,6 @@ import { getAllTurnover, getLotsCount } from "@/services/admin/lots"
 import { getCountRegisteredUsers, getUserCount } from "@/services/admin/user"
 import { hover } from "@/styles/style"
 import { useEffect, useState } from "react"
-import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 
 interface Date {
     day: {
@@ -27,36 +26,28 @@ export default function page() {
 
     const {t} = useTranslation()
 
-    const [data, setData] = useState<Date | null>(null)
+    const [allTurnover, setAllTurnover] = useState<Date | null>(null)
+    const [registeredUsers, setRegisteredUsers] = useState<Date | null>(null)
+    const [lotsCount, setLotsCount] = useState<Date | null>(null)
     const [selectedTimeframe, setSelectedTimeframe] = useState('week')
-    const [active, setActive] = useState(t('admin', 'TotalTurnover'))
 
     useEffect(() => {
-    if(active === t('admin', 'TotalTurnover')) {
         getAllTurnover()
         .then(data => {
-            setData(data)
+            setAllTurnover(data)
         })
-    }
-    if(active === t('admin', 'CountRegisteredUsers')) {
+
         getCountRegisteredUsers()
         .then(data => {
-            setData(data)
+            setRegisteredUsers(data)
         })
-    }
-    if(active === t('admin', 'Lots')) {
+
         getLotsCount()
         .then(data => {
-            setData(data)
+            setLotsCount(data)
         })
-    }
-    }, [active])
 
-    const mainData = [
-        {name: t('admin', 'TotalTurnover'), price: true},
-        {name: t('admin', 'CountRegisteredUsers')},
-        {name: t('admin', 'Lots')},
-    ]
+    }, [selectedTimeframe])
 
     const listTimeframe = [
         {name: t('admin', 'Day'), value: 'day'},
@@ -64,27 +55,31 @@ export default function page() {
         {name: t('admin', 'Month'), value: 'month'},
     ]
 
-    console.log(data)
 
   return (
-    <div className="flex flex-col justify-center items-start w-full gap-4">
-    <h1 className="text-xl">{t('admin', 'Statistics')}</h1>
+    <div className="flex flex-col justify-center items-start w-full md:gap-2">
+    <h1 className="text-xl p-2 md:p-0">{t('admin', 'Statistics')}</h1>
       <div className="flex justify-start items-center w-full gap-5">
-        {mainData.map(data => (
-             <div className="flex flex-col justify-center items-start">
-                <h1 onClick={() => setActive(data.name)} className={`${hover} ${active === data.name ? 'border-b-2 border-orange-600' : 'border-transparent'} text-md border-b-2`}>{data.name}</h1>
-            </div>
-        ))}
       </div>
-        {active.length > 0 && (
-            <div className="flex justify-center items-center gap-5">
-                {listTimeframe.map(item => (
-                    <span onClick={() => setSelectedTimeframe(item.value)} className={`${hover} ${selectedTimeframe === item.value ? 'text-orange-600' : 'text-gray-600'}`}>{item.name}</span>
-                ))}
+        <div className="flex justify-center items-center gap-5 p-2 md:p-0">
+            {listTimeframe.map(item => (
+                <span onClick={() => setSelectedTimeframe(item.value)} className={`${hover} ${selectedTimeframe === item.value ? 'text-orange-600' : 'text-gray-600'}`}>{item.name}</span>
+            ))}
+        </div>
+        <div className="flex flex-col justify-start items-center w-full gap-5">
+            <Schedule 
+            data={allTurnover?.[selectedTimeframe]} 
+            title={t('admin', 'TotalTurnover')}
+            />
+            <Schedule 
+            data={registeredUsers?.[selectedTimeframe]} 
+            title={t('admin', 'CountRegisteredUsers')}
+            />
+            <Schedule 
+            data={lotsCount?.[selectedTimeframe]} 
+            title={ t('admin', 'Lots')}
+            />
             </div>
-        )}
-        <h1 className="text-xl">{active}</h1>
-        <Schedule data={data?.[selectedTimeframe]} useWith={active === t('admin', 'TotalTurnover') ? 'price' : 'count'}/>
     </div>
   )
 }

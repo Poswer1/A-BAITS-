@@ -47,12 +47,12 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
    <div key={transaction._id} className={`${blockObj}`}>
        <div className="flex justify-start items-center gap-2">
             {transaction.lot ? (
-            <Link href={`/${lang}/lot/${transaction.lot.lotNumber}`}>
-                <img src={`${BASE_URL}${transaction.lot?.images?.[0]}`} className="w-15"/>
+            <Link href={`/${lang}/lot/${transaction.lot.lotNumber}`} className='w-20'>
+                <img src={`${BASE_URL}${transaction.lot?.images?.[0]}`} className="w-15 object-cover"/>
             </Link>
             ) : (
                 useFrom === 'admin' ? (
-                <Link href={`/${lang}/profile/${transaction.user.name}`}>
+                <Link href={`/${lang}/profile/${transaction.user.name}`} className='w-20'>
                     <AvatarBlock avatar={transaction.user.avatar} size='45'/>
                 </Link>
                 ) : (

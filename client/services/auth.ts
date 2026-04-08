@@ -1,4 +1,3 @@
-import { NextApiRequest, NextApiResponse } from "next"
 import { BASE_URL, dataReturn } from "./utils"
 
 

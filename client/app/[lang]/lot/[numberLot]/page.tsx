@@ -1,6 +1,6 @@
 'use client'
 
-import { getLot } from "@/services/lot"
+import { getLot, viewsCount } from "@/services/lot"
 import AuthorSection from "@/components/lot/authorSection"
 import BidHistory from "@/components/lot/bidHistory"
 import HeaderLot from "@/components/lot/headerLot"
@@ -91,6 +91,7 @@ function page() {
             setStatus(data.status)
             setValue(data.startPrice + data.stepPrice)
             setLoading(false)
+            viewsCount(data._id)
         })
         getStatusAuth()
         .then(data => {

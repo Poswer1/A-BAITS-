@@ -18,12 +18,15 @@ const user_model_1 = require("../../models/user.model");
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const config_1 = require("@nestjs/config");
 const jwt_1 = require("@nestjs/jwt");
+const logging_service_1 = require("../admin/logging/logging.service");
 let AuthService = class AuthService {
     configService;
     jwtService;
-    constructor(configService, jwtService) {
+    loggingService;
+    constructor(configService, jwtService, loggingService) {
         this.configService = configService;
         this.jwtService = jwtService;
+        this.loggingService = loggingService;
     }
     async register(dto, ip) {
         const exesting = await user_model_1.UserModel.findOne({ email: dto.email });
@@ -49,6 +52,7 @@ let AuthService = class AuthService {
                 role: role,
                 ip
             });
+            await this.loggingService.newLog(user._id.toString(), 'Register');
             return user;
         }
         catch (error) {
@@ -74,6 +78,7 @@ exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [config_1.ConfigService,
-        jwt_1.JwtService])
+        jwt_1.JwtService,
+        logging_service_1.LoggingService])
 ], AuthService);
 //# sourceMappingURL=auth.service.js.map

@@ -22,6 +22,7 @@ const schedule_1 = require("@nestjs/schedule");
 const cron_module_1 = require("./module/cron/cron.module");
 const admin_module_1 = require("./module/admin/admin.module");
 const email_module_1 = require("./module/email/email.module");
+const blog_module_1 = require("./module/blog/blog.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -42,7 +43,8 @@ exports.AppModule = AppModule = __decorate([
             favorites_module_1.FavoritesModule,
             cron_module_1.CronModule,
             admin_module_1.AdminModule,
-            email_module_1.EmailModule
+            email_module_1.EmailModule,
+            blog_module_1.BlogModule
         ],
         providers: [connectDB_1.ConnectDB]
     })

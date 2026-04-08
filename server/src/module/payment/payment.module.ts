@@ -6,10 +6,11 @@ import { AuthModule } from '../auth/auth.module';
 import { NotificationModule } from '../notification/notification.module';
 import { EmailModule } from '../email/email.module';
 import { LoggingModule } from '../admin/logging/logging.module';
+import { FinanceModule } from '../admin/finance/finance.module';
 
 
 @Module({
-  imports: [AuthModule,NotificationModule, EmailModule, LoggingModule],
+  imports: [AuthModule,NotificationModule, EmailModule, LoggingModule, FinanceModule],
   controllers: [PaymentController],
   providers: [PaymentService, PaymentGateway],
   exports: [PaymentService]

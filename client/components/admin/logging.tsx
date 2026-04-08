@@ -5,6 +5,7 @@ import { blockObj, textObj } from '@/styles/admin'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
 import AvatarBlock from '../ui/avatar'
+import TitleSection from './titleSection'
 
 interface LoggingProps {
     allLogging: {
@@ -28,7 +29,7 @@ export default function Logging({allLogging}:LoggingProps) {
 
   return (
     <div className='flex flex-col gap-2 w-full'>
-      <h1 className='text-xl'>{t('admin', 'Logging')}</h1>
+      <TitleSection title={t('admin', 'Logging')}/>
       <div className='flex flex-col w-full'>
         <div></div>
         {allLogging.map((log) => {
@@ -37,12 +38,12 @@ export default function Logging({allLogging}:LoggingProps) {
             : 'Даты нету';
             return (
                 <div className={blockObj}>
-                <div className='flex gap-2 items-center'>
-                    <AvatarBlock avatar={log.user.avatar} size='45'/>
-                    <span>{log.user.name}</span>
-                    <p className='text-orange-600'>{t('admin', log.action)} <Link href={`/${lang}/lot/${log.lot.lotNumber}`} className='font-bold border-b-2'>{log.lot.lotNumber}</Link></p>
-                </div>
-                <span className={textObj}>Дата: <br /> <span className='text-black'>{date}</span></span>
+                  <div className='flex gap-2 items-center'>
+                      <AvatarBlock avatar={log.user.avatar} size='45'/>
+                      <span>{log.user.name}</span>
+                      <p className='text-orange-600'>{t('admin', log.action)} <Link href={`/${lang}/lot/${log.lot?.lotNumber}`} className='font-bold border-b-2'>{log.lot?.lotNumber}</Link></p>
+                  </div>
+                  <span className={textObj}>Дата: <br /> <span className='text-black'>{date}</span></span>
                 </div>
             )
         })}

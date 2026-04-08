@@ -26,6 +26,17 @@ let FinanceService = class FinanceService {
             .populate('user', 'avatar name');
         return { allTransactions: allTransactions, currentBalance: user.balance };
     }
+    async createTransaction(sum, user, type, lot) {
+        const createdTransaction = await transactions_model_1.TransactionModel.create({
+            lot,
+            sum,
+            user,
+            type
+        });
+        if (!createdTransaction)
+            throw new Error("Transaction creation failed");
+        return { success: true };
+    }
     async returnMoney(dto) {
         const { from, to, amount } = dto;
         const session = await transactions_model_1.TransactionModel.startSession();

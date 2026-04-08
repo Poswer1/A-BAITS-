@@ -13,6 +13,8 @@ import { changeStatus, TemporaryBlock } from '@/services/admin/user'
 import Countdown from '../ui/countdown'
 import { animationScale, hover } from '@/styles/style'
 import { AlertTriangle, Ban, Unlock, X } from 'lucide-react'
+import TitleSection from './titleSection'
+import Toast from '../ui/toast'
 
 interface ControlOfViolationsProps {
     allViolations:ViolationsTypes[]
@@ -76,12 +78,7 @@ export default function ControlOfViolations({allViolations}: ControlOfViolations
   
     return (
     <div className='flex flex-col gap-2 w-full'>
-        <div className='flex justify-stat items-center gap-5 w-full'>
-            <h1 className='text-xl'>{t('admin', 'ControlOfViolations')}</h1>
-            {(message || error) && (
-                <span className={`${animationScale} ${message ? 'text-green-500' : 'text-red-500'}`}>{message || error}</span>
-             )}
-        </div>
+        <TitleSection title={t('admin', 'ControlOfViolations')}/>
         <div className='flex flex-col justify-start items-start w-full'>
             {listAllViolations.map((v) => {
                  const date = v.createdAt 
@@ -89,8 +86,8 @@ export default function ControlOfViolations({allViolations}: ControlOfViolations
                 : 'Даты нету';
                 return (
                     <div key={v._id} className={blockObj}>
-                        <div className='flex justify-start items-center gap-10'>
-                                <div className='flex justify-start items-center gap-2'>
+                        <div className='flex justify-start items-center gap-5 whitespace-nowrap mr-5'>
+                            <div className='flex justify-start items-center gap-2 w-full'>
                                 <AvatarBlock avatar={v.user.avatar} size='45'/>
                                 <div className='flex flex-col justify-center'>
                                     <h1>{v.user.name}</h1>
@@ -98,7 +95,7 @@ export default function ControlOfViolations({allViolations}: ControlOfViolations
                                 </div>
                             </div>
                             {v.user.status === 'Temporary' ? (
-                                <span className={textObj}>{t('admin', 'TimeTemporaryUnBlock')} <br />
+                                <span className={'w-full text-sm'}>{t('admin', 'TimeTemporaryUnBlock')} <br />
                                 <span className='text-orange-600'><Countdown date={v.user.UnblockDate.toString()}/></span>
                                 </span>
                             ): v.user.status === 'Blocked' &&(
@@ -108,7 +105,7 @@ export default function ControlOfViolations({allViolations}: ControlOfViolations
                             )}
                         </div>
                         <div className='flex justify-start items-center gap-2'>
-                            <Link href={`/${lang}/lot/${v.lot.lotNumber}`} className={textObj}>Лот <br /> <span className='text-black'>№</span> <span className='text-orange-600'>{v.lot.lotNumber}</span></Link>
+                            <Link href={`/${lang}/lot/${v.lot?.lotNumber}`} className={textObj}>Лот <br /> <span className='text-black'>№</span> <span className='text-orange-600'>{v.lot?.lotNumber}</span></Link>
                             <span className={textObj}>Тип <br /> <span className='text-red-500'>{v.violations}</span></span>
                             <span className={textObj}>{t('admin', 'Repeated')} <br /> <span className='text-black'>{v.repeated}</span></span>
                             <span className={textObj}>Дата <br /> <span className='text-black'>{date}</span></span>
@@ -119,6 +116,7 @@ export default function ControlOfViolations({allViolations}: ControlOfViolations
                 )
             })}
         </div>
+        <Toast message={message} error={error}/>
     </div>
   )
 }

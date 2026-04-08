@@ -1,5 +1,5 @@
 import { useTranslation } from "@/app/context/TranslationProvider"
-import { Copy } from "lucide-react"
+import { Copy, Eye, Star } from "lucide-react"
 import { useParams } from "next/navigation"
 import FavoritesButton from "@/components/ui/favoritesButton"
 import { getValueByLang } from "@/utils/translateValue"
@@ -47,10 +47,12 @@ export default function HeaderLot({lot}:HeaderLot) {
                     <span className="flex text-black">{TransleteCategory && lang === 'ru' ? TransleteCategory.ru : TransleteCategory?.uk} | {TransleteSubCategory && lang === 'ru' ? TransleteSubCategory.ru : TransleteSubCategory?.uk} | {TransleteSubSubCategory && lang === 'ru' ? TransleteSubSubCategory?.ru : TransleteSubSubCategory?.uk}</span>
                 </div>
             </div>
-            <div className="flex md:flex-col justify-center items-center md:items-end gap-2">
+            <div className="flex flex-col justify-center items-start md:items-end gap-2">
                 <FavoritesButton id={lot?._id || ''}/>
-                <span className="text-sm text-gray-500 hidden md:block">{t('lot', 'lot-views')}: 32</span>
-                <span className="text-sm  text-gray-500 hidden md:block">{t('lot', 'lot-favoriteCount')}: 4</span>
+                <div className="flex md:flex-col w-full gap-5 md:gap-2 md:items-end">
+                    <span className="text-sm flex gap-1 text-gray-500"><Eye size={20}/>{t('lot', 'lot-views')}: {lot?.views.length}</span>
+                    <span className="text-sm flex gap-1 text-gray-500"><Star size={20}/>{t('lot', 'lot-favoriteCount')}: {lot?.favoritesCount}</span>
+                </div>
             </div>
         </div>
     </div>

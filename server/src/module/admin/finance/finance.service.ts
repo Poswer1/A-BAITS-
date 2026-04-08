@@ -22,6 +22,17 @@ export class FinanceService {
         return {allTransactions:allTransactions, currentBalance: user.balance}
     }
 
+    async createTransaction(sum:number, user:string, type:string, lot?:string) {
+         const createdTransaction = await TransactionModel.create({
+            lot,
+            sum,
+            user,
+            type
+        })
+        if(!createdTransaction)throw new Error("Transaction creation failed");
+        return {success:true}
+    }
+
     async returnMoney (dto:ReturnMoneyDto) {
         const { from, to, amount } = dto;
         const session = await TransactionModel.startSession();

@@ -20,12 +20,14 @@ export default function Balance({allTransaction, currentBalance}: BalanceProps) 
     const qrValue = `https://send.monobank.ua/3Y9bBHwR4q`;
     const [openQr, setOpenQe] = useState(false)
 
+    const balanceUser = Math.floor(currentBalance * 10) / 10
+
     const {t} = useTranslation()
 
   return (
      <div className={`flex flex-col w-full gap-2` }>
       <div className='flex flex-col md:flex-row p-3 bg-white rounded-lg justify-between items-center w-full gap-2'>
-        <h1 className='text-gray-500 text-center md:text-start'>{t('profile', 'CurrentBalance')}: <br/><span className='text-black text-2xl md:text-xl'>{currentBalance} ₴</span></h1>
+        <h1 className='text-gray-500 text-center md:text-start'>{t('profile', 'CurrentBalance')}: <br/><span className='text-black text-2xl md:text-xl'>{balanceUser} ₴</span></h1>
         <button onClick={() => setOpenQe(true)} className={`${button} w-full md:w-auto`}><DollarSign />{t('profile', 'replenishBalance')}</button>
       </div>
       <h1 className='text-xl md:text-xl p-2 py-4 md:p-0 md:mb-2'>{t('profile', 'transactions')}</h1>

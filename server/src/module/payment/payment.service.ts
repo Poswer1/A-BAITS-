@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import { TransactionModel } from 'src/models/transactions.model';
 import { EmailService } from '../email/email.service';
 import { LoggingService } from '../admin/logging/logging.service';
+import { FinanceService } from '../admin/finance/finance.service';
 
 @Injectable()
 export class PaymentService {
@@ -15,6 +16,7 @@ export class PaymentService {
     constructor(
         private readonly notificationGateWay: NotificationGateway,
         private readonly emailService:EmailService,
+        private readonly financeService:FinanceService,
         private readonly loggingService:LoggingService
     ) {}
     
@@ -50,9 +52,17 @@ export class PaymentService {
         { session } 
         )
 
-        if (userUpdate.modifiedCount === 0) {
-        throw new BadRequestException('NoMoney')
-        }
+        if (userUpdate.modifiedCount === 0) throw new BadRequestException('NoMoney')
+        
+        const priceWithCommission = lotPrice - (lotPrice * 0.05)
+
+        const authorUpdate = await UserModel.updateOne(
+            {_id: lot.author},
+            {$inc: {balance: +priceWithCommission}},
+            { session }
+        )
+
+        if (authorUpdate.modifiedCount === 0) throw new BadRequestException('ErrorDepositAuthorLot')
 
         await ChatModel.create(
         [
@@ -69,7 +79,8 @@ export class PaymentService {
          await session.commitTransaction()
 
         try {
-            await this.create(lot._id.toString(), lotPrice, userId)
+            await this.financeService.createTransaction(lotPrice, userId, 'Debit', lot._id.toString())
+            await this.financeService.createTransaction(priceWithCommission, lot.author.toString(), 'Deposit', lot._id.toString())
 
             await this.loggingService.newLog(userId, 'buyLot', lotId)
 
@@ -100,14 +111,5 @@ export class PaymentService {
     }
     }
 
-    async create(lot:string, sum:number, user:string) {
-        const createdTransaction = await TransactionModel.create({
-            lot,
-            sum,
-            user,
-            type: 'Approved'
-        })
-        if(!createdTransaction)throw new Error("Transaction creation failed");
-        return {success:true}
-    }
+   
 }

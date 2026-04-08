@@ -38,6 +38,18 @@ export async function getRoleUser(token:string) {
     return dataReturn(res)
 }
 
+export async function chagePassword(email:string, newPassword:string) {
+    const res = await fetch(`${BASE_URL}/user/updatePassword`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email, newPassword})
+    })
+
+    return dataReturn(res)
+}
+
 export async function updateUser(formData:FormData, id?:string) {
 
     let url = ''

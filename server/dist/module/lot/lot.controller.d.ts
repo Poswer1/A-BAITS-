@@ -14,6 +14,7 @@ export declare class LotController {
     updateLot(req: Request, preview: string, dto: LotDto, id: string, files: Express.Multer.File[], userId: string): Promise<{
         success: boolean;
     }>;
+    viewsCount(id: string, userId: string): Promise<void>;
     getAllLot(): Promise<(import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
         _id: import("mongoose").Types.ObjectId;
     } & {
@@ -34,6 +35,19 @@ export declare class LotController {
         })[];
         totalLots: number;
     } | undefined>;
+    getTopLot(): Promise<any[]>;
+    getNewLot(): Promise<any[]>;
+    getLotFrom1UAH(): Promise<any[]>;
+    getPopularLot(): Promise<any[]>;
+    closeLot(id: string): Promise<{
+        status: string;
+    }>;
+    deleteLot(id: string): Promise<{
+        success: boolean;
+    }>;
+    resumeLot(id: string): Promise<{
+        success: boolean;
+    }>;
     getMyLots(query: getMyLotsDto, userId: string): Promise<{
         allLots: (import("mongoose").Document<unknown, {}, import("../../models/lot.model").Lot, {}, import("mongoose").DefaultSchemaOptions> & import("../../models/lot.model").Lot & {
             _id: import("mongoose").Types.ObjectId;

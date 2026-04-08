@@ -13,6 +13,8 @@ import SearchBlock from "../ui/search"
 import { getAllTemplate, getTemplateById, Newsletter, newTemplate, sendEmail } from "@/services/admin/email"
 import SelectionField from "../ui/selectionField"
 import Loading from "../ui/loadig"
+import TitleSection from "./titleSection"
+import Toast from "../ui/toast"
 
 interface NotificationProps {
     allUser: UserTypes[]
@@ -120,20 +122,15 @@ export default function Notification({allUser}:NotificationProps) {
     
   return (
     <div className="flex flex-col gap-2 w-full">
-        <div className='flex justify-stat items-center gap-5 w-full'>
-            <h1 className='text-xl'>{t('admin', 'Notifications')}</h1>
-                {(message || error) && (
-                    <span className={`${animationScale} ${message ? 'text-green-500' : 'text-red-500'}`}>{message || error}</span>
-                )}
-        </div>
-        <div className="flex w-full gap-2">
-            <button onClick={() => setOpenModal('MessageUser')} className={`${button} !bg-white shadow-sm !text-black`}>{t('admin', 'MessageUser')}</button>
-            <button onClick={() => {setOpenModal('Newsletter'), setUser('Newsletter')}} className={`${button} !bg-white shadow-sm !text-black`}>{t('admin', 'Newsletter')}</button>
-            <button onClick={() => setOpenNewBlanks(true)} className={`${button} gap-1`}><Plus size={20}/> {t('admin', 'addBlanks')}</button>
+        <TitleSection title={t('admin', 'Notifications')}/>
+        <div className="flex flex-col md:flex-row items-center md:w-full gap-2">
+            <button onClick={() => setOpenModal('MessageUser')} className={`${button} !bg-white shadow-sm !text-black w-[90%] md:w-auto`}>{t('admin', 'MessageUser')}</button>
+            <button onClick={() => {setOpenModal('Newsletter'), setUser('Newsletter')}} className={`${button} !bg-white shadow-sm !text-black w-[90%] md:w-auto`}>{t('admin', 'Newsletter')}</button>
+            <button onClick={() => setOpenNewBlanks(true)} className={`${button} gap-1 w-[90%] md:w-auto`}><Plus size={20}/> {t('admin', 'addBlanks')}</button>
         </div>
         {(openModal || openNewBlanks) && (
             <div className={overlay} onClick={handleClose}>
-                <div onClick={(e) => e.stopPropagation()} className={`${animationScale} flex flex-col justify-center items-start w-1/3 p-2 bg-white rounded-2xl gap-2 min-h-60`}>
+                <div onClick={(e) => e.stopPropagation()} className={`${animationScale} flex flex-col justify-center items-start w-[90%] md:w-1/3 p-2 bg-white rounded-2xl gap-2 min-h-60`}>
                     {loading ? (
                         <div className={loadingBlock}>
                             <Loading />
@@ -182,6 +179,7 @@ export default function Notification({allUser}:NotificationProps) {
                 </div>
             </div>   
         )}
+        <Toast message={message} error={error}/>
     </div>
   )
 }
