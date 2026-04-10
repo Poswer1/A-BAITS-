@@ -4,6 +4,7 @@ node_modules/
 out/
 npm-debug.log*
 .env
+.history
 yarn-debug.log*
 yarn-error.log*
 .DS_Store
