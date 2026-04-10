@@ -15,6 +15,6 @@ const NotificationSchema = new Schema<NotificationType>({
     notification: {type:String, required:true},
     lot: {type:Schema.Types.ObjectId, ref: 'Lot'},
     read: {type: Boolean, default: false}
-})
+}, {timestamps: true})
 
 export const NotificationModel = model<NotificationType>('Notification', NotificationSchema)

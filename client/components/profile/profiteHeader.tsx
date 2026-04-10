@@ -6,7 +6,11 @@ import { useTranslation } from "@/app/context/TranslationProvider";
 import Rating from "../review/rating";
 import { UserTypes } from "@/types/types";
 
-export default function ProfiteHeader({user} : {user: UserTypes}) {
+interface ProfiteHeaderProps {
+  user:UserTypes
+}
+
+export default function ProfiteHeader({user}: ProfiteHeaderProps) {
 
   const {t} = useTranslation()
 

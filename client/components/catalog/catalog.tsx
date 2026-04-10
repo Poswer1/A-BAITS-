@@ -27,7 +27,7 @@ export default function Catalog({category, subCategory, subSubCategory, city, lo
             <LotCardV2 lot={l}/>
           ))}
           <div className={`w-full`}>
-            <Pagination total={total} maxLot={10}/>
+            <Pagination total={total} maxLot={25}/>
           </div>
         </div>
     </div>

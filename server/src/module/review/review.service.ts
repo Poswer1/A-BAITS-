@@ -42,15 +42,7 @@ export class ReviewService {
         user.rating = Number(Math.ceil(newRating * 10) / 10)
         await user.save()
 
-        const chat = await ChatModel.findOne(
-            {
-                $or: [
-                {userFrom: userId, userTo: user._id},
-                {userFrom: user._id, userTo: userId}
-            ],
-            type: 'deal'
-            }
-        )
+        const chat = await ChatModel.findById(dto.lotId)
 
         if(!chat) {
             console.log('чат не найден')
@@ -58,7 +50,13 @@ export class ReviewService {
         }
 
         chat.reviews.push(new Types.ObjectId(userId));
-        chat.messages.push({from: new Types.ObjectId('507f1f77bcf86cd799439011'), to: user._id, message: 'NewReview', read:true, createdAt: new Date()})
+        chat.messages.push({
+            from: new Types.ObjectId('507f1f77bcf86cd799439011'), 
+            to: user._id, 
+            message: 'NewReview', 
+            createdAt: new Date(),
+            status: 'user'
+        })
 
         const chatStatus = chat.reviews.some(obj => obj.toString() === user._id.toString())
 

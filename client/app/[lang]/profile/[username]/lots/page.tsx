@@ -34,12 +34,12 @@ async function page({params, searchParams}: pageProps) {
     }
 
   return (
-    <div className='flex gap-2 flex-col w-full'>
-      <h1>Найдено: {data?.totalLots}</h1>
+    <div className='flex  flex-col w-full'>
+      <h1 className='px-2 mb-4 md:p-0'>Найдено: {data?.totalLots}</h1>
       {data?.allLots.map((lot) => (
         <LotCardV2 key={lot._id} lot={lot}/>
       ))}
-      <Pagination total={data.totalLots} maxLot={4}/>
+      <Pagination total={data.totalLots} maxLot={10}/>
     </div>
   )
 }

@@ -126,10 +126,10 @@ export default function Filter({maxPriceLot}: FilterProps) {
 
   return (
     <>
-    <div className={`${isOpen ? 'opacity-0' : 'opacity-100'} bg-orange-600 p-1 text-white fixed top-1/2 z-20 md:hidden rounded-r-2xl`} onClick={() => setOpenMobile(true)}>
-      <Sliders size={35}/>
+    <div className={`${isOpen ? 'opacity-0' : 'opacity-100'} bg-orange-600 p-1 text-white fixed top-1/2 z-40 md:hidden rounded-r-2xl`} onClick={() => setOpenMobile(true)}>
+      <Sliders size={35} className="z-40"/>
     </div>
-    <div className={`${isOpen ? 'w-full top-0 fixed md:static md:w-100 p-5 ' : 'w-0 md:w-20'} md:p-5  transition-all duration-300 md:duration-500 ease-in-out flex flex-col bg-white justify-start items-start h-screen gap-4 border-r border-gray-300 text-black`}>
+    <div className={`${isOpen ? 'w-full top-0 fixed md:static md:w-100 p-5 ' : 'w-0 md:w-20'} md:p-5  z-30 transition-all duration-300 md:duration-500 ease-in-out flex flex-col bg-white justify-start items-start h-screen gap-4 border-r border-gray-300 text-black`}>
       <div className={`flex ${isOpen ? 'justify-between' : 'justify-center'} items-center w-full`}>
         {isOpen && (
           <div className="flex flex-col justify-center items-start">
@@ -137,7 +137,7 @@ export default function Filter({maxPriceLot}: FilterProps) {
             <span className={`text-sm text-orange-600 ${hover}`}>{t('catalog', 'resetFilter')}</span>
           </div>
         )}
-        <Sliders className='text-orange-600 cursor-pointer' size={25} onClick={() => {setOpen(prev => !prev), setOpenMobile(prev => !prev)}}/>
+        <Sliders className={` ${isOpen ? 'flex' : 'hidden md:flex'} text-orange-600 cursor-pointer`} size={25} onClick={() => {setOpen(prev => !prev), setOpenMobile(prev => !prev)}}/>
       </div>
       
         <div className={`${isOpen ? 'opacity-100 duration-1000' : 'opacity-0 duration-100'} flex flex-col gap-2`}>

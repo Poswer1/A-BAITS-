@@ -152,7 +152,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
             {allLots.map((lot:any) => (
               <LotCardV2 lot={lot} show={true} select={openConfirmWindow} selectLot={setSelectLot}/> 
             ))}
-            <Pagination total={data?.totalLot || 0} maxLot={4}/>
+            <Pagination total={data?.totalLot || 0} maxLot={10}/>
           </div>
         </div>
         {(selectLot && openConfirmWindow !== 'edit') && (

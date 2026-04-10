@@ -18,40 +18,23 @@ export class ChatGateway {
     }
     
     @SubscribeMessage('newMessage')
-    async newMessage(@MessageBody() data:{toUserId:string, message:string, numberLot:string, type:string}, @ConnectedSocket() client:Socket) {
-        const senderId = this.activeUser.get(client.id)
+    async newMessage(@MessageBody() data:{chatId:string, message:string}, @ConnectedSocket() client:Socket) {
+        const senderId = client.data.userId
+        const role = client.data.role
         if(!senderId) return console.log('не нашли userId при отправки сообщения')
         
-        const chat = await this.chatService.newMessage(senderId, data)
+        const chat = await this.chatService.newMessage({ chatId: data.chatId, message: data.message }, senderId.toString(), role)
 
-        for(const [socketId, userId] of this.activeUser.entries()) { // entries возрощает ключ и значение под socketId подстовляем ключ под userId значение
-            if(userId === data.toUserId || userId === senderId) { 
-                const sock = this.server.sockets.sockets.get(socketId) // и достаем socket по ключу socketId считая client.id
-                // при вызове handleConnection создаеться новый Map socket который хранит всех пользоватей которые подлючены, 
-                // он лежит в io.socket и получаеться socket.socket и хранит в себе socketId ключ и Socket значение
-                sock?.emit('message', chat) // и отпровляем событие этому клиенту
-            }
-        }
+        this.server.to(data.chatId).emit('message', chat)
 
         return chat
     }
 
-
-    @SubscribeMessage('readChat')
-    async readChat(@MessageBody() data:{toUserId:string, type:string, lot:string}, @ConnectedSocket() client:Socket) {
-        const userId = client.data.userId
-        if(!userId) return console.log('айди не найден при прочтения чата')
-        const updateChat = await this.chatService.readChat(data.toUserId, userId, data.type, data.lot)
-        if (updateChat) {
-        client.emit('readChat', updateChat);
-        }
-    }
-
     @SubscribeMessage('getChatHistory')
-    async getChatHistory(@MessageBody() data:{toUserId:string, type:string, lot:string}, @ConnectedSocket() client:Socket) {
+    async getChatHistory(@MessageBody() data:{chatId:string}, @ConnectedSocket() client:Socket) {
         const userId = this.activeUser.get(client.id)
-        if(!userId || !data.toUserId) return console.log('ошибка при получение истории чата')
-        const history = await this.chatService.getChatHistory(data.toUserId, data.type, userId, data.lot)
+        if(!data.chatId || !userId) return console.log('ошибка при получение истории чата')
+        const history = await this.chatService.getChatHistory(data.chatId)
 
         client.emit('getHistory', history) // отдаем текущему пользователю
     }
@@ -77,9 +60,17 @@ export class ChatGateway {
 
         const payload = await this.jwtService.verify(token)
         const userId = payload._id
+        const role = payload.role
         client.join(userId)
         client.data.userId = userId
+        client.data.role = role
         this.activeUser.set(client.id, userId)
+
+        const allChats = await this.chatService.getUserChat(userId)
+
+        allChats.forEach(chat => {
+            client.join(chat._id.toString())
+        })
 
     }
 }

@@ -35,13 +35,6 @@ export default function Notification({allUser}:NotificationProps) {
     const [allTemplates, setAllTemplates] = useState<Templates[]>([])
     const [loading, setLoading] = useState(false)
 
-    const listBlanks = [
-        {name: "Заготовка1"},
-        {name: "Заготовка2"},
-        {name: "Заготовка3"},
-        {name: "Заготовка4"},
-    ]
-
     const handleNewTemplate = async () => {
         if(!subject && !html) return
         try {

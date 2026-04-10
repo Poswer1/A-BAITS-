@@ -10,10 +10,10 @@ export declare class NotificationGateway {
     checkRead(client: Socket): Promise<void>;
     getHistoryNotification(client: Socket): Promise<void>;
     sendNotification(data: {
-        lotId: string;
         to: string;
         from?: string;
         notification: string;
+        lotId: string;
     }): Promise<void>;
     handleConnection(client: Socket): Promise<void>;
 }

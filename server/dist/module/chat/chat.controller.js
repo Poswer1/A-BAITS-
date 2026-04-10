@@ -17,6 +17,7 @@ const common_1 = require("@nestjs/common");
 const chat_service_1 = require("./chat.service");
 const jwt_auth_guard_1 = require("../auth/jwt/jwt-auth-guard");
 const current_user_decorator_1 = require("../../decorator/current-user.decorator");
+const role_guards_1 = require("../admin/role.guards");
 let ChatController = class ChatController {
     chatService;
     constructor(chatService) {
@@ -24,6 +25,12 @@ let ChatController = class ChatController {
     }
     async getMyChat(userId) {
         return this.chatService.getMyChat(userId);
+    }
+    async inviteAdmin(userId) {
+        return this.chatService.inviteAdmin(userId);
+    }
+    async confirmInvite(id, userId) {
+        return this.chatService.confirmInvite(id, userId);
     }
 };
 exports.ChatController = ChatController;
@@ -35,6 +42,24 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "getMyChat", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('inviteAdmin/:id'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "inviteAdmin", null);
+__decorate([
+    (0, common_1.UseGuards)(role_guards_1.RolesGuard),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Patch)('confirmInvite/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "confirmInvite", null);
 exports.ChatController = ChatController = __decorate([
     (0, common_1.Controller)('chat'),
     __metadata("design:paramtypes", [chat_service_1.ChatService])

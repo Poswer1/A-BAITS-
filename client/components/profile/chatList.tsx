@@ -4,44 +4,24 @@ import { hoverCat } from '@/styles/categoryList'
 import { getMyChats } from '@/services/chat'
 import { getUserById } from '@/services/user';
 import { useTranslation } from '@/app/context/TranslationProvider';
-import { getRelativeTime } from '../ui/relativeTime';
 import { useParams } from 'next/navigation';
 import { ChatTypes } from '@/types/types';
-import { useSocketContext } from '@/app/context/SocketIo';
+import Image from 'next/image';
 
 interface ChatListProps {
   setSelectChat: (v:string) => void;
   selectChat:string
-  setTypeChat: (v:string) => void
-  setLot:(v:string) => void
 }
 
-export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot}: ChatListProps) {
+export default function ChatList({setSelectChat, selectChat}: ChatListProps) {
 
     const {t} = useTranslation()
     const params = useParams()
-    const lang = params.lang as string
-    const {socket} = useSocketContext()
 
-    const [unReadChats, setUnReadChats] = useState<ChatTypes[]>([])
-    const [readChats, setReadChats] = useState<ChatTypes[]>([])
+    const [activeChat, setActiveChat] = useState<ChatTypes[]>([])
+    const [unActiveChat, setUnActiveChat] = useState<ChatTypes[]>([])
     const [loading, setLoading] = useState(true)
     const [myId, setMyId] = useState('')
-
-    useEffect(() => {
-        if(!socket) return
-        socket.on('readChat', (data) => {
-            setUnReadChats(prev => prev.filter(chat => chat._id !== data._id))
-            setReadChats(prev => {
-                if (prev.some(c => c._id === data._id)) return prev;
-                return [...prev, data];
-            });
-        })
-
-        return () => {
-            socket.off('readChat')
-        }
-    }, [socket])
 
     useEffect(() => {
         getUserById() 
@@ -50,8 +30,8 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot
         })
         getMyChats()
         .then(data => {
-            setUnReadChats(data.unReadChats)
-            setReadChats(data.readChats)
+            setActiveChat(data.ActiveChat)
+            setUnActiveChat(data.NotActiveChat)
             setLoading(false)
         })
     }, [])
@@ -64,21 +44,22 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot
     </div>
     )
 
-    const renderChats = (chats: any[]) => {
+    const renderChats = (chats: ChatTypes[]) => {
     if (!myId) return null
 
     return chats?.map((chat) => {
-            if (!chat.userFrom && !chat.userTo) return null;
-            const user = chat.userTo?._id.toString() === myId ? chat.userFrom : chat.userTo;
+            const user = chat.users.filter(u => u._id !== myId);
             if (!user) return null;
             const lastMessage = chat.messages[chat.messages.length - 1]
             return (
-                <div onClick={() => {setSelectChat(user._id); setTypeChat(chat.type); setLot(chat.lot._id)}} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-3 transition-all  duration-300  border-b border-t 2 w-full  2xl:w-90 border-gray-300 bg-white relative`}>
+                <div onClick={() => {setSelectChat(chat._id)}} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-3 transition-all  duration-300  border-b border-t 2 w-full  2xl:w-90 border-gray-300 bg-white relative`}>
                         <div className='flex justify-center items-center gap-2'>
-                            <AvatarBlock avatar={chat.lot?.images?.[0] ? chat.lot.images[0] : user?.avatar}  size="50"/>
+                            <AvatarBlock avatar={chat.lot?.images?.[0] ? chat.lot.images[0] : user[0]?.avatar}  size="50"/>
                             <div className={`flex flex-col  justify-center items-start `}>
-                            <h1 className='text-gray-500 text-sm'>{user.name}</h1>
-                            <span className={`${chat.type === 'deal' ? 'bg-orange-600/10 text-orange-600' : chat.status !== 'Active' && 'bg-gray-300 text-gray-500'}  px-1  text-sm absolute top-1 right-0`}>{chat.type === 'deal' ? t('chat', 'victorious') : chat.status !== 'Active' && t('chat', 'NotActive')}</span>
+                            <h1 className='text-gray-500 text-sm'>{user[0]?.name}</h1>
+                            {chat.status !== 'Active' && (
+                             <span className={`${'bg-gray-300 text-gray-500'}  px-1  text-sm absolute top-1 right-0`}>{t('chat', 'NotActive')}</span>
+                            )}
                             <span className='text-sm hidden md:flex'>
                                 {chat.lot
                                     ? chat.lot.name.length >= 30
@@ -103,32 +84,42 @@ export default function ChatList({setSelectChat, setTypeChat, selectChat, setLot
     )}
 
   return (
-    <div className={`flex flex-col justify-start items-start w-full md:w-auto  md:min-w-80 ${selectChat && 'hidden md:flex'}`}>
-        <h1 className='mb-1 px-2'>{t('chat', 'UnreadChats')}</h1>
-        <div className='flex flex-col w-full overflow-y-auto max-h-100 custom-scrollbar'>
-            {loading ? (
-            renderSkeleton()
-            ): (
-            unReadChats?.length === 0 ? (
-                <span className='text-gray-500 text-sm p-4 w-full text-center'>{t('chat', 'AllChatsBeenRead')}</span>
-                ) : (
-                renderChats(unReadChats)
-            )
-            )}
-        </div>
+    <div className={`flex flex-col justify-start overflow-x-hidden items-start w-full md:w-auto  md:min-w-80 ${selectChat && 'hidden md:flex'}`}>
+        {(activeChat?.length === 0 && unActiveChat?.length === 0) ? (
+            <div className='flex flex-col justify-center items-center w-screen'>
+                <Image src={'/images/chat/noChat.png'} alt='' width={200} height={200}/>
+                <h1 className='text-xl'>{t('chat', 'noChat')}</h1>
+                <p className='text-sm text-center text-gray-500 w-[90%]'>{t('chat', 'noChatDesc')}</p>
+            </div>
+        ): (
+            <>
+            <h1 className='mb-1 px-2'>{t('chat', 'AllChatsActive')}</h1>
+            <div className='flex flex-col w-full overflow-y-auto max-h-100 custom-scrollbar'>
+                {loading ? (
+                renderSkeleton()
+                ): (
+                activeChat?.length === 0 ? (
+                    <span className='text-gray-500 text-sm p-4 w-full text-center'>{t('chat', 'DontHaveChatActive')}</span>
+                    ) : (
+                    renderChats(activeChat)
+                )
+                )}
+            </div>
 
-        <h1 className='mb-1 mt-1 px-2'>{t('chat', 'ReadChats')}</h1>
-        <div className='flex flex-col w-full overflow-y-auto max-h-100 custom-scrollbar'>
-            {loading ? (
-            renderSkeleton()
-            ): (
-            readChats?.length === 0 ? (
-                <span className='text-gray-500 text-sm p-4 w-full text-center'>{t('chat', 'DontHaveChat')}</span>
-                ) : (
-                renderChats(readChats)
-            )
-            )}
-        </div>
+            <h1 className='mb-1 mt-1 px-2'>{t('chat', 'AllUnActiveChat')}</h1>
+            <div className='flex flex-col w-full overflow-y-auto max-h-100 custom-scrollbar'>
+                {loading ? (
+                renderSkeleton()
+                ): (
+                unActiveChat?.length === 0 ? (
+                    <span className='text-gray-500 text-sm p-4 w-full text-center'>{t('chat', 'AllChatsBeenRead')}</span>
+                    ) : (
+                    renderChats(unActiveChat)
+                )
+                )}
+            </div>
+            </>
+        )}
     </div>
   )
 }

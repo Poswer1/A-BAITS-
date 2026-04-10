@@ -13,6 +13,7 @@ const user_model_1 = require("../../../models/user.model");
 let FinanceService = class FinanceService {
     async getAllTransactions() {
         const allTransactions = await transactions_model_1.TransactionModel.find({})
+            .sort({ createdAt: -1 })
             .populate('user', 'name avatar')
             .populate('lot', 'name lotNumber images author');
         return allTransactions;
@@ -22,6 +23,7 @@ let FinanceService = class FinanceService {
         if (!user)
             throw new common_1.BadRequestException('userNotFound');
         const allTransactions = await transactions_model_1.TransactionModel.find({ user: userId })
+            .sort({ createdAt: -1 })
             .populate('lot', 'images name lotNumber')
             .populate('user', 'avatar name');
         return { allTransactions: allTransactions, currentBalance: user.balance };

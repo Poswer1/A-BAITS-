@@ -13,11 +13,31 @@ export default function StateSections({stateLot, setStateLot, mode}:StateSection
     const {t} = useTranslation() 
 
      const statesLot = [
-      {state: mode === 'state' ? t('createLot','createLot-state-new') : t('createLot','create-delivary-np')},
-      {state: mode === 'state' ? 'Б/У' : 'Укрпошта'},
-      {state: mode === 'state' ? t('createLot','createLot-state-NeedsRenovation') : t('createLot','create-delivary-pickup')},
-      {state: mode === 'state' ? t('createLot','createLot-state-ForSpareParts') : ''},
-    ]
+        {
+            lang: mode === 'state' ? 'new' : 'novaPost',
+            state: mode === 'state'
+            ? t('createLot','createLot-state-new')
+            : t('createLot','create-delivary-np'),
+        },
+        {
+            lang: mode === 'state' ? 'used' : 'ukrPost',
+            state: mode === 'state'
+            ? 'Б/У'
+            : 'Укрпошта',
+        },
+        {
+            lang: mode === 'state' ? 'needsRepairs' : 'pickup',
+            state: mode === 'state'
+            ? t('createLot','createLot-state-NeedsRenovation')
+            : t('createLot','create-delivary-pickup'),
+        },
+        {
+            lang: mode === 'state' ? 'forSpare' : 'none',
+            state: mode === 'state'
+            ? t('createLot','createLot-state-ForSpareParts')
+            : '',
+        },
+        ]
 
   return (
     <div className={block}>
@@ -26,7 +46,7 @@ export default function StateSections({stateLot, setStateLot, mode}:StateSection
             <div className="flex overflow-x-auto w-full justify-start items-center gap-5">
                 {statesLot.map((state, index) => (
                     <>
-                    <span key={index} className={`whitespace-nowrap ${hover} ${index === 3 && mode !=='state' && 'hidden'} ${stateLot === state.state && 'bg-orange-600 text-white'} bg-gray-100 p-2 w-40 text-center rounded-md`} onClick={() => setStateLot(state.state)}>{state.state}</span>
+                    <span key={index} className={`whitespace-nowrap ${hover} ${index === 3 && mode !=='state' && 'hidden'} ${stateLot === state.lang && 'bg-orange-600 text-white'} bg-gray-100 p-2 w-40 text-center rounded-md`} onClick={() => setStateLot(state.lang)}>{state.state}</span>
                     </>
                  ))}
             </div>

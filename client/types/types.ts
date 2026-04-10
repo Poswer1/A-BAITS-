@@ -80,6 +80,7 @@ export interface NotificationTypes {
     _id: string
     name: string
     lotNumber: string
+    createdAt:Date
   }
 }
 
@@ -93,8 +94,9 @@ export interface MessageType  {
 
 export interface ChatTypes {
   _id: string;
-  userFrom: string;
-  userTo: string;
+  users: {
+    _id:string
+  }[]
   type: string;
   lot: {
     _id: string
@@ -105,10 +107,15 @@ export interface ChatTypes {
   }
   status: string;
   messages: {
-    from: string;
+    from: {
+      _id:string,
+      avatar:string,
+      name:string
+    }
     to: string;
     message: string;
     read: boolean;
+    status:string
     createdAt: string;
   }[];
   reviews: {

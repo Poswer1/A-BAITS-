@@ -37,8 +37,8 @@ let UserController = class UserController {
     async TemporaryBlock(id, day) {
         return this.userService.TemporaryBlock(id, day);
     }
-    async updateBalance(balance, id) {
-        return this.userService.updateBalance(id, balance);
+    async updateBalance(balance, balanceType, id) {
+        return this.userService.updateBalance(id, balance, balanceType);
     }
     async deleteUser(id) {
         return this.userService.deleteUser(id);
@@ -81,9 +81,10 @@ __decorate([
 __decorate([
     (0, common_1.Patch)('updateBalance/:id'),
     __param(0, (0, common_1.Body)('balance')),
-    __param(1, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)('balanceType')),
+    __param(2, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number, String]),
+    __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateBalance", null);
 __decorate([

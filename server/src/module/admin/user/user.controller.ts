@@ -35,8 +35,8 @@ export class UserController {
     }
 
     @Patch('updateBalance/:id')
-    async updateBalance(@Body('balance') balance:number, @Param('id') id:string) {
-        return this.userService.updateBalance(id, balance)
+    async updateBalance(@Body('balance') balance:number, @Body('balanceType') balanceType:string, @Param('id') id:string) {
+        return this.userService.updateBalance(id, balance, balanceType)
     }
 
     @Delete('deleteUser/:id')

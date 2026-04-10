@@ -29,7 +29,7 @@ export default function SearchSection({openSearch, setOpenSearch, lang, search, 
 
   return (
         <div className={`flex flex-col justify-center items-center ${openSearch ? 'block w-full' : 'w-0'} transition-all duration-500 md:block md:w-[60%] 2xl:w-[40%] relative`}>
-            <div className={`flex justify-start items-center p-2 gap-2 bg-gray-100 rounded-md border border-gray-200 w-full ${openSearch ? 'z-90 block' : 'hidden md:flex'}`}>
+            <div className={`flex justify-start items-center p-2 gap-2 bg-gray-100 rounded-md border border-gray-200 w-full ${openSearch ? 'block' : 'hidden md:flex'}`}>
                 <Search size={20} className='text-gray-500'/>
                 <input 
                 placeholder={t('header','searchPlaceholder')} 

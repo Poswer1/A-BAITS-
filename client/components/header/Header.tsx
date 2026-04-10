@@ -121,9 +121,6 @@ function Header() {
                             </div>
                             </>
                         )}
-                        {openNotification && (
-                            <OpenNotification setOpen={setOpenNotification} lang={lang} setRead={setRead}/>
-                        )}
                 </div>
             </div>
             {openCategory && (
@@ -132,6 +129,9 @@ function Header() {
                 openFrom='header' 
                 />
             )}
+            
+             <OpenNotification setOpen={setOpenNotification} open={openNotification} setRead={setRead}/>
+         
         </div>
     </div>
   )

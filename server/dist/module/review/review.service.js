@@ -47,19 +47,19 @@ let ReviewService = class ReviewService {
         const newRating = (user.rating * allReview + rating) / (allReview + 1);
         user.rating = Number(Math.ceil(newRating * 10) / 10);
         await user.save();
-        const chat = await chat_model_1.ChatModel.findOne({
-            $or: [
-                { userFrom: userId, userTo: user._id },
-                { userFrom: user._id, userTo: userId }
-            ],
-            type: 'deal'
-        });
+        const chat = await chat_model_1.ChatModel.findById(dto.lotId);
         if (!chat) {
             console.log('чат не найден');
             return;
         }
         chat.reviews.push(new mongoose_1.Types.ObjectId(userId));
-        chat.messages.push({ from: new mongoose_1.Types.ObjectId('507f1f77bcf86cd799439011'), to: user._id, message: 'NewReview', read: true, createdAt: new Date() });
+        chat.messages.push({
+            from: new mongoose_1.Types.ObjectId('507f1f77bcf86cd799439011'),
+            to: user._id,
+            message: 'NewReview',
+            createdAt: new Date(),
+            status: 'user'
+        });
         const chatStatus = chat.reviews.some(obj => obj.toString() === user._id.toString());
         if (chatStatus) {
             chat.status = 'Close';

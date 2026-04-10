@@ -7,9 +7,9 @@ import Link from 'next/link'
 import Countdown from '@/components/ui/countdown'
 import { useTranslation } from '@/app/context/TranslationProvider'
 import { useEffect, useState } from 'react'
-import { getUserStatus } from '@/services/user'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import GetStatusUser from '@/utils/getStatusUser'
+import { hoverCat, hoverSub } from '@/styles/categoryList'
 
 
 interface BlockedModalProps {
@@ -19,6 +19,8 @@ interface BlockedModalProps {
 export default function BlockedModal({mode}:BlockedModalProps) {
 
     const router = useRouter()
+    const params = useParams()
+    const lang = params.lang as string
 
     const {t} = useTranslation()
     const [open, setOpen] = useState(true)
@@ -58,6 +60,7 @@ export default function BlockedModal({mode}:BlockedModalProps) {
                 )}
                 <div className='flex gap-4'>
                     <Link href={'/'} className={hover}>{t('violations', 'Support')}</Link>
+                    <Link href={`/${lang}/auth/register`} className={hoverSub}>{t('violations', 'createNewAccount')}</Link>
                     <span onClick={() => mode === 'general' ? setOpen(false) : handleBack()} className={`${status !== 'Temporary' && 'hidden'} ${hover} text-orange-600`}>{mode === 'general' ? t('violations', 'IgotIt'): 'Назад'}</span>
                 </div>
             </div>

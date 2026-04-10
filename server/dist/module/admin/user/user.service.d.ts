@@ -11,7 +11,7 @@ export declare class UserService {
     })[]>;
     getAllUserCount(): Promise<number>;
     getCountRegisteredUsers(): Promise<any>;
-    updateBalance(id: string, balance: number): Promise<{
+    updateBalance(id: string, balance: number, balanceType: string): Promise<{
         balance: number;
     }>;
     changeStatusLotAfterBlock(id: string, status: string): Promise<void>;

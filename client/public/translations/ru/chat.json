@@ -10,9 +10,14 @@
     "NoLatestMessages": "Ещё нету сообщений",
     "ReadChats": "Прочитаные",
     "UnreadChats": "Непрочитаные",
-    "AllChatsBeenRead": "Все чаты прочитаны",
-    "DontHaveChat": "У вас ещё нету чатов",
+    "AllChatsBeenRead": "У вас нету неактивных чатов",
+    "DontHaveChatActive": "У вас нету активных чатов",
     "victorious": "Победный",
     "NotActive": "Неактивный",
-    "NoLot": "Лот не найден"
+    "NoLot": "Лот не найден",
+    "AllChatsActive": "Активные",
+    "AllUnActiveChat": "Неактивные",
+    "moderInviteSuccess": "Модератор был приглашен в чат, ожидайте...",
+    "noChat": "Чатов пока что нету",
+    "noChatDesc": "После выиграша в каком либо аукционе, у вас появиться чат с его автором"
 }

@@ -57,8 +57,7 @@ let PaymentService = class PaymentService {
                 throw new common_1.BadRequestException('ErrorDepositAuthorLot');
             await chat_model_1.ChatModel.create([
                 {
-                    userTo: lot.author,
-                    userFrom: userId,
+                    users: [lot.author, userId],
                     lot: lot._id,
                     type: 'deal'
                 }
@@ -69,10 +68,10 @@ let PaymentService = class PaymentService {
                 await this.financeService.createTransaction(priceWithCommission, lot.author.toString(), 'Deposit', lot._id.toString());
                 await this.loggingService.newLog(userId, 'buyLot', lotId);
                 await this.notificationGateWay.sendNotification({
-                    lotId,
                     to: lot.author.toString(),
                     from: userId.toString(),
-                    notification: 'lotPurchased'
+                    notification: 'lotPurchased',
+                    lotId,
                 });
                 await this.emailService.sendEmail('knozenko2@gmail.com', 'Тест Resend', '<h1>Лот куплен!</h1>');
             }

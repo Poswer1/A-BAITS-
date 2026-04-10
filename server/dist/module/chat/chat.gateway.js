@@ -30,32 +30,19 @@ let ChatGateway = class ChatGateway {
         this.server.to(to).emit('newReview', { newMessage, chatStatusText });
     }
     async newMessage(data, client) {
-        const senderId = this.activeUser.get(client.id);
+        const senderId = client.data.userId;
+        const role = client.data.role;
         if (!senderId)
             return console.log('не нашли userId при отправки сообщения');
-        const chat = await this.chatService.newMessage(senderId, data);
-        for (const [socketId, userId] of this.activeUser.entries()) {
-            if (userId === data.toUserId || userId === senderId) {
-                const sock = this.server.sockets.sockets.get(socketId);
-                sock?.emit('message', chat);
-            }
-        }
+        const chat = await this.chatService.newMessage({ chatId: data.chatId, message: data.message }, senderId.toString(), role);
+        this.server.to(data.chatId).emit('message', chat);
         return chat;
-    }
-    async readChat(data, client) {
-        const userId = client.data.userId;
-        if (!userId)
-            return console.log('айди не найден при прочтения чата');
-        const updateChat = await this.chatService.readChat(data.toUserId, userId, data.type, data.lot);
-        if (updateChat) {
-            client.emit('readChat', updateChat);
-        }
     }
     async getChatHistory(data, client) {
         const userId = this.activeUser.get(client.id);
-        if (!userId || !data.toUserId)
+        if (!data.chatId || !userId)
             return console.log('ошибка при получение истории чата');
-        const history = await this.chatService.getChatHistory(data.toUserId, data.type, userId, data.lot);
+        const history = await this.chatService.getChatHistory(data.chatId);
         client.emit('getHistory', history);
     }
     async handleConnection(client) {
@@ -74,9 +61,15 @@ let ChatGateway = class ChatGateway {
         }
         const payload = await this.jwtService.verify(token);
         const userId = payload._id;
+        const role = payload.role;
         client.join(userId);
         client.data.userId = userId;
+        client.data.role = role;
         this.activeUser.set(client.id, userId);
+        const allChats = await this.chatService.getUserChat(userId);
+        allChats.forEach(chat => {
+            client.join(chat._id.toString());
+        });
     }
 };
 exports.ChatGateway = ChatGateway;
@@ -92,14 +85,6 @@ __decorate([
     __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
     __metadata("design:returntype", Promise)
 ], ChatGateway.prototype, "newMessage", null);
-__decorate([
-    (0, websockets_1.SubscribeMessage)('readChat'),
-    __param(0, (0, websockets_1.MessageBody)()),
-    __param(1, (0, websockets_1.ConnectedSocket)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, socket_io_1.Socket]),
-    __metadata("design:returntype", Promise)
-], ChatGateway.prototype, "readChat", null);
 __decorate([
     (0, websockets_1.SubscribeMessage)('getChatHistory'),
     __param(0, (0, websockets_1.MessageBody)()),

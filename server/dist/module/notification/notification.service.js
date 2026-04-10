@@ -26,7 +26,7 @@ let NotificationService = class NotificationService {
         const notification = await notification_model_1.NotificationModel.find({ to: userId });
         return notification.some((n) => !n.read);
     }
-    async createNotification(lotId, from, to, notification) {
+    async createNotification(from, to, notification, lotId) {
         const lot = await lot_model_1.LotModel.findById(lotId);
         if (!lot) {
             console.log('лот не найден при отправке уведомления');

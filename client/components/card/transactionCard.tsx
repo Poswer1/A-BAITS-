@@ -26,19 +26,6 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
     const params = useParams()
     const lang = params.lang as string
 
-    const [returnMoney, setReturnMoney] = useState(false)
-
-    const handleReturnMoney = async () => {
-        try {
-            const data = await moneyReturn(transaction._id.toString(), transaction.user._id.toString(), transaction.lot.author.toString(), Number(transaction.sum))
-            setTransactions && setTransactions(prev => prev.map(tr => tr._id === transaction._id ? {...tr, status: data.type} : tr))
-            setReturnMoney(false)
-        } catch (error) {
-            console.error('Error returning money:', error)
-            alert('Error returning money')
-        }
-    }
-
      const date = transaction.createdAt 
             ? new Date(transaction.createdAt).toLocaleDateString('en-CA') 
             : 'Даты нету';
@@ -78,13 +65,7 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
             <span className={textObj}>Статус: <br /> <span className='text-red-500'>{transaction.status || 'НЕТУ'}</span></span>
             <span className={textObj}>{transaction.type === 'Deposit' ? t('admin', 'deposit') : t('admin', 'withdrawal')}: <br /><span className={`${transaction.status === 'Return' && 'opacity-50'} ${transaction.type === 'Deposit' ? 'text-green-500' : 'text-red-500'} font-bold text-base`}>{transaction.type === 'Deposit' ? '+' : '-'} {transaction.sum} ₴</span></span>
             <span className={textObj}>Дата: <br /> <span className="text-black">{date}</span></span>
-            {useFrom === 'admin' && (
-             <span onClick={() => setReturnMoney(true)} className={`${hover} p-2 bg-gray-100 rounded-md`}><RefreshCw /></span>
-            )}
         </div>
-        {returnMoney && (
-            <ConfirmWindow title={t('admin', 'confirmReturn')} confirmAction={() => handleReturnMoney()} cancelAction={() => setReturnMoney(false)} />
-        )}
     </div>
   )
 }

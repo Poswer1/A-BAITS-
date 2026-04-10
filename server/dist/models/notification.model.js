@@ -8,6 +8,6 @@ const NotificationSchema = new mongoose_1.Schema({
     notification: { type: String, required: true },
     lot: { type: mongoose_1.Schema.Types.ObjectId, ref: 'Lot' },
     read: { type: Boolean, default: false }
-});
+}, { timestamps: true });
 exports.NotificationModel = (0, mongoose_1.model)('Notification', NotificationSchema);
 //# sourceMappingURL=notification.model.js.map

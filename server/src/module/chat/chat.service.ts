@@ -1,121 +1,142 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { ChatModel } from "src/models/chat.model";
 import { Types } from "mongoose";
-import { LotModel } from "src/models/lot.model";
-import { log } from "console";
+import { EmailService } from "../email/email.service";
+import { NotificationService } from "../notification/notification.service";
+import { NotificationGateway } from "../notification/notification.gateway";
 
 @Injectable()
 export class ChatService {
-    async newMessage(userId:string, data: any) {
+
+    constructor (
+        private readonly emailService:EmailService,
+        private readonly notificationGateway:NotificationGateway
+    ) {}
+
+    async newMessage(data: {chatId:string, message:string}, userId:string, role:string) {
         if(!userId || !data) return console.log('не нашли данные при создание сообщения')
            
-        let chat = await ChatModel.findOne({
-            $or: [
-                {userFrom: userId, userTo: data.toUserId},
-                {userFrom: data.toUserId, userTo: userId}
-            ],
-            type: data.type
-        }) 
+        let chat = await ChatModel.findById(data.chatId)
 
-        if(!chat) {
-            const lotDoc = await LotModel.findOne({ lotNumber: data.numberLot }).select('_id');
-            chat = await ChatModel.create({
-                userFrom: new Types.ObjectId(userId),
-                userTo: new Types.ObjectId(data.toUserId),
-                lot: lotDoc?._id,
-                type: 'default',
-                messages: []
-            })
-        }
+        if(!chat) throw new BadRequestException()
+
+        const myInterlocutor = chat.users.filter(u => u._id.toString() !== userId.toString())
+
 
         const newMessage = {
             from: new Types.ObjectId(userId),
-            to: new Types.ObjectId(data.toUserId),
+            to: new Types.ObjectId(myInterlocutor[0]),
             message: data.message,
-            read: false,
+            status: role,
             createdAt: new Date()
         }
 
         chat.messages.push(newMessage)
         await chat.save()
 
+        await chat.populate('users', 'avatar name')
+        const populatedFrom = chat.users.find(u => u._id.equals(newMessage.from))
+        return {
+        ...newMessage,
+        from: populatedFrom || {_id: newMessage.from} 
+        }
+    }
 
-        return newMessage;
+    async inviteAdmin(id:string) {
+        const link = `http://localhost:3000/confirmInvite/${id}`;
+        const html = `
+                <div style="font-family: Arial, sans-serif;">
+                    <h2>Присоедениться к чату</h2>
+                    <a href="${link}"
+                    style="
+                        display: inline-block;
+                        padding: 14px 24px;
+                        background: #ea580c;
+                        color: #ffff;
+                        text-decoration: none;
+                        border-radius: 8px;
+                        font-size: 16px;
+                    ">
+                    Присоедениться к чату
+                    </a>
+
+                    <p style="margin-top: 20px; font-size: 12px; color: gray;">
+                    Если кнопка не работает, перейди по ссылке:
+                    <br/>
+                    "${link}"
+                    </p>
+                </div>
+            `;
+        await this.emailService.sendEmail('knozenko2@gmail.com', 'Приглашение модератора в чат', html)
+        return {success:true}
+    }
+
+    async confirmInvite(lotId:string, userId:string) {
+        try {
+            await ChatModel.findOneAndUpdate(
+                {
+                    _id: lotId,
+                    "users": {$ne:userId}
+                },
+                {
+                    $push: {
+                        users: userId
+                    }
+                }
+            )
+            return {success:true}
+        } catch (error) {
+            console.log(error)
+            throw new BadRequestException('errorConfirmInvite')
+        }
+    }
+
+    async getUserChat(userId:string) {
+        try {
+            const allChats = await ChatModel.find({
+               users: { $in: [userId]}
+            })
+            return allChats
+        } catch (error) {
+            throw error
+        }
     }
 
     async getMyChat(userId:string) {
         try {
             const allChats = await ChatModel.find({
-                $or: [
-                    {userFrom: userId},
-                    {userTo: userId}
-                ],
+               users: { $in: [userId] }
             })
-            .populate('userFrom userTo', 'name avatar')
+            .populate('users', 'name avatar')
             .populate('lot', 'name images type status')
             
-            const unReadChats: typeof allChats = [];
-            const readChats: typeof allChats = [];
+            const ActiveChat: typeof allChats = [];
+            const NotActiveChat: typeof allChats = [];
 
             allChats.forEach(chat => {
-                const hasUnread = chat.messages.some(
-                    msg => msg.to.toString() === userId && !msg.read
-                );
-                if (hasUnread) {
-                    unReadChats.push(chat); // чаты с непрочитанными
+                const hasActive = chat.status === 'Active'
+                if (hasActive) {
+                    ActiveChat.push(chat); 
                 } else {
-                     readChats.push(chat); // все остальные чаты
+                    NotActiveChat.push(chat); 
                 }
             });
-            return {unReadChats, readChats}
+            return {ActiveChat, NotActiveChat}
 
-        } catch (error) {
+        } catch (error:any) {
             throw new BadRequestException('Ошибка при получение всех моих чатов',error)
         }
     }
 
-    async readChat(toUserId:string, fromUserId:string, type:string, lot:string) {
-        const updateChat = await ChatModel.findOneAndUpdate(
-        {
-            $or: [
-            { userFrom: fromUserId, userTo: toUserId },
-            { userFrom: toUserId, userTo: fromUserId }
-            ],
-            type,
-            lot,
-            "messages.to": fromUserId,
-            "messages.read": false
-        },
-        {
-            $set: {
-            "messages.$[elem].read": true
-            }
-        },
-        {
-        arrayFilters: [
-        { "elem.to": fromUserId, "elem.read": false } // берет каждый элемент массива и выполняет $set там где подходит наши условия
-        ],
-        returnDocument: 'after'
-        }
-        )
-        .populate('userFrom userTo', 'name avatar')
-        .populate('lot', 'name images startPrice lotNumber _id')
-        return updateChat
-    }
-
-    async getChatHistory(toUserId:string, type:string, userId:string, lot:string) {
+    async getChatHistory(chatId:string) {
         try {
-            const history = await ChatModel.findOne({
-                $or: [
-                    {userFrom: toUserId, userTo: userId},
-                    {userFrom: userId, userTo: toUserId},
-                ],
-                type: type,
-                lot:lot,
-            }).populate('lot', 'name images startPrice lotNumber _id')
+            const history = await ChatModel.findById(chatId)
+            .populate('users', 'avatar name')
+            .populate('messages.from', 'avatar name _id')
+            .populate('lot', 'name images startPrice lotNumber')
             if(!history) return {historyMessage: [], numberLot: null};
             return {history}
-        } catch (error) {
+        } catch (error:any) {
             throw new BadRequestException('Ошибка при получение истории чата',error)
         }
     }

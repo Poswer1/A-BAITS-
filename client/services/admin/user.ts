@@ -51,14 +51,14 @@ export async function getUserCount() {
     return dataReturn(res)
 }
 
-export async function updateBalance(id:string, balance:number) {
+export async function updateBalance(id:string, balance:number, balanceType:string) {
     const res = await fetch(`${BASE_URL}/ActionOnTheUser/updateBalance/${id}`, {
         method: 'PATCH',
         headers: {
         'Content-Type': 'application/json'
         },
         credentials: 'include',
-        body: JSON.stringify({ balance })
+        body: JSON.stringify({ balance, balanceType})
     })
 
     return dataReturn(res)

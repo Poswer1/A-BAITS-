@@ -26,7 +26,7 @@ export class NotificationService {
         return notification.some((n:any) => !n.read)
     }
 
-    async createNotification(lotId:string, from:string, to:string, notification:string) {
+    async createNotification(from:string, to:string, notification:string, lotId:string) {
         
         const lot = await LotModel.findById(lotId)
         if(!lot) {

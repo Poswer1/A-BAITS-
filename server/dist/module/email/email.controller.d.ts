@@ -3,7 +3,7 @@ import { SendMessageDto } from "./email.dto";
 export declare class EmailController {
     private readonly emailService;
     constructor(emailService: EmailService);
-    sendEmail(dto: SendMessageDto): Promise<any>;
+    sendEmail(dto: SendMessageDto): Promise<import("resend").CreateEmailResponse>;
     comparisonCode(code: string): Promise<{
         success: boolean;
     }>;

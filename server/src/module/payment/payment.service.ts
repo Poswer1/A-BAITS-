@@ -67,8 +67,7 @@ export class PaymentService {
         await ChatModel.create(
         [
             {
-            userTo: lot.author,
-            userFrom: userId,
+            users: [lot.author, userId],
             lot: lot._id,
             type: 'deal'
             }
@@ -85,10 +84,10 @@ export class PaymentService {
             await this.loggingService.newLog(userId, 'buyLot', lotId)
 
             await this.notificationGateWay.sendNotification({
-                lotId,
                 to: lot.author.toString(),
                 from: userId.toString(),
-                notification: 'lotPurchased'
+                notification: 'lotPurchased',
+                lotId,
             })
             
             await this.emailService.sendEmail(

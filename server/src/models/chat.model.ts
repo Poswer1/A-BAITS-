@@ -5,13 +5,12 @@ export interface Message {
     from: Types.ObjectId;
     to:Types.ObjectId;
     message: string;
-    read: boolean;
-    createdAt:Date
+    status:string;
+    createdAt:Date;
 }
 
  export interface Chat extends Document {
-   userFrom: Types.ObjectId,
-   userTo: Types.ObjectId,
+   users: Types.ObjectId[]
    type: string,
    lot: Types.ObjectId,
    status: string,
@@ -21,8 +20,7 @@ export interface Message {
 
  const ChatSchema = new Schema<Chat> (
     {
-      userFrom: {type: Schema.Types.ObjectId, ref: "User", required: true},
-      userTo: {type: Schema.Types.ObjectId, ref: "User", required: true},
+      users: [{ type: Schema.Types.ObjectId, ref: 'User' }],
       type: {type:String, default: 'default'},
       lot: {type: Schema.Types.ObjectId, ref: "Lot",},
       status: {type:String, default: 'Active'},
@@ -31,7 +29,7 @@ export interface Message {
          from:{ type: Schema.Types.ObjectId, ref: "User", required: true},
          to:{ type: Schema.Types.ObjectId, ref: "User", required: true},
          message: {type: String, required: true},
-         read: {type: Boolean, default: false},
+         status: {type:String, default: 'user'},
          createdAt: {type:Date, default: new Date()}
       }],
     },

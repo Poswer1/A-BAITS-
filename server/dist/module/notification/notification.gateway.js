@@ -55,13 +55,13 @@ let NotificationGateway = class NotificationGateway {
     async sendNotification(data) {
         const { to, from, notification, lotId } = data;
         if (from) {
-            const newNotification = await this.notificationService.createNotification(lotId, from, to, notification);
+            const newNotification = await this.notificationService.createNotification(from, to, notification, lotId);
             for (const id of [to, from]) {
                 this.server.to(id).emit('newNotification', newNotification);
             }
         }
         else {
-            const newNotification = await this.notificationService.createNotification(lotId, 'empty', to, notification);
+            const newNotification = await this.notificationService.createNotification('empty', to, notification, lotId);
             this.server.to(to).emit('newNotification', newNotification);
         }
     }

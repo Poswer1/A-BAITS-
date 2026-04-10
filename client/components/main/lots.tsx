@@ -5,6 +5,7 @@ import { LotTypes } from '@/types/types'
 import { useTranslation } from '@/app/context/TranslationProvider'
 import { ArrowLeft, ArrowRight } from 'lucide-react'
 import { hover } from '@/styles/style'
+import Link from 'next/link'
 
 interface LotsProps {
     allLot:LotTypes[],
@@ -23,6 +24,7 @@ export default function Lots({allLot, mode}: LotsProps) {
     const title2 = mode === '1hryvnia' ? 
     t('main', 'from1hryvnia') : t('main', 'lots')
 
+
     if(allLot.length === 0) return null
 
   return (
@@ -32,7 +34,7 @@ export default function Lots({allLot, mode}: LotsProps) {
             {allLot.slice(0, 4).map((lot) => (
               <LotCard key={lot._id} lot={lot}/>
             ))}
-            <span className={`${hover} p-2 bg-orange-600 text-white rounded-full`}><ArrowRight /></span>
+            {/* <Link href={''} className={`${hover} p-2 bg-orange-600 text-white rounded-full`}><ArrowRight /></Link> */}
         </div>
     </div>
   )

@@ -12,12 +12,14 @@ const chat_service_1 = require("./chat.service");
 const chat_controller_1 = require("./chat.controller");
 const auth_module_1 = require("../auth/auth.module");
 const chat_gateway_1 = require("./chat.gateway");
+const email_module_1 = require("../email/email.module");
+const notification_module_1 = require("../notification/notification.module");
 let ChatModule = class ChatModule {
 };
 exports.ChatModule = ChatModule;
 exports.ChatModule = ChatModule = __decorate([
     (0, common_1.Module)({
-        imports: [auth_module_1.AuthModule],
+        imports: [auth_module_1.AuthModule, email_module_1.EmailModule, notification_module_1.NotificationModule],
         providers: [chat_service_1.ChatService, chat_gateway_1.ChatGateway],
         controllers: [chat_controller_1.ChatController],
         exports: [chat_gateway_1.ChatGateway]

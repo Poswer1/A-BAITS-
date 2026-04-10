@@ -48,6 +48,7 @@ export class LotService {
             const userUpdate = await UserModel.updateOne(
             {
               _id:userId,
+              status: 'No restrictions',
               balance: {$gte: summaryPrice}
             },
             {
@@ -259,7 +260,7 @@ export class LotService {
       return
     }
 
-    const limit = 4
+    const limit = 10
     const currentPage = Number(page) || 1
 
     const [allLots, totalLots] = await Promise.all([
@@ -278,7 +279,7 @@ export class LotService {
     let filter:any = {}
     const currentPage = Number(page) || 1
 
-    const limit = 4
+    const limit = 10
 
     if(mode === 'sell' ) {
       filter.author = userId
@@ -333,7 +334,7 @@ export class LotService {
     const max = Number(maxPrice)
 
     const page = Math.max(Number(query.page) || 1, 1)
-    const limit = 10
+    const limit = 25
 
     let sortOption: Record<string, SortOrder> = { startPrice: 'asc' }
     if(sort) { // asc по возрастанию // desc по убыванию

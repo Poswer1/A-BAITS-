@@ -7,7 +7,7 @@ import { getCountRegisteredUsers, getUserCount } from "@/services/admin/user"
 import { hover } from "@/styles/style"
 import { useEffect, useState } from "react"
 
-interface Date {
+interface DateProps {
     day: {
         createdAt:Date
         startPrice:number
@@ -26,10 +26,10 @@ export default function page() {
 
     const {t} = useTranslation()
 
-    const [allTurnover, setAllTurnover] = useState<Date | null>(null)
-    const [registeredUsers, setRegisteredUsers] = useState<Date | null>(null)
-    const [lotsCount, setLotsCount] = useState<Date | null>(null)
-    const [selectedTimeframe, setSelectedTimeframe] = useState('week')
+    const [allTurnover, setAllTurnover] = useState<DateProps | null>(null)
+    const [registeredUsers, setRegisteredUsers] = useState<DateProps | null>(null)
+    const [lotsCount, setLotsCount] = useState<DateProps | null>(null)
+    const [selectedTimeframe, setSelectedTimeframe] = useState<'day' | 'week' | 'month'>('week');
 
     useEffect(() => {
         getAllTurnover()

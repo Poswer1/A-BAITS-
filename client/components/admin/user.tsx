@@ -13,10 +13,11 @@ import { AlertTriangle, Ban, ChevronLeft, Delete, Edit, Edit2, Search, Trash, Tr
 import ConfirmWindow from './confirmWindow'
 import { blockObj, textObj } from '@/styles/admin'
 import Countdown from '../ui/countdown'
-import { button } from '@/styles/global'
+import { button, overlay } from '@/styles/global'
 import SearchBlock from '../ui/search'
 import Toast from '../ui/toast'
 import TitleSection from './titleSection'
+import InputField from '../ui/inputFields'
 
 interface listUserProps {
     listUser: UserTypes[]
@@ -37,6 +38,7 @@ export default  function User({listUser}: listUserProps) {
     const [newBalance, setNewBalance] = useState(0)
     const [searchValue, setSearchValue] = useState('')
     const [balanceEdit, setBalanceEdit] = useState('')
+    const [balanceType, setBalanceType] = useState('')
     const [openConfirm, setOpenConfirm] = useState(false)
 
      const handleChangeStatus = async (id:string) => {
@@ -58,10 +60,13 @@ export default  function User({listUser}: listUserProps) {
         }
   }
 
-  const handleUpdateBalance = async (id:string) => {
+  const handleUpdateBalance = async () => {
+    if(!balanceEdit) return
     try {
-      const data = await updateBalance(id, newBalance)
-      setListUsers(prev => prev.map(user => user._id === id ? {...user, balance: data.balance} : user))
+      const data = await updateBalance(balanceEdit, newBalance, balanceType)
+      setListUsers(prev => prev.map(user => user._id === balanceEdit ? {...user, balance: data.balance} : user))
+      setBalanceEdit('')
+      setBalanceType('')
       setMessage(t('admin', 'successUpdateBalance'))
        setTimeout(() => {
         setMessage('')
@@ -155,20 +160,12 @@ export default  function User({listUser}: listUserProps) {
                       </span>
                     )}
                   </div>
-                  <div className={`justify-start items-center gap-4 ${user._id === balanceEdit ? 'hidden' : 'flex'}`}>
+                  <div className={`justify-start items-center gap-4 flex`}>
                     <button onClick={() => setBalanceEdit(user._id)} className={`${hover} rounded-md !p-2 bg-gray-100`}><Wallet /></button>
                     <button className={`${user.status === 'Blocked' ? 'bg-green-500' : 'bg-red-500'} ${hover} p-2 text-white rounded-md`} onClick={() => handleChangeStatus(user._id)}>{user.status === 'Blocked' ? <Unlock />: <Ban />}</button>
                     <button onClick={() => handleTemporary(user._id)} className={`${button} bg-yellow-400 !p-2`}>{user.status === 'Temporary' ? <Unlock /> : <AlertTriangle />}</button>
                     <button className={`${hover}`} onClick={() => {setId(user._id), setEdit(true)}}><Edit2/></button>
                     <span className={`${hover} text-red-500`} onClick={() => {setOpenConfirm(true), setId(user._id)}}><Trash2 /></span>
-                  </div>
-                  <div className={`justify-start items-center gap-4 ${user._id === balanceEdit ? 'flex' : 'hidden'}`}>
-                    <input type="number" className='outline-none border border-gray-300 rounded-md p-2' 
-                    defaultValue={user.balance} 
-                    value={newBalance}
-                    onChange={(e) => setNewBalance(Number(e.target.value))} />
-                    <button onClick={() => handleUpdateBalance(user._id)} className={`${hover} bg-gray-100 rounded-md !p-2`}>{t('admin', 'saveBalance')}</button>
-                    <X className={hover} onClick={() => setBalanceEdit('')}/>
                   </div>
                 </div>
               )
@@ -178,6 +175,24 @@ export default  function User({listUser}: listUserProps) {
         <Toast message={message} error={error}/>
         {openConfirm && (
          <ConfirmWindow cancelAction={() => setOpenConfirm(false)} confirmAction={() => handleDeleteUser(id)} title={t('admin', 'confirmDeleteUser')}/>
+        )}
+        {balanceEdit && (
+          <div className={overlay} onClick={() => {setBalanceEdit(''), setBalanceType('')}}>
+            <div onClick={(e) => e.stopPropagation()} className={`${animationScale} flex flex-col justify-center items-start p-2 bg-white rounded-xl w-[90%] md:w-1/4 gap-2`}>
+              <h1 className='text-xl'>{balanceType ? t('admin', balanceType) :  t('admin', 'selectTypeBalance')}</h1>
+              {balanceType ? (
+                <>
+                  <InputField label='' placeholder={t('admin', balanceType)} type='number' value={newBalance} onChange={setNewBalance}/>
+                  <button onClick={handleUpdateBalance} className={`${button} w-full`}>{t('admin', balanceType)}</button>
+                </>
+              ): (
+                <>
+                  <button onClick={() => setBalanceType('Deposite')} className={`${button} w-full`}>{t('admin', 'Deposite')}</button>
+                  <button onClick={() => setBalanceType('Debit')} className={`${button} !bg-gray-200 !text-black w-full`}>{t('admin', 'Debit')}</button>
+                </>
+              )}
+            </div>
+          </div>
         )}
     </div>
   )

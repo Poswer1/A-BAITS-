@@ -16,6 +16,7 @@ export default function ClientLayout({children}: {children: React.ReactNode}) {
   const hidden = path.includes('profile') || path.includes('review') || path.includes('auth') || path.includes('admin')
   const hiddenFooter = path.includes('createLot') || path.includes('profile') || path.includes('review') || path.includes('auth') || path.includes('admin')
   const showViolation = path.includes('createLot') || path.includes('editLot')
+  const hiddenBlockModal = path.includes('auth')
 
   return (
     <>
@@ -23,7 +24,7 @@ export default function ClientLayout({children}: {children: React.ReactNode}) {
       {!hiddenHeader && <Header />}
       {!hidden && <Navbar/>}
         {children}
-      <BlockedModal mode='general'/>
+      {!hiddenBlockModal && <BlockedModal mode='general'/>}
       {showViolation && <BlockedModal mode=''/>}
       {!hiddenFooter && <Footer />}
     </SocketIo>

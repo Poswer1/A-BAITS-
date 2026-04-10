@@ -18,7 +18,7 @@ export declare class UserController {
         status: string;
         unBlockDate: Date;
     }>;
-    updateBalance(balance: number, id: string): Promise<{
+    updateBalance(balance: number, balanceType: string, id: string): Promise<{
         balance: number;
     }>;
     deleteUser(id: string): Promise<{

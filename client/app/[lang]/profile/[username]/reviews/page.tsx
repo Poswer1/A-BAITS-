@@ -1,9 +1,5 @@
-import AvatarBlock from '@/components/ui/avatar'
-import Link from 'next/link'
-import Rating from '@/components/review/rating'
 import { ReviewTypes } from '@/types/types'
 import { getReviewUser } from '@/services/review'
-import { getRelativeTime } from '@/components/ui/relativeTime'
 import Pagination from '@/components/ui/pagination'
 import ReviewBlock from '@/components/review/reviewBlock'
 

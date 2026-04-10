@@ -8,7 +8,7 @@ import { useParams } from 'next/navigation';
 interface ScheduleProps {
     data: {
         createdAt: string,
-        total: number
+        startPrice: number
     }[]
     title: string
 }
@@ -21,7 +21,7 @@ export default function Schedule({ data, title}: ScheduleProps) {
 
   const formattedData = data?.map(item => ({
       ...item,
-      formattedDate: getRelativeTime(item.createdAt, lang),
+      formattedDate: new Date(item.createdAt).toLocaleDateString('ru-RU')
   })) 
 
   const useWith = title === t('admin', 'TotalTurnover') ? 'price' : 'count'

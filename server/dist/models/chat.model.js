@@ -3,8 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChatModel = void 0;
 const mongoose_1 = require("mongoose");
 const ChatSchema = new mongoose_1.Schema({
-    userFrom: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
-    userTo: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
+    users: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'User' }],
     type: { type: String, default: 'default' },
     lot: { type: mongoose_1.Schema.Types.ObjectId, ref: "Lot", },
     status: { type: String, default: 'Active' },
@@ -13,7 +12,7 @@ const ChatSchema = new mongoose_1.Schema({
             from: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
             to: { type: mongoose_1.Schema.Types.ObjectId, ref: "User", required: true },
             message: { type: String, required: true },
-            read: { type: Boolean, default: false },
+            status: { type: String, default: 'user' },
             createdAt: { type: Date, default: new Date() }
         }],
 }, { timestamps: true });

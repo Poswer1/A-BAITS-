@@ -11,13 +11,14 @@ const common_1 = require("@nestjs/common");
 const notification_module_1 = require("../notification/notification.module");
 const cron_service_1 = require("./cron.service");
 const payment_module_1 = require("../payment/payment.module");
+const cronBlocked_1 = require("./cronBlocked");
 let CronModule = class CronModule {
 };
 exports.CronModule = CronModule;
 exports.CronModule = CronModule = __decorate([
     (0, common_1.Module)({
         imports: [notification_module_1.NotificationModule, payment_module_1.PaymentModule],
-        providers: [cron_service_1.CronSerivce],
+        providers: [cron_service_1.CronSerivce, cronBlocked_1.cronBlocked],
     })
 ], CronModule);
 //# sourceMappingURL=cron.module.js.map

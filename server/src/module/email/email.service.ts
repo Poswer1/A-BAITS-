@@ -7,16 +7,16 @@ import { UserModel } from "src/models/user.model";
 
 @Injectable()
 export class EmailService {
-    // private resend = new Resend('re_KM6fi1ap_JHxSaNSfZVsF35yBnpX7fvhF')
+    private resend = new Resend('re_KM6fi1ap_JHxSaNSfZVsF35yBnpX7fvhF')
 
-    // async sendEmail(to: string, subject: string, html: string) {
-    //     return this.resend.emails.send({
-    //         from: "onboarding@resend.dev",
-    //         to,
-    //         subject,
-    //         html
-    //     })
-    // }
+    async sendEmail(to: string, subject: string, html: string) {
+        return this.resend.emails.send({
+            from: "onboarding@resend.dev",
+            to,
+            subject,
+            html
+        })
+    }
 
     async Newsletter (subject:string, html:string) {
         const allUser = await UserModel.find({})

@@ -1,4 +1,6 @@
 export declare class EmailService {
+    private resend;
+    sendEmail(to: string, subject: string, html: string): Promise<import("resend").CreateEmailResponse>;
     Newsletter(subject: string, html: string): Promise<{
         success: boolean;
     }>;

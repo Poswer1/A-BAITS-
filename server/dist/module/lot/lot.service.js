@@ -81,6 +81,7 @@ let LotService = class LotService {
             if (summaryPrice > 0) {
                 const userUpdate = await user_model_1.UserModel.updateOne({
                     _id: userId,
+                    status: 'No restrictions',
                     balance: { $gte: summaryPrice }
                 }, {
                     $inc: { balance: -summaryPrice }
@@ -263,7 +264,7 @@ let LotService = class LotService {
             console.log('пользователь не найден при получени товаров по именни');
             return;
         }
-        const limit = 4;
+        const limit = 10;
         const currentPage = Number(page) || 1;
         const [allLots, totalLots] = await Promise.all([
             await lot_model_1.LotModel.find({ author: user._id })
@@ -277,7 +278,7 @@ let LotService = class LotService {
         const { status, mode, page } = query;
         let filter = {};
         const currentPage = Number(page) || 1;
-        const limit = 4;
+        const limit = 10;
         if (mode === 'sell') {
             filter.author = userId;
             if (status)
@@ -327,7 +328,7 @@ let LotService = class LotService {
         const min = Number(minPrice);
         const max = Number(maxPrice);
         const page = Math.max(Number(query.page) || 1, 1);
-        const limit = 10;
+        const limit = 25;
         let sortOption = { startPrice: 'asc' };
         if (sort) {
             sortOption = sort === 'LowToUp' ? { startPrice: 'asc' } : { startPrice: 'desc' };

@@ -3,12 +3,11 @@ export interface Message {
     from: Types.ObjectId;
     to: Types.ObjectId;
     message: string;
-    read: boolean;
+    status: string;
     createdAt: Date;
 }
 export interface Chat extends Document {
-    userFrom: Types.ObjectId;
-    userTo: Types.ObjectId;
+    users: Types.ObjectId[];
     type: string;
     lot: Types.ObjectId;
     status: string;

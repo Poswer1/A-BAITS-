@@ -1,36 +1,52 @@
 import { Types } from "mongoose";
+import { EmailService } from "../email/email.service";
+import { NotificationGateway } from "../notification/notification.gateway";
 export declare class ChatService {
-    newMessage(userId: string, data: any): Promise<void | {
-        from: Types.ObjectId;
+    private readonly emailService;
+    private readonly notificationGateway;
+    constructor(emailService: EmailService, notificationGateway: NotificationGateway);
+    newMessage(data: {
+        chatId: string;
+        message: string;
+    }, userId: string, role: string): Promise<void | {
+        from: Types.ObjectId | {
+            _id: Types.ObjectId;
+        };
         to: Types.ObjectId;
-        message: any;
-        read: boolean;
+        message: string;
+        status: string;
         createdAt: Date;
     }>;
-    getMyChat(userId: string): Promise<{
-        unReadChats: (import("mongoose").Document<unknown, {}, import("src/models/chat.model").Chat, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/chat.model").Chat & Required<{
-            _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        } & {
-            id: string;
-        })[];
-        readChats: (import("mongoose").Document<unknown, {}, import("src/models/chat.model").Chat, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/chat.model").Chat & Required<{
-            _id: Types.ObjectId;
-        }> & {
-            __v: number;
-        } & {
-            id: string;
-        })[];
+    inviteAdmin(id: string): Promise<{
+        success: boolean;
     }>;
-    readChat(toUserId: string, fromUserId: string, type: string, lot: string): Promise<(import("mongoose").Document<unknown, {}, import("src/models/chat.model").Chat, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/chat.model").Chat & Required<{
+    confirmInvite(lotId: string, userId: string): Promise<{
+        success: boolean;
+    }>;
+    getUserChat(userId: string): Promise<(import("mongoose").Document<unknown, {}, import("src/models/chat.model").Chat, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/chat.model").Chat & Required<{
         _id: Types.ObjectId;
     }> & {
         __v: number;
     } & {
         id: string;
-    }) | null>;
-    getChatHistory(toUserId: string, type: string, userId: string, lot: string): Promise<{
+    })[]>;
+    getMyChat(userId: string): Promise<{
+        ActiveChat: (import("mongoose").Document<unknown, {}, import("src/models/chat.model").Chat, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/chat.model").Chat & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        NotActiveChat: (import("mongoose").Document<unknown, {}, import("src/models/chat.model").Chat, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/chat.model").Chat & Required<{
+            _id: Types.ObjectId;
+        }> & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+    }>;
+    getChatHistory(chatId: string): Promise<{
         historyMessage: never[];
         numberLot: null;
         history?: undefined;

@@ -8,6 +8,7 @@ export class FinanceService {
 
     async getAllTransactions () {
         const allTransactions = await TransactionModel.find({})
+        .sort({createdAt: -1})
         .populate('user', 'name avatar')
         .populate('lot', 'name lotNumber images author');
         return allTransactions;
@@ -17,6 +18,7 @@ export class FinanceService {
         const user = await UserModel.findById(userId)
         if(!user) throw new BadRequestException('userNotFound')
         const allTransactions = await TransactionModel.find({user: userId})
+        .sort({createdAt: -1})
         .populate('lot', 'images name lotNumber')
         .populate('user', 'avatar name')
         return {allTransactions:allTransactions, currentBalance: user.balance}

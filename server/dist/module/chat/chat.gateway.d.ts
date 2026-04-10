@@ -9,26 +9,19 @@ export declare class ChatGateway {
     server: Server;
     newReview(to: string, newMessage: any, chatStatusText: string): Promise<void>;
     newMessage(data: {
-        toUserId: string;
+        chatId: string;
         message: string;
-        numberLot: string;
-        type: string;
     }, client: Socket): Promise<void | {
-        from: import("mongoose").Types.ObjectId;
+        from: import("mongoose").Types.ObjectId | {
+            _id: import("mongoose").Types.ObjectId;
+        };
         to: import("mongoose").Types.ObjectId;
-        message: any;
-        read: boolean;
+        message: string;
+        status: string;
         createdAt: Date;
     }>;
-    readChat(data: {
-        toUserId: string;
-        type: string;
-        lot: string;
-    }, client: Socket): Promise<void>;
     getChatHistory(data: {
-        toUserId: string;
-        type: string;
-        lot: string;
+        chatId: string;
     }, client: Socket): Promise<void>;
     handleConnection(client: Socket): Promise<void>;
 }

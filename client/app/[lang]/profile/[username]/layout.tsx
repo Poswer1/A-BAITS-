@@ -57,7 +57,7 @@ export default function Layout({children}: {children: React.ReactNode}) {
           <div className='flex flex-col justify-start items-start w-full gap-5'>
           <Sidebar mode='sidebarProfile' active={acitveLink} name={username}/>
             <div className='flex flex-col justify-start items-start gap-4 w-full'>
-              <ProfiteHeader user={user}/>
+              <ProfiteHeader user={user!}/>
               {children}
             </div>
           </div>

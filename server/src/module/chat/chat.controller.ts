@@ -1,7 +1,8 @@
-import { Controller, Get, Param, Post, Req, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, Patch, Post, Req, UseGuards } from "@nestjs/common";
 import { ChatService } from "./chat.service";
 import { JwtAuthGuard } from "../auth/jwt/jwt-auth-guard";
 import { CurrentUser } from "src/decorator/current-user.decorator";
+import { RolesGuard } from "../admin/role.guards";
 
 @Controller('chat')
 export class ChatController {
@@ -12,6 +13,19 @@ export class ChatController {
     @Get('getMyChat')
     async getMyChat(@CurrentUser('id') userId:string) {
         return this.chatService.getMyChat(userId)
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('inviteAdmin/:id')
+    async inviteAdmin(@CurrentUser('id') userId:string) {
+        return this.chatService.inviteAdmin(userId)
+    }
+
+    @UseGuards(RolesGuard)
+    @UseGuards(JwtAuthGuard)
+    @Patch('confirmInvite/:id')
+    async confirmInvite(@Param('id') id:string, @CurrentUser('id') userId:string) {
+        return this.chatService.confirmInvite(id, userId)
     }
 
 }
