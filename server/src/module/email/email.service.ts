@@ -1,5 +1,6 @@
 
 import { BadRequestException, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
 import { Resend } from "resend";
 import { TemplatesMessageModel } from "src/models/templatesMessage";
 import { TempoparyCode } from "src/models/TemporaryCode";
@@ -7,7 +8,13 @@ import { UserModel } from "src/models/user.model";
 
 @Injectable()
 export class EmailService {
-    private resend = new Resend('re_KM6fi1ap_JHxSaNSfZVsF35yBnpX7fvhF')
+
+    private resend: Resend;
+
+    constructor(private readonly configService: ConfigService) {
+        const key = this.configService.get<string>('RESEND_API_KEY');
+        this.resend = new Resend(key);
+    }
 
     async sendEmail(to: string, subject: string, html: string) {
         return this.resend.emails.send({

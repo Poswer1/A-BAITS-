@@ -30,7 +30,8 @@ export class PaymentService {
         session.startTransaction()
         
 
-        const lot = await LotModel.findById(lotId).session(session)
+        const lot = await LotModel.findById(lotId)
+        .session(session)
         if (!lot) throw new Error('лот не найден')
 
         const lotPrice = price ?? lot.blitzPrice
@@ -78,7 +79,7 @@ export class PaymentService {
          await session.commitTransaction()
 
         try {
-            await this.financeService.createTransaction(lotPrice, userId, 'Debit', lot._id.toString())
+            await this.financeService.createTransaction(lotPrice, userId.toString(), 'Debit', lot._id.toString())
             await this.financeService.createTransaction(priceWithCommission, lot.author.toString(), 'Deposit', lot._id.toString())
 
             await this.loggingService.newLog(userId, 'buyLot', lotId)
@@ -89,9 +90,12 @@ export class PaymentService {
                 notification: 'lotPurchased',
                 lotId,
             })
-            
+
+            const authorEmail = await UserModel.findById(lot.author).select('email')
+            if(!authorEmail) throw new BadRequestException('authorEmailNotFound')
+
             await this.emailService.sendEmail(
-                'knozenko2@gmail.com',
+                authorEmail?.email.toString(),
                 'Тест Resend',
                 '<h1>Лот куплен!</h1>'
             )

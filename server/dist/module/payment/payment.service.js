@@ -38,7 +38,8 @@ let PaymentService = class PaymentService {
         const session = await mongoose_1.default.startSession();
         try {
             session.startTransaction();
-            const lot = await lot_model_1.LotModel.findById(lotId).session(session);
+            const lot = await lot_model_1.LotModel.findById(lotId)
+                .session(session);
             if (!lot)
                 throw new Error('лот не найден');
             const lotPrice = price ?? lot.blitzPrice;
@@ -64,7 +65,7 @@ let PaymentService = class PaymentService {
             ], { session });
             await session.commitTransaction();
             try {
-                await this.financeService.createTransaction(lotPrice, userId, 'Debit', lot._id.toString());
+                await this.financeService.createTransaction(lotPrice, userId.toString(), 'Debit', lot._id.toString());
                 await this.financeService.createTransaction(priceWithCommission, lot.author.toString(), 'Deposit', lot._id.toString());
                 await this.loggingService.newLog(userId, 'buyLot', lotId);
                 await this.notificationGateWay.sendNotification({
@@ -73,7 +74,10 @@ let PaymentService = class PaymentService {
                     notification: 'lotPurchased',
                     lotId,
                 });
-                await this.emailService.sendEmail('knozenko2@gmail.com', 'Тест Resend', '<h1>Лот куплен!</h1>');
+                const authorEmail = await user_model_1.UserModel.findById(lot.author).select('email');
+                if (!authorEmail)
+                    throw new common_1.BadRequestException('authorEmailNotFound');
+                await this.emailService.sendEmail(authorEmail?.email.toString(), 'Тест Resend', '<h1>Лот куплен!</h1>');
             }
             catch (externalError) {
                 console.error('Ошибка внешних операций:', externalError);

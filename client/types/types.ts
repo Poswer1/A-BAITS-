@@ -76,6 +76,7 @@ export interface NotificationTypes {
     to:string,
     from:string,
     notification:string,
+    createdAt: Date,
     lot?:{
     _id: string
     name: string
@@ -88,15 +89,18 @@ export interface MessageType  {
   _id: string
   message: string
   createdAt: string
-  from: string
+  from: {
+    _id: string
+    avatar: string
+    name: string
+  }
   to: string
+  status: string
 }
 
 export interface ChatTypes {
   _id: string;
-  users: {
-    _id:string
-  }[]
+  users: UserTypes[]
   type: string;
   lot: {
     _id: string
@@ -154,6 +158,7 @@ export interface LotTypes {
       _id: string
       name: string
       avatar: string
+      email:string
       rating: number
     }
     lotNumber:string,

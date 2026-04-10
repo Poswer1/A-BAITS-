@@ -22,6 +22,8 @@ interface DateProps {
     }[],
 }
 
+type Timeframe = 'day' | 'week' | 'month'
+
 export default function page() {
 
     const {t} = useTranslation()
@@ -29,7 +31,7 @@ export default function page() {
     const [allTurnover, setAllTurnover] = useState<DateProps | null>(null)
     const [registeredUsers, setRegisteredUsers] = useState<DateProps | null>(null)
     const [lotsCount, setLotsCount] = useState<DateProps | null>(null)
-    const [selectedTimeframe, setSelectedTimeframe] = useState<'day' | 'week' | 'month'>('week');
+    const [selectedTimeframe, setSelectedTimeframe] = useState<Timeframe>('week');
 
     useEffect(() => {
         getAllTurnover()
@@ -49,12 +51,11 @@ export default function page() {
 
     }, [selectedTimeframe])
 
-    const listTimeframe = [
+    const listTimeframe: { name: string; value: Timeframe }[] = [
         {name: t('admin', 'Day'), value: 'day'},
         {name: t('admin', 'Week'), value: 'week'},
         {name: t('admin', 'Month'), value: 'month'},
     ]
-
 
   return (
     <div className="flex flex-col justify-center items-start w-full md:gap-2">
@@ -68,15 +69,24 @@ export default function page() {
         </div>
         <div className="flex flex-col justify-start items-center w-full gap-5">
             <Schedule 
-            data={allTurnover?.[selectedTimeframe]} 
+            data={(allTurnover?.[selectedTimeframe] || []).map(item => ({
+                ...item,
+                createdAt: item.createdAt.toString()
+            }))}
             title={t('admin', 'TotalTurnover')}
             />
             <Schedule 
-            data={registeredUsers?.[selectedTimeframe]} 
+            data={(registeredUsers?.[selectedTimeframe] || []).map(item => ({
+                ...item,
+                createdAt: item.createdAt.toString()
+            }))}
             title={t('admin', 'CountRegisteredUsers')}
             />
             <Schedule 
-            data={lotsCount?.[selectedTimeframe]} 
+            data={(lotsCount?.[selectedTimeframe] || []).map(item => ({
+                ...item,
+                createdAt: item.createdAt.toString()
+            }))}
             title={ t('admin', 'Lots')}
             />
             </div>

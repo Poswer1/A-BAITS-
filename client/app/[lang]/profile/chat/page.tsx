@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTranslation } from '@/app/context/TranslationProvider';
 import { button, buttonWithoutBg } from '@/styles/global';
-import { ChatTypes, MessageType } from '@/types/types';
+import { ChatTypes, MessageType, UserTypes } from '@/types/types';
 import GetStatusUser from '@/utils/getStatusUser';
 import { inviteAdmin } from '@/services/chat';
 import Toast from '@/components/ui/toast';
@@ -34,7 +34,7 @@ function page() {
 
   const [messages, setMessages] = useState<MessageType[]>([])
   const [chat, setChat] = useState<ChatTypes | null>(null)
-  const [myInterlocutor, setMyInterlocutor] = useState(null)
+  const [myInterlocutor, setMyInterlocutor] = useState<UserTypes | null>(null)
   const [message, setMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
@@ -144,10 +144,10 @@ function page() {
             <div className='flex justify-between items-center w-full border-b border-b-gray-200 pb-2'>
               <Link href={`/${lang}/profile/${myInterlocutor?.name}`} className='flex gap-2 justify-center items-center'>
                 <ChevronLeft onClick={handleBack} className='md:hidden'/>
-                <AvatarBlock avatar={myInterlocutor?.avatar} size="50"/>
+                <AvatarBlock avatar={myInterlocutor?.avatar || ''} size="50"/>
                 <div className='flex flex-col justify-center items-start'>
                   <h1>{myInterlocutor?.name}</h1>
-                  <OlnlineUser id={myInterlocutor?._id}/>
+                  <OlnlineUser id={myInterlocutor?._id || ''}/>
                 </div>
               </Link>
               <MoreVertical className={hover}/>
