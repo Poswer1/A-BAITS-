@@ -23,12 +23,11 @@ function Navbar() {
             <span className={hoverLink}>{t('navbar','lotfrom1UAH')}</span>
             <span className={hoverLink}>Топ {t('global','lot')}</span>
             <Link href={`/${lang}/blog`} className={hoverLink}>{t('navbar','news')}</Link>
-            <span className={hoverLink}>Наш форум</span>
+            <Link href='https://t.me/auctionbaitsUA' target="_blank" rel="noopener noreferrer" className={hoverLink}>Наш форум</Link>
             <div className='relative'>   
                 <span onClick={() => setOpenContact(prev => !prev)} className={`${hoverLink} flex justify-center items-center gap-2`}>{t('navbar','contact')} <ChevronDown className={arrowActive(openContact)}/></span>
                 {openContact && (
-                    <div className='bg-[#0F0F0F] w-50 h-50 absolute top-[100%] z-10 rounded-xl left-0'>
-                    </div>
+                    <></>
                 )}
             </div>
             <span className={`${hover} p-2 bg-gray-200/30 rounded-md text-white`}>{t('navbar','support')}</span>

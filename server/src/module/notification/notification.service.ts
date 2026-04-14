@@ -8,6 +8,7 @@ export class NotificationService {
 
     async getHistoryNotification(userId:string) {
         const notifications = await NotificationModel.find({to: userId})
+        .sort({ createdAt: -1 })
         .populate('lot', 'name lotNumber')
         if(!notifications) return []
         return notifications
@@ -26,7 +27,7 @@ export class NotificationService {
         return notification.some((n:any) => !n.read)
     }
 
-    async createNotification(from:string, to:string, notification:string, lotId:string) {
+    async createNotification(to:string, notification:string, lotId:string) {
         
         const lot = await LotModel.findById(lotId)
         if(!lot) {
@@ -38,7 +39,6 @@ export class NotificationService {
           const newNotification = await NotificationModel.create(
             {
                 to,
-                from,
                 notification,
                 lot: lot._id,
                 read:false

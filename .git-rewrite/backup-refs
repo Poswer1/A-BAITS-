@@ -1,0 +1,8 @@
+d37ca8fac03b709acc2cf944a7106ca41b947079 commit	refs/heads/dev
+12e8508f6b681763212550d1849eb099b284ad88 commit	refs/heads/master
+b598974294cb6e4631bee3d61cae05c724e8776c commit	refs/heads/test
+d68c2196f952ab3e0656225df28f0dd51fb42ac1 commit	refs/remotes/origin/HEAD
+d68c2196f952ab3e0656225df28f0dd51fb42ac1 commit	refs/remotes/origin/master
+b598974294cb6e4631bee3d61cae05c724e8776c commit	refs/remotes/origin/test
+d68c2196f952ab3e0656225df28f0dd51fb42ac1 commit	refs/remotes/origin/test2
+c2e1e680aca56be28828e613abd5597932ec6e7e commit	refs/stash

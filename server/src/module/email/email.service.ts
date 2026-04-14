@@ -17,8 +17,9 @@ export class EmailService {
     }
 
     async sendEmail(to: string, subject: string, html: string) {
+        const emailFrom = this.configService.get<string>('EMAIL_FROM') || 'onboarding@resend.dev'
         return this.resend.emails.send({
-            from: "onboarding@resend.dev",
+            from: emailFrom?.toString(),
             to,
             subject,
             html

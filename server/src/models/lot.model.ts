@@ -6,6 +6,11 @@ interface HistoryBid {
   createdAt?: Date; 
 }
 
+interface AutoBid {
+  author: Types.ObjectId;
+  max: number;
+}
+
 export interface Lot {
   name: string;
   author:Types.ObjectId,
@@ -28,9 +33,15 @@ export interface Lot {
   status: string;
   delivary: string;
   Advertising: boolean;
-  historyBid: HistoryBid[]
+  historyBid: HistoryBid[],
+  autoBid: AutoBid[],
   winner:Types.ObjectId
 }
+
+const AutoBidSchema = new Schema<AutoBid>({
+  author: { type: Types.ObjectId, ref: 'User', required: true },
+  max: { type: Number, required: true }
+})
 
 const HistoryBidSchema = new Schema<HistoryBid>({
   author: { type: Types.ObjectId, ref: 'User', required: true }, //ref говорит Mongoose, к какой коллекции относится этот ObjectId 
@@ -61,6 +72,7 @@ const LotSchema = new Schema<Lot>({
   location: { type: String, required: true },
   delivary: { type: String, required: true },
   historyBid: { type: [HistoryBidSchema], default: [] },
+  autoBid: {type: [AutoBidSchema], default: []},
   Advertising: { type: Boolean, default: false },
   winner: {type: Types.ObjectId, ref: 'User'},
 },

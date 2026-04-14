@@ -48,18 +48,11 @@ export class NotificationGateway {
         client.emit('historyNotification', notification)
     }
 
-    async sendNotification(data: {to:string, from?:string, notification:string, lotId:string}) {
-        const {to, from, notification, lotId} = data
-            if(from) {
-                const newNotification = await this.notificationService.createNotification(from, to, notification, lotId)
-                for(const id of [to, from]) {
-                    this.server.to(id).emit('newNotification', newNotification)
-                } 
-            } else {
-                const newNotification = await this.notificationService.createNotification('empty', to, notification, lotId)
-                this.server.to(to).emit('newNotification', newNotification)
-            }
-        }
+    async sendNotification(data: {to:string, notification:string, lotId:string}) {
+        const {to,notification, lotId} = data
+        const newNotification = await this.notificationService.createNotification(to, notification, lotId)
+        this.server.to(to.toString()).emit('newNotification', newNotification)
+    }
           
 
     async handleConnection(client:Socket) {
@@ -82,7 +75,7 @@ export class NotificationGateway {
         }
     
         const payload = await this.jwtService.verify(token)
-        const userId = payload._id
+        const userId = payload._id.toString()
         
         client.join(userId)
         client.data.userId = userId

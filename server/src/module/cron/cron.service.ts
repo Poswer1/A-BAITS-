@@ -49,9 +49,9 @@ export class CronSerivce {
                     await lot.save()   
 
                     if (lot.historyBid.length === 0 && lot.autoReExtension) {
-                    await this.notificationGateWay.sendNotification({lotId: lot.lotNumber, to: lot.author.toString(), notification: 'lotRelisted'})
+                    await this.notificationGateWay.sendNotification({to:lot.author.toString(), notification: 'lotRelisted',lotId: lot._id.toString()})
                     } else if (lot.historyBid.length === 0 && !lot.autoReExtension) {
-                    await this.notificationGateWay.sendNotification({lotId: lot.lotNumber, to: lot.author.toString(), notification: 'lotNotRedeemed'})
+                    await this.notificationGateWay.sendNotification({to:lot.author.toString(),notification: 'lotNotRedeemed', lotId: lot._id.toString()})
                     }
                     
                 } catch (error) {

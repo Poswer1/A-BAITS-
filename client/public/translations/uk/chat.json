@@ -13,5 +13,12 @@
     "AllChatsBeenRead": "Всі чати прочитані",
     "DontHaveChat": "У вас ще немає чатів",
     "victorious": "Переможець",
-    "NotActive": "Неактивний"
+    "NotActive": "Неактивний",
+    "DontHaveChatActive": "У вас немає активних чатів",
+    "NoLot": "Лот не знайдено",
+    "AllChatsActive": "Активні",
+    "AllUnActiveChat": "Неактивні",
+    "moderInviteSuccess": "Модератора було запрошено до чату, чекайте...",
+    "noChat": "Чатів поки що немає",
+    "noChatDesc": "Після виграшу в якомусь аукціоні у вас з'явиться чат з його автором"
 }

@@ -60,7 +60,9 @@ export default function BlockedModal({mode}:BlockedModalProps) {
                 )}
                 <div className='flex gap-4'>
                     <Link href={'/'} className={hover}>{t('violations', 'Support')}</Link>
-                    <Link href={`/${lang}/auth/register`} className={hoverSub}>{t('violations', 'createNewAccount')}</Link>
+                    {status === 'Blocked' && (
+                      <Link href={`/${lang}/auth/register`} className={hoverSub}>{t('violations', 'createNewAccount')}</Link>
+                    )}
                     <span onClick={() => mode === 'general' ? setOpen(false) : handleBack()} className={`${status !== 'Temporary' && 'hidden'} ${hover} text-orange-600`}>{mode === 'general' ? t('violations', 'IgotIt'): 'Назад'}</span>
                 </div>
             </div>

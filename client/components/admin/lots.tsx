@@ -30,6 +30,7 @@ export default function Lots({lots}:LotsProps) {
     const [searchValue, setSearchValue] = useState('')
     const [actionOnTheLot, setActionOnTheLot] = useState('')
 
+    const filterLots = allLots.filter(lot => lot.name.toLowerCase().includes(searchValue.toLowerCase()))
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -135,7 +136,7 @@ export default function Lots({lots}:LotsProps) {
             </div>
         </div>
         <div className="flex flex-col justify-start items-start">
-            {allLots.map((lot) => (
+            {filterLots.map((lot) => (
                 <LotCardV2 key={lot._id} lot={lot} useFrom='admin' select={actionOnTheLot} selectLot={setId}/>
             ))}
         </div>

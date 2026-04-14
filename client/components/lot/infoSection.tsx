@@ -33,6 +33,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
     const [progress, setProgress] = useState(false)
+    const [typeBid, setTypeBid] = useState('default')
     const [open, setOpen] = useState(false)
     const router = useRouter()
     const { status: statusUser } = GetStatusUser()
@@ -43,7 +44,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
             router.push('/auth/login')
         }
         if(value < currentPrice) {
-             setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
+            setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
             setTimeout(() => {
                 setError('')
             }, 3000)
@@ -53,6 +54,18 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                 lotId: lot?.lotNumber, 
                 bid: value
             })   
+    }
+
+    const handleAutoBid = () => {
+        if(!socket || !lot) return
+        if(!auth) router.push('/auth/login')
+        if(value < currentPrice) {
+            setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
+            setTimeout(() => {
+                setError('')
+            }, 3000)
+        }
+        socket.emit('autoBid', {lotId: lot?.lotNumber, bid: value})
     }
 
     const handlePlus = () => setValue(prev => prev + (lot?.stepPrice || 0))
@@ -115,7 +128,10 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
   return ( 
     <div {...handlers} className={`${columnBlock} rounded-t-2xl w-full md:min-w-80 text-black fixed md:static bg-white z-20 md:z-0 bottom-0 ${open ? '!h-80 md:!h-full' : '!h-35 md:!h-full'} ${animate}`}>
         {status !== 'Active' ? (
-            <h1 className="font-bold flex gap-2 text-2xl text-gray-500 items-center"><Gavel />Лот куплен</h1>
+            <h1 className={`${status === 'Blocked' ? 'text-red-500' : 'text-gray-500'} font-bold flex gap-2 text-2xl items-center`}>
+                {status === 'Blocked' ? <Ban /> : <Gavel />}
+                {status === 'Blocked' ? t('lot', 'lotBlocked') : 'Лот куплен'}
+            </h1>
         ): (
             <div className="flex justify-between items-center w-full">
                 <h1 className="font-bold gap-1">{t('lot','lot-currentPrice')}<br/><span className="text-3xl">{currentPrice} ₴</span></h1>
@@ -144,7 +160,17 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                         {error && (
                             <p className={`${animationOpacity} text-orange-600 mt-2`}>{error}</p>
                         )}
-                        <button onClick={handleBid} className={`${button} w-full ${hover} text-lg`}>{t('lot', 'lot-doBid')}</button>
+                        <div className="flex justify-start items-center w-full gap-5">
+                            <div className="flex gap-1">
+                               <input type="radio" className="accent-orange-600" checked={typeBid === 'default'} value="default" onChange={() => setTypeBid('default')}/>
+                               <span className="text-sm">{t('lot', 'default')}</span>
+                            </div>
+                            <div className="flex gap-1">
+                               <input type="radio" className="accent-orange-600" checked={typeBid === 'auto'} value="auto" onChange={() => setTypeBid('auto')}/>
+                               <span className="text-sm">{t('lot', 'autoBid')}</span>
+                            </div>
+                        </div>
+                        <button onClick={() => typeBid === 'default' ? handleBid() : handleAutoBid()} className={`${button} w-full ${hover} text-lg`}>{typeBid === 'default' ? t('lot', 'lot-doBid') : t('lot', 'doAutoBid')}</button>
                         {lot.blitzPrice !== 0 && (
                         <button 
                         onMouseDown={handleBuyNow} 

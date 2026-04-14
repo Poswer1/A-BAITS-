@@ -27,5 +27,11 @@
     "reviewNotFound": "Відгуків ще немає",
     "AboutLot": "Про лот",
     "userMadeNewBid": "зробив нову ставку!",
-    "IsNotLogged": "Ви не увійшли в аккаунт"
+    "IsNotLogged": "Ви не увійшли в аккаунт",
+    "lotBuySucess": "Вітаємо! лот успішно викуплений!",
+    "default": "Звичайна",
+    "autoBid": "Автоставка",
+    "doAutoBid": "Зробити автоставку",
+    "lotBlocked": "Лот заблокований",
+    "bidYourself": "Це ваш лот"
 }

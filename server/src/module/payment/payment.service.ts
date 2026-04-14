@@ -34,6 +34,8 @@ export class PaymentService {
         .session(session)
         if (!lot) throw new Error('лот не найден')
 
+        if(lot.author.toString() === userId.toString()) throw new BadRequestException('bidYourself')
+
         const lotPrice = price ?? lot.blitzPrice
         if (!lotPrice) throw new Error('нет цены')
 
@@ -85,8 +87,13 @@ export class PaymentService {
             await this.loggingService.newLog(userId, 'buyLot', lotId)
 
             await this.notificationGateWay.sendNotification({
-                to: lot.author.toString(),
-                from: userId.toString(),
+                to: userId.toString(),
+                notification: 'lotWinner',
+                lotId,
+            })
+
+            await this.notificationGateWay.sendNotification({
+                to:  lot.author.toString(),
                 notification: 'lotPurchased',
                 lotId,
             })

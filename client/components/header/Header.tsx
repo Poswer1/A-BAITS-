@@ -67,6 +67,10 @@ function Header() {
             setRead(data)
         })
 
+        return () => {
+            socket.off('newNotification')
+            socket.off('checkRead')
+        }
     }, [socket])
 
  

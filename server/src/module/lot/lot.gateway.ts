@@ -29,7 +29,7 @@ export class LotGateway {
 
     const userId = this.onlineUsers.get(client.id)
     if(!userId) {
-        console.log('пользователь не найден при попытки записи историю ставок')
+        console.log('пользователь не найден при ставке')
         return 
     }
 
@@ -37,6 +37,17 @@ export class LotGateway {
     
     this.server.to(data.lotId).emit('bidUpdated', result)
     return result
+    }
+
+    @SubscribeMessage('autoBid')
+    async handleAutoBid(@MessageBody() data: {lotId:string, bid:number}, @ConnectedSocket() client:Socket) {
+        const userId = this.onlineUsers.get(client.id)
+        if(!userId) {
+            console.log('пользователь не найден при автоставке')
+            return 
+        }
+        const result = await this.lotService.autoBid(data, userId)
+        this.server.to(data.lotId).emit('bidUpdated', result)
     }
 
     @SubscribeMessage('HistoryBid')
