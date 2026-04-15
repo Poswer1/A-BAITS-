@@ -57,11 +57,11 @@ let UserService = class UserService {
             throw new common_1.BadRequestException('ErrorChagePassword');
         return { success: true };
     }
-    async updateProfile(dto, userId, file) {
+    async updateProfile(dto, userId, role, file) {
         const user = await user_model_1.UserModel.findById(userId);
         if (!user)
             throw new common_1.BadRequestException('пользователь не найден при обновление профиля');
-        if (dto.email !== user.email || dto.password) {
+        if ((dto.email !== user.email || dto.password) && role === 'user') {
             if (!dto.code)
                 throw new common_1.BadRequestException('EnterCode');
             await this.emailService.comparisonCode(dto.code);

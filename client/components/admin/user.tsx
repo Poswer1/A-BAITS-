@@ -134,7 +134,7 @@ export default  function User({listUser}: listUserProps) {
       setEdit={setEdit}
       />
         {edit ? (
-          <Setting id={id}/>
+          <Setting id={id} mode='admin'/>
         ): (
           <div className="flex flex-col justify-start items-start">
             {filterLots.map((user) => {

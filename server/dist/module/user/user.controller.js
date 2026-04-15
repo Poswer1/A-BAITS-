@@ -49,11 +49,12 @@ let UserController = class UserController {
     async updatePassword(email, newPassword) {
         return this.userService.updatePassword(email, newPassword);
     }
-    async updateProfile(dto, id, userId, file) {
+    async updateProfile(req, dto, id, userId, file) {
         const idUser = id ?? userId;
-        if (!idUser)
+        const { role } = req.user;
+        if (!idUser || !role)
             throw new common_1.BadRequestException('UserNotFound');
-        return this.userService.updateProfile(dto, idUser, file);
+        return this.userService.updateProfile(dto, idUser, role, file);
     }
 };
 exports.UserController = UserController;
@@ -108,12 +109,13 @@ __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)('updateProfile'),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)('image', (0, files_upload_1.ImagesInterceptor)('./uploads/avatar'))),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Query)('id')),
-    __param(2, (0, current_user_decorator_1.CurrentUser)('id')),
-    __param(3, (0, common_1.UploadedFile)()),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Query)('id')),
+    __param(3, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(4, (0, common_1.UploadedFile)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_user_dto_1.UpdateProfileDTO, String, String, Object]),
+    __metadata("design:paramtypes", [Object, create_user_dto_1.UpdateProfileDTO, String, String, Object]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "updateProfile", null);
 exports.UserController = UserController = __decorate([

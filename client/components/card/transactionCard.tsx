@@ -1,17 +1,11 @@
-import React, { useState } from 'react'
-import transaction from '../admin/transaction'
-import { getRelativeTime } from '../ui/relativeTime'
+import React from 'react'
 import Link from 'next/dist/client/link'
 import { TransactionTypes } from '@/types/types'
 import { useParams } from 'next/dist/client/components/navigation'
 import { useTranslation } from '@/app/context/TranslationProvider'
 import AvatarBlock from '../ui/avatar'
-import { hover } from '@/styles/style'
-import ConfirmWindow from '../admin/confirmWindow'
-import { moneyReturn } from '@/services/admin/finance'
 import { blockObj, textObj } from '@/styles/admin'
-import Image from 'next/image'
-import { CornerDownLeft, RefreshCcw, RefreshCw } from 'lucide-react'
+import { ArrowDownCircle, Minus, PlusCircle } from 'lucide-react'
 
 interface TransactionCardProps {
     transaction: TransactionTypes
@@ -43,7 +37,16 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
                     <AvatarBlock avatar={transaction.user.avatar} size='45'/>
                 </Link>
                 ) : (
-                    <Image src={'/images/logo.png'} alt='' width={100} height={100} className='w-full object-cover'/>
+                    <div className='w-20'>
+                        <span className=' p-2 rounded-md flex justify-center'>
+                            {transaction.type === 'Deposit' ? (
+                               <PlusCircle className='text-green-500'/>
+                            ): (
+                                <ArrowDownCircle className='text-red-500'/>
+                            )}
+
+                        </span>
+                    </div>
                 )
             )}
 
@@ -58,6 +61,9 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
                        <span className={`text-sm`}>№ <span className='text-orange-600'>{transaction.lot?.lotNumber}</span></span>
                      )}
                     </>
+                )}
+                {(!transaction.lot) && (
+                    <h1 className={transaction.type === 'Deposit' ? 'text-green-500' : 'text-red-500'}>{transaction.type === 'Deposit' ? t('admin', 'deposit') : t('admin', 'withdrawal')}</h1>
                 )}
             </div>
         </div>

@@ -50,12 +50,12 @@ export class UserService {
     return {success:true} 
   }
 
-  async updateProfile(dto: UpdateProfileDTO, userId:string, file?: Express.Multer.File) {
+  async updateProfile(dto: UpdateProfileDTO, userId:string,role:string, file?: Express.Multer.File) {
     
     const user = await UserModel.findById(userId)
     if(!user) throw new BadRequestException('пользователь не найден при обновление профиля')
 
-    if(dto.email !== user.email || dto.password) {
+    if((dto.email !== user.email || dto.password)&& role === 'user') {
       if(!dto.code) throw new BadRequestException('EnterCode')
       await this.emailService.comparisonCode(dto.code)
     }  

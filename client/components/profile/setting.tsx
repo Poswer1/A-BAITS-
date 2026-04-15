@@ -17,9 +17,10 @@ import { sendCode } from "@/services/admin/email"
 
 interface SettingProps {
     id?:string
+    mode:string
 }
 
-export default function Setting({id}: SettingProps) {
+export default function Setting({id, mode}: SettingProps) {
 
   const params = useParams()
   const lang = params.lang as string
@@ -190,7 +191,7 @@ export default function Setting({id}: SettingProps) {
               </div>
                     
             </div>
-            <button onClick={() => (email !== emailFromServer || password) ? handleSendCode() : handleUpdate()} className={`${button} ${hover} mb-2 w-full md:w-auto`}>{t('profile', 'saveChanges')}</button>
+            <button onClick={() => (email !== emailFromServer || password) && mode === 'user' ? handleSendCode(): handleUpdate()} className={`${button} ${hover} mb-2 w-full md:w-auto`}>{t('profile', 'saveChanges')}</button>
         </div>
       </>
       {confirmCode && (

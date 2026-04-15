@@ -52,9 +52,10 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Patch('updateProfile')
   @UseInterceptors(FileInterceptor('image', ImagesInterceptor('./uploads/avatar')))
-  async updateProfile(@Body() dto: UpdateProfileDTO, @Query('id') id?: string, @CurrentUser('id') userId?:string, @UploadedFile() file?: Express.Multer.File) {
+  async updateProfile(@Req() req: Request, @Body() dto: UpdateProfileDTO, @Query('id') id?: string, @CurrentUser('id') userId?:string, @UploadedFile() file?: Express.Multer.File) {
     const idUser = id ?? userId
-    if(!idUser) throw new BadRequestException('UserNotFound');
-    return this.userService.updateProfile(dto, idUser, file)
+    const { role } = req.user;
+    if(!idUser || !role) throw new BadRequestException('UserNotFound');
+    return this.userService.updateProfile(dto, idUser,  role, file)
   }
 }
