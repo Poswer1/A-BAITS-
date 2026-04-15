@@ -129,6 +129,22 @@ function page() {
     }
   }
 
+  useEffect(() => {
+    
+    const mobile = window.innerWidth <= 768
+
+    if(selectChat && mobile) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      document.body.style.overflow = '';
+    }
+
+  }, [selectChat])
+
   const handleBack = () => {
     router.back()
   }

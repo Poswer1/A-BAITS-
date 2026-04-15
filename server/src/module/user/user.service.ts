@@ -55,7 +55,7 @@ export class UserService {
     const user = await UserModel.findById(userId)
     if(!user) throw new BadRequestException('пользователь не найден при обновление профиля')
 
-    if(dto.email || dto.password) {
+    if(dto.email !== user.email || dto.password) {
       if(!dto.code) throw new BadRequestException('EnterCode')
       await this.emailService.comparisonCode(dto.code)
     }  

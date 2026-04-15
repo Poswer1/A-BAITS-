@@ -61,7 +61,7 @@ let UserService = class UserService {
         const user = await user_model_1.UserModel.findById(userId);
         if (!user)
             throw new common_1.BadRequestException('пользователь не найден при обновление профиля');
-        if (dto.email || dto.password) {
+        if (dto.email !== user.email || dto.password) {
             if (!dto.code)
                 throw new common_1.BadRequestException('EnterCode');
             await this.emailService.comparisonCode(dto.code);

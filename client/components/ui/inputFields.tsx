@@ -57,6 +57,7 @@ export default function InputField<T extends string | number>({
             type={type}
             min={minTotal || 0}
             placeholder={placeholder}
+            autoComplete="new-password"
             value={stringValue}
             onChange={handleChange}
             className={classInput}
