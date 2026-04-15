@@ -11,7 +11,8 @@ async function layout({children}: {children: React.ReactNode}) {
     return
   }
   const role = await getRoleUser(token) 
-  if (role !== 'admin') return null
+  console.log(role)
+  if (role.role !== 'admin') return null
 
   return (
     <div className='flex flex-col md:flex-row justify-start items-start bg-gray-100 min-h-screen md:min-h-[90vh] text-black'>
