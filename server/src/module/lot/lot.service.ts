@@ -332,7 +332,9 @@ export class LotService {
 
     const {category, subCategory, subSubCategory, city, minPrice, maxPrice, state, sort, search} = query
 
-    let filter:any = {}
+    let filter: any = {
+      status: 'Active'
+    }
     const min = Number(minPrice)
     const max = Number(maxPrice)
 

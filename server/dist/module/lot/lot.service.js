@@ -327,7 +327,9 @@ let LotService = class LotService {
     }
     async getFilterLot(query) {
         const { category, subCategory, subSubCategory, city, minPrice, maxPrice, state, sort, search } = query;
-        let filter = {};
+        let filter = {
+            status: 'Active'
+        };
         const min = Number(minPrice);
         const max = Number(maxPrice);
         const page = Math.max(Number(query.page) || 1, 1);
