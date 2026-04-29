@@ -234,7 +234,7 @@ function page() {
                     <AlertTriangle />
                     <h1>{t('violations', 'Temporary')}</h1>
                 </div>
-            ): myInfo?.balance <= -1 ? (
+            ): myInfo && myInfo.balance <= -1 ? (
               <div className="flex justify-center w-full gap-2 text-red-500">
                 <AlertCircle />
                 <h1>{t('chat', 'balanceInTheRed')}</h1>

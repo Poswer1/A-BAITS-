@@ -46,7 +46,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
     const [date, setDate] = useState(initialData?.date || 0)
     const [time, setTime] = useState(initialData?.dateTime || '21:00')
     const [location, setLocation] = useState(initialData?.location || '')
-    const [delivery, setDelivery] = useState(initialData?.delivary || [])
+    const [delivery, setDelivery] = useState<string[]>(Array.isArray(initialData?.delivary) ? initialData.delivary : [])
     const [autoReExtension, setAutoReExtensio] = useState(initialData?.autoReExtension || false)
     const [advertising, setAdvertising] = useState(initialData?.Advertising || false)
     const [file, setFile] = useState<File[]>([])
@@ -150,7 +150,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
         formData.append('date', date.toString())
         formData.append('dateTime', time)
         formData.append('location', location)
-        delivery?.forEach(i => formData.append('delivary', i))
+        delivery?.forEach((i: string) => formData.append('delivary', i))
         
         if(advertising)formData.append('Advertising', advertising.toString())
 
