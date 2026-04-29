@@ -14,14 +14,22 @@ export class FinanceService {
         return allTransactions;
     }
 
-    async getMyTransactions(userId:string) {
+    async getMyTransactions(userId:string, page:number) {
+        const limit = 20;
         const user = await UserModel.findById(userId)
         if(!user) throw new BadRequestException('userNotFound')
-        const allTransactions = await TransactionModel.find({user: userId})
-        .sort({createdAt: -1})
-        .populate('lot', 'images name lotNumber')
-        .populate('user', 'avatar name')
-        return {allTransactions:allTransactions, currentBalance: user.balance}
+        const [allTransactions, totalTransactions] = await Promise.all([
+            await TransactionModel.find({user: userId})
+                .sort({createdAt: -1})
+                .populate('lot', 'images name lotNumber')
+                .populate('user', 'avatar name')
+                .limit(limit)
+                .skip((page - 1) * limit),
+
+                TransactionModel.countDocuments({user: userId})
+        ])
+
+        return {allTransactions:allTransactions, totalTransactions, currentBalance: user.balance}
     }
 
     async createTransaction(sum:number, user:string, type:string, lot?:string) {

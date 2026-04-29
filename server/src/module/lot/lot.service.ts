@@ -21,7 +21,11 @@ export class LotService {
   ) {}
 
   async createLot(dto: LotDto, files: Express.Multer.File[], userId:string) {
-
+    const delivary: string[] = Array.isArray(dto.delivary)
+    ? dto.delivary
+    : dto.delivary
+    ? [dto.delivary]
+    : []
     const images = files ? await ProccessImages(files, '/uploads/lots/') : [] 
 
     const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString(); //10000000 — минимальное 8-значное число 90000000 — диапазон до 99999999
@@ -35,11 +39,14 @@ export class LotService {
       newDate.setHours(hours, minutes, 0, 0)
     }
 
+    const user = await UserModel.findById(userId)
+    if(!user) throw new BadRequestException('UserNotFound')
+    if(user.balance <= -1) throw new BadRequestException('balanceInTheRed')
+
     let summaryPrice = 0
     if(dto.Advertising) {
       summaryPrice += 20
     }
-    console.log(summaryPrice)
 
     const session = await mongoose.startSession()
       try {
@@ -49,7 +56,7 @@ export class LotService {
             {
               _id:userId,
               status: 'No restrictions',
-              balance: {$gte: summaryPrice}
+              balance: {$gte: summaryPrice},
             },
             {
              $inc: { balance: -summaryPrice }
@@ -68,6 +75,7 @@ export class LotService {
             {
               ...dto,
               author: userId,
+              delivary: delivary,
               images,
               date: newDate,
               dateTime: dto.dateTime,
@@ -80,7 +88,9 @@ export class LotService {
         await session.commitTransaction()
 
         try {
-          await this.financeService.createTransaction(summaryPrice, userId, 'Debit', product._id.toString())
+          if(summaryPrice > 0) {
+            await this.financeService.createTransaction(summaryPrice, userId, 'Debit', product._id.toString())
+          }
           await this.loggingService.newLog(userId, 'createLot', product._id.toString())
         } catch (externalError) {
           console.error('Ошибка внешних операций:', externalError);
@@ -109,9 +119,18 @@ export class LotService {
   }
 
   async resumeLot(id:string) {
+    const lot = await LotModel.findById(id)
+    if(!lot) throw new BadRequestException('LotNotFound')
+    const diffDays = Math.floor((lot.date.getTime() - lot.createdAt.getTime()))
+    const nowDate = new Date()
+    const newDate = new Date(nowDate.getTime() + diffDays)
+    newDate.setHours(lot.date.getHours(), lot.date.getMinutes(), 0, 0)
     try {
       await LotModel.findByIdAndUpdate(id, {
-        $set: {status: 'Active'}
+        $set: {
+          status: 'Active',
+          date: newDate
+        }
       })
       return {success:true}
     } catch (error) {
@@ -277,14 +296,17 @@ export class LotService {
   }
 
   async getMyLots(query: getMyLotsDto, userId:string) {
-    const {status, mode, page} = query
+    const {status, mode, page, sort} = query
 
     let filter:any = {}
     const currentPage = Number(page) || 1
 
     const limit = 10
 
-    if(mode === 'sell' ) {
+    if(sort === 'MostBids') {
+      filter.historyBid 
+    }
+    if(mode === 'sell') {
       filter.author = userId
       if(status)filter.status = status
     } else {
@@ -297,12 +319,13 @@ export class LotService {
         filter.status = 'Archive'
       }
       if(status === 'Completed') {
-        filter.winner = userId
-        filter.status = 'Completed'
+        filter['historyBid.author'] = userId
+        filter.winner = { $ne: userId }
+        filter.status = 'Sold'
       }
       if(status === 'Sold') {
-        filter.winner = { $ne: userId } // $ne не равняеться
-        filter.status = 'Completed'
+        filter.winner = userId // $ne не равняеться
+        filter.status = 'Sold'
       }
       if(status === 'Favorite') {
         const user = await UserModel.findById(userId)
@@ -314,9 +337,25 @@ export class LotService {
           }
       }
     }
-    
+
+    let sortOption: Record<string, 1 | -1> = {};
+
+    if (sort === 'Newest') {
+      sortOption.createdAt = -1;
+    }
+    if (sort === 'Oldest') {
+      sortOption.createdAt = 1;
+    }
+    if(sort === 'PriceHigh') {
+      sortOption.startPrice = -1
+    }
+    if(sort === 'PriceLow') {
+      sortOption.startPrice = 1
+    }
+
     const [allLots, totalLot] = await Promise.all([
         LotModel.find(filter)
+        .sort(sortOption)
         .collation({ locale: 'en', strength: 2 })
         .limit(limit)
         .skip((currentPage - 1) * limit),
@@ -324,6 +363,13 @@ export class LotService {
         LotModel.countDocuments(filter)
         .collation({ locale: 'en', strength: 2 }),
     ])
+
+    if (sort === 'MostBids') {
+      allLots.sort((a, b) => b.historyBid.length - a.historyBid.length);
+    }
+    if(sort === 'LeastBids') {
+      allLots.sort((a, b) => a.historyBid.length - b.historyBid.length);
+    }
 
     return {allLots, totalLot}
   }
@@ -489,7 +535,7 @@ export class LotService {
 
     const user = await UserModel.findById(userId)
     if(!user) throw new BadRequestException('UserNotFound')
-    if (user.balance < data.bid) throw new BadRequestException('NoMoney')
+    if (user.balance <= -1) throw new BadRequestException('NoMoney')
     
 
     const { authorBid, newPrice } = await this.calculateAuctionState(lot.autoBid, userId, data.bid, lot.stepPrice, lot.startPrice, 'default')

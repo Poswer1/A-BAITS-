@@ -10,6 +10,7 @@ interface pageProps {
   }
   searchParams: {
     page?:number
+    sort?:string
   }
 }
 
@@ -32,8 +33,7 @@ async function page({params, searchParams}: pageProps) {
       console.log('ТОКЕН НЕ ПОЛУЧЕН')
       return
     }
-    console.log(token|| 'нету токена')
-    data = await getMyLots(token, slug, 'sell', search.page)
+    data = await getMyLots(token, slug, 'sell', search.page, search.sort)
   } catch (error) {
     data = {allLots: [],totalLot: 0}}
   

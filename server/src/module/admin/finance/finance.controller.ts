@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Patch, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Patch, Query, UseGuards } from "@nestjs/common";
 import { RolesGuard } from "../role.guards";
 import { JwtAuthGuard } from "src/module/auth/jwt/jwt-auth-guard";
 import { FinanceService } from "./finance.service";
@@ -17,8 +17,8 @@ export class FinanceController {
     }
 
     @Get('getMyTransactions')
-    async getMyTransactions(@CurrentUser('id') userId:string) {
-        return this.financeService.getMyTransactions(userId)
+    async getMyTransactions(@Query('page') page:number, @CurrentUser('id') userId:string) {
+        return this.financeService.getMyTransactions(userId, page)
     }
     
     @UseGuards(RolesGuard)

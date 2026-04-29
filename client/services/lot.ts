@@ -70,14 +70,14 @@ export async function updateLot(formData:FormData, id:string) {
     return dataReturn(res)
 }
 
-export async function getMyLots(token:string, slug:string, mode:string, page?:number) {
+export async function getMyLots(token:string, slug:string, mode:string, page?:number, sort?:string) {
 
     const params = new URLSearchParams()
 
     if(slug) params.append('status', slug)
     if(mode) params.append('mode', mode)
     if(page) params.append('page', page.toString())
-
+    if(sort) params.append('sort', sort.toString())
     const res = await fetch(`${BASE_URL}/lot/getMyLots?${params}`, {
         method: 'GET',
         headers: {

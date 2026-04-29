@@ -25,7 +25,7 @@
   "createLot-Date-descriptions": "Минимум 1 день, максимум 7 дней",
   "createLot-DateTime": "Выбор времени",
   "createLot-DateTime-descriptions": "Если время завершения не выбрано — лот завершится в 21:00 по киевскому времени",
-  "createLot-locationTitle": "Расположение",
+  "createLot-locationTitle": "Город",
   "create-delivary-title": "Способ доставки",
   "create-delivary-np": "Новая Почта",
   "create-delivary-pickup": "Самовывоз",
@@ -44,5 +44,6 @@
   "ErrorCreate": "Ошибка при создание товара, пожалуйста попробуйте позже...",
   "NoMoney": "У вас недостаточно средств",
   "createLot-haveHistoryBid": "У лота есть ставки, его нельзя редактировать",
-  "blitzPriceLow": "Блитц цена не может быть ниже стартовой цены"
+  "blitzPriceLow": "Блитц цена не может быть ниже стартовой цены",
+  "balanceInTheRed": "Ваш баланс в минусе, пожалуйста пополните его для продолжения общения"
 }

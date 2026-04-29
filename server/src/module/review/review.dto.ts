@@ -3,13 +3,10 @@ import { IsNumber, IsOptional, IsString } from "class-validator";
 export class reviewDto {
 
     @IsString()
-    to:string
+    slug:string
 
     @IsString()
     comment:string
-
-    @IsString()
-    lotId:string
 
     @IsNumber()
     rating:number

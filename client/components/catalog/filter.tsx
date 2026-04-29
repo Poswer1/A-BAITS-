@@ -9,7 +9,7 @@ import listLocation from '../../data/citiesUK.json'
 import { hover } from "@/styles/style";
 import { button } from "@/styles/global";
 import { hoverCat } from "@/styles/categoryList";
-import {  usePathname, useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 interface FilterProps {
   maxPriceLot:number

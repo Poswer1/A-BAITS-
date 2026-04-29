@@ -29,7 +29,6 @@ export class PaymentService {
         
         session.startTransaction()
         
-
         const lot = await LotModel.findById(lotId)
         .session(session)
         if (!lot) throw new Error('лот не найден')
@@ -39,9 +38,13 @@ export class PaymentService {
         const lotPrice = price ?? lot.blitzPrice
         if (!lotPrice) throw new Error('нет цены')
 
+        const user = await UserModel.findById(userId).session(session)
+        if(!user) throw new BadRequestException('UserNotFound')
+        if (user.balance <= -1) throw new BadRequestException('balanceInTheRed')
+
         const updateLot = await LotModel.updateOne(
         { _id: lotId, winner: { $exists: false }, status: 'Active' },
-        { $set: { winner: userId, status: 'Completed' } },
+        { $set: { winner: userId, status: 'Sold' } },
         { session } 
         )
 
@@ -49,23 +52,16 @@ export class PaymentService {
         throw new BadRequestException('LotAlreadySold')
         }
 
+        const priceWithCommission = lotPrice - (lotPrice * 0.05)
+
         const userUpdate = await UserModel.updateOne(
-        { _id: userId, balance: { $gte: lotPrice } },
-        { $inc: { balance: -lotPrice } },
+        { _id: lot.author},
+        { $inc: { balance: -priceWithCommission } },
         { session } 
         )
 
-        if (userUpdate.modifiedCount === 0) throw new BadRequestException('NoMoney')
+        if (userUpdate.modifiedCount === 0) throw new BadRequestException('errorWriteOffMoneyAuthor')
         
-        const priceWithCommission = lotPrice - (lotPrice * 0.05)
-
-        const authorUpdate = await UserModel.updateOne(
-            {_id: lot.author},
-            {$inc: {balance: +priceWithCommission}},
-            { session }
-        )
-
-        if (authorUpdate.modifiedCount === 0) throw new BadRequestException('ErrorDepositAuthorLot')
 
         await ChatModel.create(
         [
@@ -81,8 +77,7 @@ export class PaymentService {
          await session.commitTransaction()
 
         try {
-            await this.financeService.createTransaction(lotPrice, userId.toString(), 'Debit', lot._id.toString())
-            await this.financeService.createTransaction(priceWithCommission, lot.author.toString(), 'Deposit', lot._id.toString())
+            await this.financeService.createTransaction(priceWithCommission, lot.author.toString(), 'Debit', lot._id.toString())
 
             await this.loggingService.newLog(userId, 'buyLot', lotId)
 
@@ -93,7 +88,7 @@ export class PaymentService {
             })
 
             await this.notificationGateWay.sendNotification({
-                to:  lot.author.toString(),
+                to: lot.author.toString(),
                 notification: 'lotPurchased',
                 lotId,
             })

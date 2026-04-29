@@ -30,8 +30,6 @@ mode: 'create' | 'edit' | 'editAdmin',
 initialData?: LotTypes
 }
 
-
-
 export default function LotForm({mode, initialData}:LotFormProps) {
 
     const {t} = useTranslation()
@@ -48,7 +46,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
     const [date, setDate] = useState(initialData?.date || 0)
     const [time, setTime] = useState(initialData?.dateTime || '21:00')
     const [location, setLocation] = useState(initialData?.location || '')
-    const [delivery, setDelivery] = useState(initialData?.delivary || '')
+    const [delivery, setDelivery] = useState(initialData?.delivary || [])
     const [autoReExtension, setAutoReExtensio] = useState(initialData?.autoReExtension || false)
     const [advertising, setAdvertising] = useState(initialData?.Advertising || false)
     const [file, setFile] = useState<File[]>([])
@@ -92,7 +90,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
       setDate(0)
       setTime('')
       setLocation('')
-      setDelivery('')
+      setDelivery([])
       setAutoReExtensio(false)
       setAdvertising(false)
       setFile([])
@@ -152,7 +150,8 @@ export default function LotForm({mode, initialData}:LotFormProps) {
         formData.append('date', date.toString())
         formData.append('dateTime', time)
         formData.append('location', location)
-        formData.append('delivary', delivery)
+        delivery?.forEach(i => formData.append('delivary', i))
+        
         if(advertising)formData.append('Advertising', advertising.toString())
 
         file?.forEach(f => formData.append('images', f))
@@ -205,7 +204,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
         </div>
       ) : (
       confirmCreateOrder ? (
-       <Success title={mode === 'create' ? t('createLot', 'lotSuccess') : t('createLot', 'lotSuccessUpdate')}/>
+       <Success mode="lot" title={mode === 'create' ? t('createLot', 'lotSuccess') : t('createLot', 'lotSuccessUpdate')}/>
       ): (
         <>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-[90%] mt-5 md:mt-10 gap-5 md:gap-0">

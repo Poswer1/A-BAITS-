@@ -157,9 +157,6 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                                 <Plus className={`${buttonInput} ${hover}`} onClick={handlePlus}/>
                             </div>
                         </div> 
-                        {error && (
-                            <p className={`${animationOpacity} text-orange-600 mt-2`}>{error}</p>
-                        )}
                         <div className="flex justify-start items-center w-full gap-5">
                             <div className="flex gap-1">
                                <input type="radio" className="accent-orange-600" checked={typeBid === 'default'} value="default" onChange={() => setTypeBid('default')}/>
@@ -171,7 +168,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                             </div>
                         </div>
                         <button onClick={() => typeBid === 'default' ? handleBid() : handleAutoBid()} className={`${button} w-full ${hover} text-lg`}>{typeBid === 'default' ? t('lot', 'lot-doBid') : t('lot', 'doAutoBid')}</button>
-                        {lot.blitzPrice !== 0 && (
+                        {(lot.blitzPrice !== 0 && lot.blitzPrice) && (
                         <button 
                         onMouseDown={handleBuyNow} 
                         onMouseLeave={handleLeaveBuyNow} 

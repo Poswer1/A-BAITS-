@@ -22,20 +22,26 @@ let ReviewService = class ReviewService {
         this.chatGateWay = chatGateWay;
     }
     async newReview(userId, dto) {
-        const { to, comment, rating, lotId } = dto;
-        const user = await user_model_1.UserModel.findOne({ _id: to });
+        const { slug, comment, rating } = dto;
+        const currentChat = await chat_model_1.ChatModel.findById(slug);
+        if (!currentChat)
+            throw new common_1.BadRequestException('ChatNotFound');
+        const userToId = currentChat.users.find((id) => id.toString() !== userId);
+        if (!userToId)
+            throw new common_1.BadRequestException('UserNotFound');
+        const user = await user_model_1.UserModel.findOne({ _id: userToId });
         if (!user)
             throw new common_1.BadRequestException('UserNotFound');
         if (user._id.toString() === userId)
             throw new common_1.BadRequestException('ReviewYourself');
-        const exestingReview = await review_1.ReviewModel.findOne({ from: userId, to: user._id, lot: lotId });
+        const exestingReview = await review_1.ReviewModel.findOne({ from: userId, to: user._id, lot: currentChat.lot });
         if (exestingReview)
             throw new common_1.BadRequestException('AlreadyReview');
         try {
             await review_1.ReviewModel.create({
                 to: user._id,
                 from: userId,
-                lot: lotId,
+                lot: currentChat.lot,
                 comment: comment,
                 rating: rating
             });
@@ -43,29 +49,24 @@ let ReviewService = class ReviewService {
         catch (error) {
             throw new common_1.BadRequestException('errorCreateReview');
         }
-        const allReview = await review_1.ReviewModel.countDocuments({ to: to });
+        const allReview = await review_1.ReviewModel.countDocuments({ to: userToId });
         const newRating = (user.rating * allReview + rating) / (allReview + 1);
         user.rating = Number(Math.ceil(newRating * 10) / 10);
         await user.save();
-        const chat = await chat_model_1.ChatModel.findById(dto.lotId);
-        if (!chat) {
-            console.log('чат не найден');
-            return;
-        }
-        chat.reviews.push(new mongoose_1.Types.ObjectId(userId));
-        chat.messages.push({
+        currentChat.reviews.push(new mongoose_1.Types.ObjectId(userId));
+        currentChat.messages.push({
             from: new mongoose_1.Types.ObjectId('507f1f77bcf86cd799439011'),
             to: user._id,
             message: 'NewReview',
             createdAt: new Date(),
             status: 'user'
         });
-        const chatStatus = chat.reviews.some(obj => obj.toString() === user._id.toString());
+        const chatStatus = currentChat.reviews.some(obj => obj.toString() === user._id.toString());
         if (chatStatus) {
-            chat.status = 'Close';
+            currentChat.status = 'Close';
         }
-        await chat.save();
-        const newMessage = chat.messages[chat.messages.length - 1];
+        await currentChat.save();
+        const newMessage = currentChat.messages[currentChat.messages.length - 1];
         const chatStatusText = chatStatus ? 'Close' : 'Active';
         this.chatGateWay.newReview(user._id.toString(), newMessage, chatStatusText);
         return { success: true };

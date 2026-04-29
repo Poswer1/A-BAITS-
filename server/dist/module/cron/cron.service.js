@@ -23,7 +23,6 @@ let CronSerivce = class CronSerivce {
         this.notificationGateWay = notificationGateWay;
     }
     async checkLot() {
-        console.log('CRON ПРОВЕРЯЕТ');
         try {
             const nowDate = new Date();
             const expiredLots = await lot_model_1.LotModel.find({
@@ -49,7 +48,7 @@ let CronSerivce = class CronSerivce {
                             console.log('лот перевыставлен');
                         }
                         else {
-                            lot.status = 'Archive';
+                            lot.status = 'Completed';
                             console.log(`Лот ${lot._id} завершён без ставок`);
                         }
                     }

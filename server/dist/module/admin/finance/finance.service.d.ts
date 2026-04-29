@@ -7,7 +7,7 @@ export declare class FinanceService {
     } & {
         id: string;
     })[]>;
-    getMyTransactions(userId: string): Promise<{
+    getMyTransactions(userId: string, page: number): Promise<{
         allTransactions: (import("mongoose").Document<unknown, {}, import("src/models/transactions.model").TransactionType, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/transactions.model").TransactionType & {
             _id: import("mongoose").Types.ObjectId;
         } & {
@@ -15,6 +15,7 @@ export declare class FinanceService {
         } & {
             id: string;
         })[];
+        totalTransactions: number;
         currentBalance: number;
     }>;
     createTransaction(sum: number, user: string, type: string, lot?: string): Promise<{

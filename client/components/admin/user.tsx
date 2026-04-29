@@ -187,7 +187,7 @@ export default  function User({listUser}: listUserProps) {
                 </>
               ): (
                 <>
-                  <button onClick={() => setBalanceType('Deposite')} className={`${button} w-full`}>{t('admin', 'Deposite')}</button>
+                  <button onClick={() => setBalanceType('Deposit')} className={`${button} w-full`}>{t('admin', 'Deposit')}</button>
                   <button onClick={() => setBalanceType('Debit')} className={`${button} !bg-gray-200 !text-black w-full`}>{t('admin', 'Debit')}</button>
                 </>
               )}

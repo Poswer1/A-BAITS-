@@ -28,11 +28,12 @@ export interface Lot {
     dateTime: string;
     location: string;
     status: string;
-    delivary: string;
+    delivary: string[];
     Advertising: boolean;
     historyBid: HistoryBid[];
     autoBid: AutoBid[];
     winner: Types.ObjectId;
+    createdAt: Date;
 }
 export declare const LotModel: import("mongoose").Model<Lot, {}, {}, {}, import("mongoose").Document<unknown, {}, Lot, {}, import("mongoose").DefaultSchemaOptions> & Lot & {
     _id: Types.ObjectId;

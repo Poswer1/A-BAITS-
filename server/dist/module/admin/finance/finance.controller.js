@@ -27,8 +27,8 @@ let FinanceController = class FinanceController {
     async getAllTransactions() {
         return this.financeService.getAllTransactions();
     }
-    async getMyTransactions(userId) {
-        return this.financeService.getMyTransactions(userId);
+    async getMyTransactions(page, userId) {
+        return this.financeService.getMyTransactions(userId, page);
     }
     async returnMoney(dto) {
         return this.financeService.returnMoney(dto);
@@ -44,9 +44,10 @@ __decorate([
 ], FinanceController.prototype, "getAllTransactions", null);
 __decorate([
     (0, common_1.Get)('getMyTransactions'),
-    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Number, String]),
     __metadata("design:returntype", Promise)
 ], FinanceController.prototype, "getMyTransactions", null);
 __decorate([

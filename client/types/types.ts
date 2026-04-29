@@ -7,7 +7,7 @@ export interface UserTypes {
     name: string
     avatar: string
     rating:number,
-    balance:string
+    balance:number
     role: string,
     UnblockDate:Date,
 }

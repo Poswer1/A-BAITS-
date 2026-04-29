@@ -18,15 +18,21 @@ let FinanceService = class FinanceService {
             .populate('lot', 'name lotNumber images author');
         return allTransactions;
     }
-    async getMyTransactions(userId) {
+    async getMyTransactions(userId, page) {
+        const limit = 20;
         const user = await user_model_1.UserModel.findById(userId);
         if (!user)
             throw new common_1.BadRequestException('userNotFound');
-        const allTransactions = await transactions_model_1.TransactionModel.find({ user: userId })
-            .sort({ createdAt: -1 })
-            .populate('lot', 'images name lotNumber')
-            .populate('user', 'avatar name');
-        return { allTransactions: allTransactions, currentBalance: user.balance };
+        const [allTransactions, totalTransactions] = await Promise.all([
+            await transactions_model_1.TransactionModel.find({ user: userId })
+                .sort({ createdAt: -1 })
+                .populate('lot', 'images name lotNumber')
+                .populate('user', 'avatar name')
+                .limit(limit)
+                .skip((page - 1) * limit),
+            transactions_model_1.TransactionModel.countDocuments({ user: userId })
+        ]);
+        return { allTransactions: allTransactions, totalTransactions, currentBalance: user.balance };
     }
     async createTransaction(sum, user, type, lot) {
         const createdTransaction = await transactions_model_1.TransactionModel.create({

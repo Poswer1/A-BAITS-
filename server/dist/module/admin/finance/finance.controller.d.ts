@@ -10,7 +10,7 @@ export declare class FinanceController {
     } & {
         id: string;
     })[]>;
-    getMyTransactions(userId: string): Promise<{
+    getMyTransactions(page: number, userId: string): Promise<{
         allTransactions: (import("mongoose").Document<unknown, {}, import("../../../models/transactions.model").TransactionType, {}, import("mongoose").DefaultSchemaOptions> & import("../../../models/transactions.model").TransactionType & {
             _id: import("mongoose").Types.ObjectId;
         } & {
@@ -18,6 +18,7 @@ export declare class FinanceController {
         } & {
             id: string;
         })[];
+        totalTransactions: number;
         currentBalance: number;
     }>;
     returnMoney(dto: ReturnMoneyDto): Promise<{

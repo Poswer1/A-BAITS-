@@ -47,7 +47,6 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
   }
 
   const handleClick = () => {
-
     if(openFrom === 'header') {
       let path = `/${lang}`
       if(category)path += `/${category}`

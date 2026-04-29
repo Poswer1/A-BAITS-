@@ -47,17 +47,19 @@ let PaymentService = class PaymentService {
             const lotPrice = price ?? lot.blitzPrice;
             if (!lotPrice)
                 throw new Error('нет цены');
-            const updateLot = await lot_model_1.LotModel.updateOne({ _id: lotId, winner: { $exists: false }, status: 'Active' }, { $set: { winner: userId, status: 'Completed' } }, { session });
+            const user = await user_model_1.UserModel.findById(userId).session(session);
+            if (!user)
+                throw new common_1.BadRequestException('UserNotFound');
+            if (user.balance <= -1)
+                throw new common_1.BadRequestException('balanceInTheRed');
+            const updateLot = await lot_model_1.LotModel.updateOne({ _id: lotId, winner: { $exists: false }, status: 'Active' }, { $set: { winner: userId, status: 'Sold' } }, { session });
             if (updateLot.modifiedCount === 0) {
                 throw new common_1.BadRequestException('LotAlreadySold');
             }
-            const userUpdate = await user_model_1.UserModel.updateOne({ _id: userId, balance: { $gte: lotPrice } }, { $inc: { balance: -lotPrice } }, { session });
-            if (userUpdate.modifiedCount === 0)
-                throw new common_1.BadRequestException('NoMoney');
             const priceWithCommission = lotPrice - (lotPrice * 0.05);
-            const authorUpdate = await user_model_1.UserModel.updateOne({ _id: lot.author }, { $inc: { balance: +priceWithCommission } }, { session });
-            if (authorUpdate.modifiedCount === 0)
-                throw new common_1.BadRequestException('ErrorDepositAuthorLot');
+            const userUpdate = await user_model_1.UserModel.updateOne({ _id: lot.author }, { $inc: { balance: -priceWithCommission } }, { session });
+            if (userUpdate.modifiedCount === 0)
+                throw new common_1.BadRequestException('errorWriteOffMoneyAuthor');
             await chat_model_1.ChatModel.create([
                 {
                     users: [lot.author, userId],
@@ -67,8 +69,7 @@ let PaymentService = class PaymentService {
             ], { session });
             await session.commitTransaction();
             try {
-                await this.financeService.createTransaction(lotPrice, userId.toString(), 'Debit', lot._id.toString());
-                await this.financeService.createTransaction(priceWithCommission, lot.author.toString(), 'Deposit', lot._id.toString());
+                await this.financeService.createTransaction(priceWithCommission, lot.author.toString(), 'Debit', lot._id.toString());
                 await this.loggingService.newLog(userId, 'buyLot', lotId);
                 await this.notificationGateWay.sendNotification({
                     to: userId.toString(),

@@ -27,7 +27,11 @@ export class LotDto {
   dateTime: string;
 
   @IsString() location: string;
-  @IsString() delivary: string;
+
+  @IsArray() 
+  @IsString({ each: true })
+  @IsString() 
+  delivary: string[];
 
   @IsOptional() @IsBoolean() Advertising?: boolean;
 }
@@ -42,6 +46,10 @@ export class getMyLotsDto {
   @IsNumber()
   @IsOptional()
   page?:number
+
+  @IsString()
+  @IsOptional()
+  sort?:string
 }
 
 export class filterLot {

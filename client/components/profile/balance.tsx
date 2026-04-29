@@ -10,13 +10,15 @@ import { useTranslation } from '@/app/context/TranslationProvider'
 import { TransactionTypes } from '@/types/types'
 import TransactionCard from '../card/transactionCard'
 import { animationScale } from '@/styles/style'
+import Pagination from '../ui/pagination'
 
 interface BalanceProps {
   allTransaction: TransactionTypes[]
+  totalTransactions: number
   currentBalance:number
 }
 
-export default function Balance({allTransaction, currentBalance}: BalanceProps) {
+export default function Balance({allTransaction,totalTransactions, currentBalance}: BalanceProps) {
     const qrValue = `https://send.monobank.ua/3Y9bBHwR4q`;
     const [openQr, setOpenQe] = useState(false)
 
@@ -33,8 +35,9 @@ export default function Balance({allTransaction, currentBalance}: BalanceProps) 
       <h1 className='text-xl md:text-xl p-2 py-4 md:p-0 md:mb-2'>{t('profile', 'transactions')}</h1>
       <div className='flex flex-col'>
         {allTransaction?.map((t) => (
-          <TransactionCard transaction={t}/>
+          <TransactionCard key={t._id} transaction={t}/>
         ))}
+        <Pagination total={totalTransactions} maxLot={20}/>
       </div>
       {openQr && (
         <div className={overlay} onClick={() => setOpenQe(false)}>

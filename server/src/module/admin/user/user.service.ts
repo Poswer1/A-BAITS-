@@ -69,7 +69,7 @@ export class UserService {
         const amount = Number(balance)
         const updateBalnce = await UserModel.findByIdAndUpdate(
             id,
-            { $inc: { balance: balanceType === 'Deposite' ? amount : -amount } },
+            { $inc: { balance: balanceType === 'Deposit' ? amount : -amount } },
             { returnDocument: 'after' } 
         );
         if(!updateBalnce) throw new BadRequestException('UpateBalanceError')

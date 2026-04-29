@@ -6,7 +6,7 @@ export declare class ReviewService {
     constructor(chatGateWay: ChatGateway);
     newReview(userId: string, dto: reviewDto): Promise<{
         success: boolean;
-    } | undefined>;
+    }>;
     getReviewUser(query: getReviewDto): Promise<{
         allReview: (import("mongoose").Document<unknown, {}, import("src/models/review").ReviewType, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/review").ReviewType & {
             _id: Types.ObjectId;

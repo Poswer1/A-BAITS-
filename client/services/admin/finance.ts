@@ -22,8 +22,8 @@ export async function moneyReturn(transactionId:string, from:string, to:string, 
     return dataReturn(res);
 }
 
-export async function getMyTransactions(token:string) {
-    const res = await fetch(`${BASE_URL}/finance/getMyTransactions`, {
+export async function getMyTransactions(token:string, page:number) {
+    const res = await fetch(`${BASE_URL}/finance/getMyTransactions?page=${page}`, {
         method: 'GET',
         headers: {
             'Authorization': `Bearer ${token}`

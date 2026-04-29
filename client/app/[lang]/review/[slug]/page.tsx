@@ -15,10 +15,7 @@ import { useState } from 'react'
 export default function page() {
     const params = useParams()
     const router = useRouter()
-    const slug = Array.isArray(params.slug) ? params.slug : [params.slug];
-
-    const userId = slug[0] || ''
-    const lotId = slug[1] || ''
+    const slug = params.slug as string
 
     const [rating, setRating] = useState(1)
     const [comment, setComment] = useState('')
@@ -34,7 +31,7 @@ export default function page() {
     const handleReview = async () => {
         
         try {
-            const data = await newReview(userId, comment, rating, lotId)
+            const data = await newReview(slug, comment, rating)
             if(data.success) {
                 setSuccessReview(true)
                 setRating(1)

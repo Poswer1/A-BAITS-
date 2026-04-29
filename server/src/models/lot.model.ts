@@ -31,11 +31,12 @@ export interface Lot {
   dateTime: string;
   location: string;
   status: string;
-  delivary: string;
+  delivary: string[];
   Advertising: boolean;
   historyBid: HistoryBid[],
   autoBid: AutoBid[],
-  winner:Types.ObjectId
+  winner:Types.ObjectId,
+  createdAt:Date,
 }
 
 const AutoBidSchema = new Schema<AutoBid>({
@@ -70,7 +71,7 @@ const LotSchema = new Schema<Lot>({
   date: { type: Date, required: true },
   dateTime: { type: String, default: '21:00' },
   location: { type: String, required: true },
-  delivary: { type: String, required: true },
+  delivary: { type: [String], required: true },
   historyBid: { type: [HistoryBidSchema], default: [] },
   autoBid: {type: [AutoBidSchema], default: []},
   Advertising: { type: Boolean, default: false },

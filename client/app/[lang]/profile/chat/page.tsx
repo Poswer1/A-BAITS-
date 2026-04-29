@@ -8,7 +8,7 @@ import { getRelativeTime } from '@/components/ui/relativeTime';
 import { getUserById } from '@/services/user';
 import { blockClass, pageContainerClass } from '@/styles/profile/profile'
 import { hover } from '@/styles/style';
-import { AlertTriangle, Check, ChevronLeft, MoreVertical,Send, Shield, X} from "lucide-react";
+import { AlertCircle, AlertTriangle, Check, ChevronLeft, MoreVertical,Send, Shield, X} from "lucide-react";
 import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
@@ -39,7 +39,7 @@ function page() {
   const [successMessage, setSuccessMessage] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [selectChat, setSelectChat] = useState('')
-  const [myId, setMyId] = useState('')
+  const [myInfo, setInfo] = useState<UserTypes | null>(null)
   const searchParams = useSearchParams()
   const selectIdChat = searchParams.get('id') || ''
   const lotId = searchParams.get('lotId')
@@ -104,7 +104,7 @@ function page() {
                 u => u._id !== data._id
             );
         setMyInterlocutor(interlocutor[0]);
-        setMyId(data._id)
+        setInfo(data)
       })
   }, [chat])
 
@@ -185,29 +185,27 @@ function page() {
                    <h1 className='text-xl'>{t('chat', 'successDeal1')}</h1>
                    <p className='w-full text-sm md:text-base md:w-2/3'>{t('chat', 'successDeal2')}</p>
                    <div className='flex flex-col md:flex-row w-full justify-center items-center gap-2 mt-1'>
-                    <Link href={`/${lang}/review/${selectChat}/${chat?.lot?._id}`} className={`${button} w-full md:w-auto`}>{t('chat', 'ExchangeReview')}</Link>
+                    <Link href={`/${lang}/review/${selectChat}`} className={`${button} w-full md:w-auto`}>{t('chat', 'ExchangeReview')}</Link>
                     <button onClick={handleInviteModer} className={`${buttonWithoutBg} w-full md:w-auto`}>{t('chat', 'InviteModer')}</button>
                   </div>
                 </div>
               {messages?.map((msg:MessageType, index) => {
 
-                const isMyMessage = msg.from._id.toString() === myId
+                const isMyMessage = msg.from?._id.toString() === myInfo?._id.toString()
                 const messageFromAdmin = msg?.status === 'admin'
 
-                  if(msg.from._id === '507f1f77bcf86cd799439011') {
+                  if(msg.from?._id === '507f1f77bcf86cd799439011') {
                     return (
-                      msg.to === myId && (
+                      msg.to === myInfo?._id && (
                         <div className='flex justify-center items-center w-full py-5'>
-                            <h1 className='text-base text-center'>{t('chat', 'NewReview')}</h1>
+                            <h1 className='text-base text-center'>{t('chat', msg.message)}</h1>
                         </div>
                       )
                     )
                   }
                   return (
                     <>
-                      <div key={msg._id || index} className={`max-w-3/6 ${ isMyMessage ? 'self-end text-end': 'self-start text-start'}`}>
-
-                      
+                      <div key={msg._id || index} className={`max-w-3/6 flex flex-col ${ isMyMessage ? 'self-end text-end items-end': 'self-start text-start items-start'}`}>
                           <div className='flex gap-1 items-center'>
                             {messageFromAdmin ? (
                             <span className='w-6 h-6 rounded-full bg-orange-600 text-white flex justify-center items-center overflow-hidden p-1'>
@@ -218,9 +216,8 @@ function page() {
                             )}
                             <span className='text-sm'>{messageFromAdmin ? 'Модератор' : msg.from?.name}</span>
                           </div>
-                      
-
-                        <p className={`rounded-md p-2 ${isMyMessage ? 'bg-orange-600/10 text-start' : 'bg-gray-100'}`}>
+                    
+                        <p className={`rounded-md w-auto p-2 ${isMyMessage ? 'bg-orange-600/10 text-start' : 'bg-gray-100'}`}>
                           {msg?.message}
                         </p>
 
@@ -237,9 +234,14 @@ function page() {
                     <AlertTriangle />
                     <h1>{t('violations', 'Temporary')}</h1>
                 </div>
+            ): myInfo?.balance <= -1 ? (
+              <div className="flex justify-center w-full gap-2 text-red-500">
+                <AlertCircle />
+                <h1>{t('chat', 'balanceInTheRed')}</h1>
+              </div>
             ): chat?.status !== 'Close' ? (
               <div className='flex justify-center items-center w-full gap-2'>
-                <input className={`w-full outline-none`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder='Напишите сообщение'/>
+                <input className={`w-full outline-none`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder={t('chat', 'typeMessage')}/>
                 <button onClick={() => {
                   handleSendNewMessage()
                   setMessage('')

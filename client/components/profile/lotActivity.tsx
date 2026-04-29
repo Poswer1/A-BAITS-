@@ -6,13 +6,14 @@ import Sidebar from "./sidebar"
 import { LotTypes } from "@/types/types"
 import LotCardV2 from "../card/lotCardV2"
 import Pagination from "../ui/pagination"
-import { AlertCircle, Edit2, RotateCcw, Trash2, X, XCircle } from "lucide-react"
-import { animationScale, hover } from "@/styles/style"
-import { useState } from "react"
-import { overlay } from "@/styles/global"
+import { Archive, Edit2, RotateCcw, Trash2, X, XCircle } from "lucide-react"
+import { hover } from "@/styles/style"
+import { useEffect, useState } from "react"
 import { closeLot, deleteLot, resumeLot } from "@/services/lot"
 import Toast from "../ui/toast"
 import ModalConfirm from "../ui/modalConfirm"
+import SelectionField from "../ui/selectionField"
+import { useRouter, useSearchParams } from "next/dist/client/components/navigation"
 
 interface LotActivityProps {
     data:{ allLots: LotTypes[], totalLot: number }
@@ -23,11 +24,38 @@ interface LotActivityProps {
 export default function LotActivity({data, mode, slug}: LotActivityProps) {
 
     const {t} = useTranslation()
+    const searchParams = useSearchParams()
+    const router = useRouter()
+
     const [openConfirmWindow, setOpenConfirmWindow] = useState('')
+    const [sortValue, setSortValue] = useState('')
     const [allLots, setAllLots] = useState(data.allLots || [])
     const [selectLot, setSelectLot] = useState('')
     const [message, setMessage] = useState('')
     const [error, setError] = useState('')
+
+    const listFilter = [
+      {
+        name: 'PriceHigh',
+        ru: 'Цена по убыванию',
+        uk: 'Ціна за спаданням'
+      },
+      {
+        name: 'PriceLow',
+        ru: 'Цена по возрастанию',
+        uk: 'Ціна за зростанням'
+      },
+      {
+        name: 'Newest',
+        ru: 'Сначала новые',
+        uk: 'Спочатку нові'
+      },
+      {
+        name: 'Oldest',
+        ru: 'Сначала старые',
+        uk: 'Спочатку старі'
+      }
+    ];
 
     let active = ''
 
@@ -43,20 +71,31 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
       active = t('profile', 'sold')
     }
 
+    useEffect(() => {
+      if (data?.allLots) {
+        setAllLots(data.allLots);
+      }
+    }, [data]);
+
+    useEffect(() => {
+      const params = new URLSearchParams(searchParams)
+      if(sortValue) {
+        params.set('sort', sortValue)
+      }
+      router.push(`?${params.toString()}`)
+    }, [sortValue])
+
     const handleCloseLot = async () => {
       try {
         if(!selectLot) return
-        const data = await closeLot(selectLot)
-        setAllLots(prev => prev.map(l => l._id === selectLot ? 
-          { ...l, status: data.status }
-          : l
-        ))
-        setMessage(t('profile', 'lotSuccessClose'))
+        await closeLot(selectLot)
+        setAllLots(prev => prev.filter(l => l._id !== selectLot))
+        setMessage(t('profile', 'lotSuccessArchive'))
         setTimeout(() => {
           setMessage('')
         }, 3000)
       } catch (error) {
-        setError(t('profile', 'lotErrorClose'))
+        setError(t('profile', 'lotErrorArchive'))
         setTimeout(() => {
           setError('')
         }, 3000)
@@ -123,9 +162,9 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
         <div className="w-full flex flex-col justify-start items-start gap-4">
           <Sidebar mode={mode} active={active}/>
           <div className={lotListClass}>
-            <div className="flex justify-between items-center w-full px-2 mb-4 md:p-0">
+            <div className="flex justify-between items-center w-full px-2 mb-2 md:p-0">
               <h1 className={openConfirmWindow ? 'hidden md:flex' : 'flex'}>{t('profile', 'LotsFound')}: {data?.totalLot}</h1>
-              {(mode === 'sell' && allLots.length > 0 && (active === t('profile', 'archived') || active === t('profile', 'active'))) && (
+              {(mode === 'sell' && allLots.length > 0 && active !== t('profile', 'sold')) && (
                 <div className={`${openConfirmWindow ? 'w-full md:w-auto': 'w-auto'} flex justify-between items-center gap-2`}>
                   {openConfirmWindow ? (
                     <>
@@ -137,10 +176,11 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
                     {active === t('profile', 'active') && (
                       <span onClick={() => setOpenConfirmWindow('edit')} className={`${styleButtonAction} bg-white shadow-sm`}><Edit2 size={20}/></span>
                     )}
-                    {active === t('profile', 'archived') ? (
+                    {(active === t('profile', 'archived') || active === t('profile', 'completed')) && (
                       <span onClick={() => setOpenConfirmWindow('resume')} className={`${styleButtonAction} bg-orange-600 text-white`}><RotateCcw size={20}/></span>
-                    ): (
-                     <span onClick={() => setOpenConfirmWindow('close')} className={`${styleButtonAction} bg-red-500 text-white`}><XCircle size={20}/></span>
+                    )}
+                    {(active === t('profile', 'completed') || active === t('profile', 'active'))&& (
+                      <span onClick={() => setOpenConfirmWindow('archive')} className={`${styleButtonAction} bg-red-500 text-white`}><Archive size={20}/></span>
                     )}
                     <span onClick={() => setOpenConfirmWindow('delete')} className={`${styleButtonAction} bg-red-500 text-white`}><Trash2 size={20}/></span>
                     </>
@@ -148,7 +188,17 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
                 </div>
               )}
             </div>
-
+            {allLots.length !== 0 && (
+              <div className="w-[95%] px-2 md:w-1/5 mb-2 md:px-0">
+                <SelectionField 
+                title={t('profile', 'Sorting')} 
+                placeholder={t('profile', 'Sorting')} 
+                list={listFilter} 
+                setValue={setSortValue} 
+                bgColor='bg-white'
+                value={sortValue}/>
+              </div>
+            )}
             {allLots.map((lot:any) => (
               <LotCardV2 lot={lot} show={true} select={openConfirmWindow} selectLot={setSelectLot}/> 
             ))}
@@ -160,8 +210,8 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
             handleClose={handleCloseModal} 
             handleAction={handleAction} 
             title={t('profile', openConfirmWindow)} 
-            alert={t('profile', openConfirmWindow === 'close' ? 'closeDesc' : openConfirmWindow === 'delete' ? 'deleteDesc' : 'resumeDesc')}
-            yesButton={t('profile', openConfirmWindow === 'close' ? 'yesClose' : openConfirmWindow === 'delete' ?  'yesDelete' : 'yesResume')}
+            alert={t('profile', openConfirmWindow === 'archive' ? 'archiveDesc' : openConfirmWindow === 'delete' ? 'deleteDesc' : 'resumeDesc')}
+            yesButton={t('profile', openConfirmWindow === 'archive' ? 'yesArchive' : openConfirmWindow === 'delete' ?  'yesDelete' : 'yesResume')}
           />
         )}
         <Toast message={message} error={error}/>

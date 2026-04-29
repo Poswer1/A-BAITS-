@@ -15,7 +15,6 @@ export class CronSerivce {
 
     @Cron('*/1 * * * *')
     async checkLot() {
-        console.log('CRON ПРОВЕРЯЕТ')
         try {
             const nowDate = new Date()
             const expiredLots = await LotModel.find({
@@ -41,7 +40,7 @@ export class CronSerivce {
                             lot.date = newDate
                             console.log('лот перевыставлен')
                         } else {
-                            lot.status = 'Archive'
+                            lot.status = 'Completed'
                             console.log(`Лот ${lot._id} завершён без ставок`)
                         }
                     }

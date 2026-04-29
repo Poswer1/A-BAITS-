@@ -91,8 +91,10 @@ __decorate([
     __metadata("design:type", String)
 ], LotDto.prototype, "location", void 0);
 __decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsString)({ each: true }),
     (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
+    __metadata("design:type", Array)
 ], LotDto.prototype, "delivary", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
@@ -103,6 +105,7 @@ class getMyLotsDto {
     status;
     mode;
     page;
+    sort;
 }
 exports.getMyLotsDto = getMyLotsDto;
 __decorate([
@@ -118,6 +121,11 @@ __decorate([
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Number)
 ], getMyLotsDto.prototype, "page", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], getMyLotsDto.prototype, "sort", void 0);
 class filterLot {
     category;
     subCategory;

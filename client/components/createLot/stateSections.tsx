@@ -3,8 +3,8 @@ import { block, Blockinput, nameInput } from "@/styles/createLot"
 import { hover } from "@/styles/style"
 
 interface StateSectionsProps {
-    stateLot:string,
-    setStateLot: (t:string) => void
+    stateLot:string | string[],
+    setStateLot: (t: any) => void,
     mode:string
 }
 
@@ -39,6 +39,20 @@ export default function StateSections({stateLot, setStateLot, mode}:StateSection
         },
         ]
 
+        const handleSelect = (value: string) => {
+            if (mode === 'state') {
+                setStateLot(value)
+            } else {
+                setStateLot((prev: string[]) => {
+                    if (prev.includes(value)) {
+                        return prev.filter(item => item !== value)
+                    } else {
+                        return [...prev, value]
+                    }
+                })
+            }
+        }
+
   return (
     <div className={block}>
         <div className={Blockinput}>
@@ -46,7 +60,7 @@ export default function StateSections({stateLot, setStateLot, mode}:StateSection
             <div className="flex overflow-x-auto w-full justify-start items-center gap-5">
                 {statesLot.map((state, index) => (
                     <>
-                    <span key={index} className={`whitespace-nowrap ${hover} ${index === 3 && mode !=='state' && 'hidden'} ${stateLot === state.lang && 'bg-orange-600 text-white'} bg-gray-100 p-2 w-40 text-center rounded-md`} onClick={() => setStateLot(state.lang)}>{state.state}</span>
+                    <span key={index} className={`whitespace-nowrap ${hover} ${index === 3 && mode !=='state' && 'hidden'} ${stateLot.includes(state.lang) && 'bg-orange-600 text-white'} bg-gray-100 p-2 w-40 text-center rounded-md`} onClick={() => handleSelect(state.lang)}>{state.state}</span>
                     </>
                  ))}
             </div>

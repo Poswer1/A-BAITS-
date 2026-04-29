@@ -13,13 +13,14 @@ export declare class LotDto {
     date: number;
     dateTime: string;
     location: string;
-    delivary: string;
+    delivary: string[];
     Advertising?: boolean;
 }
 export declare class getMyLotsDto {
     status: string;
     mode: string;
     page?: number;
+    sort?: string;
 }
 export declare class filterLot {
     category?: string;

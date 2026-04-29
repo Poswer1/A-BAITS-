@@ -73,7 +73,7 @@ let UserService = class UserService {
     }
     async updateBalance(id, balance, balanceType) {
         const amount = Number(balance);
-        const updateBalnce = await user_model_1.UserModel.findByIdAndUpdate(id, { $inc: { balance: balanceType === 'Deposite' ? amount : -amount } }, { returnDocument: 'after' });
+        const updateBalnce = await user_model_1.UserModel.findByIdAndUpdate(id, { $inc: { balance: balanceType === 'Deposit' ? amount : -amount } }, { returnDocument: 'after' });
         if (!updateBalnce)
             throw new common_1.BadRequestException('UpateBalanceError');
         await this.financeService.createTransaction(balance, id, balanceType);

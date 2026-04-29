@@ -23,7 +23,7 @@ export default function ModalConfirm({handleAction, handleClose, title, alert, y
         <div className={`${animationScale} flex flex-col justify-center items-center  bg-white w-[90%] lg:w-2/4 xl:w-1/3 rounded-xl`}>
             <div className={`py-15 flex flex-col justify-center items-center w-[90%] gap-1`}>
                 <h1 className="text-2xl text-center">{title}</h1>
-                <p className="flex text-center text-gray-500 gap-1"><AlertCircle size={20} className="text-red-500"/>{alert}</p>
+                <p className="flex text-center text-gray-500 gap-1">{alert}</p>
             </div> 
             <div className="flex w-full border-t border-gray-300">
                 <button onClick={handleClose} className={`${hover} bg-gray-200 w-full rounded-bl-xl p-2`}>{t('profile', 'noIdontWant')}</button>

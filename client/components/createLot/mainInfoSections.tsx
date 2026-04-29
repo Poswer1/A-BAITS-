@@ -3,6 +3,7 @@ import { block, Blockinput, input, nameInput } from "@/styles/createLot"
 import { arrowActive, hover } from "@/styles/style"
 import { ChevronDown, Menu } from "lucide-react"
 import InputField from "../ui/inputFields"
+import { categoriesWithIcons } from "@/category/category"
 
 interface MainInfoProps {
     name:String
@@ -17,6 +18,7 @@ interface MainInfoProps {
 export default function MainInfoSections({name, setName, openCategory, setOpenCategory, createLotCategory, createLotSubCategory, createLotSubSubCategory} : MainInfoProps) {
 
     const {t} = useTranslation() 
+    const hasSubCategory = categoriesWithIcons.some(category => category.name === createLotCategory && category.subcategories?.length > 0)
 
   return (
     <div className={`${block} gap-4`}>
