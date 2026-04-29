@@ -461,7 +461,7 @@ let LotService = class LotService {
         const user = await user_model_1.UserModel.findById(userId);
         if (!user)
             throw new common_1.BadRequestException('UserNotFound');
-        if (user.balance < data.bid)
+        if (user.balance <= -1)
             throw new common_1.BadRequestException('NoMoney');
         const { authorBid, newPrice } = await this.calculateAuctionState(lot.autoBid, userId, data.bid, lot.stepPrice, lot.startPrice, 'autoBid');
         const update = await lot_model_1.LotModel.updateOne({

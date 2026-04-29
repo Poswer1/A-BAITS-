@@ -471,7 +471,7 @@ export class LotService {
       
       const user = await UserModel.findById(userId)
       if(!user) throw new BadRequestException('UserNotFound')
-      if (user.balance < data.bid) throw new BadRequestException('NoMoney')
+      if (user.balance <= -1) throw new BadRequestException('NoMoney')
 
       const { authorBid, newPrice } = await this.calculateAuctionState(lot.autoBid, userId, data.bid, lot.stepPrice, lot.startPrice, 'autoBid')
 
