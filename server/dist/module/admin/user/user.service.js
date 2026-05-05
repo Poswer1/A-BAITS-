@@ -19,10 +19,27 @@ let UserService = class UserService {
     constructor(financeService) {
         this.financeService = financeService;
     }
-    async getAllUser() {
+    async getAllUser(page = 1, sort = 'createdAt', order = 'desc', search = '') {
         try {
-            const listUser = await user_model_1.UserModel.find({});
-            return listUser;
+            const limit = 20;
+            const skip = (Number(page) - 1) * limit;
+            const sortOrder = order === 'asc' ? 1 : -1;
+            const sortObj = { [sort]: sortOrder };
+            const filter = {};
+            if (search) {
+                filter.$or = [
+                    { name: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } },
+                ];
+            }
+            const [users, total] = await Promise.all([
+                user_model_1.UserModel.find(filter)
+                    .sort(sortObj)
+                    .skip(skip)
+                    .limit(limit),
+                user_model_1.UserModel.countDocuments(filter)
+            ]);
+            return { users, total };
         }
         catch (error) {
             throw new common_1.BadRequestException('ErrorGetListUser');

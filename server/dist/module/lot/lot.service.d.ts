@@ -27,7 +27,9 @@ export declare class LotService {
     updateLot(dto: LotDto, id: string, files: Express.Multer.File[], preview: string[], userId: string, role: string): Promise<{
         success: boolean;
     }>;
-    viewsCount(id: string, userId: string): Promise<void>;
+    viewsCount(id: string, userId: string): Promise<{
+        success: boolean;
+    }>;
     getAllLot(): Promise<(mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;
     } & {
@@ -80,6 +82,9 @@ export declare class LotService {
     } & {
         id: string;
     }) | null>;
+    getMyAutoBid(numberLot: string, userId: string): Promise<{
+        max: number | null;
+    }>;
     myHistoryLot(userId: string): Promise<(mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;
     } & {

@@ -11,12 +11,21 @@ const common_1 = require("@nestjs/common");
 const transactions_model_1 = require("../../../models/transactions.model");
 const user_model_1 = require("../../../models/user.model");
 let FinanceService = class FinanceService {
-    async getAllTransactions() {
-        const allTransactions = await transactions_model_1.TransactionModel.find({})
-            .sort({ createdAt: -1 })
-            .populate('user', 'name avatar')
-            .populate('lot', 'name lotNumber images author');
-        return allTransactions;
+    async getAllTransactions(page = 1, sort = 'createdAt', order = 'desc') {
+        const limit = 20;
+        const skip = (Number(page) - 1) * limit;
+        const sortOrder = order === 'asc' ? 1 : -1;
+        const sortObj = { [sort]: sortOrder };
+        const [transactions, total] = await Promise.all([
+            transactions_model_1.TransactionModel.find({})
+                .sort(sortObj)
+                .skip(skip)
+                .limit(limit)
+                .populate('user', 'name avatar')
+                .populate('lot', 'name lotNumber images author'),
+            transactions_model_1.TransactionModel.countDocuments({})
+        ]);
+        return { transactions, total };
     }
     async getMyTransactions(userId, page) {
         const limit = 20;

@@ -4,10 +4,12 @@ import Lots from "@/components/main/lots";
 
 export default async function Home() {
 
-  const topLot = await getTopLot()
-  const newLot = await getNewLot()
-  const lotFrom1UAH = await getLotFrom1UAH()
-  const popularLot = await getPopularLot()
+  const [topLot, newLot, lotFrom1UAH, popularLot] = await Promise.all([
+    getTopLot().catch(() => []),
+    getNewLot().catch(() => []),
+    getLotFrom1UAH().catch(() => []),
+    getPopularLot().catch(() => []),
+  ])
 
   return (
 

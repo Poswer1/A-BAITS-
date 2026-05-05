@@ -1,0 +1,160 @@
+⨯ Error: topLotErrorFound
+    at dataReturn (services\utils.ts:7:15)
+    at async Home (app\[lang]\page.tsx:7:18)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '1833827215'
+}
+⨯ Error: topLotErrorFound
+    at dataReturn (services\utils.ts:7:15)
+    at async Home (app\[lang]\page.tsx:7:18)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '1833827215'
+}
+⨯ Error: topLotErrorFound
+    at dataReturn (services\utils.ts:7:15)
+    at async Home (app\[lang]\page.tsx:7:18)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '1833827215'
+}
+⨯ Error: topLotErrorFound
+    at dataReturn (services\utils.ts:7:15)
+    at async Home (app\[lang]\page.tsx:7:18)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '1833827215'
+}
+⨯ TypeError: fetch failed
+    at async getTopLot (services\lot.ts:36:17)
+    at async Home (app\[lang]\page.tsx:7:18)
+  34 |
+  35 | export async function getTopLot() {
+> 36 |     const res = await fetch(`${BASE_URL}/lot/getTopLot`, {
+     |                 ^
+  37 |         method: 'GET'
+  38 |     })    
+  39 |     return dataReturn(res) {
+  digest: '3586623055',
+  [cause]: Error: connect ECONNREFUSED 127.0.0.1:3002
+      at <unknown> (Error: connect ECONNREFUSED 127.0.0.1:3002) {
+    errno: -4078,
+    code: 'ECONNREFUSED',
+    syscall: 'connect',
+    address: '127.0.0.1',
+    port: 3002
+  }
+}
+⨯ Error: topLotErrorFound
+    at dataReturn (services\utils.ts:7:15)
+    at async Home (app\[lang]\page.tsx:7:18)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '1833827215'
+}
+⨯ Error: topLotErrorFound
+    at dataReturn (services\utils.ts:7:15)
+    at async Home (app\[lang]\page.tsx:7:18)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '1833827215'
+}
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Banner`. See https://react.dev/link/warning-keys for more information.
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Banner`. See https://react.dev/link/warning-keys for more information.
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Banner`. See https://react.dev/link/warning-keys for more information.
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Banner`. See https://react.dev/link/warning-keys for more information.
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Banner`. See https://react.dev/link/warning-keys for more information.
+⚠ Cross origin request detected from 192.168.0.109 to /_next/* resource. In a future major version of Next.js, you will need to explicitly configure "allowedDevOrigins" in next.config to allow this.
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+⨯ Error: Internal server error
+    at dataReturn (services\utils.ts:7:15)
+    at async page (app\[lang]\blog\page.tsx:8:19)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '424328131'
+}
+⨯ Error: Internal server error
+    at dataReturn (services\utils.ts:7:15)
+    at async page (app\[lang]\blog\page.tsx:8:19)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '424328131'
+}
+⨯ Error: Internal server error
+    at dataReturn (services\utils.ts:7:15)
+    at async page (app\[lang]\blog\page.tsx:8:19)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '424328131'
+}
+⨯ Error: Internal server error
+    at dataReturn (services\utils.ts:7:15)
+    at async page (app\[lang]\blog\page.tsx:8:19)
+   5 |
+   6 |      if(!res.ok) {
+>  7 |         throw new Error(data.message || 'Ошибка res');
+     |               ^
+   8 |     }
+   9 |
+  10 |     return data; {
+  digest: '424328131'
+}
+Each child in a list should have a unique "key" prop.
+
+Check the render method of `Banner`. See https://react.dev/link/warning-keys for more information.

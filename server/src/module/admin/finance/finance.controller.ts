@@ -12,8 +12,12 @@ export class FinanceController {
     
     @UseGuards(RolesGuard)
     @Get('getAllTransactions')
-    async getAllTransactions () {
-        return this.financeService.getAllTransactions();
+    async getAllTransactions (
+        @Query('page') page: number = 1,
+        @Query('sort') sort: string = 'createdAt',
+        @Query('order') order: string = 'desc'
+    ) {
+        return this.financeService.getAllTransactions(page, sort, order);
     }
 
     @Get('getMyTransactions')

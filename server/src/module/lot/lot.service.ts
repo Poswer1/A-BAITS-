@@ -196,6 +196,7 @@ export class LotService {
         {_id:id},
         { $addToSet: { views: userId } } // добавит только если его нету
       )
+      return {success: true}
     } catch (error) {
       throw error
     }
@@ -451,6 +452,16 @@ export class LotService {
     }
   }
 
+  async getMyAutoBid(numberLot:string, userId:string) {
+    const lot = await LotModel.findOne({lotNumber: numberLot}).select('autoBid')
+    if(!lot) throw new BadRequestException('lotNotFound')
+
+    const myAutoBids = lot.autoBid.filter(bid => bid.author.toString() === userId.toString())
+    const max = myAutoBids.reduce((highest, bid) => Math.max(highest, bid.max), 0)
+
+    return {max: max || null}
+  }
+
   async myHistoryLot(userId:string) {
     if(!userId) return
     try {
@@ -609,8 +620,9 @@ export class LotService {
   mode: string
 ) {
   const sorted = [...(lots ?? [])]
+    .map((bid, index) => ({...bid, index}))
     .filter(x => typeof x.max === 'number')
-    .sort((a, b) => b.max - a.max);
+    .sort((a, b) => b.max - a.max || a.index - b.index);
 
   const top1 = sorted[0];
   const top2 = sorted[1];
@@ -629,7 +641,7 @@ export class LotService {
 
 
   if (mode === 'autoBid') {
-    if (bid >= top1Max) {
+    if (bid > top1Max) {
       return {
         authorBid: userId,
         newPrice: top1Max + stepPrice,
@@ -648,7 +660,7 @@ export class LotService {
   const newPrice = Math.min(top1Max, highest);
 
   return {
-    authorBid: bid >= top1Max ? userId : top1.author,
+    authorBid: bid > top1Max ? userId : top1.author,
     newPrice,
   };
 }

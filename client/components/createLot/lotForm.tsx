@@ -40,7 +40,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
     const [name, setName] = useState(initialData?.name || '')
     const [description, setDescription] = useState(initialData?.descriptions || '')
     const [stateLot, setStateLot] = useState(initialData?.state || '')
-    const [price, setPrice] = useState(1)
+    const [price, setPrice] = useState(initialData?.startPrice || 1)
     const [priceStep, setPriceStep] = useState(initialData?.stepPrice || 1)
     const [blitzPrice, setBlitzPrice] = useState(initialData?.blitzPrice || 0)
     const [date, setDate] = useState(initialData?.date || 0)
@@ -62,6 +62,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
 
 
     const activeCategory = categoriesWithIcons.find(obg => obg.name === category)
+    const categoryHasSubcategories = (activeCategory?.subcategories?.length || 0) > 0
     
     const transleteCategory = getValueByLang(categoriesWithIcons, category, lang)
     const transleteSubCategory = getValueByLang(activeCategory?.subcategories || [], subCategory, lang)
@@ -72,7 +73,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
         const isAuth = await getStatusAuth()
 
         if (!isAuth) {
-          router.push('/auth/login')
+          router.push(`/${lang}/auth/login`)
         }
         setLoading(false)
       }
@@ -101,8 +102,23 @@ export default function LotForm({mode, initialData}:LotFormProps) {
     }
 
     const handleCreateOrUpdate = async () => {
-       if (!name || !description || !stateLot || !location || !delivery || !price || !priceStep || !date || !time || !category || !subCategory || !preview || preview.length === 0) {
+       if (!name || !description || !stateLot || !location || delivery.length === 0 || !price || !priceStep || !date || !time || !category || (categoryHasSubcategories && !subCategory) || !preview || preview.length === 0) {
           setMessage('Будь ласка, заповніть всі дані')
+          const missingFields = [
+            !name && t('createLot','createLot-name'),
+            !description && t('createLot','createLot-descriptions'),
+            !stateLot && t('createLot','createLot-state-title'),
+            !location && t('createLot','createLot-locationTitle'),
+            delivery.length === 0 && t('createLot','create-delivary-title'),
+            !price && t('createLot','createLot-StartingPrice'),
+            !priceStep && t('createLot','createLot-step'),
+            !date && t('createLot','createLot-Date'),
+            !time && t('createLot','createLot-DateTime'),
+            !category && t('createLot','createLot-category'),
+            categoryHasSubcategories && !subCategory && t('createLot','createLot-selectCategory'),
+            (!preview || preview.length === 0) && t('createLot','createLot-photo')
+          ].filter(Boolean)
+          setMessage(`Заполните: ${missingFields.join(', ')}`)
           setTimeout(() => {
             setMessage('')
           }, 3000)
@@ -140,7 +156,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
         formData.append('name', name)
         formData.append('startPrice', price.toString())
         formData.append('category', category)
-        formData.append('subCategory', subCategory)
+        if(subCategory)formData.append('subCategory', subCategory)
         if(subSubCategory)formData.append('subSubCategory', subSubCategory)
         formData.append('stepPrice', priceStep.toString())
         if (blitzPrice)formData.append('blitzPrice', blitzPrice.toString())

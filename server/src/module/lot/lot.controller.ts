@@ -95,6 +95,12 @@ export class LotController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('getMyAutoBid/:numberLot')
+  async getMyAutoBid(@Param('numberLot') numberLot:string, @CurrentUser('id') userId:string) {
+    return this.lotService.getMyAutoBid(numberLot, userId)
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Get('myHistoryLot')
   async myHistoryLot(@Req() req: any) {
     const userId = (req.user as any)._id

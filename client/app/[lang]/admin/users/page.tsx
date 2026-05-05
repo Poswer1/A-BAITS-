@@ -4,9 +4,16 @@ import { UserTypes } from "@/types/types";
 import { cookies } from 'next/headers';
 
 
-export default async function page() {
+export default async function page({searchParams}: {searchParams: {page?:string, sort?:string, order?:string, search?:string}}) {
+
+  const params = await searchParams
+  const page = Number(params.page) || 1
+  const sort = params.sort || 'createdAt'
+  const order = params.order || 'desc'
+  const search = params.search || ''
 
   let listUser: UserTypes[] = []
+  let total = 0
 
   try {
     const cookieStore = await cookies()
@@ -15,12 +22,14 @@ export default async function page() {
       console.log('токен не найден')
       return
     }
-    listUser = await getAllUser(token) 
+    const data = await getAllUser(token, page, sort, order, search) 
+    listUser = data.users || []
+    total = data.total || 0
   } catch (error) {
     listUser = []
   }
 
   return (
-    <User listUser={listUser}/>
+    <User listUser={listUser} total={total} currentPage={page} currentSort={sort} currentOrder={order} currentSearch={search}/>
   )
 }

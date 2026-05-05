@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Query, UseGuards } from "@nestjs/common";
 import { RolesGuard } from "../role.guards";
 import { UserService } from "./user.service";
 import { JwtAuthGuard } from "src/module/auth/jwt/jwt-auth-guard";
@@ -10,8 +10,13 @@ export class UserController {
     constructor (private readonly userService: UserService) {}
     
     @Get('getAllUser')
-    async getAllUser () {
-        return this.userService.getAllUser()
+    async getAllUser (
+        @Query('page') page: number = 1,
+        @Query('sort') sort: string = 'createdAt',
+        @Query('order') order: string = 'desc',
+        @Query('search') search: string = ''
+    ) {
+        return this.userService.getAllUser(page, sort, order, search)
     } 
 
     @Get('getCountRegisteredUsers')

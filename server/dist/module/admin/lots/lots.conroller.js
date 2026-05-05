@@ -22,8 +22,8 @@ let LotsController = class LotsController {
     constructor(lotsService) {
         this.lotsService = lotsService;
     }
-    async getLotsBySearch(search) {
-        return this.lotsService.getLotsBySearch(search);
+    async getLotsBySearch(search = '', page = 1, sort = 'createdAt', order = 'desc', status = '') {
+        return this.lotsService.getLotsBySearch(search, page, sort, order, status);
     }
     async getLotsCount() {
         return this.lotsService.getLotsCount();
@@ -36,8 +36,12 @@ exports.LotsController = LotsController;
 __decorate([
     (0, common_1.Get)('getLotsBySearch'),
     __param(0, (0, common_1.Query)('search')),
+    __param(1, (0, common_1.Query)('page')),
+    __param(2, (0, common_1.Query)('sort')),
+    __param(3, (0, common_1.Query)('order')),
+    __param(4, (0, common_1.Query)('status')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [String, Number, String, String, String]),
     __metadata("design:returntype", Promise)
 ], LotsController.prototype, "getLotsBySearch", null);
 __decorate([

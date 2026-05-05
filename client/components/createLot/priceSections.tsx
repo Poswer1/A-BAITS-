@@ -25,7 +25,8 @@ export default function PriceSections({price, setPrice, priceStep, setPriceStep,
                     value={price} 
                     onChange={setPrice} 
                     label={`${t('createLot','createLot-StartingPrice')} ₴`}
-                    placeholder={t('createLot','createLot-StartingPrice')}/>
+                    placeholder={t('createLot','createLot-StartingPrice')}
+                    minTotal="1"/>
                 </div>
            
             <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>
@@ -34,7 +35,8 @@ export default function PriceSections({price, setPrice, priceStep, setPriceStep,
                 value={priceStep} 
                 onChange={setPriceStep} 
                 label={`${t('createLot','createLot-step')} ₴`} 
-                placeholder={t('createLot','createLot-step')}/>
+                placeholder={t('createLot','createLot-step')}
+                minTotal="1"/>
             </div>
         </div>
           <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>
@@ -43,7 +45,8 @@ export default function PriceSections({price, setPrice, priceStep, setPriceStep,
               value={blitzPrice} 
               onChange={setBlitzPrice} 
               label={`${t('createLot','createLot-Blitz')} ₴ (${t('global','NotNecessary')})`} 
-              placeholder={t('createLot','createLot-Blitz-descriptions')}/>
+              placeholder={t('createLot','createLot-Blitz-descriptions')}
+              minTotal="0"/>
           </div>
       </div>
   )

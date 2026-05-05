@@ -17,10 +17,21 @@ export class LoggingService {
         }
     }
 
-    async getAllLogs () {
-        const allLogs = await LoaggingModel.find({})
-        .populate('user', 'avatar name ip')
-        .populate('lot', 'lotNumber')
-        return allLogs || []
+    async getAllLogs (page: number = 1, sort: string = 'createdAt', order: string = 'desc') {
+        const limit = 20
+        const skip = (Number(page) - 1) * limit
+        const sortOrder = order === 'asc' ? 1 : -1
+        const sortObj: any = { [sort]: sortOrder }
+
+        const [logs, total] = await Promise.all([
+            LoaggingModel.find({})
+                .sort(sortObj)
+                .skip(skip)
+                .limit(limit)
+                .populate('user', 'avatar name ip')
+                .populate('lot', 'lotNumber'),
+            LoaggingModel.countDocuments({})
+        ])
+        return { logs, total }
     }
 }

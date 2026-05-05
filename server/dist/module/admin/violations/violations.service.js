@@ -30,11 +30,21 @@ let ViolationsService = class ViolationsService {
             throw new common_1.BadRequestException('ErrorCreateViolations');
         return { success: true };
     }
-    async getAllViolations() {
-        const allViolations = await violations_1.ViolationsModel.find({})
-            .populate('lot', 'images name lotNumber')
-            .populate('user', 'avatar name ip status UnblockDate');
-        return allViolations || [];
+    async getAllViolations(page = 1, sort = 'createdAt', order = 'desc') {
+        const limit = 20;
+        const skip = (Number(page) - 1) * limit;
+        const sortOrder = order === 'asc' ? 1 : -1;
+        const sortObj = { [sort]: sortOrder };
+        const [violations, total] = await Promise.all([
+            violations_1.ViolationsModel.find({})
+                .sort(sortObj)
+                .skip(skip)
+                .limit(limit)
+                .populate('lot', 'images name lotNumber')
+                .populate('user', 'avatar name ip status UnblockDate'),
+            violations_1.ViolationsModel.countDocuments({})
+        ]);
+        return { violations, total };
     }
 };
 exports.ViolationsService = ViolationsService;

@@ -1,4 +1,4 @@
-import { BASE_URL, dataReturn } from "./utils"
+import { BASE_URL, authHeaders, dataReturn } from "./utils"
 
 
 export async function register(email:string, password:string, name:string) {
@@ -16,12 +16,13 @@ export async function register(email:string, password:string, name:string) {
 export async function getStatusAuth() {
     const res = await fetch(`${BASE_URL}/auth/getStatusAuth`, {
         method: 'GET',
+        headers: authHeaders(),
         credentials: 'include',// говорит отпровлять куки
         
     })
 
     const data = await res.json();
-    return data.isLoggedIn;
+    return data.isLoggedIn || (typeof window !== 'undefined' && !!localStorage.getItem('token'));
 }
 
 export async function login(email:string, password:string) {

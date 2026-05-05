@@ -11,8 +11,14 @@ export class LotsController {
     constructor(private readonly lotsService:LotsService) {}
 
     @Get('getLotsBySearch')
-    async getLotsBySearch(@Query('search') search:string) {
-        return this.lotsService.getLotsBySearch(search)
+    async getLotsBySearch(
+        @Query('search') search: string = '',
+        @Query('page') page: number = 1,
+        @Query('sort') sort: string = 'createdAt',
+        @Query('order') order: string = 'desc',
+        @Query('status') status: string = ''
+    ) {
+        return this.lotsService.getLotsBySearch(search, page, sort, order, status)
     }
 
     @Get('getLotsCount')

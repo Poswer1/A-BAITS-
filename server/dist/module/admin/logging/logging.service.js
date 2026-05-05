@@ -23,11 +23,21 @@ let LoggingService = class LoggingService {
             throw error;
         }
     }
-    async getAllLogs() {
-        const allLogs = await logging_1.LoaggingModel.find({})
-            .populate('user', 'avatar name ip')
-            .populate('lot', 'lotNumber');
-        return allLogs || [];
+    async getAllLogs(page = 1, sort = 'createdAt', order = 'desc') {
+        const limit = 20;
+        const skip = (Number(page) - 1) * limit;
+        const sortOrder = order === 'asc' ? 1 : -1;
+        const sortObj = { [sort]: sortOrder };
+        const [logs, total] = await Promise.all([
+            logging_1.LoaggingModel.find({})
+                .sort(sortObj)
+                .skip(skip)
+                .limit(limit)
+                .populate('user', 'avatar name ip')
+                .populate('lot', 'lotNumber'),
+            logging_1.LoaggingModel.countDocuments({})
+        ]);
+        return { logs, total };
     }
 };
 exports.LoggingService = LoggingService;

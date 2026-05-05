@@ -8,6 +8,9 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ViolationsController = void 0;
 const common_1 = require("@nestjs/common");
@@ -19,15 +22,18 @@ let ViolationsController = class ViolationsController {
     constructor(violationsService) {
         this.violationsService = violationsService;
     }
-    async getAllViolations() {
-        return this.violationsService.getAllViolations();
+    async getAllViolations(page = 1, sort = 'createdAt', order = 'desc') {
+        return this.violationsService.getAllViolations(page, sort, order);
     }
 };
 exports.ViolationsController = ViolationsController;
 __decorate([
     (0, common_1.Get)('getAllViolations'),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('sort')),
+    __param(2, (0, common_1.Query)('order')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", Promise)
 ], ViolationsController.prototype, "getAllViolations", null);
 exports.ViolationsController = ViolationsController = __decorate([

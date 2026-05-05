@@ -23,11 +23,22 @@ export class ViolationsService {
         return {success:true}
     }
 
-    async getAllViolations() {
-        const allViolations = await ViolationsModel.find({})
-        .populate('lot', 'images name lotNumber')
-        .populate('user', 'avatar name ip status UnblockDate')
-        return allViolations || []
+    async getAllViolations(page: number = 1, sort: string = 'createdAt', order: string = 'desc') {
+        const limit = 20
+        const skip = (Number(page) - 1) * limit
+        const sortOrder = order === 'asc' ? 1 : -1
+        const sortObj: any = { [sort]: sortOrder }
+
+        const [violations, total] = await Promise.all([
+            ViolationsModel.find({})
+                .sort(sortObj)
+                .skip(skip)
+                .limit(limit)
+                .populate('lot', 'images name lotNumber')
+                .populate('user', 'avatar name ip status UnblockDate'),
+            ViolationsModel.countDocuments({})
+        ])
+        return { violations, total }
     }
 
 }

@@ -22,8 +22,8 @@ let UserController = class UserController {
     constructor(userService) {
         this.userService = userService;
     }
-    async getAllUser() {
-        return this.userService.getAllUser();
+    async getAllUser(page = 1, sort = 'createdAt', order = 'desc', search = '') {
+        return this.userService.getAllUser(page, sort, order, search);
     }
     async getCountRegisteredUsers() {
         return this.userService.getCountRegisteredUsers();
@@ -47,8 +47,12 @@ let UserController = class UserController {
 exports.UserController = UserController;
 __decorate([
     (0, common_1.Get)('getAllUser'),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('sort')),
+    __param(2, (0, common_1.Query)('order')),
+    __param(3, (0, common_1.Query)('search')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number, String, String, String]),
     __metadata("design:returntype", Promise)
 ], UserController.prototype, "getAllUser", null);
 __decorate([

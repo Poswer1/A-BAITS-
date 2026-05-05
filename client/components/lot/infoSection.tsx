@@ -14,6 +14,7 @@ import { useSwipeable } from "react-swipeable"
 import { useRouter } from "next/navigation"
 import GetStatusUser from "@/utils/getStatusUser"
 import Toast from "../ui/toast"
+import { getMyAutoBid } from "@/services/lot"
 
 interface InfoSectionProps {
     lot: LotTypes | null,
@@ -34,6 +35,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     const [error, setError] = useState('')
     const [progress, setProgress] = useState(false)
     const [typeBid, setTypeBid] = useState('default')
+    const [myAutoBid, setMyAutoBid] = useState<number | null>(null)
     const [open, setOpen] = useState(false)
     const router = useRouter()
     const { status: statusUser } = GetStatusUser()
@@ -42,12 +44,14 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
         if(!socket || !lot) return
         if(!auth) {
             router.push('/auth/login')
+            return
         }
-        if(value < currentPrice) {
+        if(value < currentPrice + lot.stepPrice) {
             setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
             setTimeout(() => {
                 setError('')
             }, 3000)
+            return
         }
             socket.emit('placeBid',
             {
@@ -58,14 +62,19 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
 
     const handleAutoBid = () => {
         if(!socket || !lot) return
-        if(!auth) router.push('/auth/login')
-        if(value < currentPrice) {
+        if(!auth) {
+            router.push('/auth/login')
+            return
+        }
+        if(value < currentPrice + lot.stepPrice) {
             setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
             setTimeout(() => {
                 setError('')
             }, 3000)
+            return
         }
         socket.emit('autoBid', {lotId: lot?.lotNumber, bid: value})
+        setMyAutoBid(value)
     }
 
     const handlePlus = () => setValue(prev => prev + (lot?.stepPrice || 0))
@@ -120,7 +129,13 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
         onSwipedDown: () => setOpen(false),
         preventScrollOnSwipe: true, // не прокручивать страницу во время свайпа
     })
-        
+    useEffect(() => {
+        if(!auth || !lot?.lotNumber) return
+        getMyAutoBid(lot.lotNumber)
+        .then(data => setMyAutoBid(data?.max ?? null))
+        .catch(() => setMyAutoBid(null))
+    }, [auth, lot?.lotNumber])
+
     if(!lot) return
     
     const buttonInput = 'bg-gray-200 flex justify-center items-center text-black rounded-md'
@@ -168,6 +183,9 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
                             </div>
                         </div>
                         <button onClick={() => typeBid === 'default' ? handleBid() : handleAutoBid()} className={`${button} w-full ${hover} text-lg`}>{typeBid === 'default' ? t('lot', 'lot-doBid') : t('lot', 'doAutoBid')}</button>
+                        {myAutoBid !== null && (
+                            <span className="text-sm text-gray-500">Моя автоставка: <b className="text-black">{myAutoBid} ₴</b></span>
+                        )}
                         {(lot.blitzPrice !== 0 && lot.blitzPrice) && (
                         <button 
                         onMouseDown={handleBuyNow} 

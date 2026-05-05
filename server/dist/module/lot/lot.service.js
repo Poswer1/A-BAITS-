@@ -208,6 +208,7 @@ let LotService = class LotService {
     async viewsCount(id, userId) {
         try {
             await lot_model_1.LotModel.updateOne({ _id: id }, { $addToSet: { views: userId } });
+            return { success: true };
         }
         catch (error) {
             throw error;
@@ -438,6 +439,14 @@ let LotService = class LotService {
             throw new common_1.BadRequestException('Ошибка при получение товара', error);
         }
     }
+    async getMyAutoBid(numberLot, userId) {
+        const lot = await lot_model_1.LotModel.findOne({ lotNumber: numberLot }).select('autoBid');
+        if (!lot)
+            throw new common_1.BadRequestException('lotNotFound');
+        const myAutoBids = lot.autoBid.filter(bid => bid.author.toString() === userId.toString());
+        const max = myAutoBids.reduce((highest, bid) => Math.max(highest, bid.max), 0);
+        return { max: max || null };
+    }
     async myHistoryLot(userId) {
         if (!userId)
             return;
@@ -573,8 +582,9 @@ let LotService = class LotService {
     }
     async calculateAuctionState(lots, userId, bid, stepPrice, startPrice, mode) {
         const sorted = [...(lots ?? [])]
+            .map((bid, index) => ({ ...bid, index }))
             .filter(x => typeof x.max === 'number')
-            .sort((a, b) => b.max - a.max);
+            .sort((a, b) => b.max - a.max || a.index - b.index);
         const top1 = sorted[0];
         const top2 = sorted[1];
         const top1Max = top1?.max ?? 0;
@@ -588,7 +598,7 @@ let LotService = class LotService {
             };
         }
         if (mode === 'autoBid') {
-            if (bid >= top1Max) {
+            if (bid > top1Max) {
                 return {
                     authorBid: userId,
                     newPrice: top1Max + stepPrice,
@@ -603,7 +613,7 @@ let LotService = class LotService {
         const highest = Math.max(bid, top2Max) + stepPrice;
         const newPrice = Math.min(top1Max, highest);
         return {
-            authorBid: bid >= top1Max ? userId : top1.author,
+            authorBid: bid > top1Max ? userId : top1.author,
             newPrice,
         };
     }

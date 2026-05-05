@@ -9,10 +9,29 @@ export class UserService {
 
     constructor(private readonly financeService:FinanceService) {}
 
-    async getAllUser () {
+    async getAllUser (page: number = 1, sort: string = 'createdAt', order: string = 'desc', search: string = '') {
         try {
-            const listUser = await UserModel.find({})
-            return listUser
+            const limit = 20
+            const skip = (Number(page) - 1) * limit
+            const sortOrder = order === 'asc' ? 1 : -1
+            const sortObj: any = { [sort]: sortOrder }
+
+            const filter: any = {}
+            if (search) {
+                filter.$or = [
+                    { name: { $regex: search, $options: 'i' } },
+                    { email: { $regex: search, $options: 'i' } },
+                ]
+            }
+
+            const [users, total] = await Promise.all([
+                UserModel.find(filter)
+                    .sort(sortObj)
+                    .skip(skip)
+                    .limit(limit),
+                UserModel.countDocuments(filter)
+            ])
+            return { users, total }
         } catch (error) {
             throw new BadRequestException('ErrorGetListUser')
         }

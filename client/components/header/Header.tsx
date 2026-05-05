@@ -44,14 +44,22 @@ function Header() {
             setName(data.name);
             setAvatar(data.avatar);
             const isAuth = await getStatusAuth();
-            setAuth(isAuth);   
+            setAuth(Boolean(isAuth || data));   
             console.log(isAuth)
             } catch (err: any) {
+            setAuth(false)
             console.error('Помилка при отриманні користувача:', err.message);
             }
         };
 
         fetchUser();
+        window.addEventListener('auth-change', fetchUser)
+        window.addEventListener('storage', fetchUser)
+
+        return () => {
+            window.removeEventListener('auth-change', fetchUser)
+            window.removeEventListener('storage', fetchUser)
+        }
     }, []);
 
 

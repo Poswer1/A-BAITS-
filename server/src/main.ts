@@ -12,7 +12,7 @@ async function Main() {
   // //express static отдает статические файлы (изображения, CSS, JS и т.д.) прямо по URL.
   app.enableCors(
     {
-    origin: ['http://192.168.0.157:3000', 'http://localhost:3000', 'http://80.91.79.221:3000', 'http://a-baits.com.ua', 'https://a-baits.com.ua'],
+    origin: ['http://192.168.0.157:3000', 'http://localhost:3000', 'http://127.0.0.1:3000', 'http://80.91.79.221:3000', 'http://a-baits.com.ua', 'https://a-baits.com.ua'],
     credentials: true // говорит принимать токен
   }
 )

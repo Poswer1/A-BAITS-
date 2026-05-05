@@ -20,14 +20,29 @@ export class LotsService {
         return { dateDay, dateWeek, dateMonth };
     };
 
-    async getLotsBySearch(search:string) {
-        console.log(search)
-        const allLots = await LotModel.find(
-            {
-                name:{$regex: search, $options: 'i'} // $options игнор регистра $regex как includes
-            }
-        )
-        return allLots
+    async getLotsBySearch(search: string = '', page: number = 1, sort: string = 'createdAt', order: string = 'desc', status: string = '') {
+        const limit = 20
+        const skip = (Number(page) - 1) * limit
+        const sortOrder = order === 'asc' ? 1 : -1
+        const sortObj: any = { [sort]: sortOrder }
+
+        const filter: any = {}
+        if (search) {
+            filter.name = { $regex: search, $options: 'i' }
+        }
+        if (status) {
+            filter.status = status
+        }
+
+        const [lots, total] = await Promise.all([
+            LotModel.find(filter)
+                .sort(sortObj)
+                .skip(skip)
+                .limit(limit)
+                .populate('author', 'name avatar'),
+            LotModel.countDocuments(filter)
+        ])
+        return { lots, total }
     }
     
 

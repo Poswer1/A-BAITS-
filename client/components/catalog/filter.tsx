@@ -23,7 +23,8 @@ export default function Filter({maxPriceLot}: FilterProps) {
 
   const [open, setOpen] = useState(true)
   const [openMobile, setOpenMobile] = useState(false)
-  const isOpen = window.innerWidth >= 768 ? open : openMobile
+  const [isDesktop, setIsDesktop] = useState(true)
+  const isOpen = isDesktop ? open : openMobile
   const [cityValue, setCityValue] = useState('')
   const [sortValue, setSortValue] = useState('')
   const [minPrice, setMinPrice] = useState(0)
@@ -48,6 +49,15 @@ export default function Filter({maxPriceLot}: FilterProps) {
       : [...prev, state]
     )
   }
+
+  useEffect(() => {
+    const updateIsDesktop = () => setIsDesktop(window.innerWidth >= 768)
+
+    updateIsDesktop()
+    window.addEventListener('resize', updateIsDesktop)
+
+    return () => window.removeEventListener('resize', updateIsDesktop)
+  }, [])
 
   useEffect(() => {
     if(!cityValue) return

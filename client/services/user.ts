@@ -1,4 +1,4 @@
-import { BASE_URL, dataReturn } from "./utils" 
+import { BASE_URL, authHeaders, dataReturn } from "./utils" 
 
 export async function getUserById(id?:string) {
 
@@ -11,6 +11,7 @@ export async function getUserById(id?:string) {
 
     const res = await fetch(url, {
         method: 'GET',
+        headers: authHeaders(),
         credentials: 'include', // говорит отпровлять куки
     })
     
@@ -21,6 +22,7 @@ export async function getUserById(id?:string) {
 export async function getUserStatus() {
     const res = await fetch(`${BASE_URL}/user/getUserStatus`, {
         method: 'GET',
+        headers: authHeaders(),
         credentials: 'include', 
     })
 
@@ -61,6 +63,7 @@ export async function updateUser(formData:FormData, id?:string) {
 
     const res = await fetch(url, {
         method: 'PATCH',
+        headers: authHeaders(),
         body: formData,
         credentials: 'include', // говорит отпровлять куки
     })

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { ViolationsService } from './violations.service';
 import { RolesGuard } from '../role.guards';
 import { JwtAuthGuard } from 'src/module/auth/jwt/jwt-auth-guard';
@@ -10,8 +10,12 @@ export class ViolationsController {
   constructor(private readonly violationsService: ViolationsService) {}
   
   @Get('getAllViolations')
-  async getAllViolations() {
-    return this.violationsService.getAllViolations()
+  async getAllViolations(
+    @Query('page') page: number = 1,
+    @Query('sort') sort: string = 'createdAt',
+    @Query('order') order: string = 'desc'
+  ) {
+    return this.violationsService.getAllViolations(page, sort, order)
   }
 
 

@@ -1,9 +1,10 @@
 
-import { BASE_URL, dataReturn } from "./utils"
+import { BASE_URL, authHeaders, dataReturn } from "./utils"
 
 export async function createLot(formData:FormData) {
     const res = await fetch(`${BASE_URL}/lot/createLot`, {
         method: 'POST',
+        headers: authHeaders(),
         credentials: 'include',// говорит отпровлять куки
         body: formData
     })
@@ -14,6 +15,7 @@ export async function createLot(formData:FormData) {
 export async function viewsCount(lotId:string) {
     const res = await fetch(`${BASE_URL}/lot/viewsCount/${lotId}`, {
         method: "PATCH",
+        headers: authHeaders(),
         credentials: 'include',
     })
 
@@ -63,6 +65,7 @@ export async function getPopularLot() {
 export async function updateLot(formData:FormData, id:string) {
     const res = await fetch(`${BASE_URL}/lot/updateLot/${id}`, {
         method: 'PATCH',
+        headers: authHeaders(),
         credentials: 'include',
         body: formData
     })
@@ -117,6 +120,7 @@ export async function getFilterLot(category?:string, subCategory?:string, subSub
 export async function deleteLot(id:string) {
     const res = await fetch(`${BASE_URL}/lot/deleteLot/${id}`, {
         method: 'DELETE',
+        headers: authHeaders(),
         credentials: 'include',
     })
 
@@ -126,6 +130,7 @@ export async function deleteLot(id:string) {
 export async function resumeLot(id:string) {
     const res = await fetch(`${BASE_URL}/lot/resumeLot/${id}`, {
         method: 'PATCH',
+        headers: authHeaders(),
         credentials: 'include', 
     })
     return dataReturn(res)
@@ -134,6 +139,7 @@ export async function resumeLot(id:string) {
 export async function closeLot(id:string) {
     const res = await fetch(`${BASE_URL}/lot/closeLot/${id}`, {
         method: 'PATCH',
+        headers: authHeaders(),
         credentials: 'include', 
     })
     return dataReturn(res)
@@ -155,9 +161,20 @@ export async function getLot(numberLot:string) {
     return dataReturn(res)
 }
 
+export async function getMyAutoBid(numberLot:string) {
+    const res = await fetch(`${BASE_URL}/lot/getMyAutoBid/${numberLot}`, {
+        method: 'GET',
+        headers: authHeaders(),
+        credentials: 'include'
+    })
+
+    return dataReturn(res)
+}
+
 export async function myHistoryLot() {
     const res = await fetch(`${BASE_URL}/lot/myHistoryLot`, {
         method: 'GET',
+        headers: authHeaders(),
         credentials: 'include' // говорит отпровлять куки
     })
 

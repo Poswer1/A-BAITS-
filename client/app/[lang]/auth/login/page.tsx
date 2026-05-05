@@ -34,6 +34,7 @@ function page() {
         try {
             const data = await login(email, password)
             localStorage.setItem('token', data.token)
+            window.dispatchEvent(new Event('auth-change'))
             router.push(`/${lang}`)
            
         } catch (error:any) {

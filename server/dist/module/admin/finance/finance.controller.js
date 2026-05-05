@@ -24,8 +24,8 @@ let FinanceController = class FinanceController {
     constructor(financeService) {
         this.financeService = financeService;
     }
-    async getAllTransactions() {
-        return this.financeService.getAllTransactions();
+    async getAllTransactions(page = 1, sort = 'createdAt', order = 'desc') {
+        return this.financeService.getAllTransactions(page, sort, order);
     }
     async getMyTransactions(page, userId) {
         return this.financeService.getMyTransactions(userId, page);
@@ -38,8 +38,11 @@ exports.FinanceController = FinanceController;
 __decorate([
     (0, common_1.UseGuards)(role_guards_1.RolesGuard),
     (0, common_1.Get)('getAllTransactions'),
+    __param(0, (0, common_1.Query)('page')),
+    __param(1, (0, common_1.Query)('sort')),
+    __param(2, (0, common_1.Query)('order')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
+    __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", Promise)
 ], FinanceController.prototype, "getAllTransactions", null);
 __decorate([

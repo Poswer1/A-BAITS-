@@ -29,6 +29,7 @@ export default function InputField<T extends string | number>({
   const stringValue = String(value); 
 
   const {t} = useTranslation()
+  const minValue = minTotal ?? '0'
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const val = e.target.value
@@ -39,7 +40,7 @@ export default function InputField<T extends string | number>({
     }
   }
 
-  console.log('в инпуте', minTotal)
+  console.log('в инпуте', minValue)
 
   return (
     <div className={`flex flex-col justify-start items-start w-full`}>
@@ -55,7 +56,7 @@ export default function InputField<T extends string | number>({
         ) : (
           <input
             type={type}
-            min={minTotal || 0}
+            min={minValue}
             placeholder={placeholder}
             autoComplete="new-password"
             value={stringValue}

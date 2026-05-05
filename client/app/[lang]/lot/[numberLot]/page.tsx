@@ -58,7 +58,6 @@ function page() {
         socket.on('bidUpdated', (data) => {
           if(data.lotId === numberLot) {
               setCurrentPrice(data.newPrice)
-              setValue(data.newPrice)
               setUserHistory(prev => [...prev, data.lastBid])
               setNewBid(data.lastBid)
             }

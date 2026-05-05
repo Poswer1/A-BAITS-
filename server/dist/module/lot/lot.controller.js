@@ -71,6 +71,9 @@ let LotController = class LotController {
     async getLot(numberLot) {
         return this.lotService.getLot(numberLot);
     }
+    async getMyAutoBid(numberLot, userId) {
+        return this.lotService.getMyAutoBid(numberLot, userId);
+    }
     async myHistoryLot(req) {
         const userId = req.user._id;
         return this.lotService.myHistoryLot(userId);
@@ -195,6 +198,15 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], LotController.prototype, "getLot", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('getMyAutoBid/:numberLot'),
+    __param(0, (0, common_1.Param)('numberLot')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], LotController.prototype, "getMyAutoBid", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('myHistoryLot'),

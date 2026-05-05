@@ -24,7 +24,7 @@ export default function Banner() {
               {Features.map((item) => {
                 const Icon = item.icon
                 return (
-                <div className="flex flex-col justify-center items-center text-center gap-2 mb-5 md:mb-0">
+                <div key={item.text} className="flex flex-col justify-center items-center text-center gap-2 mb-5 md:mb-0">
                   <div className="p-3 2xl:p-4 md:p-3 rounded-full border text-black border-orange-600"><Icon size={25}/></div>
                   <span className="text-black 2xl:text-base lg:text-sm text-sm">{item.text}</span>
                 </div>

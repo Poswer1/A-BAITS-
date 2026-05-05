@@ -37,28 +37,50 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
   const handleSelectCat = (cat?:string, sub?:string, subSub?:string) => {
     if(cat) {
       setCategory(cat)
-    } 
+      setSubCategory('')
+      setSubSubCategory('')
+    }
     if(sub) {
       setSubCategory(sub)
+      setSubSubCategory('')
     }
     if(subSub) {
       setSubSubCategory(subSub)
     }
   }
 
-  const handleClick = () => {
+  const handleClick = (nextCategory = category, nextSubCategory = subCategory, nextSubSubCategory = subSubCategory) => {
     if(openFrom === 'header') {
       let path = `/${lang}`
-      if(category)path += `/${category}`
-      if(subCategory)path += `/${subCategory}`
-      if(subSubCategory)path += `/${subSubCategory}`
+      if(nextCategory)path += `/${nextCategory}`
+      if(nextSubCategory)path += `/${nextSubCategory}`
+      if(nextSubSubCategory)path += `/${nextSubSubCategory}`
       router.push(`${path}`)
     } else if(openFrom === 'createLot') {
-      if(category && createLotSetCategory)createLotSetCategory(category)
-      if(subCategory && createLotSetSubCategory)createLotSetSubCategory(subCategory)
-      if(subSubCategory && createLotSetSubSubCategory)createLotSetSubSubCategory(subSubCategory)
+      if(nextCategory && createLotSetCategory)createLotSetCategory(nextCategory)
+      if(createLotSetSubCategory)createLotSetSubCategory(nextSubCategory)
+      if(createLotSetSubSubCategory)createLotSetSubSubCategory(nextSubSubCategory)
     }
     setOpenCategory(false)
+  }
+
+  const handleCategoryClick = (cat: typeof categoriesWithIcons[number]) => {
+    handleSelectCat(cat.name)
+    if(cat.subcategories.length === 0) {
+      handleClick(cat.name, '', '')
+    }
+  }
+
+  const handleSubCategoryClick = (sub: NonNullable<typeof activeCategory>['subcategories'][number]) => {
+    if(!activeCategory) return
+    handleSelectCat('', sub.name)
+    handleClick(activeCategory.name, sub.name, '')
+  }
+
+  const handleSubSubCategoryClick = (subSub: {name:string}) => {
+    if(!activeCategory || !subCategory) return
+    handleSelectCat('', '', subSub.name)
+    handleClick(activeCategory.name, subCategory, subSub.name)
   }
 
   useEffect(() => {
@@ -95,7 +117,7 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
               
             <ul className={`${activeCategory && 'hidden md:flex'} flex flex-col justify-start items-start gap-3 md:border-r p-2 w-full md:w-auto overflow-auto h-screen md:h-auto`}>
                 {categoriesWithIcons.map((cat) => ( 
-                  <li key={cat.name} onClick={handleClick} onMouseEnter={() => handleSelectCat(cat.name)} className={`${hoverCat} ${category === cat.name ? 'bg-orange-800/10 text-orange-600' : '' } flex justify-between p-1 rounded-md items-center w-full ${animationOpacity}`} >
+                  <li key={cat.name} onClick={() => handleCategoryClick(cat)} onMouseEnter={() => handleSelectCat(cat.name)} className={`${hoverCat} ${category === cat.name ? 'bg-orange-800/10 text-orange-600' : '' } flex justify-between p-1 rounded-md items-center w-full ${animationOpacity}`} >
                     <span className={`${linkClass}`}>{cat.icon}{nameLang(cat)}</span>
                     {cat?.subcategories.length > 0 && (
                       <ChevronDown className="rotate-270"/>
@@ -106,10 +128,10 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
 
             {activeCategory && (
               <ul className={`${listClass} p-2 gap-5 md:static bg-white justify-start md:bg-transparent h-screen md:h-full w-full md:w-auto`}>
-                <h1 className="ml-2 text-black font-bold border-b border-gray-500 cursor-pointer md:hidden" onClick={handleClick}>{transleteCategory}</h1>
+                <h1 className="ml-2 text-black font-bold border-b border-gray-500 cursor-pointer md:hidden">{transleteCategory}</h1>
                 {activeCategory.subcategories.map((sub) => (
                   <li key={sub.name} className={`${listClass} ${animationOpacity} ml-2 w-full`} >
-                    <span className={`${linkClass} ${hover} text-black`} onClick={handleClick} onMouseEnter={() => handleSelectCat('', sub.name)}>
+                    <span className={`${linkClass} ${hover} text-black`} onClick={() => handleSubCategoryClick(sub)} onMouseEnter={() => handleSelectCat('', sub.name)}>
                       {nameLang(sub)}{sub.subcategories.length > 0 
                       && <ChevronDown className='text-gray-500'/>}
                     </span>
@@ -118,7 +140,7 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
                       <ul className={`${listClass} border-l border-gray-400`}>
                           {sub.subcategories.map((subSub) => (
                             <li className={`${listClass}  ${animationOpacity} ml-6`}key={subSub.name}>
-                              <span className={`${linkClass} ${hoverSub} text-gray-500`} onClick={handleClick} onMouseEnter={() => handleSelectCat('', '', subSub.name)}>{nameLang(subSub)}</span>
+                              <span className={`${linkClass} ${hoverSub} text-gray-500`} onClick={() => handleSubSubCategoryClick(subSub)} onMouseEnter={() => handleSelectCat('', '', subSub.name)}>{nameLang(subSub)}</span>
                             </li>
                         ))}
                       </ul>

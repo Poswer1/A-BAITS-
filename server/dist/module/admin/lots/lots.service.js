@@ -21,12 +21,27 @@ let LotsService = class LotsService {
         return { dateDay, dateWeek, dateMonth };
     }
     ;
-    async getLotsBySearch(search) {
-        console.log(search);
-        const allLots = await lot_model_1.LotModel.find({
-            name: { $regex: search, $options: 'i' }
-        });
-        return allLots;
+    async getLotsBySearch(search = '', page = 1, sort = 'createdAt', order = 'desc', status = '') {
+        const limit = 20;
+        const skip = (Number(page) - 1) * limit;
+        const sortOrder = order === 'asc' ? 1 : -1;
+        const sortObj = { [sort]: sortOrder };
+        const filter = {};
+        if (search) {
+            filter.name = { $regex: search, $options: 'i' };
+        }
+        if (status) {
+            filter.status = status;
+        }
+        const [lots, total] = await Promise.all([
+            lot_model_1.LotModel.find(filter)
+                .sort(sortObj)
+                .skip(skip)
+                .limit(limit)
+                .populate('author', 'name avatar'),
+            lot_model_1.LotModel.countDocuments(filter)
+        ]);
+        return { lots, total };
     }
     async getLotsCount() {
         const { dateDay, dateWeek, dateMonth } = this.getDateRanges();

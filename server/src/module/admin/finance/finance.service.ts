@@ -6,12 +6,22 @@ import { UserModel } from "src/models/user.model";
 @Injectable()
 export class FinanceService {
 
-    async getAllTransactions () {
-        const allTransactions = await TransactionModel.find({})
-        .sort({createdAt: -1})
-        .populate('user', 'name avatar')
-        .populate('lot', 'name lotNumber images author');
-        return allTransactions;
+    async getAllTransactions (page: number = 1, sort: string = 'createdAt', order: string = 'desc') {
+        const limit = 20
+        const skip = (Number(page) - 1) * limit
+        const sortOrder = order === 'asc' ? 1 : -1
+        const sortObj: any = { [sort]: sortOrder }
+
+        const [transactions, total] = await Promise.all([
+            TransactionModel.find({})
+                .sort(sortObj)
+                .skip(skip)
+                .limit(limit)
+                .populate('user', 'name avatar')
+                .populate('lot', 'name lotNumber images author'),
+            TransactionModel.countDocuments({})
+        ])
+        return { transactions, total };
     }
 
     async getMyTransactions(userId:string, page:number) {

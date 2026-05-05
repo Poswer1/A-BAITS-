@@ -2,13 +2,16 @@ import { FinanceService } from "../finance/finance.service";
 export declare class UserService {
     private readonly financeService;
     constructor(financeService: FinanceService);
-    getAllUser(): Promise<(import("mongoose").Document<unknown, {}, import("src/models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/user.model").User & {
-        _id: import("mongoose").Types.ObjectId;
-    } & {
-        __v: number;
-    } & {
-        id: string;
-    })[]>;
+    getAllUser(page?: number, sort?: string, order?: string, search?: string): Promise<{
+        users: (import("mongoose").Document<unknown, {}, import("src/models/user.model").User, {}, import("mongoose").DefaultSchemaOptions> & import("src/models/user.model").User & {
+            _id: import("mongoose").Types.ObjectId;
+        } & {
+            __v: number;
+        } & {
+            id: string;
+        })[];
+        total: number;
+    }>;
     getAllUserCount(): Promise<number>;
     getCountRegisteredUsers(): Promise<any>;
     updateBalance(id: string, balance: number, balanceType: string): Promise<{
