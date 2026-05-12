@@ -226,7 +226,7 @@ export class LotService {
   async getLotFrom1UAH() {
     try {
       const lot = await LotModel.aggregate([
-        { $match: {status:'Active', stepPrice: 1 } },
+        { $match: {status:'Active', startPrice: 1 } },
         { $sample: { size: 4 } } // $sample возьми рандомные 4 лота
       ])
       return lot
@@ -476,13 +476,58 @@ export class LotService {
       const lot = await LotModel.findOne({lotNumber: data.lotId})
       if (!lot) throw new BadRequestException('lotNotFound')
       if(lot.author.toString() === userId.toString()) throw new BadRequestException('bidYourself')
-      const minBid = lot.startPrice + lot.stepPrice
+      const hasHistory = (lot.historyBid?.length ?? 0) > 0
+      const minBid = hasHistory ? lot.startPrice + lot.stepPrice : lot.startPrice
 
       if(data.bid < minBid) throw new BadRequestException(`Минимальная ставка ${minBid}`)
       
       const user = await UserModel.findById(userId)
       if(!user) throw new BadRequestException('UserNotFound')
       if (user.balance <= -1) throw new BadRequestException('NoMoney')
+
+      if ((lot.autoBid?.length ?? 0) === 0) {
+        const update = await LotModel.updateOne(
+          {
+            lotNumber: data.lotId,
+            winner: { $exists: false },
+            startPrice: lot.startPrice
+          },
+          {
+            $set: { startPrice: minBid },
+            $push: {
+              autoBid: {
+                author: userId,
+                max: data.bid
+              },
+              historyBid: {
+                author: userId,
+                currentBid: minBid
+              }
+            }
+          }
+        )
+        if (update.modifiedCount === 0) throw new BadRequestException('errorAutoBid')
+
+        const updateLot = await LotModel.findById(lot._id)
+        if(!updateLot) throw new BadRequestException('lotNotFound')
+
+        const lastBidRaw = updateLot?.historyBid[updateLot.historyBid.length - 1]
+        if (!lastBidRaw) return null;
+
+        const lastBid = {
+              authorId: (lastBidRaw.author as any)._id,
+              name: (lastBidRaw.author as any).name,
+              avatar: (lastBidRaw.author as any).avatar,
+              currentBid: lastBidRaw.currentBid,
+              dateBid: lastBidRaw.createdAt
+        };
+
+        return {
+            lotId: updateLot.lotNumber,
+            newPrice: updateLot.startPrice,
+            lastBid:lastBid
+        }
+      }
 
       const { authorBid, newPrice } = await this.calculateAuctionState(lot.autoBid, userId, data.bid, lot.stepPrice, lot.startPrice, 'autoBid')
 
@@ -537,8 +582,54 @@ export class LotService {
     if(lot.winner) throw new BadRequestException('LotAlreadySold')
 
     if(lot.author.toString() === userId.toString()) throw new BadRequestException('bidYourself')
+
+    if(lot.blitzPrice && data.bid >= lot.blitzPrice) {
+      const update = await LotModel.updateOne(
+        {
+          _id: lot._id,
+          winner: { $exists: false },
+          status: 'Active'
+        },
+        {
+          $set: {
+            winner: userId,
+            status: 'Sold',
+            startPrice: lot.blitzPrice
+          },
+          $push: {
+            historyBid: {
+              author: new Types.ObjectId(userId),
+              currentBid: lot.blitzPrice
+            }
+          }
+        }
+      )
+
+      if (update.modifiedCount === 0) throw new BadRequestException('LotAlreadySold')
+
+      const updateLot = await LotModel.findById(lot._id)
+      .populate('historyBid.author', 'name avatar')
+
+      const lastBidRaw = updateLot?.historyBid[updateLot.historyBid.length - 1]
+      if (!lastBidRaw) return null;
+
+      const lastBid = {
+          authorId: (lastBidRaw.author as any)._id,
+          name: (lastBidRaw.author as any).name,
+          avatar: (lastBidRaw.author as any).avatar,
+          currentBid: lastBidRaw.currentBid,
+          dateBid: lastBidRaw.createdAt
+      };
+
+      return {
+        lotId: updateLot.lotNumber,
+        newPrice: updateLot.startPrice,
+        lastBid:lastBid
+      }
+    }
     
-    const minBid = lot.startPrice + lot.stepPrice
+    const hasHistory = (lot.historyBid?.length ?? 0) > 0
+    const minBid = hasHistory ? lot.startPrice + lot.stepPrice : lot.startPrice
 
     if(data.bid < minBid) {
        throw new BadRequestException(`Минимальная ставка ${minBid}`)
@@ -629,12 +720,13 @@ export class LotService {
 
   const top1Max = top1?.max ?? 0;
   const top2Max = top2?.max ?? startPrice;
+  const currentPrice = startPrice;
 
   if (!top1) {
     return {
       authorBid: userId,
       newPrice: mode === 'autoBid'
-        ? startPrice + stepPrice
+        ? currentPrice
         : bid,
     };
   }
@@ -644,11 +736,11 @@ export class LotService {
     if (bid > top1Max) {
       return {
         authorBid: userId,
-        newPrice: top1Max + stepPrice,
+        newPrice: Math.min(bid, top1Max + stepPrice),
       };
     }
 
-    const newPrice = Math.min(top1Max, Math.max(bid, top2Max) + stepPrice);
+    const newPrice = Math.min(top1Max, Math.max(bid, top2Max, currentPrice) + stepPrice);
 
     return {
       authorBid: top1.author,
@@ -656,11 +748,18 @@ export class LotService {
     };
   }
 
-  const highest = Math.max(bid, top2Max) + stepPrice;
+  if (bid > top1Max) {
+    return {
+      authorBid: userId,
+      newPrice: Math.min(bid, top1Max + stepPrice)
+    };
+  }
+
+  const highest = Math.max(bid, top2Max, currentPrice) + stepPrice;
   const newPrice = Math.min(top1Max, highest);
 
   return {
-    authorBid: bid > top1Max ? userId : top1.author,
+    authorBid: top1.author,
     newPrice,
   };
 }

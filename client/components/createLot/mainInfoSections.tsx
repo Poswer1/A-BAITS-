@@ -12,9 +12,11 @@ interface MainInfoProps {
     createLotCategory:string
     createLotSubCategory:string
     createLotSubSubCategory:string
+    nameError?: boolean
+    categoryError?: boolean
 }
 
-export default function MainInfoSections({name, setName, openCategory, setOpenCategory, createLotCategory, createLotSubCategory, createLotSubSubCategory} : MainInfoProps) {
+export default function MainInfoSections({name, setName, openCategory, setOpenCategory, createLotCategory, createLotSubCategory, createLotSubSubCategory, nameError, categoryError} : MainInfoProps) {
 
     const {t} = useTranslation() 
   return (
@@ -25,12 +27,13 @@ export default function MainInfoSections({name, setName, openCategory, setOpenCa
             onChange={setName} 
             placeholder={t('createLot','createLot-nameInput')} 
             type="text" 
-            maxLength={70}/>
+            maxLength={70}
+            error={nameError}/>
         </div>
 
          <div className={Blockinput}>
             <span className={nameInput}>{t('createLot','createLot-category')}</span>
-            <div onClick={() => setOpenCategory(prev => !prev)} className={` ${hover} flex justify-between items-center w-full md:w-1/2 bg-gray-100 text-black p-2 rounded-md ${createLotCategory && 'bg-orange-600/10'}`}>
+            <div onClick={() => setOpenCategory(prev => !prev)} className={` ${hover} flex justify-between items-center w-full md:w-1/2 bg-gray-100 text-black p-2 rounded-lg border ${createLotCategory ? 'bg-orange-600/10 border-transparent' : categoryError ? 'border-red-500' : 'border-transparent'}`}>
                 {createLotCategory ? (
                     <div className="flex flex-col justify-center items-start gap-1">
                         <span className="">{createLotCategory}</span>
@@ -43,6 +46,9 @@ export default function MainInfoSections({name, setName, openCategory, setOpenCa
                 )}
                 <ChevronDown className={arrowActive(openCategory)}/> 
             </div>
+            {categoryError && (
+                <span className="text-red-500 text-xs">{t('createLot', 'createLot-required-field')}</span>
+            )}
         </div>
       </div>
   )

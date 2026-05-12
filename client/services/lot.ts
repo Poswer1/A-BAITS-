@@ -36,28 +36,32 @@ export async function getLotByUser(name:string, page:number) {
 
 export async function getTopLot() {
     const res = await fetch(`${BASE_URL}/lot/getTopLot`, {
-        method: 'GET'
+        method: 'GET',
+        cache: 'no-store'
     })    
     return dataReturn(res)
 }
 
 export async function getLotFrom1UAH() {
     const res = await fetch(`${BASE_URL}/lot/getLotFrom1UAH`, {
-        method: 'GET'
+        method: 'GET',
+        cache: 'no-store'
     })    
     return dataReturn(res)
 }
 
 export async function getNewLot() {
     const res = await fetch(`${BASE_URL}/lot/getNewLot`, {
-        method: 'GET'
+        method: 'GET',
+        cache: 'no-store'
     })    
     return dataReturn(res)
 }
 
 export async function getPopularLot() {
     const res = await fetch(`${BASE_URL}/lot/getPopularLot`, {
-        method: 'GET'
+        method: 'GET',
+        cache: 'no-store'
     })    
     return dataReturn(res)
 }

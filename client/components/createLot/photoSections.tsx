@@ -10,9 +10,10 @@ interface PhotoSectionsProps {
   preview:string[],
   setPreview:React.Dispatch<React.SetStateAction<string[]>>
   initialPreview:string[]
+  error?: boolean
 }
 
-export default function PhotoSections({setFile, file, preview, setPreview, initialPreview}:PhotoSectionsProps) {
+export default function PhotoSections({setFile, file, preview, setPreview, initialPreview, error}:PhotoSectionsProps) {
     const BASE_URL = process.env.NEXT_PUBLIC_URL
     const {t} = useTranslation()
 
@@ -75,8 +76,11 @@ export default function PhotoSections({setFile, file, preview, setPreview, initi
 
   return (
     <div className={block}>
-       <div className={Blockinput}>
+       <div className={`${Blockinput} ${error ? 'border border-red-500 rounded-lg p-2' : ''}`}>
           <span className={nameInput}>Фото</span>
+          {error && (
+            <span className="text-red-500 text-xs mb-1">{t('createLot', 'createLot-required-field')}</span>
+          )}
           <p className={`${file.length > 0 ? 'flex' : 'hidden md:flex'} text-gray-500 text-sm`}>{t('createLot','createLot-firstPhoto')}</p>
           <label htmlFor="fileInput" className={`${file.length > 0 && 'hidden'} md:hidden border-dashed border-2 border-orange-600 flex flex-col gap-2 justify-center items-center h-50 bg-orange-600/10 w-full rounded-lg`}>
             <Image className="text-orange-600/50" size={100}/>

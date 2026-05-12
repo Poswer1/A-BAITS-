@@ -88,7 +88,8 @@ function page() {
             setLot(data)
             setCurrentPrice(data.startPrice)
             setStatus(data.status)
-            setValue(data.startPrice + data.stepPrice)
+          const hasHistory = (data.historyBid?.length ?? 0) > 0
+          setValue(hasHistory ? (data.startPrice + data.stepPrice) : data.startPrice)
             setLoading(false)
             viewsCount(data._id)
         })

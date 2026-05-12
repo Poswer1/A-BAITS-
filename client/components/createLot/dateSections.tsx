@@ -9,9 +9,11 @@ interface DateSectionsProps {
     setDate: (t:number) => void,
     time:string,
     setTime: (t:string) => void,
+  dateError?: boolean
+  timeError?: boolean
 }
 
-export default function DateSections({date, setDate, time, setTime}: DateSectionsProps) {
+export default function DateSections({date, setDate, time, setTime, dateError, timeError}: DateSectionsProps) {
 
     const {t} = useTranslation() 
 
@@ -37,6 +39,7 @@ export default function DateSections({date, setDate, time, setTime}: DateSection
             value={date} 
             setValue={setDate} 
             list={listSelectDay}
+            error={dateError}
           />
           <div className="hidden md:flex w-full">
             <InputField 
@@ -45,17 +48,21 @@ export default function DateSections({date, setDate, time, setTime}: DateSection
               onChange={setTime} 
               type="time" 
               placeholder={t('createLot','createLot-DateTime')}
+              error={timeError}
             />
           </div>
           <div className="flex flex-col w-full gap-1 md:hidden">
             <input type="time" id="timeInput" className="absolute opacity-0 w-0 h-0 md:hidden" value={time} onChange={(e) => setTime(e.target.value)}/>
             <span>{t('createLot','createLot-DateTime')}</span>
-            <label htmlFor="timeInput" className="flex justify-between items-center rounded-lg w-full gap-2 p-2 bg-gray-100 md:hidden">
+            <label htmlFor="timeInput" className={`flex justify-between items-center rounded-lg border w-full gap-2 p-2 bg-gray-100 md:hidden ${timeError ? 'border-red-500' : 'border-transparent'}`}>
               <div className="flex gap-2">
                 <span>{time || t('createLot', 'createLot-DateTime')}</span>
               </div>
               <ChevronDown />
             </label>
+            {timeError && (
+              <span className="text-red-500 text-xs md:hidden">{t('createLot', 'createLot-required-field')}</span>
+            )}
           </div>
         </div>
       </div>

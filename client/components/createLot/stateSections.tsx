@@ -6,9 +6,10 @@ interface StateSectionsProps {
     stateLot:string | string[],
     setStateLot: (t: any) => void,
     mode:string
+    error?: boolean
 }
 
-export default function StateSections({stateLot, setStateLot, mode}:StateSectionsProps) {
+export default function StateSections({stateLot, setStateLot, mode, error}:StateSectionsProps) {
 
     const {t} = useTranslation() 
 
@@ -55,8 +56,11 @@ export default function StateSections({stateLot, setStateLot, mode}:StateSection
 
   return (
     <div className={block}>
-        <div className={Blockinput}>
+        <div className={`${Blockinput} ${error ? 'border border-red-500 rounded-lg p-2' : ''}`}>
             <span className={nameInput}>{mode === 'state' ? t('createLot','createLot-state-title') : t('createLot','create-delivary-title')}</span>
+            {error && (
+                <span className="text-red-500 text-xs mb-1">{t('createLot', 'createLot-required-field')}</span>
+            )}
             <div className="flex overflow-x-auto w-full justify-start items-center gap-5">
                 {statesLot.map((state, index) => (
                     <>

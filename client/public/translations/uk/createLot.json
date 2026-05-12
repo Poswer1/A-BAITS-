@@ -1,7 +1,6 @@
 {
     "createLot-title": "Створення",
-    "createLot-title-edit": "Редагування",
-    "createLot-category": "Категорія",
+    "createLot-title-edit": "Редагування",  "createLot-required-field": "Будь ласка, заповніть це поле",    "createLot-category": "Категорія",
     "createLot-lengthName": "Введіть не більше 70 символів",
     "createLot-lengthdescriptions": "Введіть не більше 1200 символів",
     "createLot-photo": "Фото",

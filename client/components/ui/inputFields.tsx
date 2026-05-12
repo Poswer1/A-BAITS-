@@ -11,6 +11,7 @@ interface InputFieldProps<T extends string | number> {
   textarea?: boolean;
   hTextArea?:number
   minTotal?:string
+  error?: boolean
 }
 
 export default function InputField<T extends string | number>({
@@ -22,7 +23,8 @@ export default function InputField<T extends string | number>({
   textarea,
   hTextArea,
   minTotal,
-  onChange
+  onChange,
+  error
 }: InputFieldProps<T>) {
 
   const classInput = 'p-2 flex justify-start items-center outline-none rounded-m w-full';
@@ -45,7 +47,7 @@ export default function InputField<T extends string | number>({
   return (
     <div className={`flex flex-col justify-start items-start w-full`}>
       <span className={'text-black md:text-sm mb-1'}>{label}</span>
-      <div className={`flex justify-start items-center w-full border border-gray-300 ${maxLength && stringValue.length > maxLength ? 'border-red-600 bg-red-600/10' : ''} rounded-lg `}>
+      <div className={`flex justify-start items-center w-full border ${maxLength && stringValue.length > maxLength ? 'border-red-600 bg-red-600/10' : error ? 'border-red-500' : 'border-gray-300'} rounded-lg `}>
         {textarea ? (
           <textarea
             placeholder={placeholder}
@@ -66,6 +68,10 @@ export default function InputField<T extends string | number>({
         )}
         <AlertTriangle className={`${maxLength && stringValue.length > maxLength ? 'flex' : 'hidden'} text-red-600 mr-2`} />
       </div>
+
+      {error && (
+        <span className="text-red-500 text-xs mt-1">{t('createLot', 'createLot-required-field')}</span>
+      )}
 
       {maxLength && (
         <div className={`flex justify-between items-center w-full mt-1`}>

@@ -238,7 +238,7 @@ let LotService = class LotService {
     async getLotFrom1UAH() {
         try {
             const lot = await lot_model_1.LotModel.aggregate([
-                { $match: { status: 'Active', stepPrice: 1 } },
+                { $match: { status: 'Active', startPrice: 1 } },
                 { $sample: { size: 4 } }
             ]);
             return lot;

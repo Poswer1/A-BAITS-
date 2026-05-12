@@ -6,9 +6,10 @@ import InputField from "../ui/inputFields"
 interface DescriptionSectionsProps {
     description: string,
     setDescription: (t:string) => void
+  descriptionError?: boolean
 }
 
-export default function DescriptionSections({description, setDescription}:DescriptionSectionsProps) {
+export default function DescriptionSections({description, setDescription, descriptionError}:DescriptionSectionsProps) {
 
     const {t} = useTranslation() 
 
@@ -25,7 +26,8 @@ export default function DescriptionSections({description, setDescription}:Descri
            onChange={setDescription} 
            textarea={true} 
            hTextArea={hTextArea}
-          maxLength={1200}/>
+          maxLength={1200}
+          error={descriptionError}/>
         </div>
    </div> 
   )

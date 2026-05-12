@@ -6,9 +6,10 @@ import SelectionField from "../ui/selectionField"
 interface LocationSections {
   location:string,
   setLocation:(value:string) => void
+  error?: boolean
 }
 
-export default function LocationSections({location, setLocation}: LocationSections) {
+export default function LocationSections({location, setLocation, error}: LocationSections) {
 
   const {t} = useTranslation() 
 
@@ -20,7 +21,8 @@ export default function LocationSections({location, setLocation}: LocationSectio
           placeholder={t('createLot','createLot-locationTitle')}
           setValue={setLocation}
           value={location}
-          list={LocationList}/>
+          list={LocationList}
+          error={error}/>
       </div>
   </div>
   )

@@ -2,6 +2,8 @@ import { getAllLot, getLotFrom1UAH, getNewLot, getPopularLot, getTopLot } from "
 import Banner from "@/components/main/banner";
 import Lots from "@/components/main/lots";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Home() {
 
   const [topLot, newLot, lotFrom1UAH, popularLot] = await Promise.all([

@@ -9,9 +9,11 @@ interface PriceSectionsProps {
     setPriceStep: (type:number) => void
     blitzPrice:number,
     setBlitzPrice: (type:number) => void,
+    priceError?: boolean
+    priceStepError?: boolean
 }
 
-export default function PriceSections({price, setPrice, priceStep, setPriceStep, blitzPrice, setBlitzPrice}: PriceSectionsProps) {
+export default function PriceSections({price, setPrice, priceStep, setPriceStep, blitzPrice, setBlitzPrice, priceError, priceStepError}: PriceSectionsProps) {
 
     const {t} = useTranslation()
 
@@ -26,7 +28,8 @@ export default function PriceSections({price, setPrice, priceStep, setPriceStep,
                     onChange={setPrice} 
                     label={`${t('createLot','createLot-StartingPrice')} ₴`}
                     placeholder={t('createLot','createLot-StartingPrice')}
-                    minTotal="1"/>
+                    minTotal="1"
+                    error={priceError}/>
                 </div>
            
             <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>
@@ -36,7 +39,8 @@ export default function PriceSections({price, setPrice, priceStep, setPriceStep,
                 onChange={setPriceStep} 
                 label={`${t('createLot','createLot-step')} ₴`} 
                 placeholder={t('createLot','createLot-step')}
-                minTotal="1"/>
+                minTotal="1"
+                error={priceStepError}/>
             </div>
         </div>
           <div className={`${Blockinput} md:!w-2/6 2xl:!w-1/4`}>

@@ -1,6 +1,7 @@
 {
   "createLot-title": "Создание",
   "createLot-title-edit": "Редактирование",
+  "createLot-required-field": "Пожалуйста, заполните это поле",
   "createLot-category": "Категория",
   "createLot-lengthName": "Введите не более 70 символов",
   "createLot-lengthdescriptions": "Введите не более 1200 символов",

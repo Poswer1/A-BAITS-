@@ -40,14 +40,17 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     const router = useRouter()
     const { status: statusUser } = GetStatusUser()
 
+    const hasHistory = !!lot && (((lot.historyBid?.length ?? 0) > 0) || currentPrice > lot.startPrice)
+    const minBid = lot ? (hasHistory ? currentPrice + lot.stepPrice : currentPrice) : 0
+
     const handleBid = () => {
         if(!socket || !lot) return
         if(!auth) {
             router.push('/auth/login')
             return
         }
-        if(value < currentPrice + lot.stepPrice) {
-            setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
+        if(value < minBid) {
+            setError(`${t('lot', 'lot-lowStep')} ${minBid} ₴`);
             setTimeout(() => {
                 setError('')
             }, 3000)
@@ -66,8 +69,8 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
             router.push('/auth/login')
             return
         }
-        if(value < currentPrice + lot.stepPrice) {
-            setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
+        if(value < minBid) {
+            setError(`${t('lot', 'lot-lowStep')} ${minBid} ₴`);
             setTimeout(() => {
                 setError('')
             }, 3000)
@@ -82,8 +85,8 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     const handleMinus = () => {
         if(!lot) return
         setValue(prev => {
-        if (prev - lot.stepPrice < (currentPrice + lot.stepPrice)) {
-        setError(`${t('lot', 'lot-lowStep')} ${(currentPrice + lot.stepPrice)} ₴`);
+        if (prev - lot.stepPrice < minBid) {
+        setError(`${t('lot', 'lot-lowStep')} ${minBid} ₴`);
         setTimeout(() => {
             setError('')
         }, 3000)
@@ -100,7 +103,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
     setProgress(true)
     timerRef.current = setTimeout(async () => {
         try {
-            const data = await buyNow(lot._id, value)
+            const data = await buyNow(lot._id, lot.blitzPrice ?? value)
             if (data?.success) setStatus('Completed')
             setProgress(false)
             setMessage(t("lot", "lotBuySucess"))

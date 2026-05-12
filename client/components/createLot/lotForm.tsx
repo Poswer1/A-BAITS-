@@ -55,6 +55,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
     const [subCategory, setSubCategory] = useState(initialData?.subCategory || '')
     const [subSubCategory, setSubSubCategory] = useState(initialData?.subSubCategory || '')
     const [message, setMessage] = useState('')
+    const [showErrors, setShowErrors] = useState(false)
 
     const [openCategory, setOpenCategory] = useState(false)
     const [confirmCreateOrder, setConfirmCreateOrder] = useState(false)
@@ -67,6 +68,23 @@ export default function LotForm({mode, initialData}:LotFormProps) {
     const transleteCategory = getValueByLang(categoriesWithIcons, category, lang)
     const transleteSubCategory = getValueByLang(activeCategory?.subcategories || [], subCategory, lang)
     const transleteSubSubCategory = getValueByLang(activeCategory?.subcategories?.find(sc => sc.name === subCategory)?.subcategories || [], subSubCategory, lang)
+
+    const hasImages = (preview?.length ?? 0) > 0 || (file?.length ?? 0) > 0
+    const missing = {
+      name: !name,
+      description: !description,
+      stateLot: !stateLot,
+      location: !location,
+      delivery: (delivery?.length ?? 0) === 0,
+      price: !price,
+      priceStep: !priceStep,
+      date: !date,
+      time: !time,
+      category: !category,
+      subCategory: categoryHasSubcategories && !subCategory,
+      photo: !hasImages
+    }
+    const hasMissing = Object.values(missing).some(Boolean)
 
     useEffect(() => {
       const checkAuth = async () => {
@@ -102,28 +120,10 @@ export default function LotForm({mode, initialData}:LotFormProps) {
     }
 
     const handleCreateOrUpdate = async () => {
-       if (!name || !description || !stateLot || !location || delivery.length === 0 || !price || !priceStep || !date || !time || !category || (categoryHasSubcategories && !subCategory) || !preview || preview.length === 0) {
-          setMessage('Будь ласка, заповніть всі дані')
-          const missingFields = [
-            !name && t('createLot','createLot-name'),
-            !description && t('createLot','createLot-descriptions'),
-            !stateLot && t('createLot','createLot-state-title'),
-            !location && t('createLot','createLot-locationTitle'),
-            delivery.length === 0 && t('createLot','create-delivary-title'),
-            !price && t('createLot','createLot-StartingPrice'),
-            !priceStep && t('createLot','createLot-step'),
-            !date && t('createLot','createLot-Date'),
-            !time && t('createLot','createLot-DateTime'),
-            !category && t('createLot','createLot-category'),
-            categoryHasSubcategories && !subCategory && t('createLot','createLot-selectCategory'),
-            (!preview || preview.length === 0) && t('createLot','createLot-photo')
-          ].filter(Boolean)
-          setMessage(`Заполните: ${missingFields.join(', ')}`)
-          setTimeout(() => {
-            setMessage('')
-          }, 3000)
+       if (hasMissing) {
+          setShowErrors(true)
           return
-        }
+       }
 
       if(name.length > 70) {
         setMessage(t('createLot', 'createLot-nameInput'))
@@ -236,7 +236,9 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             setName={setName} 
             createLotCategory={transleteCategory || ''}  
             createLotSubCategory={transleteSubCategory || ''}  
-            createLotSubSubCategory={transleteSubSubCategory || ''} />
+            createLotSubSubCategory={transleteSubSubCategory || ''}
+            nameError={showErrors && missing.name}
+            categoryError={showErrors && (missing.category || missing.subCategory)} />
 
             <PriceSections 
             price={price} 
@@ -245,6 +247,8 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             setPriceStep={setPriceStep} 
             blitzPrice={blitzPrice} 
             setBlitzPrice={setBlitzPrice}
+            priceError={showErrors && missing.price}
+            priceStepError={showErrors && missing.priceStep}
             />
 
             <PhotoSections 
@@ -252,7 +256,8 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             file={file} 
             preview={preview} 
             initialPreview={initialData?.images || []}
-            setPreview={setPreview}/>
+            setPreview={setPreview}
+            error={showErrors && missing.photo}/>
 
             <AutoReExtension 
             check={autoReExtension} 
@@ -261,27 +266,33 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             
             <DescriptionSections 
             description={description} 
-            setDescription={setDescription}/>
+            setDescription={setDescription}
+            descriptionError={showErrors && missing.description}/>
 
             <StateSections 
             stateLot={stateLot} 
             setStateLot={setStateLot} 
-            mode="state"/>
+            mode="state"
+            error={showErrors && missing.stateLot}/>
 
             <DateSections 
             date={Number(date)} 
             setDate={setDate} 
             time={time} 
-            setTime={setTime}/>
+            setTime={setTime}
+            dateError={showErrors && missing.date}
+            timeError={showErrors && missing.time}/>
 
             <LocationSections 
             location={location} 
-            setLocation={setLocation}/>
+            setLocation={setLocation}
+            error={showErrors && missing.location}/>
 
             <StateSections 
             stateLot={delivery} 
             setStateLot={setDelivery} 
-            mode="delivery"/>
+            mode="delivery"
+            error={showErrors && missing.delivery}/>
 
             <AutoReExtension 
             check={advertising} 
