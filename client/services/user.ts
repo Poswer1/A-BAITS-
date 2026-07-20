@@ -1,0 +1,80 @@
+import { BASE_URL, authHeaders, dataReturn } from "./utils" 
+
+export async function getUserById(id?:string) {
+
+    let url = ''
+    if(id) {
+        url = `${BASE_URL}/user/getUserById?id=${id}`
+    } else {
+        url = `${BASE_URL}/user/getUserById`
+    }
+
+    const res = await fetch(url, {
+        method: 'GET',
+        headers: authHeaders(),
+        credentials: 'include', // говорит отпровлять куки
+    })
+    
+    return dataReturn(res)
+
+}
+
+export async function getUserStatus() {
+    const res = await fetch(`${BASE_URL}/user/getUserStatus`, {
+        method: 'GET',
+        headers: authHeaders(),
+        credentials: 'include', 
+    })
+
+    return dataReturn(res)
+}
+
+export async function getRoleUser(token:string) {
+    const res = await fetch(`${BASE_URL}/user/getRoleUser`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`
+        } 
+    })
+
+    return dataReturn(res)
+}
+
+export async function chagePassword(email:string, newPassword:string) {
+    const res = await fetch(`${BASE_URL}/user/updatePassword`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({email, newPassword})
+    })
+
+    return dataReturn(res)
+}
+
+export async function updateUser(formData:FormData, id?:string) {
+
+    let url = ''
+    if(id) {
+        url = `${BASE_URL}/user/updateProfile?id=${id}`
+    } else {
+        url = `${BASE_URL}/user/updateProfile`
+    }
+
+    const res = await fetch(url, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        body: formData,
+        credentials: 'include', // говорит отпровлять куки
+    })
+
+    return dataReturn(res)
+}
+
+export async function getUserByName(name: string) {
+    const res = await fetch(`${BASE_URL}/user/getUserByName/${name}`, {
+        method: 'GET'
+    })
+
+    return dataReturn(res)
+}

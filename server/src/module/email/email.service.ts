@@ -1,0 +1,92 @@
+
+import { BadRequestException, Injectable } from "@nestjs/common";
+import { ConfigService } from "@nestjs/config";
+import { Resend } from "resend";
+import { TemplatesMessageModel } from "src/models/templatesMessage";
+import { TempoparyCode } from "src/models/TemporaryCode";
+import { UserModel } from "src/models/user.model";
+
+@Injectable()
+export class EmailService {
+
+    private resend: Resend;
+
+    constructor(private readonly configService: ConfigService) {
+        const key = this.configService.get<string>('RESEND_API_KEY');
+        this.resend = new Resend(key);
+    }
+
+    async sendEmail(to: string, subject: string, html: string) {
+        const emailFrom = this.configService.get<string>('EMAIL_FROM') || 'onboarding@resend.dev'
+        return this.resend.emails.send({
+            from: emailFrom?.toString(),
+            to,
+            subject,
+            html
+        })
+    }
+
+    async Newsletter (subject:string, html:string) {
+        const allUser = await UserModel.find({})
+        for(const user of allUser) {
+           await this.sendEmail(user.email, subject, html)
+        }
+        return { success: true }
+    }
+
+    async comparisonCode (code:string) {
+        const comparison = await TempoparyCode.findOne({code})
+        if(!comparison) throw new BadRequestException('WrongCode')
+        try {
+            await TempoparyCode.findByIdAndDelete(comparison._id)   
+        } catch (error) {
+            throw error
+        }
+        return {success:true}
+    }
+
+    async sendCode(email:string, type:string) {
+        const textEmail = type === 'register' ? 'Код подтверждения' : "Сброс пароля"
+        const code = Math.floor(100000 + Math.random() * 900000).toString();
+       try {
+            await this.sendEmail(email, textEmail, code);
+            console.log('Email sent');
+        } catch (e) {
+            console.error('Send email error:', e);
+            throw e;
+        }
+
+        try {
+            const existsCode = await TempoparyCode.findOne({email})
+            if(existsCode) {
+                await TempoparyCode.findOneAndUpdate({email}, {code, createdAt: new Date()})
+            } else {
+                await TempoparyCode.create({email, code})
+            }
+            return {success:true}
+        } catch (error) {
+            throw error
+        }   
+    }
+
+    async newTemplate(subject:string, html:string) {
+        try {
+            const newTemplate = await TemplatesMessageModel.create({subject,html})   
+            return {success:true}
+        } catch (error) {
+            throw new BadRequestException('ErrorCreateTemplate')
+        }
+    }
+
+    async getAllTemplate() {
+        const allTemplate = await TemplatesMessageModel.find({})
+        return allTemplate || []
+    }
+
+    async getTemplateById(id:string) {
+        const template = await TemplatesMessageModel.findById(id)
+        if(!template) throw new BadRequestException('TemplateNotFound')
+        return template
+    }
+
+}

@@ -1,0 +1,21 @@
+{
+  "category": "Категорії",
+  "searchPlaceholder": "Пошук лотів",
+  "searchValueNotFound": "Нічого не знайдено",
+  "userNameNotFound": "Не знайдено",
+  "login": "Увійти",
+  "register": "Реєстрація",
+  "createLot": "Створити лот",
+  "modalProfile-profile": "Профіль",
+  "modalProfile-history": "Історія ставок",
+  "modalProfile-support": "Підтримка",
+  "modalProfile-createLot": "Створити лот",
+  "notification": "Сповіщення",
+  "lotPurchased": "Ваш лот було успішно викуплено - ",
+  "lotWinner": "Вітаємо! Ваша ставка виграла в аукціоні - ",
+  "lotRelisted": "Ваш лот не було куплено, і його було виставлено повторно",
+  "lotNotRedeemed": "Ваш лот не було викуплено, і його знято з торгів",
+  "notificationNoYet": "Сповіщень поки що немає",
+  "loading": "Завантаження...",
+  "logout": "Вихід"
+}

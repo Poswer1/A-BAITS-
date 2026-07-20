@@ -1,0 +1,101 @@
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { LotService } from "./lot.service";
+import { Server } from 'socket.io';
+import { Socket } from "socket.io";
+import { JwtService } from "@nestjs/jwt";
+
+
+@WebSocketGateway({ cors: true })// говорим что эта папка испозует webSocket
+export class LotGateway {
+
+    private onlineUsers: Map<string, string> = new Map();
+    private historyUser: Map<string, string> = new Map();
+
+    constructor(
+    private lotService:LotService,
+    private readonly jwtSerice:JwtService
+    ) {}
+
+    @WebSocketServer() // создаем сервер webSocket
+    server:Server 
+
+    @SubscribeMessage('joinLot')
+    async handleJoin (@MessageBody() lotId:string, @ConnectedSocket() client:Socket) {
+        client.join(lotId)
+    }
+
+    @SubscribeMessage('placeBid') 
+    async handelBid(@MessageBody() data: {lotId: string, bid: number}, @ConnectedSocket() client:Socket) {
+
+    const userId = this.onlineUsers.get(client.id)
+    if(!userId) {
+        console.log('пользователь не найден при ставке')
+        client.emit('bidError', { message: 'Пользователь не найден' })
+        return 
+    }
+
+    try {
+        const result = await this.lotService.placeBid(data, userId)
+        this.server.to(data.lotId).emit('bidUpdated', result)
+        return result
+    } catch (error: any) {
+        client.emit('bidError', { message: error.message || 'Ошибка при ставке' })
+    }
+    }
+
+    @SubscribeMessage('autoBid')
+    async handleAutoBid(@MessageBody() data: {lotId:string, bid:number}, @ConnectedSocket() client:Socket) {
+        const userId = this.onlineUsers.get(client.id)
+        if(!userId) {
+            console.log('пользователь не найден при автоставке')
+            client.emit('bidError', { message: 'Пользователь не найден' })
+            return 
+        }
+        try {
+            const result = await this.lotService.autoBid(data, userId)
+            this.server.to(data.lotId).emit('bidUpdated', result)
+        } catch (error: any) {
+            client.emit('bidError', { message: error.message || 'Ошибка при автоставке' })
+        }
+    }
+    
+
+    @SubscribeMessage('HistoryBid')
+    async getHistoryBid(@MessageBody() lotId:string, @ConnectedSocket() client: Socket) {
+        const result = await this.lotService.getHistoryBid(lotId)
+
+        client.emit('getHistoryBid', result) // отдаем текущему пользователю
+    }
+
+    async handleConnection(client:Socket) {
+        const cookies = client.handshake.headers.cookie || ''
+        let token = cookies
+        .split('; ')
+        .find(c => c.startsWith('token='))
+        ?.split('=')[1]; 
+        // в cookies токен выглядт так token=a3223 
+        // тут разделяем его по = получим token отедельно и a3223 и берем [1] 
+
+        if(!token && client.handshake.auth?.token) {
+            token = client.handshake.auth.token?.replace('Bearer ', '');
+        }
+
+        if(!token) {
+            console.log('JWT не предоставлен');
+            client.disconnect();
+            return
+        }
+
+        try {
+            const payload = await this.jwtSerice.verify(token)
+            const userId = payload._id
+
+            this.onlineUsers.set(client.id, userId) // client.id это ключ под которым записан наш userId
+            console.log(`Пользователь ${userId} подключился`);
+        } catch (error) {
+            console.log('JWT ошибка при подключении сокета:', error instanceof Error ? error.message : error)
+            client.disconnect()
+        }
+    }
+    
+} 
