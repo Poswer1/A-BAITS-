@@ -9,6 +9,8 @@ import { ViolationsService } from '../admin/violations/violations.service';
 import { FinanceService } from '../admin/finance/finance.service';
 import { LoggingService } from '../admin/logging/logging.service';
 import { PaymentService } from '../payment/payment.service';
+import * as fs from 'fs/promises'
+import * as path from 'path'
 
 
 @Injectable()
@@ -175,6 +177,18 @@ export class LotService {
     if (role !== 'admin' && lot.historyBid && lot.historyBid.length > 0) {
       throw new BadRequestException('LotAlreadyHaveBids')
     }
+
+    if (lot.images && lot.images.length > 0) {
+      for (const image of lot.images) {
+        try {
+          const filePath = path.join(process.cwd(), image)
+          await fs.unlink(filePath)
+        } catch (error) {
+          console.log(`Не удалось удалить файл: ${image}`)
+        }
+      }
+    }
+
 
     await lot.deleteOne()
 

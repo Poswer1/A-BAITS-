@@ -52,6 +52,8 @@ const violations_service_1 = require("../admin/violations/violations.service");
 const finance_service_1 = require("../admin/finance/finance.service");
 const logging_service_1 = require("../admin/logging/logging.service");
 const payment_service_1 = require("../payment/payment.service");
+const fs = __importStar(require("fs/promises"));
+const path = __importStar(require("path"));
 let LotService = class LotService {
     violationsService;
     financeService;
@@ -182,6 +184,17 @@ let LotService = class LotService {
         }
         if (role !== 'admin' && lot.historyBid && lot.historyBid.length > 0) {
             throw new common_1.BadRequestException('LotAlreadyHaveBids');
+        }
+        if (lot.images && lot.images.length > 0) {
+            for (const image of lot.images) {
+                try {
+                    const filePath = path.join(process.cwd(), image);
+                    await fs.unlink(filePath);
+                }
+                catch (error) {
+                    console.log(`Не удалось удалить файл: ${image}`);
+                }
+            }
         }
         await lot.deleteOne();
         return { success: true };
