@@ -17,13 +17,12 @@ import { getChatId } from "@/services/chat"
 
 interface LotCardV2Props {
     lot:LotTypes
-    show?:boolean
     useFrom?:string
     select?:string
     selectLot?:(v:string) => void
 }
 
-export default function LotCardV2({lot, show, useFrom, select, selectLot}: LotCardV2Props) {
+export default function LotCardV2({lot,  useFrom, select, selectLot}: LotCardV2Props) {
 
     const { t } = useTranslation()
     const params = useParams()

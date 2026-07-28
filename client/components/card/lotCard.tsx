@@ -11,9 +11,11 @@ import ListLocation from '../../data/citiesUK.json'
 interface LotCardProps {
     lot:any
     openFrom?:string
+    select?:string
+    selectLot?:(v:string) => void
 }
 
-function LotCard({lot, openFrom}: LotCardProps) {
+function LotCard({lot, openFrom, select, selectLot}: LotCardProps) {
     const { t } = useTranslation()
     const params = useParams()
     const lang = params.lang as string
@@ -22,7 +24,11 @@ function LotCard({lot, openFrom}: LotCardProps) {
     const city = getValueByLang(ListLocation, lot.location, lang)
  
     return (
-        <Link href={`/${lang}/lot/${lot.lotNumber}`} className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg text-black ${openFrom === 'catalog' ? 'w-full' : "w-[200px]"}  md:w-1/4 `}>
+        <Link 
+            href={select === 'edit' ? `/${lang}/editLot/${lot.lotNumber}` : select ? '' : `/${lang}/lot/${lot.lotNumber}`} 
+            onClick={() => (select && selectLot) ? selectLot(lot._id) : ''}
+            className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg text-black ${openFrom === 'catalog' ? 'w-full' : "w-[200px]"} md:w-1/4 `}
+            >
             <div className="flex flex-col justify-center items-center w-full md:w-full">
                 <div className={`${openFrom === 'catalog' ? "w-full" : 'w-[180px]'} h-55 flex items-center justify-center rounded-t-xl overflow-hidden`}>
                 <img

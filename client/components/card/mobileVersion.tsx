@@ -36,13 +36,13 @@ useEffect(() => {
                 
                   <div className="w-full grid grid-cols-2 gap-2">
                     {lots.map((l) => (
-                      <LotCard key={l._id} lot={l} openFrom='catalog' show={true} select={select} selectLot={selectLot}/>
+                      <LotCard key={l._id} lot={l} openFrom='catalog' select={select} selectLot={selectLot}/>
                     ))}
                   
                 </div>
               ) : (
                 lots.map((l) => (
-                  <LotCardV2 key={l._id} lot={l} show={true} select={select} selectLot={selectLot}/>
+                  <LotCardV2 key={l._id} lot={l} select={select} selectLot={selectLot}/>
                 ))
               )
         )}
