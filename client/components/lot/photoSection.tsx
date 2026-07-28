@@ -42,7 +42,7 @@ export default function PhotoSection({lot}:{lot: LotTypes}) {
         </div>
         <div className="w-full flex justify-start overflow-x-auto md:flex-wrap md:overflow-x-visible gap-2 md:gap-5 items-center h-full">
             {lot.images.map((img, i) => (
-                <img key={i} src={`${BASE_URL}${img}`} onClick={() => setSelectPhoto(i)} className={`${animationOpacity} ${i === selectPhoto && 'border-orange-600'} w-20 h-20 md:w-1/6 2xl:w-1/7 rounded-md cursor-pointer border-2 border-gray-300 object-contain`}/>
+                <img key={i} src={`${BASE_URL}${img}`} onClick={() => setSelectPhoto(i)} className={`${animationOpacity} ${i === selectPhoto && 'border-orange-600'} w-20 h-20 md:w-1/6 2xl:w-1/7 rounded-md cursor-pointer border-2 border-gray-300 object-cover`}/>
             ))}
         </div>
      </div>

@@ -27,17 +27,17 @@ function LotCard({lot, openFrom, select, selectLot}: LotCardProps) {
         <Link 
             href={select === 'edit' ? `/${lang}/editLot/${lot.lotNumber}` : select ? '' : `/${lang}/lot/${lot.lotNumber}`} 
             onClick={() => (select && selectLot) ? selectLot(lot._id) : ''}
-            className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg text-black ${openFrom === 'catalog' ? 'w-full' : "w-[200px]"} md:w-1/4 `}
+            className={`cursor-pointer flex justify-start items-center gap-10 shadow-lg text-black rounded-b-xl ${openFrom === 'catalog' ? 'w-full' : "w-[200px]"} md:w-1/4 `}
             >
             <div className="flex flex-col justify-center items-center w-full md:w-full">
-                <div className={`${openFrom === 'catalog' ? "w-full" : 'w-[180px]'} h-55 flex items-center justify-center rounded-t-xl overflow-hidden`}>
-                <img
-                    src={`${BASE_URL}${lot.images[0]}`}
-                    alt={lot.name}
-                    className="max-w-full max-h-full object-contain"
-                />
-                </div>
-                <div className="flex flex-col justify-center items-start p-2 w-full bg-gray-100 gap-2">
+                    <div className={`${openFrom === 'catalog' ? "w-full" : 'md:w-full w-[180px]'} h-55 flex items-center justify-center overflow-hidden`}>
+                        <img
+                            src={`${BASE_URL}${lot.images[0]}`}
+                            alt={lot.name}
+                            className="w-full h-full object-cover"
+                        />
+                        </div>
+                <div className="flex flex-col justify-center items-start p-2 w-full bg-gray-100 gap-2 rounded-b-xl">
                     <h1 className="line-clamp-1">{lot.name}</h1>
                     
                     <span className="text-black text-sm md:text-base">
