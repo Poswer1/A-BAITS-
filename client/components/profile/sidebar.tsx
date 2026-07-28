@@ -50,15 +50,16 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
     ]
   ): mode === 'buy' || mode === 'sell' ?(
     listLinks = [
-      {name: t('profile', 'active'), icon: <Loader/>, link: `${mode}/Active`},
-      ...(mode === 'buy'
-      ? [{ name: t('profile', 'favorites'), icon: <Star />, link: `${mode}/Favorite` }]
+    {name: t('profile', 'active'), icon: <Loader/>, link: `${mode}/Active`},
+    ...(mode === 'buy'
+      ? [{name: t('profile', 'favorites'), icon: <Star/>, link: `${mode}/Favorite`}]
       : []),
-      {name: t('profile', 'archived'), icon: <Archive/>, link: `${mode}/Archive` },
-      {name: t('profile', 'completed'), icon: <Flag/>, link: `${mode}/Completed`},
-      mode === 'sell' ? {name: t('profile', 'sold'), icon: <DollarSign/>, link: `${mode}/Sold`} : 
-      {name: t('profile', 'buying'), icon: <DollarSign/>, link: `${mode}/Buying`}
-    ]
+    {name: t('profile', 'completed'), icon: <Flag/>, link: `${mode}/Completed`},
+    mode === 'sell'
+      ? {name: t('profile', 'sold'), icon: <DollarSign/>, link: `${mode}/Sold`}
+      : {name: t('profile', 'buying'), icon: <DollarSign/>, link: `${mode}/Buying`},
+    {name: t('profile', 'archived'), icon: <Archive/>, link: `${mode}/Archive`}
+  ]
   ): mode === 'sidebarProfile' &&(
     listLinks = [
       {name: t('profile', 'Reviews'), icon: <MessageSquare/>, link: `/${name}/reviews`},

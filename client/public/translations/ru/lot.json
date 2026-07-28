@@ -42,5 +42,8 @@
     "yesBuyNow": "Да, купить сейчас",
     "purchasePrice": "Цена покупки",
     "isLeadingBid": "Ваша ставка уже является ведущей",
-    "chat": "Чат"
+    "chat": "Чат",
+    "lotArchive": "Лот в архиве",
+    "lotCompleted": "Аукцион завершен",
+    "lotSold": "Лот продан"
 }

@@ -32,7 +32,7 @@ export default function BidHistory({userHistory, auth}:BidHistoryProps) {
       {!auth ? (
         <div className="flex flex-col w-full gap-1">
           <h1>{t('lot', 'IsNotLogged')}</h1>
-          <Link href="/auth/login" className={`${button} gap-1 w-full`}><LogIn size={20}/>{t('header','login')}</Link>
+          <Link href={`/${lang}/auth/login`} className={`${button} gap-1 w-full`}><LogIn size={20}/>{t('header','login')}</Link>
         </div>
       ): (
           <div className="flex flex-col justify-start items-start w-full overflow-y-auto overflow-x-hidden max-h-90 md:max-h-full gap-5 custom-scrollbar">

@@ -50,5 +50,6 @@
   "obligatoryField": "Поле является обязательным",
   "addPhoto": "Добавить фото",
   "selectDelivery": "Выберите способ доставки",
-  "createLot-addPhoto": "Добавить фото"
+  "createLot-addPhoto": "Добавить фото",
+  "createNewLot":"Создать новый лот"
 }

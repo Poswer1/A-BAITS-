@@ -42,7 +42,7 @@ export default function SelectionField<T extends string | number>({title, placeh
             <span className="text-red-500 text-xs">{t('createLot', 'createLot-required-field')}</span>
         )}
         
-        <div ref={modalRef} className={`${open ? "min-h-auto max-h-50" : "min-h-0 max-h-0 opacity-90"} transition-all ${bgColor || 'bg-gray-100'}  duration-300 ease-in-out flex flex-col justify-start items-start w-full rounded-b-md overflow-auto custom-scrollbar absolute top-full left-0 z-30`}>
+        <div ref={modalRef} className={`${open ? "min-h-auto max-h-50 pb-2" : "min-h-0 max-h-0 opacity-90"} transition-all ${bgColor || 'bg-gray-100'}  duration-300 ease-in-out flex flex-col justify-start items-start w-full rounded-b-md overflow-auto custom-scrollbar absolute top-full left-0 z-30 `}>
             {list?.map((obg, index) => (
                  <span key={index} onClick={() => {setValue(obg.name), setOpen(false)}} className={`py-1 px-2 ${hoverCat} w-full flex`}>{lang === 'ru' ? obg.ru || obg.name : obg.uk || obg.name}</span>
             ))}

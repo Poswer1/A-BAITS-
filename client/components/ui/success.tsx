@@ -1,3 +1,4 @@
+
 import { useTranslation } from "@/app/context/TranslationProvider";
 import { animationOpacity, hover } from "@/styles/style";
 import { Check } from "lucide-react";
@@ -29,7 +30,7 @@ export default function Success({title, mode}: SuccessProps) {
         <div className="flex gap-3">
             <span onClick={back} className={`border-b ${hover} text-gray-500 text-center`}>{t('global', 'back')}</span>
             {mode === 'lot' && (
-              <span onClick={updateWindow} className={`${hover} text-orange-600`}>Создать новый лот</span>
+              <span onClick={updateWindow} className={`${hover} text-orange-600`}>{t('createLot', 'createNewLot')}</span>
             )}
         </div>
       </div>

@@ -64,7 +64,7 @@ function page() {
             </div>
             <button onClick={handleLogin} className={`bg-orange-600 text-white text-md p-2 flex justify-center items-center rounded-md ${hover} w-full`}>{t('auth', 'Login')}</button>
             <p className='text-sm text-center text-gray-500'>{t('auth', 'pesonalDate')}</p>
-            <Link href={`/${lang}/auth/resetPassword`} className={`w-full text-end text-orange-600 ${hover} underline`}>{t('auth', 'forgotPassword')}</Link>
+            <Link href={`/${lang}/auth/resetPassword`} className={`w-full text-start text-orange-600 ${hover} underline`}>{t('auth', 'forgotPassword')}</Link>
             <p className='w-full gap-1 text-gray-500'>{t('auth', 'DontHaveAccount')} <Link href={`/${lang}/auth/register`} className={`underline text-orange-600 ${hover}`}>{t('auth', 'Register')}</Link></p>
         </div>
         <Toast error={message} message=''/>

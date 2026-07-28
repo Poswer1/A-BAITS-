@@ -157,7 +157,16 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
         {status !== 'Active' ? (
             <h1 className={`${status === 'Blocked' ? 'text-red-500' : 'text-gray-500'} font-bold flex gap-2 text-2xl items-center`}>
                 {status === 'Blocked' ? <Ban /> : <Gavel />}
-                {status === 'Blocked' ? t('lot', 'lotBlocked') : 'Лот куплен'}
+                {status === 'Blocked' 
+                ? t('lot', 'lotBlocked') 
+                : status === 'Archive' 
+                    ? t('lot', 'lotArchive') 
+                    : status === 'Completed'
+                    ? t('lot', 'lotCompleted')
+                    : status === 'Sold'
+                        ? t('lot', 'lotSold')
+                        : 'Лот куплен'
+                }
             </h1>
         ): (
             <div className="flex justify-between items-center w-full">

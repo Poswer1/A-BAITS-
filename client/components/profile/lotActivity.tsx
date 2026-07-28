@@ -14,6 +14,7 @@ import Toast from "../ui/toast"
 import ModalConfirm from "../ui/modalConfirm"
 import SelectionField from "../ui/selectionField"
 import { useRouter, useSearchParams } from "next/dist/client/components/navigation"
+import MobileVersion from "../card/mobileVersion"
 
 interface LotActivityProps {
     data:{ allLots: LotTypes[], totalLot: number }
@@ -170,7 +171,9 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
 
   return (
     <div className={pageContainerClass}> 
-        <h1 className="text-xl 2xl:text-2xl lg:text-xl p-2 py-4 md:p-0 md:mb-2">{mode === 'buy' ? t('profile', 'buy') : t('profile', 'sell')} | {slug === 'active' ? t('profile', 'active') : slug === 'archive' ? t('profile', 'archived') : slug === 'completed' ? t('profile', 'completed') : t('profile', 'sold')} {t('global', 'lot')}</h1>
+       <h1 className="text-xl 2xl:text-2xl lg:text-xl p-2 py-4 md:p-0 md:mb-2">
+        {mode === 'buy' ? t('profile', 'buy') : t('profile', 'sell')} | {slug === 'Active' ? t('profile', 'active') : slug === 'Archive' ? t('profile', 'archived') : slug === 'Completed' ? t('profile', 'completed') : t('profile', 'sold')} {t('global', 'lot')}
+      </h1>
         <div className="w-full flex flex-col justify-start items-start gap-4">
           <Sidebar mode={mode} active={active}/>
           <div className={lotListClass}>
@@ -211,9 +214,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
                 value={sortValue}/>
               </div>
             )}
-            {allLots.map((lot:any) => (
-              <LotCardV2 lot={lot} show={true} select={openConfirmWindow} selectLot={setSelectLot}/> 
-            ))}
+            <MobileVersion lots={allLots} select={openConfirmWindow} selectLot={setSelectLot}/>
             <Pagination total={data?.totalLot || 0} maxLot={10}/>
           </div>
         </div>
