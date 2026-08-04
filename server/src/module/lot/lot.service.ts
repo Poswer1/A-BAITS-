@@ -11,29 +11,12 @@ import { LoggingService } from '../admin/logging/logging.service';
 import { PaymentService } from '../payment/payment.service';
 import * as fs from 'fs/promises'
 import * as path from 'path'
+import { buildExpiryDate, buildRelistedDate } from './time.utils';
 
 
 @Injectable()
 
 export class LotService {
-
-  private buildExpiryDate(nowDate: Date, days: number | string, time?: string) {
-    const kyivNow = new Date(nowDate.toLocaleString('en-US', { timeZone: 'Europe/Kyiv' }))
-    const offsetMs = nowDate.getTime() - kyivNow.getTime()
-
-    const [hours, minutes] = (time || '21:00').split(':').map(Number)
-    const targetDate = new Date(
-      kyivNow.getFullYear(),
-      kyivNow.getMonth(),
-      kyivNow.getDate() + Number(days || 1),
-      Number.isFinite(hours) ? hours : 21,
-      Number.isFinite(minutes) ? minutes : 0,
-      0,
-      0
-    )
-
-    return new Date(targetDate.getTime() - offsetMs)
-  }
 
   constructor(
     private readonly violationsService:ViolationsService,
@@ -53,7 +36,7 @@ export class LotService {
     const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString(); //10000000 — минимальное 8-значное число 90000000 — диапазон до 99999999
 
     const nowDate = new Date()
-    const newDate = this.buildExpiryDate(nowDate, dto.date, dto.dateTime)
+    const newDate = buildExpiryDate(nowDate, dto.date, dto.dateTime)
 
     const user = await UserModel.findById(userId)
     if(!user) throw new BadRequestException('UserNotFound')
@@ -152,7 +135,7 @@ export class LotService {
     if(!lot) throw new BadRequestException('LotNotFound')
     const durationMs = lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0
     const nowDate = new Date()
-    const newDate = new Date(nowDate.getTime() + durationMs)
+    const newDate = buildRelistedDate(nowDate, durationMs)
 
     try {
       await LotModel.findByIdAndUpdate(id, {
@@ -211,7 +194,7 @@ export class LotService {
       
 
       const nowDate = new Date()
-      const newDate = this.buildExpiryDate(nowDate, dto.date, dto.dateTime)
+      const newDate = buildExpiryDate(nowDate, dto.date, dto.dateTime)
 
 
     const updateLot = await LotModel.findOneAndUpdate(

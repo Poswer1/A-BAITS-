@@ -54,18 +54,12 @@ const logging_service_1 = require("../admin/logging/logging.service");
 const payment_service_1 = require("../payment/payment.service");
 const fs = __importStar(require("fs/promises"));
 const path = __importStar(require("path"));
+const time_utils_1 = require("./time.utils");
 let LotService = class LotService {
     violationsService;
     financeService;
     loggingService;
     paymentService;
-    buildExpiryDate(nowDate, days, time) {
-        const kyivNow = new Date(nowDate.toLocaleString('en-US', { timeZone: 'Europe/Kyiv' }));
-        const offsetMs = nowDate.getTime() - kyivNow.getTime();
-        const [hours, minutes] = (time || '21:00').split(':').map(Number);
-        const targetDate = new Date(kyivNow.getFullYear(), kyivNow.getMonth(), kyivNow.getDate() + Number(days || 1), Number.isFinite(hours) ? hours : 21, Number.isFinite(minutes) ? minutes : 0, 0, 0);
-        return new Date(targetDate.getTime() - offsetMs);
-    }
     constructor(violationsService, financeService, loggingService, paymentService) {
         this.violationsService = violationsService;
         this.financeService = financeService;
@@ -81,7 +75,7 @@ let LotService = class LotService {
         const images = files ? await (0, files_upload_1.ProccessImages)(files, '/uploads/lots/') : [];
         const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString();
         const nowDate = new Date();
-        const newDate = this.buildExpiryDate(nowDate, dto.date, dto.dateTime);
+        const newDate = (0, time_utils_1.buildExpiryDate)(nowDate, dto.date, dto.dateTime);
         const user = await user_model_1.UserModel.findById(userId);
         if (!user)
             throw new common_1.BadRequestException('UserNotFound');
@@ -163,7 +157,7 @@ let LotService = class LotService {
             throw new common_1.BadRequestException('LotNotFound');
         const durationMs = lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0;
         const nowDate = new Date();
-        const newDate = new Date(nowDate.getTime() + durationMs);
+        const newDate = (0, time_utils_1.buildRelistedDate)(nowDate, durationMs);
         try {
             await lot_model_1.LotModel.findByIdAndUpdate(id, {
                 $set: {
@@ -214,7 +208,7 @@ let LotService = class LotService {
             updatedImages = [...existingImages, ...newImages];
         }
         const nowDate = new Date();
-        const newDate = this.buildExpiryDate(nowDate, dto.date, dto.dateTime);
+        const newDate = (0, time_utils_1.buildExpiryDate)(nowDate, dto.date, dto.dateTime);
         const updateLot = await lot_model_1.LotModel.findOneAndUpdate({
             lotNumber: id,
             author: userId

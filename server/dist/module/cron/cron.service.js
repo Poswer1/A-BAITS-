@@ -15,6 +15,7 @@ const schedule_1 = require("@nestjs/schedule");
 const lot_model_1 = require("../../models/lot.model");
 const notification_gateway_1 = require("../notification/notification.gateway");
 const payment_service_1 = require("../payment/payment.service");
+const time_utils_1 = require("../lot/time.utils");
 let CronSerivce = class CronSerivce {
     paymentService;
     notificationGateWay;
@@ -41,7 +42,7 @@ let CronSerivce = class CronSerivce {
                         if (lot.autoReExtension) {
                             const now = new Date();
                             const durationMs = lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0;
-                            const newDate = new Date(now.getTime() + durationMs);
+                            const newDate = (0, time_utils_1.buildRelistedDate)(now, durationMs);
                             const [hours, minutes] = lot.dateTime?.split(':').map(Number) ?? [lot.date.getHours(), lot.date.getMinutes()];
                             if (Number.isFinite(hours) && Number.isFinite(minutes)) {
                                 newDate.setHours(hours, minutes, 0, 0);

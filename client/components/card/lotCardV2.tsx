@@ -82,7 +82,7 @@ export default function LotCardV2({lot,  useFrom, select, selectLot}: LotCardV2P
 
   return (
     <Link href={select === 'edit' ? `/${lang}/editLot/${lot.lotNumber}` : select ? '' : `/${lang}/lot/${lot.lotNumber}`} onClick={() => (select && selectLot )? selectLot(lot._id) : ''} className={`cursor-pointer border-t border-b border-gray-200 flex flex-col md:flex-row justify-start items-start md:items-center gap-2 md:gap-10 bg-white w-full md:rounded-md text-base text-black overflow-hidden relative`}>
-        <img src={`${BASE_URL}${lot.images[0]}`} className=" object-contain hidden w-40 h-40 md:block"/>
+        <img src={`${BASE_URL}${lot.images[0]}`} className=" object-cover hidden w-40 h-40 md:block"/>
         <div className="flex justify-between items-center w-full">
             <div className={`${columnClass} hidden md:block`}>
                 <h1>{`${lot.name.length >=30 ? lot.name.slice(0, 30) + '...' : lot.name}`}</h1>

@@ -9,7 +9,6 @@ export declare class LotService {
     private readonly financeService;
     private readonly loggingService;
     private readonly paymentService;
-    private buildExpiryDate;
     constructor(violationsService: ViolationsService, financeService: FinanceService, loggingService: LoggingService, paymentService: PaymentService);
     createLot(dto: LotDto, files: Express.Multer.File[], userId: string): Promise<mongoose.Document<unknown, {}, import("src/models/lot.model").Lot, {}, mongoose.DefaultSchemaOptions> & import("src/models/lot.model").Lot & {
         _id: Types.ObjectId;

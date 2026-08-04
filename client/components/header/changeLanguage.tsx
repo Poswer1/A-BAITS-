@@ -36,7 +36,7 @@ export default function ChangeLanguage({openSearch}:ChangeLanguageProps) {
   }
 
   return (
-    <div onClick={() => setOpen(prev => !prev)}className='flex justify-center items-center gap-1 md:gap-2 cursor-pointer relative'>
+    <div onClick={() => setOpen(prev => !prev)}className='flex justify-center items-center gap-1 md:gap-2 cursor-pointer relative text-black'>
         <Globe className={`text-black ${openSearch ? "hidden md:block" : "block"}`}/>
         <span className='hidden md:block'>{pathname.startsWith('/uk') ? 'Українська' : 'Русский'}</span>
         <ChevronDown  className={`${arrowActive(open)} text-black hidden md:block`}/>

@@ -74,11 +74,14 @@ export default function LotForm({mode, initialData}:LotFormProps) {
       time: '',
       category: '',
       subCategory: '',
+      subSubCategory: '',
       photo: ''
     })
 
     const activeCategory = categoriesWithIcons.find(obg => obg.name === category)
     const categoryHasSubcategories = (activeCategory?.subcategories?.length || 0) > 0
+    const selectedSubCategory = activeCategory?.subcategories?.find(item => item.name === subCategory)
+    const selectedSubCategoryHasSubSubcategories = (selectedSubCategory?.subcategories?.length || 0) > 0
     
     const transleteCategory = getValueByLang(categoriesWithIcons, category, lang)
     const transleteSubCategory = getValueByLang(activeCategory?.subcategories || [], subCategory, lang)
@@ -97,6 +100,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
       time: !time,
       category: !category,
       subCategory: categoryHasSubcategories && !subCategory,
+      subSubCategory: selectedSubCategoryHasSubSubcategories && !subSubCategory,
       photo: !hasImages
     }
     const hasMissing = Object.values(missing).some(Boolean)
@@ -144,6 +148,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
         time: '',
         category: '',
         subCategory: '',
+        subSubCategory: '',
         photo: ''
       })
     }
@@ -193,22 +198,23 @@ export default function LotForm({mode, initialData}:LotFormProps) {
       setCategory(value)
       setSubCategory('')
       setSubSubCategory('')
-      if (errors.category || errors.subCategory) {
-        setErrors(prev => ({...prev, category: '', subCategory: ''}))
+      if (errors.category || errors.subCategory || errors.subSubCategory) {
+        setErrors(prev => ({...prev, category: '', subCategory: '', subSubCategory: ''}))
       }
     }
 
     const handleSubCategoryChange = (value: string) => {
       setSubCategory(value)
-      if (errors.subCategory) {
-        setErrors(prev => ({...prev, subCategory: ''}))
+      setSubSubCategory('')
+      if (errors.subCategory || errors.subSubCategory) {
+        setErrors(prev => ({...prev, subCategory: '', subSubCategory: ''}))
       }
     }
 
     const handleSubSubCategoryChange = (value: string) => {
       setSubSubCategory(value)
-      if (errors.subCategory) {
-        setErrors(prev => ({...prev, subCategory: ''}))
+      if (errors.subSubCategory) {
+        setErrors(prev => ({...prev, subSubCategory: ''}))
       }
     }
 
@@ -237,6 +243,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
          time: !time ? t('createLot','createLot-DateTime') : '',
          category: !category ? t('createLot','createLot-category') : '',
          subCategory: categoryHasSubcategories && !subCategory ? t('createLot','createLot-selectCategory') : '',
+         subSubCategory: selectedSubCategoryHasSubSubcategories && !subSubCategory ? 'Выберите подподкатегорию' : '',
          photo: (!preview || preview.length === 0) ? t('createLot','createLot-photo') : ''
        }
 
@@ -255,6 +262,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             validationErrors.time,
             validationErrors.category,
             validationErrors.subCategory,
+            validationErrors.subSubCategory,
             validationErrors.photo
           ].filter(Boolean)
           setMessage(`Заполните: ${missingFields.join(', ')}`)
@@ -378,7 +386,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             createLotSubCategory={transleteSubCategory || ''}  
             createLotSubSubCategory={transleteSubSubCategory || ''}
             nameError={errors.name}
-            categoryError={errors.category || errors.subCategory} />
+            categoryError={errors.category || errors.subCategory || errors.subSubCategory} />
 
             <PriceSections 
             price={price} 

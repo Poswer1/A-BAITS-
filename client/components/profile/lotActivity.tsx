@@ -170,7 +170,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
     const styleButtonAction = `${hover} gap-1 flex p-2 rounded-md`
 
   return (
-    <div className={pageContainerClass}> 
+    <div className={`${pageContainerClass} min-h-0`}> 
        <h1 className="text-xl 2xl:text-2xl lg:text-xl p-2 py-4 md:p-0 md:mb-2">
         {mode === 'buy' ? t('profile', 'buy') : t('profile', 'sell')} | {slug === 'Active' ? t('profile', 'active') : slug === 'Archive' ? t('profile', 'archived') : slug === 'Completed' ? t('profile', 'completed') : t('profile', 'sold')} {t('global', 'lot')}
       </h1>
@@ -206,7 +206,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
             {allLots.length !== 0 && (
               <div className="w-[95%] px-2 md:w-1/5 mb-2 md:px-0">
                 <SelectionField 
-                title={t('profile', 'Sorting')} 
+                title={''} 
                 placeholder={t('profile', 'Sorting')} 
                 list={listFilter} 
                 setValue={setSortValue} 

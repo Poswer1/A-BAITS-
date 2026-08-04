@@ -76,6 +76,20 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
   const handleSubCategoryClick = (sub: NonNullable<typeof activeCategory>['subcategories'][number]) => {
     if(!activeCategory) return
     handleSelectCat('', sub.name)
+
+    if (openFrom === 'createLot') {
+      if (createLotSetSubCategory) {
+        createLotSetSubCategory(sub.name)
+      }
+
+      if (sub.subcategories.length > 0) {
+        if (createLotSetSubSubCategory) {
+          createLotSetSubSubCategory('')
+        }
+        return
+      }
+    }
+
     handleClick(activeCategory.name, sub.name, '')
   }
 

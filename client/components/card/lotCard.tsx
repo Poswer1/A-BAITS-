@@ -41,7 +41,7 @@ function LotCard({lot, openFrom, select, selectLot}: LotCardProps) {
                     <h1 className="line-clamp-1">{lot.name}</h1>
                     
                     <span className="text-black text-sm md:text-base">
-                      {t('lot', 'lot-current-bid')}: <span className="text-xl font-bold text-orange-600">{lot.startPrice} ₴</span>
+                      {t('lot', 'lot-current-bid')}: <span className="text-xl font-bold text-orange-600"><br />{lot.startPrice} ₴</span>
                     </span>
                     <span className="text-black text-sm md:text-base">
                       {t('lot', 'lot-location')}: <span className="font-bold text-black"><br/>{city || lot.location}</span>

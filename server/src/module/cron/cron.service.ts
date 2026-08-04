@@ -4,6 +4,7 @@ import { LotModel } from "src/models/lot.model";
 import { NotificationGateway } from "../notification/notification.gateway";
 import { PaymentService } from "../payment/payment.service";
 import mongoose from "mongoose";
+import { buildRelistedDate } from '../lot/time.utils';
 
 @Injectable()
 export class CronSerivce {
@@ -32,7 +33,7 @@ export class CronSerivce {
                         if(lot.autoReExtension) {
                             const now = new Date();
                             const durationMs = lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0
-                            const newDate = new Date(now.getTime() + durationMs);
+                            const newDate = buildRelistedDate(now, durationMs);
                             const [hours, minutes] = lot.dateTime?.split(':').map(Number) ?? [lot.date.getHours(), lot.date.getMinutes()]
 
                             if (Number.isFinite(hours) && Number.isFinite(minutes)) {
