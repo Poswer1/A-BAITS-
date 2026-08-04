@@ -42,15 +42,10 @@ let CronSerivce = class CronSerivce {
                         if (lot.autoReExtension) {
                             const now = new Date();
                             const durationMs = lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0;
-                            const newDate = (0, time_utils_1.buildRelistedDate)(now, durationMs);
+                            const relistedDate = (0, time_utils_1.buildRelistedDate)(now, durationMs);
                             const [hours, minutes] = lot.dateTime?.split(':').map(Number) ?? [lot.date.getHours(), lot.date.getMinutes()];
-                            if (Number.isFinite(hours) && Number.isFinite(minutes)) {
-                                newDate.setHours(hours, minutes, 0, 0);
-                            }
-                            else {
-                                newDate.setHours(lot.date.getHours(), lot.date.getMinutes(), 0, 0);
-                            }
-                            lot.date = newDate;
+                            const targetDate = new Date(Date.UTC(relistedDate.getUTCFullYear(), relistedDate.getUTCMonth(), relistedDate.getUTCDate(), Number.isFinite(hours) ? hours : 21, Number.isFinite(minutes) ? minutes : 0, 0, 0));
+                            lot.date = new Date(targetDate.getTime() - (relistedDate.getTimezoneOffset() * 60 * 1000));
                             console.log('лот перевыставлен');
                         }
                         else {
