@@ -19,8 +19,11 @@ export class ReviewService {
         const currentChat = await ChatModel.findById(slug)
         if (!currentChat) throw new BadRequestException('ChatNotFound')
 
+        const isParticipant = currentChat.users.some((id) => id.toString() === userId.toString())
+        if (!isParticipant) throw new BadRequestException('NotChatParticipant')
+
         const userToId = currentChat.users.find(
-            (id) => id.toString() !== userId
+            (id) => id.toString() !== userId.toString()
         )
 
         if (!userToId) throw new BadRequestException('UserNotFound')
@@ -43,16 +46,21 @@ export class ReviewService {
                     rating: rating
                 }
             )
-          } catch (error) {
+                    } catch (error: any) {
+                        if (error?.code === 11000) throw new BadRequestException('AlreadyReview')
             throw new BadRequestException('errorCreateReview')
         }  
 
-        const allReview = await ReviewModel.countDocuments({to:userToId})
-        const newRating = (user.rating * allReview + rating) / (allReview + 1)
-        user.rating = Number(Math.ceil(newRating * 10) / 10)
+                const [ratingStats] = await ReviewModel.aggregate([
+                    { $match: { to: user._id } },
+                    { $group: { _id: null, average: { $avg: '$rating' } } },
+                ])
+                user.rating = Number(Math.ceil((ratingStats?.average ?? rating) * 10) / 10)
         await user.save()
 
-        currentChat.reviews.push(new Types.ObjectId(userId));
+                if (!currentChat.reviews.some((id) => id.toString() === userId.toString())) {
+                        currentChat.reviews.push(new Types.ObjectId(userId));
+                }
         currentChat.messages.push({
             from: new Types.ObjectId('507f1f77bcf86cd799439011'), 
             to: user._id, 
@@ -61,11 +69,22 @@ export class ReviewService {
             status: 'review'
         })
 
-        const chatStatus = currentChat.reviews.some(obj => obj.toString() === user._id.toString())
+        const reviewAuthors = await ReviewModel.distinct('from', {
+            lot: currentChat.lot,
+            from: { $in: currentChat.users },
+            to: { $in: currentChat.users },
+        })
+        const chatStatus = currentChat.users.length >= 2 &&
+            currentChat.users.every((participant) =>
+                reviewAuthors.some((author) => author.toString() === participant.toString())
+            )
 
         if(chatStatus) {
             currentChat.status = 'Close'
-            await LotModel.findByIdAndUpdate(currentChat.lot, {status: 'archive'})
+            await LotModel.findByIdAndUpdate(
+                { _id: currentChat.lot, status: 'Sold' },
+                { $set: { status: 'Archive' } }
+            )
         }
 
         await currentChat.save()

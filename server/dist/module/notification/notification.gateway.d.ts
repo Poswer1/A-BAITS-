@@ -13,6 +13,8 @@ export declare class NotificationGateway {
         to: string;
         notification: string;
         lotId: string;
+        from?: string;
     }): Promise<void>;
+    removeChatNotifications(to: string, lotId: string): Promise<void>;
     handleConnection(client: Socket): Promise<void>;
 }

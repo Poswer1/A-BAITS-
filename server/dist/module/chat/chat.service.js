@@ -28,7 +28,7 @@ let ChatService = class ChatService {
         let chat = await chat_model_1.ChatModel.findById(data.chatId);
         if (!chat)
             throw new common_1.BadRequestException();
-        const myInterlocutor = chat.users.filter(u => u._id.toString() !== userId.toString());
+        const myInterlocutor = chat.users.filter(u => u.toString() !== userId.toString());
         const newMessage = {
             from: new mongoose_1.Types.ObjectId(userId),
             to: new mongoose_1.Types.ObjectId(myInterlocutor[0]),
@@ -38,6 +38,12 @@ let ChatService = class ChatService {
         };
         chat.messages.push(newMessage);
         await chat.save();
+        await this.notificationGateway.sendNotification({
+            to: newMessage.to.toString(),
+            from: userId,
+            notification: 'newChatMessage',
+            lotId: chat.lot.toString(),
+        });
         await chat.populate('users', 'avatar name');
         const populatedFrom = chat.users.find(u => u._id.equals(newMessage.from));
         return {
@@ -146,14 +152,20 @@ let ChatService = class ChatService {
             throw new common_1.BadRequestException('Ошибка при получение всех моих чатов', error);
         }
     }
-    async getChatHistory(chatId) {
+    async getChatHistory(chatId, userId) {
         try {
-            const history = await chat_model_1.ChatModel.findById(chatId)
-                .populate('users', 'avatar name')
-                .populate('messages.from', 'avatar name _id')
-                .populate('lot', 'name images startPrice lotNumber redemptionMethod blitzPrice');
+            const history = await chat_model_1.ChatModel.findById(chatId);
             if (!history)
                 return { historyMessage: [], numberLot: null };
+            if (!history.users.some(user => user.toString() === userId.toString())) {
+                throw new common_1.BadRequestException('NotChatParticipant');
+            }
+            await this.notificationGateway.removeChatNotifications(userId, history.lot.toString());
+            await history.populate([
+                { path: 'users', select: 'avatar name _id' },
+                { path: 'messages.from', select: 'avatar name _id' },
+                { path: 'lot', select: 'name images startPrice lotNumber redemptionMethod blitzPrice' },
+            ]);
             return { history };
         }
         catch (error) {

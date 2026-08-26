@@ -48,7 +48,7 @@ export declare class ChatService {
             id: string;
         })[];
     }>;
-    getChatHistory(chatId: string): Promise<{
+    getChatHistory(chatId: string, userId: string): Promise<{
         historyMessage: never[];
         numberLot: null;
         history?: undefined;

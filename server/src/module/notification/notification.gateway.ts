@@ -48,10 +48,15 @@ export class NotificationGateway {
         client.emit('historyNotification', notification)
     }
 
-    async sendNotification(data: {to:string, notification:string, lotId:string}) {
-        const {to,notification, lotId} = data
-        const newNotification = await this.notificationService.createNotification(to, notification, lotId)
+    async sendNotification(data: {to:string, notification:string, lotId:string, from?:string}) {
+        const {to,notification, lotId, from} = data
+        const newNotification = await this.notificationService.createNotification(to, notification, lotId, from)
         this.server.to(to.toString()).emit('newNotification', newNotification)
+    }
+
+    async removeChatNotifications(to: string, lotId: string) {
+        await this.notificationService.removeChatNotifications(to, lotId)
+        this.server.to(to.toString()).emit('chatNotificationsRemoved', { lotId })
     }
           
 

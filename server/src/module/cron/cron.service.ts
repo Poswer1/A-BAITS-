@@ -3,7 +3,6 @@ import { Cron} from '@nestjs/schedule';
 import { LotModel } from "src/models/lot.model";
 import { NotificationGateway } from "../notification/notification.gateway";
 import { PaymentService } from "../payment/payment.service";
-import mongoose from "mongoose";
 import { buildRelistedDate } from '../lot/time.utils';
 
 @Injectable()
@@ -26,37 +25,44 @@ export class CronSerivce {
 
             for (const lot of expiredLots) {
                 try {
-                 if (lot.historyBid.length > 0) {
-                    const winner = lot.historyBid[0] 
+                                 if (lot.historyBid.length > 0) {
+                                        const winner = lot.historyBid[lot.historyBid.length - 1]
                     await this.paymentService.buyLot(winner.author.toString(), {lotId:lot._id.toString(), price: winner.currentBid})
                     } else {
+                                                const now = new Date()
+                                                const durationMs = lot.auctionDurationMs ?? (lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0)
+                                                if (!Number.isFinite(durationMs) || durationMs <= 0) {
+                                                        console.error('Некорректная длительность лота', lot._id)
+                                                        continue
+                                                }
+
                         if(lot.autoReExtension) {
-                            const now = new Date();
-                            const durationMs = lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0
-                            const relistedDate = buildRelistedDate(now, durationMs);
-                            const [hours, minutes] = lot.dateTime?.split(':').map(Number) ?? [lot.date.getHours(), lot.date.getMinutes()]
-
-                            const targetDate = new Date(
-                              Date.UTC(
-                                relistedDate.getUTCFullYear(),
-                                relistedDate.getUTCMonth(),
-                                relistedDate.getUTCDate(),
-                                Number.isFinite(hours) ? hours : 21,
-                                Number.isFinite(minutes) ? minutes : 0,
-                                0,
-                                0,
-                              ),
-                            );
-
-                            lot.date = new Date(targetDate.getTime() - (relistedDate.getTimezoneOffset() * 60 * 1000))
-                            console.log('лот перевыставлен')
+                                                        const nextDate = buildRelistedDate(now, durationMs)
+                                                        const update = await LotModel.updateOne(
+                                                            {
+                                                                _id: lot._id,
+                                                                status: 'Active',
+                                                                date: { $lte: now },
+                                                                'historyBid.0': { $exists: false },
+                                                            },
+                                                            { $set: { date: nextDate, auctionDurationMs: durationMs } },
+                                                        )
+                                                        if (update.modifiedCount === 0) continue
+                                                        console.log('лот перевыставлен')
                         } else {
-                            lot.status = 'Completed'
+                                                        const update = await LotModel.updateOne(
+                                                            {
+                                                                _id: lot._id,
+                                                                status: 'Active',
+                                                                date: { $lte: now },
+                                                                'historyBid.0': { $exists: false },
+                                                            },
+                                                            { $set: { status: 'Completed', auctionDurationMs: durationMs } },
+                                                        )
+                                                        if (update.modifiedCount === 0) continue
                             console.log(`Лот ${lot._id} завершён без ставок`)
                         }
                     }
-
-                    await lot.save()   
 
                     if (lot.historyBid.length === 0 && lot.autoReExtension) {
                     await this.notificationGateWay.sendNotification({to:lot.author.toString(), notification: 'lotRelisted',lotId: lot._id.toString()})

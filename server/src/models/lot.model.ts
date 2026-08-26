@@ -30,6 +30,7 @@ export interface Lot {
   state: string;
   date: Date;
   dateTime: string;
+  auctionDurationMs?: number;
   location: string;
   status: string;
   delivary: string[];
@@ -76,6 +77,7 @@ const LotSchema = new Schema<Lot>({
   status: { type: String, default: 'Active' },
   date: { type: Date, required: true },
   dateTime: { type: String, default: '21:00' },
+  auctionDurationMs: { type: Number },
   location: { type: String, required: true },
   delivary: { type: [String], required: true },
   historyBid: { type: [HistoryBidSchema], default: [] },

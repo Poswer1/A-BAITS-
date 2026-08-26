@@ -39,10 +39,10 @@ let ChatGateway = class ChatGateway {
         return chat;
     }
     async getChatHistory(data, client) {
-        const userId = this.activeUser.get(client.id);
+        const userId = client.data.userId || this.activeUser.get(client.id);
         if (!data.chatId || !userId)
             return console.log('ошибка при получение истории чата');
-        const history = await this.chatService.getChatHistory(data.chatId);
+        const history = await this.chatService.getChatHistory(data.chatId, userId);
         client.emit('getHistory', history);
     }
     async handleConnection(client) {

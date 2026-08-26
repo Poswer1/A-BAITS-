@@ -54,7 +54,7 @@ export declare class LotController {
     deleteLot(id: string, req: Request): Promise<{
         success: boolean;
     }>;
-    resumeLot(id: string): Promise<{
+    resumeLot(id: string, userId: string): Promise<{
         success: boolean;
     }>;
     getMyLots(query: getMyLotsDto, userId: string): Promise<{

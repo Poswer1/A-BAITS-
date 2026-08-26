@@ -74,7 +74,11 @@ export interface TransactionTypes {
 export interface NotificationTypes {
     _id:string,
     to:string,
-    from:string,
+    from?:{
+      _id:string,
+      name:string,
+      avatar:string
+    },
     notification:string,
     createdAt: Date,
     lot?:{

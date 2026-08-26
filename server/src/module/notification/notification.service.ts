@@ -10,6 +10,7 @@ export class NotificationService {
         const notifications = await NotificationModel.find({to: userId})
         .sort({ createdAt: -1 })
         .populate('lot', 'name lotNumber')
+        .populate('from', 'name avatar')
         if(!notifications) return []
         return notifications
     }
@@ -27,7 +28,15 @@ export class NotificationService {
         return notification.some((n:any) => !n.read)
     }
 
-    async createNotification(to:string, notification:string, lotId:string) {
+    async removeChatNotifications(to: string, lotId: string) {
+        await NotificationModel.deleteMany({
+            to,
+            lot: lotId,
+            notification: 'newChatMessage',
+        })
+    }
+
+    async createNotification(to:string, notification:string, lotId:string, from?: string) {
         
         const lot = await LotModel.findById(lotId)
         if(!lot) {
@@ -36,14 +45,28 @@ export class NotificationService {
         }
 
         try {
-          const newNotification = await NotificationModel.create(
-            {
-                to,
-                notification,
-                lot: lot._id,
-                read:false
-            })
+          const newNotification = notification === 'newChatMessage'
+            ? await NotificationModel.findOneAndUpdate(
+                { to, lot: lot._id, notification },
+                {
+                    $set: {
+                        ...(from && { from: new Types.ObjectId(from) }),
+                        read: false,
+                    },
+                },
+                { new: true, upsert: true, setDefaultsOnInsert: true },
+            )
+            : await NotificationModel.create(
+                {
+                    to,
+                    ...(from && { from: new Types.ObjectId(from) }),
+                    notification,
+                    lot: lot._id,
+                    read:false
+                })
+          if (!newNotification) return null
             await newNotification.populate('lot', 'name lotNumber')
+            await newNotification.populate('from', 'name avatar')
             return newNotification
         } catch (error) {
             console.log('ошибка отправки уведомления', error)

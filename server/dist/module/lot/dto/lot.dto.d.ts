@@ -10,8 +10,8 @@ export declare class LotDto {
     autoReExtension?: boolean;
     descriptions: string;
     state: string;
-    date: number;
-    dateTime: string;
+    date?: number;
+    dateTime?: string;
     location: string;
     delivary: string[];
     Advertising?: boolean;

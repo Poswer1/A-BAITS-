@@ -20,7 +20,7 @@ export declare class LotService {
     closeLot(id: string): Promise<{
         status: string;
     }>;
-    resumeLot(id: string): Promise<{
+    resumeLot(id: string, userId: string): Promise<{
         success: boolean;
     }>;
     deleteLot(id: string, role: string): Promise<{

@@ -17,4 +17,6 @@ const ReviewSchema = new Schema<ReviewType>({
     rating: {type:Number, required:true, default: 0},
 }, {timestamps: true})
 
+ReviewSchema.index({ from: 1, to: 1, lot: 1 }, { unique: true })
+
 export const ReviewModel = model<ReviewType>('review', ReviewSchema)

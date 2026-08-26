@@ -53,9 +53,13 @@ let NotificationGateway = class NotificationGateway {
         client.emit('historyNotification', notification);
     }
     async sendNotification(data) {
-        const { to, notification, lotId } = data;
-        const newNotification = await this.notificationService.createNotification(to, notification, lotId);
+        const { to, notification, lotId, from } = data;
+        const newNotification = await this.notificationService.createNotification(to, notification, lotId, from);
         this.server.to(to.toString()).emit('newNotification', newNotification);
+    }
+    async removeChatNotifications(to, lotId) {
+        await this.notificationService.removeChatNotifications(to, lotId);
+        this.server.to(to.toString()).emit('chatNotificationsRemoved', { lotId });
     }
     async handleConnection(client) {
         const cookies = client.handshake.headers.cookie || '';

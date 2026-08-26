@@ -27,6 +27,7 @@ export interface Lot {
     state: string;
     date: Date;
     dateTime: string;
+    auctionDurationMs?: number;
     location: string;
     status: string;
     delivary: string[];

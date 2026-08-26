@@ -9,5 +9,6 @@ const ReviewSchema = new mongoose_1.Schema({
     comment: { type: String, required: true },
     rating: { type: Number, required: true, default: 0 },
 }, { timestamps: true });
+ReviewSchema.index({ from: 1, to: 1, lot: 1 }, { unique: true });
 exports.ReviewModel = (0, mongoose_1.model)('review', ReviewSchema);
 //# sourceMappingURL=review.js.map

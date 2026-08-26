@@ -37,6 +37,11 @@ export default function OpenNotification({setOpen, open, setRead}: OpenNotificat
             setLoading(false)
         })
 
+        socket.on('chatNotificationsRemoved', ({lotId}: {lotId:string}) => {
+            setNotification(prev => prev.filter(item => item.lot?._id !== lotId))
+            socket.emit('checkRead')
+        })
+
         socket.emit('readNotification')
         socket.on('read', () => {
             if(setRead) {
@@ -47,6 +52,7 @@ export default function OpenNotification({setOpen, open, setRead}: OpenNotificat
         return () => {
             socket.off('newNotification')
             socket.off('historyNotification')
+            socket.off('chatNotificationsRemoved')
             socket.off('read')
         }
 
@@ -85,7 +91,9 @@ export default function OpenNotification({setOpen, open, setRead}: OpenNotificat
                     {notification.map((n:NotificationTypes) => (
                         <Link href={`/${lang}/lot/${n?.lot?.lotNumber || '0000'}`} onClick={() => setOpen(false)} key={n._id} className='w-full cursor-pointer border-t border-b border-gray-300 p-2'>
                             <p className='text-gray-800 whitespace-pre-line'>
-                            {t('header', n.notification)}
+                            {n.notification === 'newChatMessage'
+                                ? `Новое сообщение от ${n.from?.name || 'пользователя'}`
+                                : t('header', n.notification)}
                             </p>
                             {n?.lot?.name && (
                             <p className='text-orange-600 font-medium whitespace-pre-line'>
@@ -94,7 +102,7 @@ export default function OpenNotification({setOpen, open, setRead}: OpenNotificat
                             )}
                             <span className='text-sm text-gray-500'>{getRelativeTime(n?.createdAt, lang)}</span>
                             {n?.notification === 'lotPurchased' && (
-                                <Link href={`/${lang}/profile/chat?id=${''}`} className={`${button} w-full !p-1 mt-1`}>Перейти в чат</Link>
+                                <Link href={`/${lang}/profile/chat`} className={`${button} p-1! mt-1`}>Перейти в чат</Link>
                             )}
                         </Link>
                     ))}

@@ -20,11 +20,13 @@ export class LotDto {
   @IsString() descriptions: string;
   @IsString() state: string;
 
+  @IsOptional()
   @IsNumber()
-  date: number;
+  date?: number;
 
+  @IsOptional()
   @IsString()
-  dateTime: string;
+  dateTime?: string;
 
   @IsString() location: string;
 

@@ -81,8 +81,8 @@ export class LotController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('resumeLot/:id')
-  async resumeLot(@Param('id') id:string) {
-    return this.lotService.resumeLot(id)
+  async resumeLot(@Param('id') id:string, @CurrentUser('id') userId:string) {
+    return this.lotService.resumeLot(id, userId)
   }
 
   @UseGuards(JwtAuthGuard)

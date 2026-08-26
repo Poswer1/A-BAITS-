@@ -65,6 +65,7 @@ function page() {
       if(data) {
         setChat(data.history)
         setMessages(data.history.messages)
+        setStatus(data.history.status)
       } else {
         setChat(null)
       }
@@ -85,6 +86,7 @@ function page() {
     return () => {
       socket.off("message")
       socket.off('getHistory')
+      socket.off('newReview')
     }
   }, [socket])
   

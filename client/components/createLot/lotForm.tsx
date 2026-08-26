@@ -231,7 +231,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
   };
 
     const handleCreateOrUpdate = async () => {
-       const validationErrors = {
+      const validationErrors = {
          name: !name ? t('createLot','createLot-name') : '',
          description: !description ? t('createLot','createLot-descriptions') : '',
          stateLot: !stateLot ? t('createLot','createLot-state-title') : '',
@@ -239,8 +239,8 @@ export default function LotForm({mode, initialData}:LotFormProps) {
          delivery: delivery.length === 0 ? t('createLot','create-delivary-title') : '',
          price: !price ? t('createLot','createLot-StartingPrice') : '',
          priceStep: !priceStep ? t('createLot','createLot-step') : '',
-         date: !date ? t('createLot','createLot-Date') : '',
-         time: !time ? t('createLot','createLot-DateTime') : '',
+         date: mode === 'create' && !date ? t('createLot','createLot-Date') : '',
+         time: mode === 'create' && !time ? t('createLot','createLot-DateTime') : '',
          category: !category ? t('createLot','createLot-category') : '',
          subCategory: categoryHasSubcategories && !subCategory ? t('createLot','createLot-selectCategory') : '',
          subSubCategory: selectedSubCategoryHasSubSubcategories && !subSubCategory ? 'Выберите подподкатегорию' : '',
@@ -312,8 +312,10 @@ export default function LotForm({mode, initialData}:LotFormProps) {
         if(autoReExtension)formData.append('autoReExtension', autoReExtension.toString())  
         formData.append('descriptions', description)
         formData.append('state', stateLot)
-        formData.append('date', date.toString())
-        formData.append('dateTime', time)
+        if (mode === 'create') {
+          formData.append('date', date.toString())
+          formData.append('dateTime', time)
+        }
         formData.append('location', location)
         delivery?.forEach((i: string) => formData.append('delivary', i))
         
@@ -423,13 +425,15 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             mode="state"
             error={errors.stateLot}/>
 
-            <DateSections 
-            date={Number(date)} 
-            setDate={handleDateChange} 
-            time={time} 
-            setTime={setTime}
-            dateError={errors.date}
-            timeError={errors.time}/>
+            {mode === 'create' && (
+              <DateSections
+              date={Number(date)}
+              setDate={handleDateChange}
+              time={time}
+              setTime={setTime}
+              dateError={errors.date}
+              timeError={errors.time}/>
+            )}
 
             <LocationSections 
             location={location} 

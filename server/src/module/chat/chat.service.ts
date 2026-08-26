@@ -20,7 +20,7 @@ export class ChatService {
 
         if(!chat) throw new BadRequestException()
 
-        const myInterlocutor = chat.users.filter(u => u._id.toString() !== userId.toString())
+        const myInterlocutor = chat.users.filter(u => u.toString() !== userId.toString())
 
 
         const newMessage = {
@@ -33,6 +33,13 @@ export class ChatService {
 
         chat.messages.push(newMessage)
         await chat.save()
+
+        await this.notificationGateway.sendNotification({
+            to: newMessage.to.toString(),
+            from: userId,
+            notification: 'newChatMessage',
+            lotId: chat.lot.toString(),
+        })
 
         await chat.populate('users', 'avatar name')
         const populatedFrom = chat.users.find(u => u._id.equals(newMessage.from))
@@ -149,13 +156,21 @@ export class ChatService {
         }
     }
 
-    async getChatHistory(chatId:string) {
+    async getChatHistory(chatId:string, userId:string) {
         try {
             const history = await ChatModel.findById(chatId)
-            .populate('users', 'avatar name')
-            .populate('messages.from', 'avatar name _id')
-            .populate('lot', 'name images startPrice lotNumber redemptionMethod blitzPrice')
             if(!history) return {historyMessage: [], numberLot: null};
+            if (!history.users.some(user => user.toString() === userId.toString())) {
+                throw new BadRequestException('NotChatParticipant')
+            }
+
+            await this.notificationGateway.removeChatNotifications(userId, history.lot.toString())
+
+            await history.populate([
+                { path: 'users', select: 'avatar name _id' },
+                { path: 'messages.from', select: 'avatar name _id' },
+                { path: 'lot', select: 'name images startPrice lotNumber redemptionMethod blitzPrice' },
+            ])
             return {history}
         } catch (error:any) {
             throw new BadRequestException('Ошибка при получение истории чата',error)

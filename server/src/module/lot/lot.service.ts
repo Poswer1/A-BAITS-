@@ -36,7 +36,8 @@ export class LotService {
     const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString(); //10000000 — минимальное 8-значное число 90000000 — диапазон до 99999999
 
     const nowDate = new Date()
-    const newDate = buildExpiryDate(nowDate, dto.date, dto.dateTime)
+    const newDate = buildExpiryDate(nowDate, dto.date ?? 1, dto.dateTime)
+    const auctionDurationMs = newDate.getTime() - nowDate.getTime()
 
     const user = await UserModel.findById(userId)
     if(!user) throw new BadRequestException('UserNotFound')
@@ -78,6 +79,7 @@ export class LotService {
               images,
               stockPrice: dto.startPrice,
               date: newDate,
+              auctionDurationMs,
               dateTime: dto.dateTime,
               lotNumber: Nlot
             }
@@ -130,20 +132,30 @@ export class LotService {
       return {status:close.status}
   }
 
-  async resumeLot(id:string) {
-    const lot = await LotModel.findById(id)
+  async resumeLot(id:string, userId:string) {
+    const lot = await LotModel.findOne({ _id: id, author: userId })
     if(!lot) throw new BadRequestException('LotNotFound')
-    const durationMs = lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0
+    const durationMs = lot.auctionDurationMs ?? (lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0)
+    if (!Number.isFinite(durationMs) || durationMs <= 0) {
+      throw new BadRequestException('InvalidLotDuration')
+    }
     const nowDate = new Date()
     const newDate = buildRelistedDate(nowDate, durationMs)
 
     try {
-      await LotModel.findByIdAndUpdate(id, {
+      const resumedLot = await LotModel.findOneAndUpdate({
+        _id: id,
+        author: userId,
+        status: { $in: ['Archive', 'Completed'] },
+        'historyBid.0': { $exists: false },
+      }, {
         $set: {
           status: 'Active',
-          date: newDate
+          date: newDate,
+          auctionDurationMs: durationMs,
         }
-      })
+      }, { returnDocument: 'after' })
+      if (!resumedLot) throw new BadRequestException('LotCannotBeResumed')
       return {success:true}
     } catch (error) {
       throw error
@@ -194,7 +206,13 @@ export class LotService {
       
 
       const nowDate = new Date()
-      const newDate = buildExpiryDate(nowDate, dto.date, dto.dateTime)
+      const hasNewSchedule = dto.date !== undefined || dto.dateTime !== undefined
+      const newDate = hasNewSchedule
+        ? buildExpiryDate(nowDate, dto.date ?? 1, dto.dateTime)
+        : lot.date
+      const auctionDurationMs = hasNewSchedule
+        ? newDate.getTime() - nowDate.getTime()
+        : lot.auctionDurationMs
 
 
     const updateLot = await LotModel.findOneAndUpdate(
@@ -204,7 +222,7 @@ export class LotService {
       },
       {
         ...dto,
-        date: newDate,
+        ...(hasNewSchedule && { date: newDate, auctionDurationMs }),
        images: updatedImages
       }
     )
@@ -395,7 +413,7 @@ export class LotService {
         filter.status = 'Active'
       }
       if(status === 'Archive'){
-        filter['historyBid.author'] = userId
+        filter.winner = userId
         filter.status = 'Archive'
       }
       if(status === 'Completed') {
@@ -600,7 +618,9 @@ export class LotService {
           {
             lotNumber: data.lotId,
             winner: { $exists: false },
-            startPrice: lot.startPrice
+            startPrice: lot.startPrice,
+            status: 'Active',
+            date: { $gt: new Date() },
           },
           {
             $set: { startPrice: minBid },
@@ -645,7 +665,9 @@ export class LotService {
       const update = await LotModel.updateOne(
         {
           lotNumber:data.lotId,
-          winner: { $exists: false }
+          winner: { $exists: false },
+          status: 'Active',
+          date: { $gt: new Date() },
         },
         {
           startPrice:newPrice,
@@ -704,7 +726,8 @@ export class LotService {
         {
           _id: lot._id,
           winner: { $exists: false },
-          status: 'Active'
+          status: 'Active',
+          date: { $gt: new Date() }
         },
         {
           $set: {
@@ -769,7 +792,9 @@ export class LotService {
       {
         _id: lot._id,
         winner: { $exists: false },
-        startPrice: lot.startPrice
+        startPrice: lot.startPrice,
+        status: 'Active',
+        date: { $gt: new Date() }
       },
       {
         $set: {

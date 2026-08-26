@@ -75,7 +75,8 @@ let LotService = class LotService {
         const images = files ? await (0, files_upload_1.ProccessImages)(files, '/uploads/lots/') : [];
         const Nlot = Math.floor(10000000 + Math.random() * 90000000).toString();
         const nowDate = new Date();
-        const newDate = (0, time_utils_1.buildExpiryDate)(nowDate, dto.date, dto.dateTime);
+        const newDate = (0, time_utils_1.buildExpiryDate)(nowDate, dto.date ?? 1, dto.dateTime);
+        const auctionDurationMs = newDate.getTime() - nowDate.getTime();
         const user = await user_model_1.UserModel.findById(userId);
         if (!user)
             throw new common_1.BadRequestException('UserNotFound');
@@ -108,6 +109,7 @@ let LotService = class LotService {
                     images,
                     stockPrice: dto.startPrice,
                     date: newDate,
+                    auctionDurationMs,
                     dateTime: dto.dateTime,
                     lotNumber: Nlot
                 }
@@ -151,20 +153,31 @@ let LotService = class LotService {
             throw new common_1.BadRequestException('errorCloseLot');
         return { status: close.status };
     }
-    async resumeLot(id) {
-        const lot = await lot_model_1.LotModel.findById(id);
+    async resumeLot(id, userId) {
+        const lot = await lot_model_1.LotModel.findOne({ _id: id, author: userId });
         if (!lot)
             throw new common_1.BadRequestException('LotNotFound');
-        const durationMs = lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0;
+        const durationMs = lot.auctionDurationMs ?? (lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0);
+        if (!Number.isFinite(durationMs) || durationMs <= 0) {
+            throw new common_1.BadRequestException('InvalidLotDuration');
+        }
         const nowDate = new Date();
         const newDate = (0, time_utils_1.buildRelistedDate)(nowDate, durationMs);
         try {
-            await lot_model_1.LotModel.findByIdAndUpdate(id, {
+            const resumedLot = await lot_model_1.LotModel.findOneAndUpdate({
+                _id: id,
+                author: userId,
+                status: { $in: ['Archive', 'Completed'] },
+                'historyBid.0': { $exists: false },
+            }, {
                 $set: {
                     status: 'Active',
-                    date: newDate
+                    date: newDate,
+                    auctionDurationMs: durationMs,
                 }
-            });
+            }, { returnDocument: 'after' });
+            if (!resumedLot)
+                throw new common_1.BadRequestException('LotCannotBeResumed');
             return { success: true };
         }
         catch (error) {
@@ -208,13 +221,19 @@ let LotService = class LotService {
             updatedImages = [...existingImages, ...newImages];
         }
         const nowDate = new Date();
-        const newDate = (0, time_utils_1.buildExpiryDate)(nowDate, dto.date, dto.dateTime);
+        const hasNewSchedule = dto.date !== undefined || dto.dateTime !== undefined;
+        const newDate = hasNewSchedule
+            ? (0, time_utils_1.buildExpiryDate)(nowDate, dto.date ?? 1, dto.dateTime)
+            : lot.date;
+        const auctionDurationMs = hasNewSchedule
+            ? newDate.getTime() - nowDate.getTime()
+            : lot.auctionDurationMs;
         const updateLot = await lot_model_1.LotModel.findOneAndUpdate({
             lotNumber: id,
             author: userId
         }, {
             ...dto,
-            date: newDate,
+            ...(hasNewSchedule && { date: newDate, auctionDurationMs }),
             images: updatedImages
         });
         if (!updateLot)
@@ -380,7 +399,7 @@ let LotService = class LotService {
                 filter.status = 'Active';
             }
             if (status === 'Archive') {
-                filter['historyBid.author'] = userId;
+                filter.winner = userId;
                 filter.status = 'Archive';
             }
             if (status === 'Completed') {
@@ -567,7 +586,9 @@ let LotService = class LotService {
             const update = await lot_model_1.LotModel.updateOne({
                 lotNumber: data.lotId,
                 winner: { $exists: false },
-                startPrice: lot.startPrice
+                startPrice: lot.startPrice,
+                status: 'Active',
+                date: { $gt: new Date() },
             }, {
                 $set: { startPrice: minBid },
                 $push: {
@@ -606,7 +627,9 @@ let LotService = class LotService {
         const { authorBid, newPrice } = await this.calculateAuctionState(lot.autoBid, userId, data.bid, lot.stepPrice, lot.startPrice, 'autoBid');
         const update = await lot_model_1.LotModel.updateOne({
             lotNumber: data.lotId,
-            winner: { $exists: false }
+            winner: { $exists: false },
+            status: 'Active',
+            date: { $gt: new Date() },
         }, {
             startPrice: newPrice,
             $push: {
@@ -658,7 +681,8 @@ let LotService = class LotService {
                 const update = await lot_model_1.LotModel.updateOne({
                     _id: lot._id,
                     winner: { $exists: false },
-                    status: 'Active'
+                    status: 'Active',
+                    date: { $gt: new Date() }
                 }, {
                     $set: {
                         winner: userId,
@@ -711,7 +735,9 @@ let LotService = class LotService {
             const update = await lot_model_1.LotModel.updateOne({
                 _id: lot._id,
                 winner: { $exists: false },
-                startPrice: lot.startPrice
+                startPrice: lot.startPrice,
+                status: 'Active',
+                date: { $gt: new Date() }
             }, {
                 $set: {
                     startPrice: newPrice,

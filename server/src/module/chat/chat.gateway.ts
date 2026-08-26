@@ -32,9 +32,9 @@ export class ChatGateway {
 
     @SubscribeMessage('getChatHistory')
     async getChatHistory(@MessageBody() data:{chatId:string}, @ConnectedSocket() client:Socket) {
-        const userId = this.activeUser.get(client.id)
+        const userId = client.data.userId || this.activeUser.get(client.id)
         if(!data.chatId || !userId) return console.log('ошибка при получение истории чата')
-        const history = await this.chatService.getChatHistory(data.chatId)
+        const history = await this.chatService.getChatHistory(data.chatId, userId)
 
         client.emit('getHistory', history) // отдаем текущему пользователю
     }
