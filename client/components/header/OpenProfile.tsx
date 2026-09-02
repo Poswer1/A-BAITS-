@@ -32,7 +32,7 @@ function OpenProfile({setOpenProfile, name, open}: OpenProfile) {
         window.location.reload()
     }
 
-    const linkClass = `${hoverCat} py-2 px-4 w-full`
+    const linkClass = `${hoverCat} flex w-full items-center justify-start gap-1 py-2 px-4 cursor-pointer`
 
   return (
     <>

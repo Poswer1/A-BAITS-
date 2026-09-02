@@ -27,7 +27,6 @@ let cronBlocked = class cronBlocked {
                 }
             });
             if (result.modifiedCount === 0) {
-                console.log('Нет пользователей для разблокировки');
                 return;
             }
             console.log(`Разблокировано пользователей: ${result.modifiedCount}`);

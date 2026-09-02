@@ -79,11 +79,6 @@ function Navbar() {
                                         </Link>
                                 ))}
                             </div>
-
-                            <div className='mt-5 flex items-center gap-2 rounded-2xl bg-orange-600/10 px-3 py-2 text-sm text-slate-600'>
-                                <Clock3 size={16} className='text-gray-500' />
-                                Працюємо щодня з 09:00 до 21:00
-                            </div>
                         </div>
                     </div>
                 )}

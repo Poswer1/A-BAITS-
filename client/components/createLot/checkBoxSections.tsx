@@ -16,9 +16,9 @@ export default function CheckBoxSections({check, setCheck, mode }:checkBoxProps)
     <div className={block}>
         <div className={Blockinput}>
             <div className="flex flex-col md:flex-row justify-start items-start gap-2">
-              <span className="bg-orange-600 text-white py-1 px-2 text-sm rounded-md md:hidden">{t('global','PaidFeature')}</span>
+              {/* <span className="bg-orange-600 text-white py-1 px-2 text-sm rounded-md md:hidden">{t('global','PaidFeature')}</span> */}
               <span className={`${nameInput}`}>{mode === 'autoReExtension' ? t('createLot','create-autoReExtension') : 'Рекалма'}</span>
-              {mode !== 'autoReExtension' && (
+              {mode === 'advertising' && (
                  <span className="bg-orange-600 text-white px-2 text-sm rounded-md hidden md:flex">{t('global','PaidFeature')}</span>
               )}
             </div>
