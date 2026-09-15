@@ -24,6 +24,7 @@ function LotCard({lot, openFrom, select, selectLot}: LotCardProps) {
     const lang = params.lang as string
     const BASE_URL = process.env.NEXT_PUBLIC_URL
     const opensChat = lot.status === 'Buying' || lot.status === 'Sold'
+    const authorId = typeof lot.author === 'string' ? lot.author : lot.author._id
 
     const city = getValueByLang(ListLocation, lot.location, lang)
 
@@ -31,7 +32,7 @@ function LotCard({lot, openFrom, select, selectLot}: LotCardProps) {
         event.preventDefault()
         event.stopPropagation()
 
-        const chatId = await getChatId(lot.author, lot._id)
+        const chatId = await getChatId(authorId, lot._id)
         router.push(`/${lang}/profile/chat/?id=${chatId}`)
     }
 

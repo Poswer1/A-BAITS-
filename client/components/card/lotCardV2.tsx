@@ -28,7 +28,8 @@ export default function LotCardV2({lot, select, selectLot}: LotCardV2Props) {
     const BASE_URL = process.env.NEXT_PUBLIC_URL
     const [myId, setMyId] = useState('')
     const opensChat = lot.status === 'Buying' || lot.status === 'Sold'
-    const isOwner = lot.author === myId
+    const authorId = typeof lot.author === 'string' ? lot.author : lot.author._id
+    const isOwner = authorId === myId
 
     useEffect(() => {
         getUserById().then((data) => setMyId(data._id))
@@ -44,7 +45,7 @@ export default function LotCardV2({lot, select, selectLot}: LotCardV2Props) {
         event.preventDefault()
         event.stopPropagation()
 
-        const chatId = await getChatId(lot.author, lot._id)
+        const chatId = await getChatId(authorId, lot._id)
         router.push(`/${lang}/profile/chat/?id=${chatId}`)
     }
 

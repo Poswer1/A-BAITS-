@@ -160,7 +160,7 @@ export interface LotTypes {
     subCategory:string,
     subSubCategory:string
     name:string,
-    author: string,
+    author: string | LotAuthor,
     lotNumber:string,
     redemptionMethod:string,
     startPrice:number,
@@ -183,4 +183,11 @@ export interface LotTypes {
     Advertising?:boolean,
     createdAt:Date
     winner?:string
+}
+
+export interface LotAuthor {
+  _id: string
+  name: string
+  avatar: string
+  rating: number
 }
