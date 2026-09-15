@@ -42,7 +42,6 @@ export default function InputField<T extends string | number>({
     }
   }
 
-  console.log('в инпуте', minValue)
 
   return (
     <div className={`flex flex-col justify-start items-start w-full`}>

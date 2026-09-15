@@ -16,7 +16,6 @@ export default async function page({params}: pageProps) {
     try {
         blog = await getBlogBySlug(slug)   
     } catch (error:any) {
-        console.log(error.message)
     }
 
   return (

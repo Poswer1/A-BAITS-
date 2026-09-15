@@ -159,7 +159,7 @@ function page() {
       <ChatList setSelectChat={setSelectChat} selectChat={selectChat}/>
       {selectChat && (
         <div className={`${blockClass} ${!selectChat ? 'hidden md:block': 'fixed top-0 left-0 md:static'} h-screen md:h-160 2xl:h-190 flex-col xl:w-2/3 2xl:!w-3/5 !gap-0 `}>
-            <div className='flex justify-between items-center w-full border-b border-b-gray-200 pb-2'>
+            <div className='flex justify-start items-center w-full border-b border-b-gray-200 pb-2'>
               <Link href={`/${lang}/profile/${myInterlocutor?.name}`} className='flex gap-2 justify-center items-center'>
                 <ChevronLeft onClick={handleBack} className='md:hidden'/>
                 <AvatarBlock avatar={myInterlocutor?.avatar || ''} size="50"/>
@@ -168,11 +168,10 @@ function page() {
                   <OlnlineUser id={myInterlocutor?._id || ''}/>
                 </div>
               </Link>
-              <MoreVertical className={hover}/>
             </div>
             {chat?.lot && (
               <Link href={`/${lang}/lot/${chat?.lot?.lotNumber}`} className='flex justify-start items-start w-full border-b border-gray-300 p-2 gap-2 cursor-pointer'>
-                <img src={chat?.lot?.images?.[0] ? `${BASE_URL}${chat?.lot?.images[0]}` : ''} className='w-15 rounded-md'/>
+                <img src={chat?.lot?.images?.[0] ? `${BASE_URL}${chat?.lot?.images[0]}` : ''} className='w-15 h-15 rounded-md'/>
                 <div className='flex flex-col justify-center items-start'>
                   <h1 className='text-gray-500 md:hidden'>{chat?.lot?.name.length >= 20 ? chat?.lot?.name.slice(0, 20) + '...' : chat?.lot?.name}</h1>
                   <h1 className='text-gray-500 hidden md:flex'>{chat?.lot?.name}</h1>

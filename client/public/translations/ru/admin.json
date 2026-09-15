@@ -70,5 +70,6 @@
   "lotArchive":"Архивные",
   "lotAll":"Все",
   "TemporaryBlockTitle": "Выдать временную блокировку",
-  "selectBanDuration": "Выберите длительность блокировки"
+  "selectBanDuration": "Выберите длительность блокировки",
+  "searchLots": "Поиск по названию лота"
 }

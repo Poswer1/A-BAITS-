@@ -19,7 +19,6 @@ export default async function page({searchParams}: {searchParams: {page?:string,
     const cookieStore = await cookies()
     const token = cookieStore.get('token')?.value
     if(!token) {
-      console.log('токен не найден')
       return
     }
     const data = await getAllUser(token, page, sort, order, search) 

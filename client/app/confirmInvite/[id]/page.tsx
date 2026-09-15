@@ -16,10 +16,8 @@ export default async function page({params}:{params:{id:string}}) {
     if(data.role !== 'admin') return null
     const confirm = await confirmInvite(lotId, token)
     if(confirm.success) {
-        console.log('regiredt')
         redirect(`/uk/profile/chat?id=${lotId}`)
     } else {
-        console.log('regiredt main')
         redirect('/uk')
     }
 }

@@ -138,12 +138,12 @@ let LotService = class LotService {
             session.endSession();
         }
     }
-    async closeLot(id) {
+    async closeLot(id, role) {
         const lot = await lot_model_1.LotModel.findById(id);
         if (!lot) {
             throw new common_1.BadRequestException('LotNotFound');
         }
-        if (lot.historyBid && lot.historyBid.length > 0) {
+        if (role !== 'admin' && lot.historyBid && lot.historyBid.length > 0) {
             throw new common_1.BadRequestException('LotAlreadyHaveBids');
         }
         const close = await lot_model_1.LotModel.findByIdAndUpdate(id, {
@@ -153,8 +153,9 @@ let LotService = class LotService {
             throw new common_1.BadRequestException('errorCloseLot');
         return { status: close.status };
     }
-    async resumeLot(id, userId) {
-        const lot = await lot_model_1.LotModel.findOne({ _id: id, author: userId });
+    async resumeLot(id, userId, role) {
+        const ownerFilter = role === 'admin' ? { _id: id } : { _id: id, author: userId };
+        const lot = await lot_model_1.LotModel.findOne(ownerFilter);
         if (!lot)
             throw new common_1.BadRequestException('LotNotFound');
         const durationMs = lot.auctionDurationMs ?? (lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0);
@@ -165,8 +166,7 @@ let LotService = class LotService {
         const newDate = (0, time_utils_1.buildRelistedDate)(nowDate, durationMs);
         try {
             const resumedLot = await lot_model_1.LotModel.findOneAndUpdate({
-                _id: id,
-                author: userId,
+                ...ownerFilter,
                 status: { $in: ['Archive', 'Completed'] },
                 'historyBid.0': { $exists: false },
             }, {
@@ -230,7 +230,7 @@ let LotService = class LotService {
             : lot.auctionDurationMs;
         const updateLot = await lot_model_1.LotModel.findOneAndUpdate({
             lotNumber: id,
-            author: userId
+            ...(role !== 'admin' && { author: userId })
         }, {
             ...dto,
             ...(hasNewSchedule && { date: newDate, auctionDurationMs }),
@@ -570,11 +570,14 @@ let LotService = class LotService {
             throw new common_1.BadRequestException('lotNotFound');
         if (lot.author.toString() === userId.toString())
             throw new common_1.BadRequestException('bidYourself');
-        const lastAuto = (lot.autoBid?.length ?? 0) > 0 ? lot.autoBid[lot.autoBid.length - 1] : null;
-        if (lastAuto && lastAuto.author?.toString() === userId.toString())
-            throw new common_1.BadRequestException('lastAutoBidYourself');
         const hasHistory = (lot.historyBid?.length ?? 0) > 0;
         const minBid = hasHistory ? lot.startPrice + lot.stepPrice : lot.startPrice;
+        const nowDate = new Date();
+        const fiveMinutes = 300000;
+        const differenceDate = lot.date.getTime() - nowDate.getTime();
+        const antiSniperDate = differenceDate <= fiveMinutes && differenceDate >= 0
+            ? new Date(nowDate.getTime() + fiveMinutes)
+            : undefined;
         if (data.bid < minBid)
             throw new common_1.BadRequestException(`Минимальная ставка ${minBid}`);
         const user = await user_model_1.UserModel.findById(userId);
@@ -590,7 +593,10 @@ let LotService = class LotService {
                 status: 'Active',
                 date: { $gt: new Date() },
             }, {
-                $set: { startPrice: minBid },
+                $set: {
+                    startPrice: minBid,
+                    ...(antiSniperDate && { date: antiSniperDate }),
+                },
                 $push: {
                     autoBid: {
                         author: userId,
@@ -631,7 +637,10 @@ let LotService = class LotService {
             status: 'Active',
             date: { $gt: new Date() },
         }, {
-            startPrice: newPrice,
+            $set: {
+                startPrice: newPrice,
+                ...(antiSniperDate && { date: antiSniperDate }),
+            },
             $push: {
                 autoBid: {
                     author: userId,

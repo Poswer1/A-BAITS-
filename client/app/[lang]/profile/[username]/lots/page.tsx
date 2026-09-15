@@ -1,4 +1,5 @@
-import LotCardV2 from '@/components/card/lotCardV2'
+
+import MobileVersion from '@/components/card/mobileVersion'
 import Pagination from '@/components/ui/pagination'
 import { getLotByUser } from '@/services/lot'
 import { LotTypes } from '@/types/types'
@@ -36,10 +37,8 @@ async function page({params, searchParams}: pageProps) {
   return (
     <div className='flex  flex-col w-full'>
       <h1 className='px-2 mb-4 md:p-0'>Найдено: {data?.totalLots}</h1>
-      {data?.allLots.map((lot) => (
-        <LotCardV2 key={lot._id} lot={lot}/>
-      ))}
-      <Pagination total={data.totalLots} maxLot={10}/>
+        <MobileVersion lots={data.allLots}/>
+        <Pagination total={data.totalLots} maxLot={10}/>
     </div>
   )
 }

@@ -112,14 +112,14 @@ export class LotService {
     }
   }
 
-  async closeLot(id:string) {
+  async closeLot(id:string, role:string) {
       const lot = await LotModel.findById(id)
 
       if (!lot) {
         throw new BadRequestException('LotNotFound')
       }
 
-      if (lot.historyBid && lot.historyBid.length > 0) {
+      if (role !== 'admin' && lot.historyBid && lot.historyBid.length > 0) {
         throw new BadRequestException('LotAlreadyHaveBids')
       }
       const close = await LotModel.findByIdAndUpdate(id, 
@@ -132,8 +132,9 @@ export class LotService {
       return {status:close.status}
   }
 
-  async resumeLot(id:string, userId:string) {
-    const lot = await LotModel.findOne({ _id: id, author: userId })
+  async resumeLot(id:string, userId:string, role:string) {
+    const ownerFilter = role === 'admin' ? { _id: id } : { _id: id, author: userId }
+    const lot = await LotModel.findOne(ownerFilter)
     if(!lot) throw new BadRequestException('LotNotFound')
     const durationMs = lot.auctionDurationMs ?? (lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0)
     if (!Number.isFinite(durationMs) || durationMs <= 0) {
@@ -144,8 +145,7 @@ export class LotService {
 
     try {
       const resumedLot = await LotModel.findOneAndUpdate({
-        _id: id,
-        author: userId,
+        ...ownerFilter,
         status: { $in: ['Archive', 'Completed'] },
         'historyBid.0': { $exists: false },
       }, {
@@ -218,7 +218,7 @@ export class LotService {
     const updateLot = await LotModel.findOneAndUpdate(
       {
         lotNumber: id,
-        author: userId
+        ...(role !== 'admin' && { author: userId })
       },
       {
         ...dto,
@@ -596,22 +596,20 @@ export class LotService {
       const lot = await LotModel.findOne({lotNumber: data.lotId})
       if (!lot) throw new BadRequestException('lotNotFound')
       if(lot.author.toString() === userId.toString()) throw new BadRequestException('bidYourself')
-      const lastAuto = (lot.autoBid?.length ?? 0) > 0 ? lot.autoBid[lot.autoBid.length - 1] : null 
-      if (lastAuto && lastAuto.author?.toString() === userId.toString()) throw new BadRequestException('lastAutoBidYourself')
       const hasHistory = (lot.historyBid?.length ?? 0) > 0
       const minBid = hasHistory ? lot.startPrice + lot.stepPrice : lot.startPrice
+      const nowDate = new Date()
+      const fiveMinutes = 300000
+      const differenceDate = lot.date.getTime() - nowDate.getTime()
+      const antiSniperDate = differenceDate <= fiveMinutes && differenceDate >= 0
+        ? new Date(nowDate.getTime() + fiveMinutes)
+        : undefined
 
       if(data.bid < minBid) throw new BadRequestException(`Минимальная ставка ${minBid}`)
       
       const user = await UserModel.findById(userId)
       if(!user) throw new BadRequestException('UserNotFound')
       if (user.balance <= -1) throw new BadRequestException('balanceInTheRed')
-
-      // const lastAutoBid = lot.autoBid?.at(-1)
-
-      // if (lastAutoBid?.author.equals(userId)) {
-      //   throw new BadRequestException('lastAutoBidYourself')
-      // } 
 
       if ((lot.autoBid?.length ?? 0) === 0) {
         const update = await LotModel.updateOne(
@@ -623,7 +621,10 @@ export class LotService {
             date: { $gt: new Date() },
           },
           {
-            $set: { startPrice: minBid },
+            $set: {
+              startPrice: minBid,
+              ...(antiSniperDate && { date: antiSniperDate }),
+            },
             $push: {
               autoBid: {
                 author: userId,
@@ -670,7 +671,10 @@ export class LotService {
           date: { $gt: new Date() },
         },
         {
-          startPrice:newPrice,
+          $set: {
+            startPrice: newPrice,
+            ...(antiSniperDate && { date: antiSniperDate }),
+          },
           $push: {
             autoBid: {
               author:userId,

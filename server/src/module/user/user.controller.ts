@@ -21,7 +21,7 @@ export class UserController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('getUserById')
+  @Get('getUserById') 
   async getUserById(@Query('id') id?: string, @CurrentUser('id') userId?:string) {
     const idUser = id ?? userId
     if(!idUser) throw new BadRequestException('UserNotFound');

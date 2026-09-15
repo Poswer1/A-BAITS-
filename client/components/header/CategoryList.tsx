@@ -105,7 +105,6 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
         const stats = await getCategoryStats()
         setCategoryStats(stats || {})
       } catch (error) {
-        console.error('Ошибка при загрузке статистики категорий:', error)
       }
     }
 

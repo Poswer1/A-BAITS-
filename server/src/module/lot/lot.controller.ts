@@ -67,8 +67,8 @@ export class LotController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('closeLot/:id')
-    async closeLot(@Param('id') id:string) {
-    return this.lotService.closeLot(id)
+    async closeLot(@Param('id') id:string, @Req() req: Request) {
+    return this.lotService.closeLot(id, req.user.role)
   }
 
   @UseGuards(JwtAuthGuard)
@@ -81,8 +81,8 @@ export class LotController {
 
   @UseGuards(JwtAuthGuard)
   @Patch('resumeLot/:id')
-  async resumeLot(@Param('id') id:string, @CurrentUser('id') userId:string) {
-    return this.lotService.resumeLot(id, userId)
+  async resumeLot(@Param('id') id:string, @Req() req: Request, @CurrentUser('id') userId:string) {
+    return this.lotService.resumeLot(id, userId, req.user.role)
   }
 
   @UseGuards(JwtAuthGuard)

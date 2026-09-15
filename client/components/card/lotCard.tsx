@@ -3,13 +3,15 @@
 import { useTranslation } from "@/app/context/TranslationProvider"
 import { hover } from "@/styles/style"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import FavoritesButton from "../ui/favoritesButton"
 import { getValueByLang } from "@/utils/translateValue"
 import ListLocation from '../../data/citiesUK.json'
+import { LotTypes } from "@/types/types"
+import { getChatId } from "@/services/chat"
 
 interface LotCardProps {
-    lot:any
+    lot:LotTypes
     openFrom?:string
     select?:string
     selectLot?:(v:string) => void
@@ -18,11 +20,22 @@ interface LotCardProps {
 function LotCard({lot, openFrom, select, selectLot}: LotCardProps) {
     const { t } = useTranslation()
     const params = useParams()
+    const router = useRouter()
     const lang = params.lang as string
     const BASE_URL = process.env.NEXT_PUBLIC_URL
+    const opensChat = lot.status === 'Buying' || lot.status === 'Sold'
 
     const city = getValueByLang(ListLocation, lot.location, lang)
- 
+
+    const openChat = async (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        event.stopPropagation()
+
+        const chatId = await getChatId(lot.author, lot._id)
+        router.push(`/${lang}/profile/chat/?id=${chatId}`)
+    }
+
+
     return (
         <Link 
             href={select === 'edit' ? `/${lang}/editLot/${lot.lotNumber}` : select ? '' : `/${lang}/lot/${lot.lotNumber}`} 
@@ -47,10 +60,10 @@ function LotCard({lot, openFrom, select, selectLot}: LotCardProps) {
                       {t('lot', 'lot-location')}: <span className="font-bold text-black"><br/>{city || lot.location}</span>
                     </span>
                     <div className="flex flex-col justify-center items-start gap-2 w-full">
-                        <button className={`${hover} p-2 bg-orange-600 rounded-md text-white w-full md:w-auto text-sm md:text-base`}>
-                            {t('lot', 'lot-details-button')}
+                        <button type="button" onClick={opensChat ? openChat : undefined} className={`${hover} p-2 bg-orange-600 rounded-md text-white w-full md:w-auto text-sm md:text-base`}>
+                            {opensChat ? t('lot', 'chat') : t('lot', 'lot-details-button')}
                         </button>
-                        <FavoritesButton id={lot._id}/>
+                         <FavoritesButton id={lot._id}/>
                     </div>
                 </div>
             </div>

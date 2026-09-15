@@ -18,7 +18,6 @@ export default async function page({searchParams}: {searchParams: {search?:strin
     const cookieStore = await cookies()
     const token = cookieStore.get('token')?.value
     if(!token) {
-      console.log('токен не найден')
       return
     }
     const data = await getLotsBySearch(token, search, page, sort, order, status)

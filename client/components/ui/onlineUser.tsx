@@ -5,7 +5,6 @@ export default function Online({id}: {id:string}) {
   const { onlineUser } = useSocketContext()
 
   const isOnline = Array.isArray(onlineUser) && onlineUser.includes(id)
-  console.log(onlineUser)
 
   return (
     <span className="text-sm flex justify-center items-center gap-1">

@@ -5,7 +5,7 @@ import { animationScale, hover } from '@/styles/style'
 import { LotTypes } from '@/types/types'
 import { Archive, ArrowDown, ArrowUp, ArrowUpDown, Edit2, RotateCcw, Search, Trash2, X, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import LotCardV2 from '../card/lotCardV2'
+import MobileVersion from '../card/mobileVersion'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import SearchBlock from '../ui/search'
@@ -164,7 +164,7 @@ export default function Lots({lots, total, currentPage, currentSort, currentOrde
             title={edit ? t('admin', 'editLots') : t('admin', 'lots')} 
             searchValue={searchValue} 
             setSearchValue={setSearchValue} 
-            placeholderSearch={t('admin', 'searchUser')}
+            placeholderSearch={t('admin', 'searchLots')}
             />
             <div className='flex justify-center items-center gap-3 z-150 p-2 md:p-0'>
                 {actionOnTheLot ? (
@@ -215,9 +215,7 @@ export default function Lots({lots, total, currentPage, currentSort, currentOrde
           </button>
         </div>
         <div className="flex flex-col justify-start items-start">
-            {allLots.map((lot) => (
-             <LotCardV2 lot={lot} useFrom='admin' select={actionOnTheLot} selectLot={setId}/>
-            ))}
+          <MobileVersion lots={allLots} select={actionOnTheLot} selectLot={setId}/>
         </div>
         <Pagination total={total} maxLot={20}/>
         {(id && actionOnTheLot !== 'edit') && (

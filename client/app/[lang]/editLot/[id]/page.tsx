@@ -15,13 +15,11 @@ export default async function page({params} : pageProps) {
   const id = param.id as string
 
     if(!id) {
-      console.log('айди не найден')
       return
     }
     const cookieStore = await cookies();
     const token = cookieStore.get('token')?.value;
     if(!token) {
-        console.log('ТОКЕН НЕ ПОЛУЧЕН')
         return
     }
 
@@ -33,7 +31,6 @@ export default async function page({params} : pageProps) {
       mode = 'editAdmin'
     }
     const initialDate = await getLot(id)
-    console.log(mode)
 
   return (
     <LotForm mode={mode} initialData={initialDate}/>

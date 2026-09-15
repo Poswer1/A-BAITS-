@@ -143,7 +143,7 @@ export default function Filter({maxPriceLot}: FilterProps) {
     <div className={`${isOpen ? 'opacity-0' : 'opacity-100'} bg-orange-600 p-1 text-white fixed top-1/2 z-40 md:hidden rounded-r-2xl`} onClick={() => setOpenMobile(true)}>
       <Sliders size={35} className="z-40"/>
     </div>
-    <div className={`${isOpen ? 'w-full top-0 fixed md:static md:w-100 p-5 ' : 'w-0 md:w-20'} md:p-5  z-30 transition-all duration-300 md:duration-500 ease-in-out flex flex-col bg-white justify-start items-start h-screen gap-4 border-r border-gray-300 text-black`}>
+    <div className={`${isOpen ? 'w-full top-0 fixed md:static md:w-100 p-5 pointer-events-auto' : 'w-0 md:w-20 pointer-events-none md:pointer-events-auto'} md:p-5  z-30 transition-all duration-300 md:duration-500 ease-in-out flex flex-col bg-white justify-start items-start h-screen gap-4 border-r border-gray-300 text-black`}>
       <div className={`flex ${isOpen ? 'justify-between' : 'justify-center'} items-center w-full`}>
         {isOpen && (
           <div className="flex flex-col justify-center items-start">

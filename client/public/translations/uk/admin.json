@@ -70,5 +70,6 @@
   "lotArchive": "Архівні",
   "lotAll": "Усі",
   "TemporaryBlockTitle": "Видати тимчасове блокування",
-  "selectBanDuration": "Виберіть тривалість блокування"
+  "selectBanDuration": "Виберіть тривалість блокування",
+  "searchLots": "Пошук за назвою лота"
 }

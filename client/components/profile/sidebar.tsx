@@ -96,7 +96,6 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
       {(mode === 'sidebarMain' && active !== 'Чат') && (
          <Link href={`/${lang}/createLot`} className={`${button} hidden md:flex md:w-[90%] md:mb-[10%]`}>{t('header', 'createLot')}</Link>
       )}
-      
     </div>
   )
 }

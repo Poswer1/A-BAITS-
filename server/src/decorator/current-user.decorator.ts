@@ -7,7 +7,7 @@ export const CurrentUser = createParamDecorator(
 
         if(data === 'id') {
             return user._id
-        }
+        } 
         return user
     }
 )

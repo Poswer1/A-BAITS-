@@ -1,18 +1,15 @@
 'use client'
 import { useTranslation } from "@/app/context/TranslationProvider"
-import { button, overlay} from "@/styles/global"
-import { Archive, Edit2, MousePointerClick, RotateCcw, Trash2 } from "lucide-react"
+import { button } from "@/styles/global"
 import Link from "next/link"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import listLocation from '../../data/citiesUK.json'
 import FavoritesButton from "../ui/favoritesButton"
 import Countdown from "../ui/countdown"
 import { LotTypes } from "@/types/types"
 import { getValueByLang } from "@/utils/translateValue"
-import { hover } from "@/styles/style"
-import { useEffect, useState } from "react"
+import { useEffect, useState, type MouseEvent } from "react"
 import { getUserById } from "@/services/user"
-import ModalConfirm from "../ui/modalConfirm"
 import { getChatId } from "@/services/chat"
 
 interface LotCardV2Props {
@@ -22,14 +19,20 @@ interface LotCardV2Props {
     selectLot?:(v:string) => void
 }
 
-export default function LotCardV2({lot,  useFrom, select, selectLot}: LotCardV2Props) {
+export default function LotCardV2({lot, select, selectLot}: LotCardV2Props) {
 
     const { t } = useTranslation()
     const params = useParams()
+    const router = useRouter()
     const lang = params.lang as string
     const BASE_URL = process.env.NEXT_PUBLIC_URL
     const [myId, setMyId] = useState('')
-    const [chatId, setChatId] = useState('')
+    const opensChat = lot.status === 'Buying' || lot.status === 'Sold'
+    const isOwner = lot.author === myId
+
+    useEffect(() => {
+        getUserById().then((data) => setMyId(data._id))
+    }, [])
 
    const stateList = [
     {name: 'new', lang: t('catalog', 'state-new')},
@@ -37,42 +40,13 @@ export default function LotCardV2({lot,  useFrom, select, selectLot}: LotCardV2P
     {name: 'needsRepairs', lang: t('catalog', 'state-needsRepairs')},
     {name: 'forSpare', lang: t('catalog', 'state-forSpare')}
   ]
-  const isOwner = lot.author.toString() === myId.toString();
+    const openChat = async (event: MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault()
+        event.stopPropagation()
 
-    const buttonInfo = {
-    text: '',
-    link: '',
-    };
-
-    if (lot.status === 'Active') {
-    if (isOwner) {
-        buttonInfo.text = t('lot', 'checkDetails');
-        buttonInfo.link = `/${lang}/lot/${lot.lotNumber}`;
-    } else {
-        buttonInfo.text = t('lot', 'lot-doBid');
-        buttonInfo.link = `/${lang}/lot/${lot.lotNumber}`;
+        const chatId = await getChatId(lot.author, lot._id)
+        router.push(`/${lang}/profile/chat/?id=${chatId}`)
     }
-    } else if (lot.winner) {
-    buttonInfo.text = t('lot', 'chat');
-    buttonInfo.link = `/${lang}/profile/chat/?id=${chatId}`;
-    } else {
-    buttonInfo.text = t('lot', 'checkDetails');
-    buttonInfo.link = `/${lang}/lot/${lot.lotNumber}`;
-    }
-    
-    useEffect(() => {
-        getUserById().then((data) => {
-            setMyId(data._id)
-        })
-    }, [])
-
-    useEffect(() => {
-        if(!lot.winner) return
-        getChatId(lot.winner, lot._id)
-        .then((data) => {
-            setChatId(data)
-        })
-    }, [])
 
     const state = getValueByLang(stateList, lot.state, lang)
     const city = getValueByLang(listLocation, lot.location, lang)
@@ -102,9 +76,9 @@ export default function LotCardV2({lot,  useFrom, select, selectLot}: LotCardV2P
             
             <div className={`${columnClass} p-2 flex-col`}>
                 <h1 className="text-lg hidden md:block">{lot.status !== 'Active' ? t('lot', 'purchasePrice') : t('lot', 'lot-current-bid')}: <span className="text-orange-600 font-bold">{priceLot} ₴</span></h1>
-                <Link href={buttonInfo.link} className={`${button} w-full md:w-auto`}>
-                    {buttonInfo.text}
-                </Link>
+                <button type="button" onClick={opensChat ? openChat : undefined} className={`${button} w-full md:w-auto`}>
+                    {opensChat ? t('lot', 'chat') : lot.status === 'Active' && !isOwner ? t('lot', 'lot-doBid') : t('lot', 'checkDetails')}
+                </button>
                 <FavoritesButton id={lot._id}/>
             </div>
         </div>

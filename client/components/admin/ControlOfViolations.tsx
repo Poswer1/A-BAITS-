@@ -109,7 +109,6 @@ export default function ControlOfViolations({allViolations, total, currentPage, 
             }, 3000)
         } catch (error:any) {
             setError(t('admin', error.message))
-            console.log('error Temporary', error)
             setTimeout(() => {
                 setError('')
             }, 3000)

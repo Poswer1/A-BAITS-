@@ -89,7 +89,6 @@ export default async function page({params, searchParams}: pageProps) {
     try {
         allLots = await getFilterLot(category, subCategory, subSubCategory, city, search.minPrice, search.maxPrice, state, search.sort, searchValue, page)
     } catch (error) {
-        console.log('лотов нету', error)
         allLots = []
     }
 

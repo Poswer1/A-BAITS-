@@ -48,13 +48,13 @@ export declare class LotController {
     getNewLot(): Promise<any[]>;
     getLotFrom1UAH(): Promise<any[]>;
     getPopularLot(): Promise<any[]>;
-    closeLot(id: string): Promise<{
+    closeLot(id: string, req: Request): Promise<{
         status: string;
     }>;
     deleteLot(id: string, req: Request): Promise<{
         success: boolean;
     }>;
-    resumeLot(id: string, userId: string): Promise<{
+    resumeLot(id: string, req: Request, userId: string): Promise<{
         success: boolean;
     }>;
     getMyLots(query: getMyLotsDto, userId: string): Promise<{

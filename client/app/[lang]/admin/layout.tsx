@@ -11,7 +11,6 @@ async function layout({children}: {children: React.ReactNode}) {
     return
   }
   const role = await getRoleUser(token) 
-  console.log(role)
   if (role.role !== 'admin') return null
 
   return (

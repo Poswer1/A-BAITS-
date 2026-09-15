@@ -160,13 +160,7 @@ export interface LotTypes {
     subCategory:string,
     subSubCategory:string
     name:string,
-    author: {
-      _id: string
-      name: string
-      avatar: string
-      email:string
-      rating: number
-    }
+    author: string,
     lotNumber:string,
     redemptionMethod:string,
     startPrice:number,

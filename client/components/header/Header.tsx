@@ -59,7 +59,6 @@ function Header() {
                 setAuth(false);
                 setName('');
                 setAvatar('');
-                console.error('Помилка при отриманні користувача:', err.message);
             }
         };
 

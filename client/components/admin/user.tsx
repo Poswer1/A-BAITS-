@@ -124,7 +124,6 @@ export default  function User({listUser, total, currentPage, currentSort, curren
         setMessage('')
       }, 3000)
     } catch (error) {
-      console.error('Error updating balance:', error)
       setError(t('admin', 'errorUpdateBalance'))
       setTimeout(() => {
         setMessage('')
@@ -162,7 +161,6 @@ export default  function User({listUser, total, currentPage, currentSort, curren
           }, 3000)
           } catch (error:any) {
             setError(t('admin', error.message))
-            console.log('error Temporary', error)
             setTimeout(() => {
               setError('')
             }, 3000)

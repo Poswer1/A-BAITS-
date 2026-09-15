@@ -84,6 +84,16 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
       active = t('profile', 'buying')
     }
 
+    const names:Record<string, string>={
+      Active:t('profile', 'active'),
+      Archive:t('profile', 'archived'),
+      Favorite:t('profile', 'favorites'),
+      Completed:t('profile', 'completed'),
+      Sold:t('profile', 'sold'),
+      Buying: t('profile', 'buying')
+    }
+
+
     useEffect(() => {
       if (data?.allLots) {
         setAllLots(data.allLots);
@@ -172,7 +182,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
   return (
     <div className={`${pageContainerClass} min-h-0`}> 
        <h1 className="text-xl 2xl:text-2xl lg:text-xl p-2 py-4 md:p-0 md:mb-2">
-        {mode === 'buy' ? t('profile', 'buy') : t('profile', 'sell')} | {slug === 'Active' ? t('profile', 'active') : slug === 'Archive' ? t('profile', 'archived') : slug === 'Completed' ? t('profile', 'completed') : t('profile', 'sold')} {t('global', 'lot')}
+        {mode === 'buy' ? t('profile', 'buy') : t('profile', 'sell')} | {names[slug]}
       </h1>
         <div className="w-full flex flex-col justify-start items-start gap-4">
           <Sidebar mode={mode} active={active}/>

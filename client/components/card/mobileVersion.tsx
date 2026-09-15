@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from "react"
 import LotCard from "./lotCard"
 import LotCardV2 from "./lotCardV2"
@@ -15,7 +17,6 @@ const [mobile, setMobile] = useState<boolean | null>(null)
 
 useEffect(() => {
     const checkMobile = () => {
-      console.log("window", window.innerWidth)
       setMobile(window.innerWidth < 768)
     }
 
@@ -32,15 +33,14 @@ useEffect(() => {
   return (
     <>
     {mobile === null ? null : (
-              mobile ? (
-                
-                  <div className="w-full grid grid-cols-2 gap-2">
-                    {lots.map((l) => (
-                      <LotCard key={l._id} lot={l} openFrom='catalog' select={select} selectLot={selectLot}/>
-                    ))}
+        mobile ? (
+          <div className="w-full grid grid-cols-2 gap-2">
+            {lots.map((l) => (
+                <LotCard key={l._id} lot={l} openFrom='catalog' select={select} selectLot={selectLot}/>
+              ))}
                   
-                </div>
-              ) : (
+            </div>
+            ) : (
                 lots.map((l) => (
                   <LotCardV2 key={l._id} lot={l} select={select} selectLot={selectLot}/>
                 ))
