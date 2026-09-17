@@ -41,7 +41,7 @@ export interface ViolationsTypes {
     _id:string
     ip:string
   }
-  lot: {
+  lot?: {
     images:string[],
     name:string,
     lotNumber:string

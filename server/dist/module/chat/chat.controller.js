@@ -26,6 +26,9 @@ let ChatController = class ChatController {
     async getMyChat(userId) {
         return this.chatService.getMyChat(userId);
     }
+    async createSupportChat(userId) {
+        return this.chatService.createSupportChat(userId);
+    }
     async getChatId(myId, userId, lotId) {
         return this.chatService.getChatId(myId, userId, lotId);
     }
@@ -45,6 +48,14 @@ __decorate([
     __metadata("design:paramtypes", [String]),
     __metadata("design:returntype", Promise)
 ], ChatController.prototype, "getMyChat", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)('createSupportChat'),
+    __param(0, (0, current_user_decorator_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ChatController.prototype, "createSupportChat", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Get)('getChatId/:userId/:lotId'),

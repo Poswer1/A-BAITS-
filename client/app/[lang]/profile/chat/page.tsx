@@ -46,6 +46,7 @@ function page() {
   const [status, setStatus] = useState('')
   const chatRef = useRef<HTMLDivElement>(null);
   const {status: statusUser} = GetStatusUser()
+  const isSupportChat = chat?.type === 'support'
 
   useEffect(() => {
     if(!selectIdChat) return
@@ -181,7 +182,7 @@ function page() {
             )} 
 
             <div ref={chatRef} className='flex flex-col justify-start items-start overflow-y-auto max-h-full h-full w-full mt-2 noScrollbar gap-2'>
-                <div className={`w-full flex flex-col justify-center items-center text-center`}>
+              {!isSupportChat && <div className={`w-full flex flex-col justify-center items-center text-center`}>
                    <Image src={'/images/chat/deal.png'} alt='' width={200} height={200} className='w-[200px]'/>
                    <h1 className='text-xl'>{t('chat', 'successDeal1')}</h1>
                    <p className='w-full text-sm md:text-base md:w-2/3'>{t('chat', 'successDeal2')}</p>
@@ -189,7 +190,7 @@ function page() {
                     <Link href={`/${lang}/review/${selectChat}`} className={`${button} w-full md:w-auto`}>{t('chat', 'ExchangeReview')}</Link>
                     <button onClick={handleInviteModer} className={`${buttonWithoutBg} w-full md:w-auto`}>{t('chat', 'InviteModer')}</button>
                   </div>
-                </div>
+                </div>}
               {messages?.map((msg:MessageType, index) => {
 
                 const isMyMessage = msg.from?._id?.toString() === myInfo?._id?.toString();

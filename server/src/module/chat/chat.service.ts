@@ -4,6 +4,7 @@ import { Types } from "mongoose";
 import { EmailService } from "../email/email.service";
 import { NotificationService } from "../notification/notification.service";
 import { NotificationGateway } from "../notification/notification.gateway";
+import { UserModel } from "src/models/user.model";
 
 @Injectable()
 export class ChatService {
@@ -38,7 +39,7 @@ export class ChatService {
             to: newMessage.to.toString(),
             from: userId,
             notification: 'newChatMessage',
-            lotId: chat.lot.toString(),
+            ...(chat.lot && { lotId: chat.lot.toString() }),
         })
 
         await chat.populate('users', 'avatar name')
@@ -47,6 +48,29 @@ export class ChatService {
         ...newMessage,
         from: populatedFrom || {_id: newMessage.from} 
         }
+    }
+
+    async createSupportChat(userId:string) {
+        const admin = await UserModel.findOne({ role: 'admin' }).select('_id')
+        if (!admin) throw new BadRequestException('SupportAdminNotFound')
+
+        const existingChat = await ChatModel.findOne({
+            type: 'support',
+            status: 'Active',
+            users: { $all: [new Types.ObjectId(userId), admin._id], $size: 2 },
+        }).select('_id')
+
+        if (existingChat) return { chatId: existingChat._id.toString() }
+
+        const chat = await ChatModel.create({
+            users: [new Types.ObjectId(userId), admin._id],
+            type: 'support',
+            status: 'Active',
+            messages: [],
+            reviews: [],
+        })
+
+        return { chatId: chat._id.toString() }
     }
     private inviteCooldown = new Map<string, number>();
     async inviteAdmin(id:string) {
@@ -164,7 +188,9 @@ export class ChatService {
                 throw new BadRequestException('NotChatParticipant')
             }
 
-            await this.notificationGateway.removeChatNotifications(userId, history.lot.toString())
+            if (history.lot) {
+                await this.notificationGateway.removeChatNotifications(userId, history.lot.toString())
+            }
 
             await history.populate([
                 { path: 'users', select: 'avatar name _id' },

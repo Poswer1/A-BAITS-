@@ -131,6 +131,16 @@ export async function deleteLot(id:string) {
     return dataReturn(res)
 }
 
+export async function completeLot(id:string) {
+    const res = await fetch(`${BASE_URL}/lot/completeLot/${id}`, {
+        method: 'PATCH',
+        headers: authHeaders(),
+        credentials: 'include',
+    })
+
+    return dataReturn(res)
+}
+
 export async function resumeLot(id:string) {
     const res = await fetch(`${BASE_URL}/lot/resumeLot/${id}`, {
         method: 'PATCH',

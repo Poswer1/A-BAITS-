@@ -27,8 +27,9 @@ function SearchValue({setOpenSearch, search, setSearch}: {setOpenSearch: (type: 
 
     const filterProducts = useMemo(() => {
         return allLots.filter(p =>
-            p.name.toLowerCase().includes(search.toLowerCase()) ||
-            p.lotNumber.toLowerCase().includes(search.toLowerCase())
+            p.status === 'Active' &&
+            (p.name.toLowerCase().includes(search.toLowerCase()) ||
+            p.lotNumber.toLowerCase().includes(search.toLowerCase()))
         )
     }, [allLots, search])
 
@@ -37,7 +38,7 @@ function SearchValue({setOpenSearch, search, setSearch}: {setOpenSearch: (type: 
     <>
         <div className={`${animationOpacity} bg-gray-100 w-full max-h-100 overflow-y-auto p-2 rounded-md absolute top-12 z-80 flex flex-col justify-start items-start gap-2 custom-scrollbar`} onClick={(e) => e.stopPropagation()}>
             {filterProducts.map((p) => (
-                <Link href={`/${params.lang}/${p.name}`} onClick={() => {setOpenSearch(false), setSearch('')}} className={`${animationOpacity} flex flex-col justify-center items-start cursor-pointer`}>
+                <Link key={p.lotNumber} href={`/${params.lang}/${p.name}`} onClick={() => { setOpenSearch(false); setSearch('') }} className={`${animationOpacity} flex flex-col justify-center items-start cursor-pointer`}>
                   <span className={`${hoverSub} text-black`}>{p.name}</span>
                   <p className="text-sm text-gray-500">№ лота {p.lotNumber}</p>
                 </Link>

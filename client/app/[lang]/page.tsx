@@ -15,7 +15,7 @@ export default async function Home() {
 
   return (
 
-    <div className="flex flex-col justify-start items-center gap-10 min-h-screen">
+    <div className="flex flex-col justify-start items-center gap-10 min-h-screen overflow-x-hidden">
         <Banner />
         <Lots allLot={topLot} mode="topLot"/>
         <Lots allLot={lotFrom1UAH} mode="1hryvnia"/>

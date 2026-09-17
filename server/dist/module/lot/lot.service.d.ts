@@ -26,6 +26,10 @@ export declare class LotService {
     deleteLot(id: string, role: string): Promise<{
         success: boolean;
     }>;
+    completeLot(id: string, userId: string): Promise<{
+        success: boolean;
+        status: string;
+    }>;
     updateLot(dto: LotDto, id: string, files: Express.Multer.File[], preview: string[], userId: string, role: string): Promise<{
         success: boolean;
     }>;

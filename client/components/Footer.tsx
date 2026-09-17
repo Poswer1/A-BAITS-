@@ -5,10 +5,11 @@ import { hover } from "@/styles/style"
 import Image from "next/image"
 import Link from "next/link"
 import { useParams } from "next/navigation"
+import SupportChatButton from './ui/supportChatButton'
 
 function Footer() {
 
-  const column = 'flex flex-col justify-center items-start text-white w-full md:w-1/5 gap-2 p-10'
+  const column = 'flex flex-col justify-center items-start text-white w-full md:w-1/5 gap-2 p-5 md:p-10'
 
   const params = useParams()
   const { t } = useTranslation()
@@ -19,7 +20,8 @@ function Footer() {
       text: t('footer', 'footer-info'), 
       link: [
         { text: t('footer', 'footer-info-forum'), link: `https://t.me/auctionbaitsUA` },
-        { text: t('footer', 'footer-info-articles'), link: `/${lang}/blog` }
+        { text: t('footer', 'footer-info-articles'), link: `/${lang}/blog` },
+        { text: 'Правила', link: `/${lang}/ruls` },
       ]
     },
     {
@@ -40,9 +42,9 @@ function Footer() {
     {
       text: t('footer', 'footer-contacts'), 
       link: [
-        { text: t('footer', 'footer-contacts-phone'), link: '' },
-        { text: t('footer', 'footer-contacts-email'), link: '' },
-        { text: t('footer', 'footer-contacts-address'), link: '' }
+        { text: t('footer', 'footer-contacts-phone'), link: 'tel:0630799193' },
+        { text: t('footer', 'footer-contacts-email'), link: 'mailto:infoabaits@gmail.com' },
+        { text: t('footer', 'footer-contacts-telegram'), link: 'https://t.me/auctionbaitsUA' }
       ]
     },
   ]
@@ -58,7 +60,11 @@ function Footer() {
           <div className={`${column}`} key={idx}>
             <h1 className="font-bold text-orange-600">{item.text}</h1>
             {item.link.map((linkItem, linkIdx) => (
-              <Link href={linkItem.link} className={`${hover} 2xl:text-base lg:text-sm`} key={linkIdx}>{linkItem.text}</Link>
+              linkItem.text === t('footer', 'footer-support-contact') ? (
+                <SupportChatButton lang={lang} className={`${hover} 2xl:text-base lg:text-sm`} key={linkIdx}>{linkItem.text}</SupportChatButton>
+              ) : (
+                <Link href={linkItem.link} className={`${hover} 2xl:text-base lg:text-sm`} key={linkIdx}>{linkItem.text}</Link>
+              )
             ))}
           </div>
         ))}

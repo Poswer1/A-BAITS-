@@ -60,8 +60,8 @@ function LotCard({lot, openFrom, select, selectLot}: LotCardProps) {
                     <span className="text-black text-sm md:text-base">
                       {t('lot', 'lot-location')}: <span className="font-bold text-black"><br/>{city || lot.location}</span>
                     </span>
-                    <div className="flex flex-col justify-center items-start gap-2 w-full">
-                        <button type="button" onClick={opensChat ? openChat : undefined} className={`${hover} p-2 bg-orange-600 rounded-md text-white w-full md:w-auto text-sm md:text-base`}>
+                    <div className="flex flex-col justify-center items-start gap-2 xl:w-full 2xl:w-1/2">
+                        <button type="button" onClick={opensChat ? openChat : undefined} className={`${hover} p-2 bg-orange-600 rounded-md text-white w-full text-sm md:text-base`}>
                             {opensChat ? t('lot', 'chat') : t('lot', 'lot-details-button')}
                         </button>
                          <FavoritesButton id={lot._id}/>

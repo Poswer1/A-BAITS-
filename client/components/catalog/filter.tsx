@@ -35,7 +35,7 @@ export default function Filter({maxPriceLot}: FilterProps) {
     {name: 'LowToUp', ru:'Цена по возрастанию', uk: 'Ціна за зростанням'},
     {name: 'UpToLow', ru:'Цена по убыванию', uk: 'Ціна за спаданням'},
     {name: 'newFirst', ru:'Сначала новые', uk: 'Спочатку нові'},
-    {name: 'oldFirst', ru:'Сначала старые', uk: 'Спочатку старі'},
+    {name: 'oldFirst', ru:'Сначала заканчивающиеся', uk: 'Спочатку ті, що закінчуються'},
     {name: 'moreBids', ru:'Больше ставок', uk: 'Більше ставок'},
     {name: 'lessBids', ru:'Меньше ставок', uk: 'Менше ставок'},
   ]
@@ -148,7 +148,6 @@ export default function Filter({maxPriceLot}: FilterProps) {
         {isOpen && (
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-black text-lg">{t('catalog','Filter')}</h1>
-            <span className={`text-sm text-orange-600 ${hover}`}>{t('catalog', 'resetFilter')}</span>
           </div>
         )}
         <Sliders className={` ${isOpen ? 'flex' : 'hidden md:flex'} text-orange-600 cursor-pointer`} size={25} onClick={() => {setOpen(prev => !prev), setOpenMobile(prev => !prev)}}/>

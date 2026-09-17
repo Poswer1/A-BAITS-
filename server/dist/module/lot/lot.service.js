@@ -146,6 +146,9 @@ let LotService = class LotService {
         if (role !== 'admin' && lot.historyBid && lot.historyBid.length > 0) {
             throw new common_1.BadRequestException('LotAlreadyHaveBids');
         }
+        if (role !== 'admin' && lot.status !== 'Completed') {
+            throw new common_1.BadRequestException('OnlyCompletedLotCanBeArchived');
+        }
         const close = await lot_model_1.LotModel.findByIdAndUpdate(id, {
             $set: { status: 'Archive' }
         }, { returnDocument: 'after' });
@@ -167,7 +170,7 @@ let LotService = class LotService {
         try {
             const resumedLot = await lot_model_1.LotModel.findOneAndUpdate({
                 ...ownerFilter,
-                status: { $in: ['Archive', 'Completed'] },
+                status: 'Completed',
                 'historyBid.0': { $exists: false },
             }, {
                 $set: {
@@ -189,9 +192,8 @@ let LotService = class LotService {
         if (!lot) {
             throw new common_1.BadRequestException('LotNotFound');
         }
-        if (role !== 'admin' && lot.historyBid && lot.historyBid.length > 0) {
-            throw new common_1.BadRequestException('LotAlreadyHaveBids');
-        }
+        if (role !== 'admin')
+            throw new common_1.BadRequestException('AdminOnlyLotDelete');
         if (lot.images && lot.images.length > 0) {
             for (const image of lot.images) {
                 try {
@@ -206,12 +208,25 @@ let LotService = class LotService {
         await lot.deleteOne();
         return { success: true };
     }
+    async completeLot(id, userId) {
+        const result = await lot_model_1.LotModel.updateOne({
+            _id: id,
+            author: userId,
+            status: 'Active',
+            'historyBid.0': { $exists: false },
+        }, { $set: { status: 'Completed' } });
+        if (result.modifiedCount === 0)
+            throw new common_1.BadRequestException('LotCannotBeCompleted');
+        return { success: true, status: 'Completed' };
+    }
     async updateLot(dto, id, files, preview, userId, role) {
         const lot = await lot_model_1.LotModel.findOne({
             lotNumber: id,
         });
         if (!lot)
             throw new common_1.BadRequestException('LotNotFound');
+        if (role !== 'admin' && lot.status !== 'Active')
+            throw new common_1.BadRequestException('LotCannotBeEdited');
         if ((lot?.historyBid?.length ?? 0) > 0 && role !== 'admin')
             throw new common_1.BadRequestException('LotAlreadyHaveBids');
         const newImages = files ? await (0, files_upload_1.ProccessImages)(files, '/uploads/lots/') : [];

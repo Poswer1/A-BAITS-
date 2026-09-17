@@ -54,6 +54,10 @@ export declare class LotController {
     deleteLot(id: string, req: Request): Promise<{
         success: boolean;
     }>;
+    completeLot(id: string, userId: string): Promise<{
+        success: boolean;
+        status: string;
+    }>;
     resumeLot(id: string, req: Request, userId: string): Promise<{
         success: boolean;
     }>;

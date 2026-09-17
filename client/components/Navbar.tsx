@@ -7,6 +7,7 @@ import { ChevronDown, Clock3, Mail, Phone, Send, X } from 'lucide-react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useState } from 'react';
+import SupportChatButton from './ui/supportChatButton';
 
 
 function Navbar() {
@@ -18,9 +19,9 @@ function Navbar() {
     const [openContact, setOpenContact] = useState(false)
 
     const contacts = [
-        {type:'Telegram', text: '@telegram', link: ''},
-        {type:'Телефон', text: '+38 (000) 000-00-00', link: ''},
-        {type:'Email', text: 'support@gmail.com', link: ''}
+        {type:'Telegram', text: 'auctionbaitsUA', link: 'https://t.me/auctionbaitsUA'},
+        {type:'Телефон', text: '0630799193', link: 'tel:0630799193'},
+        {type:'Email', text: 'infoabaits@gmail.com', link: 'mailto:infoabaits@gmail.com'}
     ]
 
 
@@ -31,6 +32,7 @@ function Navbar() {
             <Link href={`/${lang}/allLots?maxPrice=1`} className={hoverLink}>{t('navbar','lotfrom1UAH')}</Link>
             <Link href={`/${lang}/allLots?sort=moreBids`} className={hoverLink}>Топ {t('global','lot')}</Link>
             <Link href={`/${lang}/blog`} className={hoverLink}>{t('navbar','news')}</Link>
+            <Link href={`/${lang}/rules`} className={hoverLink}>{t('navbar','rulesLink')}</Link>
             <Link href='https://t.me/auctionbaitsUA' target="_blank" rel="noopener noreferrer" className={hoverLink}>Наш форум</Link>
                 <span onClick={() => setOpenContact(prev => !prev)} className={`${hoverLink} flex justify-center items-center gap-2`}>{t('navbar','contact')} <ChevronDown className={arrowActive(openContact)}/></span>
                 {openContact && (
@@ -45,8 +47,9 @@ function Navbar() {
                             </div>
 
                             <div className='space-y-3'>
-                                {contacts.map((contact, index) => (
+                                {contacts.map((contact) => (
                                     <Link
+                                        key={contact.type}
                                         href={`${contact.link}`}
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -82,7 +85,7 @@ function Navbar() {
                         </div>
                     </div>
                 )}
-            <span className={`${hover} p-2 bg-gray-200/30 rounded-md text-white`}>{t('navbar','support')}</span>
+            <SupportChatButton lang={lang} className={`${hover} p-2 bg-gray-200/30 rounded-md text-white`}>{t('navbar','support')}</SupportChatButton>
         </div>
     </div>
   )

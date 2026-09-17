@@ -75,7 +75,7 @@ export default function OpenNotification({setOpen, open, setRead}: OpenNotificat
     const modalRef = useClickOutside(setOpen)
 
   return (
-    <div ref={modalRef} className={`transition-all duration-500 ${open ? 'h-2/3' : 'h-0'} flex flex-col w-full md:w-150 justify-start overflow-hidden items-start custom-scrollbar bg-white fixed top-[9%] md:top-[10%] 2xl:top-[7%] right-0 md:right-10 gap-2 z-30 text-black shadow-xl md:rounded-xl`}>
+    <div ref={modalRef} className={`transition-all duration-500 ${open ? 'h-screen md:h-2/3' : 'h-0'} flex flex-col w-full md:w-150 justify-start overflow-hidden items-start custom-scrollbar bg-white fixed top-[9%] md:top-[10%] 2xl:top-[7%] right-0 md:right-10 gap-2 z-30 text-black shadow-xl md:rounded-xl`}>
         {loading ? (
             <h1>{t('header', 'loading')}</h1>
         ): (
@@ -85,11 +85,13 @@ export default function OpenNotification({setOpen, open, setRead}: OpenNotificat
                    <X className='flex md:hidden' onClick={() => setOpen(false)}/>
                 </div>
                 {notification.length === 0 && (
-                    <h1>{t('header', 'notificationNoYet')}</h1>
+                    <div className='flex w-full justify-center items-center p-5'>
+                       <h1>{t('header', 'notificationNoYet')}</h1>
+                    </div>
                 )}
                 <div className='flex flex-col justify-start items-start w-full max-h-[85vh] md:max-h-full overflow-y-auto'>
                     {notification.map((n:NotificationTypes) => (
-                        <Link href={`/${lang}/lot/${n?.lot?.lotNumber || '0000'}`} onClick={() => setOpen(false)} key={n._id} className='w-full cursor-pointer border-t border-b border-gray-300 p-2'>
+                        <Link href={`/${lang}/lot/${n?.lot?.lotNumber || '0000'}`} onClick={() => setOpen(false)} key={n._id} className='w-full cursor-pointer border-t border-b border-gray-200 p-2'>
                             <p className='text-gray-800 whitespace-pre-line'>
                             {n.notification === 'newChatMessage'
                                 ? `Новое сообщение от ${n.from?.name || 'пользователя'}`

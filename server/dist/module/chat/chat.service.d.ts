@@ -17,6 +17,9 @@ export declare class ChatService {
         status: string;
         createdAt: Date;
     }>;
+    createSupportChat(userId: string): Promise<{
+        chatId: string;
+    }>;
     private inviteCooldown;
     inviteAdmin(id: string): Promise<{
         success: boolean;

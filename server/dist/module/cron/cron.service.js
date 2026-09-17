@@ -26,6 +26,10 @@ let CronSerivce = class CronSerivce {
     async checkLot() {
         try {
             const nowDate = new Date();
+            const soldThreshold = new Date(nowDate.getTime() - 14 * 24 * 60 * 60 * 1000);
+            const archiveThreshold = new Date(nowDate.getTime() - 90 * 24 * 60 * 60 * 1000);
+            await lot_model_1.LotModel.updateMany({ status: 'Sold', date: { $lte: soldThreshold } }, { $set: { status: 'Archive' } });
+            await lot_model_1.LotModel.deleteMany({ status: 'Archive', updatedAt: { $lte: archiveThreshold } });
             const expiredLots = await lot_model_1.LotModel.find({
                 date: { $lte: nowDate },
                 status: 'Active'

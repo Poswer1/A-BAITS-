@@ -27,7 +27,7 @@ export default function ModalConfirm({handleAction, handleClose, title, alert, y
             </div> 
             <div className="flex w-full border-t border-gray-300">
                 <button onClick={handleClose} className={`${hover} bg-gray-200 w-full rounded-bl-xl p-2`}>{t('profile', 'noIdontWant')}</button>
-                <button onClick={() => {handleAction(), handleClose()}} className={`${hover} bg-red-500 text-white w-full rounded-br-xl border-l p-2`}>{yesButton}</button>
+                <button onClick={async () => { await handleAction(); handleClose() }} className={`${hover} bg-red-500 text-white w-full rounded-br-xl border-l p-2`}>{yesButton}</button>
             </div>
         </div>
     </div>

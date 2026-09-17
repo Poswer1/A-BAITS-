@@ -22,8 +22,7 @@ export default function SidebarAdmin() {
     { name: t('admin', 'Notifications'), icon: <Bell />, link: '/notifications' },
     { name: t('admin', 'Statistics'), icon: <BarChart />, link: '/statistics' },
     { name: t('admin', 'ControlOfViolations'), icon: <ShieldCheck/>, link: '/controlOfViolations' },
-    { name: t('admin', 'Logging'), icon: <Terminal/>, link: '/logging' },
-    { name: t('admin', 'Settings'), icon: <Settings />, link: '/settings' }
+    { name: t('admin', 'Logging'), icon: <Terminal/>, link: '/logging' }
   ]
 
 

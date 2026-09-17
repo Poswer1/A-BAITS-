@@ -4,12 +4,11 @@ import { useTranslation } from "@/app/context/TranslationProvider"
 import { lotListClass, pageContainerClass } from "@/styles/profile/profile"
 import Sidebar from "./sidebar"
 import { LotTypes } from "@/types/types"
-import LotCardV2 from "../card/lotCardV2"
 import Pagination from "../ui/pagination"
-import { Archive, Edit2, RotateCcw, Trash2, X, XCircle } from "lucide-react"
+import { Archive, BadgeCheck, Edit2, RotateCcw, X } from "lucide-react"
 import { hover } from "@/styles/style"
 import { useEffect, useState } from "react"
-import { closeLot, deleteLot, resumeLot } from "@/services/lot"
+import { closeLot, completeLot, resumeLot } from "@/services/lot"
 import Toast from "../ui/toast"
 import ModalConfirm from "../ui/modalConfirm"
 import SelectionField from "../ui/selectionField"
@@ -53,8 +52,8 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
       },
       {
         name: 'Oldest',
-        ru: 'Сначала старые',
-        uk: 'Спочатку старі'
+        ru: 'Сначала заканчивающиеся',
+        uk: 'Спочатку ті, що закінчуються'
       },
       {
         name: 'moreBids',
@@ -126,17 +125,17 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
       handleCloseModal()
     }
     
-    const handleDeleteLot = async () => {
+    const handleCompleteLot = async () => {
       if(!selectLot) return
       try {
-        await deleteLot(selectLot)
+        await completeLot(selectLot)
         setAllLots(prev => prev.filter(l => l._id !== selectLot))
-        setMessage(t('profile', 'successDeleteLot'))
+        setMessage(t('profile', 'successCompleteLot'))
         setTimeout(() => {
           setMessage('')
         }, 3000)
       } catch (error:any) {
-        setError(t('profile', error.message || 'errorDeleteLot'))
+        setError(t('profile', error.message || 'errorCompleteLot'))
         setTimeout(() => {
           setError('')
         }, 3000)
@@ -167,13 +166,13 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
       setSelectLot('')
     }
 
-    const handleAction = () => {
-      if(openConfirmWindow === 'delete') {
-        handleDeleteLot()
+    const handleAction = async () => {
+      if(openConfirmWindow === 'complete') {
+        await handleCompleteLot()
       } else if(openConfirmWindow === 'resume') {
-        resume()
+        await resume()
       } else {
-        handleCloseLot()
+        await handleCloseLot()
       }
     }
 
@@ -189,7 +188,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
           <div className={lotListClass}>
             <div className="flex justify-between items-center w-full px-2 mb-2 md:p-0">
               <h1 className={openConfirmWindow ? 'hidden md:flex' : 'flex'}>{t('profile', 'LotsFound')}: {data?.totalLot}</h1>
-              {(mode === 'sell' && allLots.length > 0 && active !== t('profile', 'sold')) && (
+              {(mode === 'sell' && allLots.length > 0 && (active === t('profile', 'active') || active === t('profile', 'completed'))) && (
                 <div className={`${openConfirmWindow ? 'w-full md:w-auto': 'w-auto'} flex justify-between items-center gap-2`}>
                   {openConfirmWindow ? (
                     <>
@@ -204,10 +203,12 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
                     {(active === t('profile', 'archived') || active === t('profile', 'completed')) && (
                       <span onClick={() => setOpenConfirmWindow('resume')} className={`${styleButtonAction} bg-orange-600 text-white`}><RotateCcw size={20}/></span>
                     )}
-                    {(active === t('profile', 'completed') || active === t('profile', 'active'))&& (
+                    {active === t('profile', 'completed') && (
                       <span onClick={() => setOpenConfirmWindow('archive')} className={`${styleButtonAction} bg-red-500 text-white`}><Archive size={20}/></span>
                     )}
-                    <span onClick={() => setOpenConfirmWindow('delete')} className={`${styleButtonAction} bg-red-500 text-white`}><Trash2 size={20}/></span>
+                    {active === t('profile', 'active') && (
+                      <span onClick={() => setOpenConfirmWindow('complete')} className={`${styleButtonAction} bg-orange-600 text-white`}><BadgeCheck size={20}/></span>
+                    )}
                     </>
                   )}
                 </div>
@@ -233,8 +234,8 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
             handleClose={handleCloseModal} 
             handleAction={handleAction} 
             title={t('profile', openConfirmWindow)} 
-            alert={t('profile', openConfirmWindow === 'archive' ? 'archiveDesc' : openConfirmWindow === 'delete' ? 'deleteDesc' : 'resumeDesc')}
-            yesButton={t('profile', openConfirmWindow === 'archive' ? 'yesArchive' : openConfirmWindow === 'delete' ?  'yesDelete' : 'yesResume')}
+            alert={t('profile', openConfirmWindow === 'archive' ? 'archiveDesc' : openConfirmWindow === 'complete' ? 'completeDesc' : openConfirmWindow === 'delete' ? 'deleteDesc' : 'resumeDesc')}
+            yesButton={t('profile', openConfirmWindow === 'archive' ? 'yesArchive' : openConfirmWindow === 'complete' ? 'yesComplete' : openConfirmWindow === 'delete' ?  'yesDelete' : 'yesResume')}
           />
         )}
         <Toast message={message} error={error}/>

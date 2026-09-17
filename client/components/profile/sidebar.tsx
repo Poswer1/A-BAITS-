@@ -3,7 +3,7 @@
 import { hoverCat } from '@/styles/categoryList';
 import { linkActiveClass } from '@/styles/profile/sidebar';
 import { User, MessageCircle, Settings, Tag,TrendingUp, Wallet, Loader, Archive, Flag, DollarSign, Star, Package, MessageSquare} from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useParams, usePathname } from 'next/navigation';
 import { useTranslation } from '@/app/context/TranslationProvider';
@@ -30,6 +30,7 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
 
   const {t} = useTranslation()
   const [username, setUsername] = useState('')
+  const activeLinkRef = useRef<HTMLAnchorElement>(null)
 
   useEffect(() => {
     getUserById()
@@ -37,6 +38,10 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
       setUsername(data.name)
     })
   }, [])
+
+  useEffect(() => {
+    activeLinkRef.current?.scrollIntoView({ behavior: 'auto', block: 'nearest', inline: 'center' })
+  }, [active, mode])
 
   let listLinks: SidebarLink[] = []
 
@@ -73,19 +78,20 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
     <div 
       className={`bg-white text-black w-screen md:w-auto overflow-x-auto flex ${mode === 'sidebarMain' && 'md:flex-col md:min-h-[92vh]'} 
       justify-between items-center 
-      ${mode === 'sidebarMain'? (active === 'Чат'? 'md:w-20 2xl:w-25': 'md:w-60 2xl:w-70'): ''} 
-      transition-[width] duration-500 ease-in-out overflow-hidden 
+      ${mode === 'sidebarMain'? (active === 'Чат' ? 'md:w-20 2xl:w-25': 'md:w-60 2xl:w-70'): ''} 
+      transition-[width] duration-500 ease-in-out overflow-x-auto overflow-y-hidden 
       ${mode !== 'sidebarMain' && 'h-auto'}`}
     >
-      <div className={`${mode === 'sidebarMain' ? 'flex md:flex-col' : 'flex'} w-full`}>
+      <div className={`${mode === 'sidebarMain' ? 'flex md:flex-col' : 'flex'} w-max min-w-full`}>
         {listLinks.map(link => {
         const href = link.name === t('header', 'createLot') ? link.link : `/${lang}/profile/${link.link}`
 
         return (
           <Link
               key={link.link}
+              ref={active === link.name ? activeLinkRef : undefined}
               href={href}
-              className={`${hoverCat} ${link.name === t('header', 'createLot') && 'bg-orange-600 text-white flex md:hidden'} px-5 lg:px-7 2xl:px-10 py-4 border-r-2 border-transparent flex whitespace-nowrap justify-start items-center w-full gap-2 ${active === link.name && linkActiveClass}`}
+              className={`${hoverCat} ${link.name === t('header', 'createLot') && 'bg-orange-600 text-white flex md:hidden'} px-5 lg:px-7 2xl:px-10 py-4 border-r-2 border-transparent flex whitespace-nowrap justify-start items-center w-auto shrink-0 ${mode === 'sidebarMain' ? 'md:w-full' : 'md:w-auto'} gap-2 ${active === link.name && linkActiveClass}`}
             >
               <div className="transition-all duration-300">{link.icon}</div>
               <span className={`${(active === 'Чат' && mode === 'sidebarMain') ? 'md:opacity-0 md:absolute' : 'opacity-100 transition-all duration-300 ease-in-out'}`}>{link.name}</span>
@@ -94,7 +100,7 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
         })}
       </div>
       {(mode === 'sidebarMain' && active !== 'Чат') && (
-         <Link href={`/${lang}/createLot`} className={`${button} hidden md:flex md:w-[90%] md:mb-[10%]`}>{t('header', 'createLot')}</Link>
+         <Link href={`/${lang}/createLot`} className={`${button} hidden md:flex md:w-[90%] md:mb-[10%] text-center`}>{t('header', 'createLot')}</Link>
       )}
     </div>
   )

@@ -25,9 +25,6 @@ export default function DateSections({date, setDate, time, setTime, dateError, t
       { name: 5, ru: '5 дней', uk: '5 днів' },
       { name: 6, ru: '6 дней', uk: '6 днів' },
       { name: 7, ru: '7 дней', uk: '7 днів' },
-      { name: 8, ru: '8 дней', uk: '8 днів' },
-      { name: 9, ru: '9 дней', uk: '9 днів' },
-      { name: 10, ru: '10 дней', uk: '10 днів' },
     ]
 
   return (

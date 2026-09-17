@@ -65,6 +65,9 @@ let LotController = class LotController {
             throw new common_1.BadRequestException('RoleNotFound');
         return this.lotService.deleteLot(id, role);
     }
+    async completeLot(id, userId) {
+        return this.lotService.completeLot(id, userId);
+    }
     async resumeLot(id, req, userId) {
         return this.lotService.resumeLot(id, userId, req.user.role);
     }
@@ -181,6 +184,15 @@ __decorate([
     __metadata("design:paramtypes", [String, Object]),
     __metadata("design:returntype", Promise)
 ], LotController.prototype, "deleteLot", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Patch)('completeLot/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, current_user_decorator_1.CurrentUser)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], LotController.prototype, "completeLot", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Patch)('resumeLot/:id'),

@@ -28,7 +28,7 @@ export default function PhotoSection({lot}:{lot: LotTypes}) {
 
   return (
     <div className="flex flex-col justify-center items-center w-full md:w-1/2 gap-2">
-        <div {...handlers} className="flex justify-center items-center w-full lg:h-110 2xl:h-130 relative overflow-hidden rounded-t-md">
+        <div {...handlers} className="flex justify-center items-center w-full h-80 lg:h-110 2xl:h-130 relative overflow-hidden rounded-t-md">
             <div className="w-full h-full blur-[10px] brightness-75 absolute z-0" style={{backgroundImage: `url(${BASE_URL}${lot.images[selectPhoto]})`, backgroundSize: 'cover',}}></div>
             <img src={`${BASE_URL}${lot.images[selectPhoto]}`} className={`h-full ${animationOpacity}`}/>
             <div className='bg-black/50 p-2 absolute bottom-2 right-2 rounded-md flex gap-2 justify-center items-center'>

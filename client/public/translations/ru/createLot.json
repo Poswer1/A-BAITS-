@@ -31,7 +31,7 @@
   "create-delivary-np": "Новая Почта",
   "create-delivary-pickup": "Самовывоз",
   "create-autoReExtension": "Автоматическое повторное выставление",
-  "create-autoReExtension-descriptions": "Если лот не купили или не достигнута резервная цена, его автоматически выставят повторно",
+  "create-autoReExtension-descriptions": "Если лот не купили, его автоматически выставят повторно",
   "create-advertising-descriptions": "Ваш лот будет в топе — больше просмотров и ставок",
   "create-Total-Amount": "Общая сумма",
   "create-SelectedPrivileges": "Выбранные привилегии",

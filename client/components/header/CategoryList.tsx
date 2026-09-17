@@ -21,8 +21,6 @@ interface CategoryList {
 }
 
 function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLotSetSubCategory, createLotSetSubSubCategory} : CategoryList) {
-  if(!categoriesWithIcons) return
-
   const params = useParams()
   const lang = params.lang as string
   const router = useRouter()
@@ -30,6 +28,7 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
   const [category, setCategory] = useState('')
   const [subCategory, setSubCategory] = useState('')
   const [subSubCategory, setSubSubCategory] = useState('')
+  const [isMobile, setIsMobile] = useState(false)
   const [categoryStats, setCategoryStats] = useState<Record<string, { count: number; subcategories: Record<string, { count: number; subSubcategories: Record<string, number> }> }>>({})
 
   const {t} = useTranslation()
@@ -68,7 +67,7 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
 
   const handleCategoryClick = (cat: typeof categoriesWithIcons[number]) => {
     handleSelectCat(cat.name)
-    if (openFrom === 'header' || cat.subcategories.length === 0) {
+    if (openFrom !== 'header' || !isMobile || cat.subcategories.length === 0) {
       handleClick(cat.name, '', '')
     }
   }
@@ -90,7 +89,9 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
       }
     }
 
-    handleClick(activeCategory.name, sub.name, '')
+    if (!isMobile || sub.subcategories.length === 0) {
+      handleClick(activeCategory.name, sub.name, '')
+    }
   }
 
   const handleSubSubCategoryClick = (subSub: {name:string}) => {
@@ -109,6 +110,16 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
     }
 
     loadCategoryStats()
+  }, [])
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(max-width: 767px)')
+    const updateIsMobile = () => setIsMobile(mediaQuery.matches)
+
+    updateIsMobile()
+    mediaQuery.addEventListener('change', updateIsMobile)
+
+    return () => mediaQuery.removeEventListener('change', updateIsMobile)
   }, [])
 
   useEffect(() => {
@@ -159,7 +170,6 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
 
             {activeCategory && (
               <ul className={`${listClass} p-2 gap-5 md:static bg-white justify-start md:bg-transparent h-screen md:h-full w-full md:w-auto`}>
-                <h1 className="ml-2 text-black font-bold border-b border-gray-500 cursor-pointer md:hidden">{transleteCategory}</h1>
                 {activeCategory.subcategories.map((sub) => (
                   <li key={sub.name} className={`${listClass} ${animationOpacity} ml-2 w-full`} >
                     <span className={`${linkClass} ${hover} text-black flex items-center justify-between gap-3`} onClick={() => handleSubCategoryClick(sub)} onMouseEnter={() => handleSelectCat('', sub.name)}>

@@ -53,7 +53,7 @@ export default function LotCardV2({lot, select, selectLot}: LotCardV2Props) {
     const city = getValueByLang(listLocation, lot.location, lang)
     const priceLot = lot.status !== 'Active' ? lot.redemptionMethod === 'bid' ? lot.startPrice : lot.blitzPrice : lot.startPrice
 
-    const columnClass = `flex flex-col justify-start items-start gap-1 w-full md:w-45 xl:w-55 2xl:w-70 overflow-hidden`
+    const columnClass = `flex flex-col justify-start items-start gap-1 w-1/4 overflow-hidden`
 
   return (
     <Link href={select === 'edit' ? `/${lang}/editLot/${lot.lotNumber}` : select ? '' : `/${lang}/lot/${lot.lotNumber}`} onClick={() => (select && selectLot )? selectLot(lot._id) : ''} className={`cursor-pointer border-t border-b border-gray-200 flex flex-col md:flex-row justify-start items-start md:items-center gap-2 md:gap-10 bg-white w-full md:rounded-md text-base text-black overflow-hidden relative`}>
@@ -61,7 +61,7 @@ export default function LotCardV2({lot, select, selectLot}: LotCardV2Props) {
         <div className="flex justify-between items-center w-full">
             <div className={`${columnClass} hidden md:block`}>
                 <h1>{`${lot.name.length >=30 ? lot.name.slice(0, 30) + '...' : lot.name}`}</h1>
-                <span>№ {t('lot', 'lot-number')} <span className="text-orange-600">{lot.lotNumber}</span></span>
+                <h1 className="text-sm hidden md:block">{lot.status !== 'Active' ? t('lot', 'purchasePrice') : t('lot', 'lot-current-bid')}: <span className="text-orange-600 font-bold text-base">{priceLot} ₴</span></h1>
             </div>
 
             <div className={`${columnClass} hidden md:flex`}>
@@ -72,15 +72,14 @@ export default function LotCardV2({lot, select, selectLot}: LotCardV2Props) {
             <div className={`${columnClass} hidden md:block text-black`}>
                     {t('lot', 'lot-dateStop')}
                     <Countdown date={lot.date.toString()} />
-                   
             </div> 
-            
             <div className={`${columnClass} p-2 flex-col`}>
-                <h1 className="text-lg hidden md:block">{lot.status !== 'Active' ? t('lot', 'purchasePrice') : t('lot', 'lot-current-bid')}: <span className="text-orange-600 font-bold">{priceLot} ₴</span></h1>
-                <button type="button" onClick={opensChat ? openChat : undefined} className={`${button} w-full md:w-auto`}>
-                    {opensChat ? t('lot', 'chat') : lot.status === 'Active' && !isOwner ? t('lot', 'lot-doBid') : t('lot', 'checkDetails')}
-                </button>
-                <FavoritesButton id={lot._id}/>
+                <div className="xl:w-full 2xl:w-[80%] flex flex-col justify-center items-start gap-2">
+                    <button type="button" onClick={opensChat ? openChat : undefined} className={`${button} w-full `}>
+                        {opensChat ? t('lot', 'chat') : lot.status === 'Active' && !isOwner ? t('lot', 'lot-doBid') : t('lot', 'checkDetails')}
+                    </button>
+                    <FavoritesButton id={lot._id}/>
+                </div>
             </div>
         </div>
     </Link>

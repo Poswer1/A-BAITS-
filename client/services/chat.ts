@@ -9,6 +9,15 @@ export async function getMyChats() {
     return dataReturn(res)
 }
 
+export async function createSupportChat() {
+    const res = await fetch(`${BASE_URL}/chat/createSupportChat`, {
+        method: 'POST',
+        credentials: 'include',
+    })
+
+    return dataReturn(res)
+}
+
 export async function getChatId(userId:string, lotId:string) {
     const res = await fetch(`${BASE_URL}/chat/getChatId/${userId}/${lotId}`, {
         method: 'GET',

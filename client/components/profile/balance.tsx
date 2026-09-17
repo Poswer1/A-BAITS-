@@ -30,7 +30,10 @@ export default function Balance({allTransaction,totalTransactions, currentBalanc
      <div className={`flex flex-col w-full gap-2` }>
       <div className='flex flex-col md:flex-row p-3 bg-white rounded-lg justify-between items-center w-full gap-2'>
         <h1 className='text-gray-500 text-center md:text-start'>{t('profile', 'CurrentBalance')}: <br/><span className='text-black text-2xl md:text-xl'>{balanceUser} ₴</span></h1>
-        <button onClick={() => setOpenQe(true)} className={`${button} w-full md:w-auto`}><DollarSign />{t('profile', 'replenishBalance')}</button>
+        <div className='flex flex-col md:flex-row w-full  md:w-auto justify-center items-center gap-2'>
+            <button className={`${button} w-full md:w-auto !bg-gray-200 !text-black`}>Тех поддержка</button>
+            <button onClick={() => setOpenQe(true)} className={`${button} w-full md:w-auto`}><DollarSign />{t('profile', 'replenishBalance')}</button>
+        </div>
       </div>
       <h1 className='text-xl md:text-xl p-2 py-4 md:p-0 md:mb-2'>{t('profile', 'transactions')}</h1>
       <div className='flex flex-col'>

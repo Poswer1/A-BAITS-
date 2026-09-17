@@ -14,6 +14,12 @@ export class ChatController {
     async getMyChat(@CurrentUser('id') userId:string) {
         return this.chatService.getMyChat(userId)
     }
+
+    @UseGuards(JwtAuthGuard)
+    @Post('createSupportChat')
+    async createSupportChat(@CurrentUser('id') userId:string) {
+        return this.chatService.createSupportChat(userId)
+    }
     
     @UseGuards(JwtAuthGuard)
     @Get('getChatId/:userId/:lotId')

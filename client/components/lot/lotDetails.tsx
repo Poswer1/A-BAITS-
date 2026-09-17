@@ -95,13 +95,13 @@ export default function LotDetails({ lot }: LotDetailsProps) {
   }, [numberLot, socket, t])
 
   return (
-    <div className="flex flex-col justify-start items-center w-full relative min-h-150 h-screen">
+    <div className="flex flex-col justify-start items-center w-full relative min-h-screen md:h-screen">
       <div className={`hidden md:block w-full sticky top-0 ${buyNowConfirm ? 'z-0' : 'z-10'}`}>
         <HeaderLot lot={lot} />
       </div>
-      <div className="flex flex-col md:flex-row justify-start items-start 2xl:w-[80%] lg:w-[90%] py-2 md:gap-2 min-h-200 md:h-200">
+      <div className="flex flex-col md:flex-row justify-start items-start w-full 2xl:w-[80%] lg:w-[90%] py-2 md:gap-2 md:h-screen">
         <PhotoSection lot={lot} />
-        <div className="flex flex-col justify-start items-start w-full md:w-auto">
+        <div className="flex flex-col justify-start items-start w-full md:w-auto md:pb-0">
           <div className="md:hidden">
             <HeaderLot lot={lot} />
           </div>

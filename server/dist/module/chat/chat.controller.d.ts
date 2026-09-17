@@ -18,6 +18,9 @@ export declare class ChatController {
             id: string;
         })[];
     }>;
+    createSupportChat(userId: string): Promise<{
+        chatId: string;
+    }>;
     getChatId(myId: string, userId: string, lotId: string): Promise<import("mongoose").Types.ObjectId>;
     inviteAdmin(id: string): Promise<{
         success: boolean;

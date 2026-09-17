@@ -17,6 +17,7 @@ import { hover } from "@/styles/style"
 import { createLot, updateLot } from "@/services/lot"
 import Loading from "@/components/ui/loadig"
 import { getStatusAuth } from "@/services/auth"
+import { getUserById } from "@/services/user"
 import { useParams, useRouter } from "next/navigation"
 import { loadingBlock } from "@/styles/global"
 import Success from "@/components/ui/success"
@@ -117,6 +118,19 @@ export default function LotForm({mode, initialData}:LotFormProps) {
 
       checkAuth()
     }, [])
+
+    useEffect(() => {
+      if (mode !== 'create') return
+
+      getUserById()
+        .then(user => {
+          const profileLocation = user?.location || user?.city
+          if (profileLocation) {
+            setLocation(currentLocation => currentLocation || profileLocation)
+          }
+        })
+        .catch(() => {})
+    }, [mode])
 
 
     const handleClear = () => {
@@ -408,11 +422,6 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             initialPreview={initialData?.images || []}
             setPreview={handlePreviewChange}
             photoError={errors.photo}/>
-
-            <AutoReExtension 
-            check={autoReExtension} 
-            setCheck={setAutoReExtensio} 
-            mode="autoReExtension"/>
             
             <DescriptionSections 
             description={description} 
@@ -447,9 +456,9 @@ export default function LotForm({mode, initialData}:LotFormProps) {
             error={errors.delivery}/>
 
             <AutoReExtension 
-            check={advertising} 
-            setCheck={setAdvertising} 
-            mode="advertising"/>
+            check={autoReExtension} 
+            setCheck={setAutoReExtensio} 
+            />
           
             <Summary 
             autoReExtension={autoReExtension} 

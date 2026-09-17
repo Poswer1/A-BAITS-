@@ -122,6 +122,9 @@ export class LotService {
       if (role !== 'admin' && lot.historyBid && lot.historyBid.length > 0) {
         throw new BadRequestException('LotAlreadyHaveBids')
       }
+      if (role !== 'admin' && lot.status !== 'Completed') {
+        throw new BadRequestException('OnlyCompletedLotCanBeArchived')
+      }
       const close = await LotModel.findByIdAndUpdate(id, 
         { 
           $set: {status: 'Archive'}
@@ -146,7 +149,7 @@ export class LotService {
     try {
       const resumedLot = await LotModel.findOneAndUpdate({
         ...ownerFilter,
-        status: { $in: ['Archive', 'Completed'] },
+        status: 'Completed',
         'historyBid.0': { $exists: false },
       }, {
         $set: {
@@ -169,9 +172,7 @@ export class LotService {
       throw new BadRequestException('LotNotFound')
     }
 
-    if (role !== 'admin' && lot.historyBid && lot.historyBid.length > 0) {
-      throw new BadRequestException('LotAlreadyHaveBids')
-    }
+    if (role !== 'admin') throw new BadRequestException('AdminOnlyLotDelete')
 
     if (lot.images && lot.images.length > 0) {
       for (const image of lot.images) {
@@ -190,12 +191,28 @@ export class LotService {
     return { success: true }
   }
 
+  async completeLot(id:string, userId:string) {
+    const result = await LotModel.updateOne(
+      {
+        _id: id,
+        author: userId,
+        status: 'Active',
+        'historyBid.0': { $exists: false },
+      },
+      { $set: { status: 'Completed' } }
+    )
+
+    if (result.modifiedCount === 0) throw new BadRequestException('LotCannotBeCompleted')
+    return { success: true, status: 'Completed' }
+  }
+
   async updateLot(dto: LotDto, id:string, files: Express.Multer.File[], preview: string[], userId:string, role:string) {
 
       const lot = await LotModel.findOne({
         lotNumber: id,
       })
       if(!lot)throw new BadRequestException('LotNotFound')
+      if (role !== 'admin' && lot.status !== 'Active') throw new BadRequestException('LotCannotBeEdited')
       if ((lot?.historyBid?.length ?? 0) > 0 && role !== 'admin')throw new BadRequestException('LotAlreadyHaveBids')
       const newImages = files ? await ProccessImages(files, '/uploads/lots/') : []
       const existingImages = preview || []

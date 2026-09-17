@@ -15,6 +15,7 @@ const chat_model_1 = require("../../models/chat.model");
 const mongoose_1 = require("mongoose");
 const email_service_1 = require("../email/email.service");
 const notification_gateway_1 = require("../notification/notification.gateway");
+const user_model_1 = require("../../models/user.model");
 let ChatService = class ChatService {
     emailService;
     notificationGateway;
@@ -42,7 +43,7 @@ let ChatService = class ChatService {
             to: newMessage.to.toString(),
             from: userId,
             notification: 'newChatMessage',
-            lotId: chat.lot.toString(),
+            ...(chat.lot && { lotId: chat.lot.toString() }),
         });
         await chat.populate('users', 'avatar name');
         const populatedFrom = chat.users.find(u => u._id.equals(newMessage.from));
@@ -50,6 +51,26 @@ let ChatService = class ChatService {
             ...newMessage,
             from: populatedFrom || { _id: newMessage.from }
         };
+    }
+    async createSupportChat(userId) {
+        const admin = await user_model_1.UserModel.findOne({ role: 'admin' }).select('_id');
+        if (!admin)
+            throw new common_1.BadRequestException('SupportAdminNotFound');
+        const existingChat = await chat_model_1.ChatModel.findOne({
+            type: 'support',
+            status: 'Active',
+            users: { $all: [new mongoose_1.Types.ObjectId(userId), admin._id], $size: 2 },
+        }).select('_id');
+        if (existingChat)
+            return { chatId: existingChat._id.toString() };
+        const chat = await chat_model_1.ChatModel.create({
+            users: [new mongoose_1.Types.ObjectId(userId), admin._id],
+            type: 'support',
+            status: 'Active',
+            messages: [],
+            reviews: [],
+        });
+        return { chatId: chat._id.toString() };
     }
     inviteCooldown = new Map();
     async inviteAdmin(id) {
@@ -160,7 +181,9 @@ let ChatService = class ChatService {
             if (!history.users.some(user => user.toString() === userId.toString())) {
                 throw new common_1.BadRequestException('NotChatParticipant');
             }
-            await this.notificationGateway.removeChatNotifications(userId, history.lot.toString());
+            if (history.lot) {
+                await this.notificationGateway.removeChatNotifications(userId, history.lot.toString());
+            }
             await history.populate([
                 { path: 'users', select: 'avatar name _id' },
                 { path: 'messages.from', select: 'avatar name _id' },
