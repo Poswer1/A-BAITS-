@@ -120,9 +120,9 @@ export default function ControlOfViolations({allViolations, total, currentPage, 
 
   
     return (
-    <div className='flex flex-col gap-2 w-full'>
+    <div className='flex flex-col gap-2 w-full p-2'>
         <TitleSection title={t('admin', 'ControlOfViolations')}/>
-        <div className="flex flex-wrap gap-2 px-2 md:px-0">
+        <div className="flex flex-wrap gap-2 ">
           <button onClick={() => handleSort('createdAt')} className={sortButtonClass}>
             Дата <SortIcon field="createdAt"/>
           </button>

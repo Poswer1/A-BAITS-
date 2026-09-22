@@ -29,7 +29,7 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
        <div className="flex justify-start items-center gap-2">
             {transaction.lot ? (
             <Link href={`/${lang}/lot/${transaction.lot.lotNumber}`} className='w-20'>
-                <img src={`${BASE_URL}${transaction.lot?.images?.[0]}`} className="w-15 object-cover"/>
+                <img src={`${BASE_URL}${transaction.lot?.images?.[0]}`} className="w-full object-cover"/>
             </Link>
             ) : (
                 useFrom === 'admin' ? (
@@ -44,7 +44,6 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
                             ): (
                                 <ArrowDownCircle className='text-red-500'/>
                             )}
-
                         </span>
                     </div>
                 )
@@ -68,7 +67,7 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
             </div>
         </div>
         <div className="flex justify-start items-center gap-10 ml-10 md:ml-0">
-            <span className={textObj}>{transaction.type === 'Deposit' ? t('admin', 'deposit') : t('admin', 'withdrawal')}: <br /><span className={`${transaction.status === 'Return' && 'opacity-50'} ${transaction.type === 'Deposit' ? 'text-green-500' : 'text-red-500'} font-bold text-base`}>{transaction.type === 'Deposit' ? '+' : '-'} {transaction.sum} ₴</span></span>
+            <span className={textObj}>{transaction.type === 'Deposit' ? t('admin', 'deposit') : t('admin', 'withdrawal')}: <br /><span className={`${transaction.status === 'Return' && 'opacity-50'} ${transaction.type === 'Deposit' ? 'text-green-500' : 'text-red-500'} font-bold text-base`}>{transaction.type === 'Deposit' ? '+' : '-'} {Number(transaction.sum ?? 0).toFixed(2)} ₴</span></span>
             <span className={textObj}>Дата: <br /> <span className="text-black">{date}</span></span>
         </div>
     </div>

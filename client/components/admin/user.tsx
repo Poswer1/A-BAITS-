@@ -171,7 +171,7 @@ export default  function User({listUser, total, currentPage, currentSort, curren
   const sortButtonClass = `${hover} flex items-center gap-1 px-3 py-1 rounded-md bg-white text-sm whitespace-nowrap shadow-sm`
 
   return (
-    <div className="flex flex-col w-full gap-2">
+    <div className="flex flex-col w-full gap-2 p-2">
       <TitleSection 
       title={edit ? t('admin', 'editUser') : t('admin', 'Users')} 
       searchValue={searchValue} 
@@ -181,7 +181,7 @@ export default  function User({listUser, total, currentPage, currentSort, curren
       setEdit={setEdit}
       />
       {!edit && (
-        <div className="flex flex-wrap gap-2 px-2 md:px-0">
+        <div className="flex overflow-y-auto gap-2">
           <button onClick={() => handleSort('name')} className={sortButtonClass}>
             Имя <SortIcon field="name"/>
           </button>

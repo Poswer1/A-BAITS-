@@ -1,6 +1,5 @@
 
-import MobileVersion from '@/components/card/mobileVersion'
-import Pagination from '@/components/ui/pagination'
+import ShowCard from '@/components/card/showCard'
 import { getLotByUser } from '@/services/lot'
 import { LotTypes } from '@/types/types'
 
@@ -35,10 +34,9 @@ async function page({params, searchParams}: pageProps) {
     }
 
   return (
-    <div className='flex  flex-col w-full'>
-      <h1 className='px-2 mb-4 md:p-0'>Найдено: {data?.totalLots}</h1>
-        <MobileVersion lots={data.allLots}/>
-        <Pagination total={data.totalLots} maxLot={10}/>
+    <div className='flex  flex-col w-full p-2'>
+      <h1 className='mb-4'>Найдено: {data?.totalLots}</h1>
+      <ShowCard lots={data.allLots} total={data.totalLots}/>
     </div>
   )
 }

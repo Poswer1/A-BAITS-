@@ -16,6 +16,7 @@ export interface Message {
    status: string,
    reviews: Types.ObjectId[],
    messages: Message[];
+   createdAt:Date
  }
 
  const ChatSchema = new Schema<Chat> (

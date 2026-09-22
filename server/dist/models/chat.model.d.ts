@@ -13,6 +13,7 @@ export interface Chat extends Document {
     status: string;
     reviews: Types.ObjectId[];
     messages: Message[];
+    createdAt: Date;
 }
 export declare const ChatModel: import("mongoose").Model<Chat, {}, {}, {}, Document<unknown, {}, Chat, {}, import("mongoose").DefaultSchemaOptions> & Chat & Required<{
     _id: Types.ObjectId;

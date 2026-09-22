@@ -16,7 +16,7 @@ export default function ReviewBlock({review}: {review: ReviewTypes}) {
     const BASE_URL = process.env.NEXT_PUBLIC_URL
 
   return (
-    <div className="flex flex-col justify-center items-start gap-2 bg-white p-4 border-t border-b border-gray-200 w-full">
+    <div className="flex flex-col justify-center items-start gap-2 bg-white px-2 py-4 border-t border-b border-gray-200 w-full">
         <Link href={`/${lang}/profile/${review.from?.name}`} className="flex justify-center items-center gap-2 cursor-pointer">
             <AvatarBlock avatar={review.from?.avatar} size="32"/> 
             <span className="text-sm">{review.from?.name}</span>
@@ -28,9 +28,9 @@ export default function ReviewBlock({review}: {review: ReviewTypes}) {
         <Link href={`/${lang}/lot/${review?.lot?.lotNumber}`} className='flex justify-center items-center gap-1'>
             <img src={`${BASE_URL}${review?.lot?.images?.[0]}`} className='w-10 rounded-md'/>
             <div className='flex flex-col justify-center items-start'>
-                <span className='text-sm text-gray-500 hidden md:flex'>{review.lot?.name}</span>
-                <span className='text-sm text-gray-500 md:hidden'>{review.lot?.name.length >= 30 ? review.lot.name.slice(0, 30) + '...' : review.lot?.name}</span>
-                <span className='text-sm'>№ <span className='text-orange-600'>{review.lot?.lotNumber}</span></span>
+                <span className='text-sm text-black hidden md:flex'>{review.lot?.name}</span>
+                <span className='text-sm text-black md:hidden'>{review.lot?.name.length >= 30 ? review.lot.name.slice(0, 30) + '...' : review.lot?.name}</span>
+              
             </div>
         </Link>
          

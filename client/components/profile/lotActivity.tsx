@@ -4,7 +4,6 @@ import { useTranslation } from "@/app/context/TranslationProvider"
 import { lotListClass, pageContainerClass } from "@/styles/profile/profile"
 import Sidebar from "./sidebar"
 import { LotTypes } from "@/types/types"
-import Pagination from "../ui/pagination"
 import { Archive, BadgeCheck, Edit2, RotateCcw, X } from "lucide-react"
 import { hover } from "@/styles/style"
 import { useEffect, useState } from "react"
@@ -13,7 +12,7 @@ import Toast from "../ui/toast"
 import ModalConfirm from "../ui/modalConfirm"
 import SelectionField from "../ui/selectionField"
 import { useRouter, useSearchParams } from "next/dist/client/components/navigation"
-import MobileVersion from "../card/mobileVersion"
+import ShowCard from "../card/showCard"
 
 interface LotActivityProps {
     data:{ allLots: LotTypes[], totalLot: number }
@@ -186,7 +185,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
         <div className="w-full flex flex-col justify-start items-start gap-4">
           <Sidebar mode={mode} active={active}/>
           <div className={lotListClass}>
-            <div className="flex justify-between items-center w-full px-2 mb-2 md:p-0">
+            <div className="flex justify-between items-center w-full mb-2 md:p-0">
               <h1 className={openConfirmWindow ? 'hidden md:flex' : 'flex'}>{t('profile', 'LotsFound')}: {data?.totalLot}</h1>
               {(mode === 'sell' && allLots.length > 0 && (active === t('profile', 'active') || active === t('profile', 'completed'))) && (
                 <div className={`${openConfirmWindow ? 'w-full md:w-auto': 'w-auto'} flex justify-between items-center gap-2`}>
@@ -215,7 +214,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
               )}
             </div>
             {allLots.length !== 0 && (
-              <div className="w-[95%] px-2 md:w-1/5 mb-2 md:px-0">
+              <div className="w-[95%] md:w-1/5 mb-2 md:px-0">
                 <SelectionField 
                 title={''} 
                 placeholder={t('profile', 'Sorting')} 
@@ -225,8 +224,7 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
                 value={sortValue}/>
               </div>
             )}
-            <MobileVersion lots={allLots} select={openConfirmWindow} selectLot={setSelectLot}/>
-            <Pagination total={data?.totalLot || 0} maxLot={10}/>
+            <ShowCard lots={allLots} total={data?.totalLot || 0} select={openConfirmWindow} selectLot={setSelectLot}/>
           </div>
         </div>
         {(selectLot && openConfirmWindow !== 'edit') && (
@@ -242,4 +240,3 @@ export default function LotActivity({data, mode, slug}: LotActivityProps) {
     </div>
   )
 }
-

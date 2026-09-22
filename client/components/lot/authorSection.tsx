@@ -37,7 +37,7 @@ export default function AuthorSection({lot}:AuthorSectionProps) {
     if (!lot || !author) return null
 
   return (
-    <div className={`${columnBlock} w-full text-black`}>
+    <div className={`${columnBlock} w-full text-black `}>
         <h1 className='font-bold'>Автор</h1>
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-2 border-b pb-2 border-gray-300">
             <Link href={`/${lang}/profile/${author.name}`} className="flex justify-between items-center gap-2 cursor-pointer">

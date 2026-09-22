@@ -156,6 +156,13 @@ let ChatService = class ChatService {
             })
                 .populate('users', 'name avatar')
                 .populate('lot', 'name images type status');
+            allChats.sort((a, b) => {
+                if (a.type === 'support' && b.type !== 'support')
+                    return -1;
+                if (a.type !== 'support' && b.type === 'support')
+                    return 1;
+                return b.createdAt.getTime() - a.createdAt.getTime();
+            });
             const ActiveChat = [];
             const NotActiveChat = [];
             allChats.forEach(chat => {

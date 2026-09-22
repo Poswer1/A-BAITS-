@@ -114,7 +114,7 @@ export default function Notification({allUser}:NotificationProps) {
     }))
     
   return (
-    <div className="flex flex-col gap-2 w-full">
+    <div className="flex flex-col gap-2 w-full p-2">
         <TitleSection title={t('admin', 'Notifications')}/>
         <div className="flex flex-col md:flex-row items-center md:w-full gap-2">
             <button onClick={() => setOpenModal('MessageUser')} className={`${button} !bg-white shadow-sm !text-black w-[90%] md:w-auto`}>{t('admin', 'MessageUser')}</button>

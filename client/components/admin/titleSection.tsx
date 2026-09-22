@@ -13,7 +13,7 @@ interface TitleSectionProps {
 
 export default function TitleSection({title, searchValue, setSearchValue,placeholderSearch, edit, setEdit}:TitleSectionProps) {
   return (
-    <div className='flex flex-col md:flex-row justify-start items-start md:items-center gap-5 w-full p-2 md:p-0'>
+    <div className='flex flex-col md:flex-row justify-start items-start md:items-center gap-2 w-full '>
             {edit && (
                 <span className={`${hover} flex justify-start items-center`} onClick={() => setEdit?.(false)}><ChevronLeft /> Назад</span>
             )}

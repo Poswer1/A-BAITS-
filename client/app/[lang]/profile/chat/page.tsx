@@ -165,7 +165,7 @@ function page() {
                 <ChevronLeft onClick={handleBack} className='md:hidden'/>
                 <AvatarBlock avatar={myInterlocutor?.avatar || ''} size="50"/>
                 <div className='flex flex-col justify-center items-start'>
-                  <h1>{myInterlocutor?.name}</h1>
+                  <h1 className={`${chat?.type === 'support' ? 'text-orange-600' : 'text-black'}`}>{chat?.type === 'support' ? t('chat', 'support') : myInterlocutor?.name}</h1>
                   <OlnlineUser id={myInterlocutor?._id || ''}/>
                 </div>
               </Link>

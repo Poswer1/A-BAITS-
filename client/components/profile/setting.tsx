@@ -137,7 +137,7 @@ export default function Setting({id, mode}: SettingProps) {
      t('auth', 'changePasswordAndEmail')
 
   return (
-    <div className={`${blockClass} flex-col !items-start mb-20 md:mb-0`}>
+    <div className={`${blockClass} flex-col !items-start mb-10 md:mb-0`}>
       <>
         <div className="flex flex-col justify-start items-start w-full 2xl:w-4/5 gap-5">  
           <div className={blockClass}>

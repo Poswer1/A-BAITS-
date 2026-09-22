@@ -4,9 +4,12 @@ import { LotTypes } from '@/types/types';
 import Pagination from '../ui/pagination';
 import { useTranslation } from '@/app/context/TranslationProvider';
 import MobileVersion from '../card/mobileVersion';
-import { X } from 'lucide-react';
+import { LayoutGrid, Rows3, X } from 'lucide-react';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import listLocation from '../../data/citiesUK.json';
+import { useState } from 'react';
+import { animate } from '@/styles/global';
+import ShowCard from '../card/showCard';
 
 interface CatalogProps {
     category:string | undefined;
@@ -25,6 +28,8 @@ export default function Catalog({category, subCategory, subSubCategory, city, lo
   const router = useRouter()
   const searchParams = useSearchParams()
   const lang = params.lang as string
+
+  const [stateCard, setStateCard] = useState('Tile')
 
   const activeFilters = [
     city ? {key: 'city', label: city} : null,
@@ -76,10 +81,10 @@ export default function Catalog({category, subCategory, subSubCategory, city, lo
   }
 
   return (
-    <div className='flex flex-col md:p-2 justify-start items-start w-full mt-2 md:min-h-200 overflow-x-hidden'>
-        <h1 className='text-md text-gray-500 px-2 md:p-0'>{category && `${category} |`} {subCategory && `${subCategory} |`} {subSubCategory && `${subSubCategory} |`} {city && `${city}`}</h1>
+    <div className='flex flex-col md:p-2 justify-start items-start w-full  md:min-h-200 overflow-x-hidden p-2'>
+        <h1 className='text-md text-gray-500 '>{category && `${category} |`} {subCategory && `${subCategory} |`} {subSubCategory && `${subSubCategory} |`} {city && `${city}`}</h1>
         {searchValue && (
-          <h1 className="text-black text-xl md:text-2xl px-2 md:p-0">
+          <h1 className="text-black text-xl md:text-2xl">
             {searchValue?.toLowerCase() === "alllots" ? (
               <span className="text-orange-600">
                {t('catalog','allLots')}
@@ -96,27 +101,24 @@ export default function Catalog({category, subCategory, subSubCategory, city, lo
             )}
           </h1>
         )}
-        <span className='text-gray-500 text-sm  px-2 md:p-0'>Найдено лотов: {total}</span>
+        <span className='text-gray-500 text-sm'>Найдено лотов: {total}</span>
         {activeFilters.length > 0 && (
-          <div className="flex w-full overflow-x-auto items-center gap-2 px-2 pt-2 md:px-0">
+          <div className="flex w-full overflow-x-auto items-center gap-2">
             {activeFilters.map(filter => (
                 <button
                     key={filter.key}
                     type="button"
                     onClick={() => removeFilter(filter.key)}
-                    className="flex items-center gap-1 rounded-md bg-orange-600/10 px-2 py-1 text-sm text-orange-600 hover:bg-orange-600/20 shrink-0"
+                    className="flex items-center gap-1 rounded-md bg-orange-600/10 p-2 text-sm text-orange-600 hover:bg-orange-600/20 shrink-0"
                 >
                     {filter.label}
-                    <X size={15} />
+                    <X size={18}/>
                 </button>
             ))}
         </div>
-        )}
-        <div className='flex flex-col justify-start items-start w-full mt-2'>
-          <MobileVersion lots={lots}/>
-          <div className={`w-full`}>
-            <Pagination total={total} maxLot={25}/>
-          </div>
+        )} 
+        <div className='flex flex-col justify-start items-start w-full mt-2 gap-2'>
+          <ShowCard lots={lots} total={total}/>
         </div>
     </div>
   )

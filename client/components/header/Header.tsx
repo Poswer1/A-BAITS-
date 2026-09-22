@@ -1,28 +1,30 @@
 'use client'
 
 import Image from 'next/image'
-import { Search, Menu,X, Bell, LogIn} from 'lucide-react';
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { hover} from '@/styles/style';
-import { getUserById } from '@/services/user';
-import { useParams } from 'next/navigation';
-import { useTranslation } from '@/app/context/TranslationProvider';
-import CategoryList from './CategoryList';
-import OpenProfile from './OpenProfile';
-import AvatarBlock from '../ui/avatar';
-import { hoverSub } from '@/styles/categoryList';
-import OpenNotification from './openNotification';
-import { useSocketContext } from '@/app/context/SocketIo';
-import ChangeLanguage from './changeLanguage';
-import SearchSection from './SearchSection';
-import { getStatusAuth, logout } from '@/services/auth';
+import Link from 'next/link'
+import { Search, Menu, X, Bell, LogIn } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
+
+import { hover } from '@/styles/style'
+import { hoverSub } from '@/styles/categoryList'
+import { getUserById } from '@/services/user'
+import { getStatusAuth, logout } from '@/services/auth'
+import { useTranslation } from '@/app/context/TranslationProvider'
+import { useSocketContext } from '@/app/context/SocketIo'
+
+import CategoryList from './CategoryList'
+import OpenProfile from './OpenProfile'
+import AvatarBlock from '../ui/avatar'
+import OpenNotification from './openNotification'
+import ChangeLanguage from './changeLanguage'
+import SearchSection from './SearchSection'
 
 function Header() {
-
     const params = useParams()
     const lang = params.lang as string
-    const {socket} = useSocketContext()
+    const { socket } = useSocketContext()
+    const { t } = useTranslation()
 
     const [openCategory, setOpenCategory] = useState(false)
     const [openSearch, setOpenSearch] = useState(false)
@@ -30,134 +32,186 @@ function Header() {
     const [openProfile, setOpenProfile] = useState(false)
     const [openNotification, setOpenNotification] = useState(false)
     const [read, setRead] = useState(false)
-    const [auth, setAuth] = useState(false)
 
+    const [auth, setAuth] = useState(false)
     const [name, setName] = useState('')
     const [avatar, setAvatar] = useState('')
 
-    const {t} = useTranslation()
+    const toggleCategory = () => setOpenCategory(prev => !prev)
+    const toggleProfile = () => setOpenProfile(prev => !prev)
+    const toggleNotification = () => setOpenNotification(prev => !prev)
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
-                const isAuth = await getStatusAuth();
+                const isAuth = await getStatusAuth()
 
                 if (!isAuth) {
-                    await logout();
-                    setAuth(false);
-                    setName('');
-                    setAvatar('');
-                    return;
+                    await logout()
+                    setAuth(false)
+                    setName('')
+                    setAvatar('')
+                    return
                 }
 
-                const data = await getUserById();
+                const data = await getUserById()
 
-                setAuth(true);
-                setName(data.name);
-                setAvatar(data.avatar);
-            } catch (err: any) {
-                setAuth(false);
-                setName('');
-                setAvatar('');
+                setAuth(true)
+                setName(data.name)
+                setAvatar(data.avatar)
+            } catch {
+                setAuth(false)
+                setName('')
+                setAvatar('')
             }
-        };
+        }
 
-        fetchUser();
+        fetchUser()
 
-        window.addEventListener('auth-change', fetchUser);
-        window.addEventListener('storage', fetchUser);
+        window.addEventListener('auth-change', fetchUser)
+        window.addEventListener('storage', fetchUser)
 
         return () => {
-            window.removeEventListener('auth-change', fetchUser);
-            window.removeEventListener('storage', fetchUser);
-        };
-    }, []);
-
+            window.removeEventListener('auth-change', fetchUser)
+            window.removeEventListener('storage', fetchUser)
+        }
+    }, [])
 
     useEffect(() => {
-        if(!socket) return
+        if (!socket) return
 
-        socket.on('newNotification', () => {
-            setRead(true)
-        })
+        const handleNewNotification = () => setRead(true)
+        const handleCheckRead = (data: boolean) => setRead(data)
 
+        socket.on('newNotification', handleNewNotification)
+        socket.on('checkRead', handleCheckRead)
         socket.emit('checkRead')
-        socket.on('checkRead', (data) => {
-            setRead(data)
-        })
 
         return () => {
-            socket.off('newNotification')
-            socket.off('checkRead')
+            socket.off('newNotification', handleNewNotification)
+            socket.off('checkRead', handleCheckRead)
         }
     }, [socket])
 
- 
+    return (
+        <div className="flex flex-col justify-center items-center w-full z-20">
+            <div className="flex flex-col justify-center items-start w-full md:w-[90%] p-2 relative">
 
-  return (
-    <div className='flex flex-col justify-center items-center w-full z-20'>
-        <div className='flex flex-col justify-center items-start w-full md:w-[90%] p-2 relative'>
-            <div className='flex justify-between items-center w-full p-2'>
-                <Link href={`/${lang}`}>
-                    <Image 
-                        src={'/images/logo.png'}
-                        alt=''
-                        width={200}
-                        height={200}
-                        className={`w-[500px] md:w-[150px] h-auto ${openSearch ? 'hidden md:block' : 'block'}`}
-                    />
-                </Link>
-                <div className='flex justify-center items-center gap-3 w-full'>
-                    <button onClick={() => setOpenCategory(prev => !prev)} className={`font-medium md:flex hidden justify-center items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}>
-                        <Menu size={20}/>{t('header','category')}
-                    </button>
-                    <SearchSection openSearch={openSearch} setOpenSearch={setOpenSearch} lang={lang} setSearch={setSearch} search={search}/>
-                </div>
-                <div className='flex justify-center items-center gap-5 whitespace-nowrap relative'>
-                        
-                        <ChangeLanguage openSearch={openSearch}/>
+                <div className="flex justify-between items-center w-full p-2">
+                    <Link href={`/${lang}`}>
+                        <Image
+                            src="/images/logo.png"
+                            alt=""
+                            width={200}
+                            height={200}
+                            className={`w-[500px] md:w-[150px] h-auto ${openSearch ? 'hidden md:block' : 'block'}`}
+                        />
+                    </Link>
+
+                    <div className="flex justify-center items-center gap-3 w-full">
+                        <button
+                            onClick={toggleCategory}
+                            className={`font-medium md:flex hidden justify-center items-center gap-1 ${hover} bg-orange-600 text-white p-2 px-4 rounded-md`}
+                        >
+                            <Menu size={18} />
+                            {t('header', 'category')}
+                        </button>
+
+                        <SearchSection
+                            openSearch={openSearch}
+                            setOpenSearch={setOpenSearch}
+                            lang={lang}
+                            setSearch={setSearch}
+                            search={search}
+                        />
+                    </div>
+
+                    
+                    <div className="flex justify-center items-center gap-5 whitespace-nowrap relative">
+
+                        <ChangeLanguage openSearch={openSearch} />
+
                         
                         {openSearch ? (
                             search.length === 0 && (
-                             <X className='text-gray-500 ml-2 md:hidden' onClick={() => setOpenSearch(false)}/>
+                                <X
+                                    className="text-gray-500 ml-2 md:hidden"
+                                    onClick={() => setOpenSearch(false)}
+                                />
                             )
-                        ): (
-                            <Search className='text-black md:hidden' onClick={() => setOpenSearch(true)}/>
+                        ) : auth ? (
+                            <Search
+                                className="text-black md:hidden"
+                                onClick={() => setOpenSearch(true)}
+                            />
+                        ) : (
+                            <button
+                                onClick={toggleCategory}
+                                className="bg-orange-600 p-1 rounded-md md:hidden flex"
+                            >
+                                <Menu className="text-white" />
+                            </button>
                         )}
-                                
                         {!auth ? (
-                            <Link href={`/${lang}/auth/login`} className={`p-2 px-4 rounded-md ${hover} ${openSearch ? "hidden md:block" : "block"} bg-orange-600 text-white flex gap-1 justify-center items-center`}><LogIn size={20}/>{t('header','login')}</Link>
-                        ): (
+                            <Link
+                                href={`/${lang}/auth/login`}
+                                className={`p-2 px-4 rounded-md ${hover} ${openSearch ? 'hidden md:flex' : 'flex'} bg-orange-600 text-white gap-1 justify-center items-center`}
+                            >
+                                <LogIn size={18} />
+                                {t('header', 'login')}
+                            </Link>
+                        ) : (
                             <>
-                            <Bell className={`${hoverSub} hidden md:flex ${read ? 'text-orange-600': 'text-gray-500'}`} onClick={() => setOpenNotification(prev => !prev)}/>
-                            <span onClick={() => setOpenCategory(prev => !prev)} className={`bg-orange-600 p-1 rounded-md md:hidden ${openSearch ? 'hidden' : 'flex'}`}>
-                              <Menu className='text-white'/>
-                            </span>
-                            <div className={`flex flex-col justify-center items-start relative ${openSearch ? 'hidden md:block' : 'block'}`}>
-                                <div className={`${hover} flex justify-center items-center gap-2`} onClick={() => setOpenProfile(prev => !prev)}>
-                                    <AvatarBlock avatar={avatar} size="32"/>
-                                    <span className='text-black hidden md:block'>{name || t('header','userNameNotFound')}</span>
-                            </div>
+                            <Bell
+                                className={`${hoverSub} hidden md:flex ${read ? 'text-orange-600' : 'text-gray-500'}`}
+                                onClick={toggleNotification}
+                            />
 
-                            <OpenProfile setOpenProfile={setOpenProfile} open={openProfile} name={name}/>
+                                
+                                <button
+                                    onClick={toggleCategory}
+                                    className={`bg-orange-600 p-1 rounded-md md:hidden ${openSearch ? 'hidden' : 'flex'}`}
+                                >
+                                    <Menu className="text-white" />
+                                </button>
+
                                
-                            </div>
+                                <div className={`flex flex-col justify-center items-start relative ${openSearch ? 'hidden md:block' : 'block'}`}>
+                                    <button
+                                        onClick={toggleProfile}
+                                        className={`${hover} flex justify-center items-center gap-2`}
+                                    >
+                                        <AvatarBlock avatar={avatar} size="32" />
+
+                                        <span className="text-black hidden md:block">
+                                            {name || t('header', 'userNameNotFound')}
+                                        </span>
+                                    </button>
+
+                                    <OpenProfile
+                                        setOpenProfile={setOpenProfile}
+                                        open={openProfile}
+                                        name={name}
+                                    />
+                                </div>
                             </>
                         )}
+                    </div>
                 </div>
-            </div>
-            {openCategory && (
-                <CategoryList 
-                setOpenCategory={setOpenCategory}
-                openFrom='header' 
+                {openCategory && (
+                    <CategoryList
+                        setOpenCategory={setOpenCategory}
+                        openFrom="header"
+                    />
+                )}
+                <OpenNotification
+                    setOpen={setOpenNotification}
+                    open={openNotification}
+                    setRead={setRead}
                 />
-            )}
-            
-             <OpenNotification setOpen={setOpenNotification} open={openNotification} setRead={setRead}/>
-         
+            </div>
         </div>
-    </div>
-  )
+    )
 }
 
 export default Header

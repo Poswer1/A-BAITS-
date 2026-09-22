@@ -59,9 +59,9 @@ export default function Logging({allLogging, total, currentPage, currentSort, cu
     const sortButtonClass = `${hover} flex items-center gap-1 px-3 py-1 rounded-md bg-white text-sm whitespace-nowrap shadow-sm`
 
   return (
-    <div className='flex flex-col gap-2 w-full'>
+    <div className='flex flex-col gap-2 w-full p-2'>
       <TitleSection title={t('admin', 'Logging')}/>
-      <div className="flex flex-wrap gap-2 px-2 md:px-0">
+      <div className="flex flex-wrap gap-2 ">
         <button onClick={() => handleSort('createdAt')} className={sortButtonClass}>
           Дата <SortIcon field="createdAt"/>
         </button>

@@ -27,7 +27,7 @@ export default function Balance({allTransaction,totalTransactions, currentBalanc
     const {t} = useTranslation()
 
   return (
-     <div className={`flex flex-col w-full gap-2` }>
+     <div className={`flex flex-col w-full gap-2 mb-10 md:mb-0`}>
       <div className='flex flex-col md:flex-row p-3 bg-white rounded-lg justify-between items-center w-full gap-2'>
         <h1 className='text-gray-500 text-center md:text-start'>{t('profile', 'CurrentBalance')}: <br/><span className='text-black text-2xl md:text-xl'>{balanceUser} ₴</span></h1>
         <div className='flex flex-col md:flex-row w-full  md:w-auto justify-center items-center gap-2'>

@@ -15,7 +15,7 @@ export default function Banner() {
     <div className="flex flex-col md:flex-row justify-start items-center w-full bg-gray-100 z-0 relative h-auto md:h-60 2xl:h-70 py-5 md:py-0">
         <div className="absolute inset-0 h-full bg-gradient-to-l from-orange-600/12 via-orange-600/12 to-transparent z-0"></div>
       
-          <div className="flex flex-col justify-center items-start gap-4 w-[90%] text-center md:text-start md:w-3/6 lg:ml-20 2x:ml-40 md:m-0">
+          <div className="flex flex-col justify-center items-start gap-4 w-[95%] text-center md:text-start md:w-3/6 lg:ml-20 2x:ml-40 md:m-0">
             <h1 className="text-black font-bold text-xl xl:text-2xl leading-12">{t('main','banner-title')} — <span className="text-white bg-orange-600 p-2 rounded-xl">A-BAITS</span></h1>
             <p className="text-gray-500 text-xs 2xl:text-base">{t('main','banner-description')}</p>
           </div>

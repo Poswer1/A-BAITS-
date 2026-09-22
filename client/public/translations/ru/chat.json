@@ -25,5 +25,6 @@
     "systemMessage": "Системное сообщение",
     "ExceededLimitPerMinute": "Повторно попробовать можно будет через минуту",
     "SupportAdminNotFound": "Сейчас нет доступного администратора поддержки",
-    "SupportChatCreateError": "Не удалось открыть чат с поддержкой"
+    "SupportChatCreateError": "Не удалось открыть чат с поддержкой",
+    "support": "Поддержка"
 }

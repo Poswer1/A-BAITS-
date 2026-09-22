@@ -33,8 +33,8 @@ async function page({params, searchParams}: pageProps) {
   }
 
   return (
-    <div className={`flex flex-col w-full`}>
-      <h1 className='px-2 mb-4 md:p-0'>Найдено: {date.totalReview}</h1>
+    <div className={`flex flex-col w-full p-2`}>
+      <h1 className='mb-4'>Найдено: {date.totalReview}</h1>
       {date?.allReview.map((review) => (
         <ReviewBlock key={review._id} review={review}/>
       ))}

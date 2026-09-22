@@ -50,8 +50,7 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
       {name: t('profile', 'profile'), icon: <User/>, link:`/${name && name}` },
       {name: t('profile', 'sell'), icon: <Tag/>, link: 'sell/Active'},
       {name: t('profile', 'buy'), icon: <TrendingUp/>, link: 'buy/Active'},
-      {name: 'Чат', icon: <MessageCircle/>, link: 'chat'},
-      {name: t('header', 'createLot'), icon:'', link: `/${lang}/createLot`}
+      {name: 'Чат', icon: <MessageCircle/>, link: 'chat'}
     ]
   ): mode === 'buy' || mode === 'sell' ?(
     listLinks = [
@@ -76,10 +75,10 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
 
   return (
     <div 
-      className={`bg-white text-black w-screen md:w-auto overflow-x-auto flex ${mode === 'sidebarMain' && 'md:flex-col md:min-h-[92vh]'} 
+      className={`bg-white text-black w-screen md:w-auto md:overflow-x-hidden overflow-x-auto flex ${mode === 'sidebarMain' && 'md:flex-col md:min-h-[92vh]'} 
       justify-between items-center 
       ${mode === 'sidebarMain'? (active === 'Чат' ? 'md:w-20 2xl:w-25': 'md:w-60 2xl:w-70'): ''} 
-      transition-[width] duration-500 ease-in-out overflow-x-auto overflow-y-hidden 
+      transition-[width] duration-500 ease-in-out overflow-y-hidden 
       ${mode !== 'sidebarMain' && 'h-auto'}`}
     >
       <div className={`${mode === 'sidebarMain' ? 'flex md:flex-col' : 'flex'} w-max min-w-full`}>
@@ -99,9 +98,6 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
         )
         })}
       </div>
-      {(mode === 'sidebarMain' && active !== 'Чат') && (
-         <Link href={`/${lang}/createLot`} className={`${button} hidden md:flex md:w-[90%] md:mb-[10%] text-center`}>{t('header', 'createLot')}</Link>
-      )}
     </div>
   )
 }

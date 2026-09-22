@@ -52,29 +52,21 @@ export default function ChatList({setSelectChat, selectChat}: ChatListProps) {
             if (!user) return null;
             const lastMessage = chat.messages[chat.messages.length - 1]
             return (
-                <div onClick={() => {setSelectChat(chat._id)}} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-3 transition-all  duration-300  border-b border-t 2 w-full  2xl:w-90 border-gray-300 bg-white relative`}>
+                <div onClick={() => {setSelectChat(chat._id)}} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-2 transition-all  duration-300  border-b border-t 2 w-full  2xl:w-90 border-gray-300 bg-white relative`}>
                         <div className='flex justify-center items-center gap-2'>
                             <AvatarBlock avatar={chat.lot?.images?.[0] ? chat.lot.images[0] : user[0]?.avatar}  size="50"/>
                             <div className={`flex flex-col  justify-center items-start `}>
-                            <h1 className='text-gray-500 text-sm'>{user[0]?.name}</h1>
+                            <h1 className={`text-gray-500 text-sm ${chat.type === 'support' && 'text-orange-600'}`}>{ chat.type === 'support' ? t('chat', 'support') : user[0]?.name}</h1>
                             {chat.status !== 'Active' && (
-                             <span className={`${'bg-gray-300 text-gray-500'}  px-1  text-sm absolute top-1 right-0`}>{t('chat', 'NotActive')}</span>
+                             <span className={`${'bg-gray-300 text-gray-500'} px-1 text-sm absolute top-1 right-0`}>{t('chat', 'NotActive')}</span>
                             )}
-                            <span className='text-sm hidden md:flex'>
-                                {chat.lot
-                                    ? chat.lot.name.length >= 30
-                                    ? chat.lot.name.slice(0, 30) + '...'
-                                    : chat.lot.name
-                                    : t('chat', 'NoLot')} {/* Можно текст для отсутствующего лота */}
-                                </span>
-
-                                <span className='text-sm md:hidden'>
-                                {chat.lot
-                                    ? chat.lot.name.length >= 25
+                           <span className={`text-sm text-black`}>
+                            {chat.lot
+                                ? chat.lot.name.length >= 25
                                     ? chat.lot.name.slice(0, 25) + '...'
                                     : chat.lot.name
-                                    : t('chat', 'NoLot')}
-                                </span>
+                                : t('chat', 'NoLot')}
+                            </span>
                             <p className='text-gray-500 text-sm'>{lastMessage?.message || t('chat', 'NoLatestMessages')}</p>
                         </div>
                     </div>

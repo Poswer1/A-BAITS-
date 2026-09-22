@@ -25,5 +25,6 @@
   "systemMessage": "Системне повідомлення",
   "ExceededLimitPerMinute": "Повторно спробувати можна буде через хвилину",
   "SupportAdminNotFound": "Зараз немає доступного адміністратора підтримки",
-  "SupportChatCreateError": "Не вдалося відкрити чат із підтримкою"
+  "SupportChatCreateError": "Не вдалося відкрити чат із підтримкою",
+  "support": "Підтримка"
 }

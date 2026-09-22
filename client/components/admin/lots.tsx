@@ -5,7 +5,7 @@ import { animationScale, hover } from '@/styles/style'
 import { LotTypes } from '@/types/types'
 import { Archive, ArrowDown, ArrowUp, ArrowUpDown, Edit2, RotateCcw, Search, Trash2, X, XCircle } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import MobileVersion from '../card/mobileVersion'
+import ShowCard from '../card/showCard'
 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import SearchBlock from '../ui/search'
@@ -13,7 +13,6 @@ import TitleSection from './titleSection'
 import ModalConfirm from '../ui/modalConfirm'
 import { closeLot, deleteLot, resumeLot } from '@/services/lot'
 import Toast from '../ui/toast'
-import Pagination from '../ui/pagination'
 
 interface LotsProps {
     lots: LotTypes[]
@@ -158,31 +157,31 @@ export default function Lots({lots, total, currentPage, currentSort, currentOrde
      const styleButtonAction = `${hover} gap-1 flex p-2 rounded-md`
 
   return (
-    <div className='flex flex-col w-full gap-2'>
-        <div className='flex flex-col md:flex-row justify-between items-start md:items-center w-full'>
+    <div className='flex flex-col w-full gap-5 p-2'>
+        <div className='flex flex-col md:flex-row justify-between items-start md:items-center w-full gap-2'>
             <TitleSection 
             title={edit ? t('admin', 'editLots') : t('admin', 'lots')} 
             searchValue={searchValue} 
             setSearchValue={setSearchValue} 
             placeholderSearch={t('admin', 'searchLots')}
             />
-            <div className='flex justify-center items-center gap-3 z-150 p-2 md:p-0'>
+            <div className='flex justify-center items-center gap-3 z-20'>
                 {actionOnTheLot ? (
                     <>
-                        <span className="font-bold whitespace-nowrap">{t('profile', 'clickOnTheLot')}</span>
-                        <span onClick={handleCloseModal} className={`${styleButtonAction}`}><X/></span>
+                      <span className="font-bold whitespace-nowrap">{t('profile', 'clickOnTheLot')}</span>
+                      <span onClick={handleCloseModal} className={`${styleButtonAction}`}><X/></span>
                     </>
                 ): (
                     <>
-                        <span onClick={() => setActionOnTheLot('edit')} className={`${styleButtonAction} bg-white shadow-sm`}><Edit2 size={20}/></span>
-                        <span onClick={() => setActionOnTheLot('resume')} className={`${styleButtonAction} bg-orange-600 text-white`}><RotateCcw size={20}/></span>
-                       <span onClick={() => setActionOnTheLot('archive')} className={`${styleButtonAction} bg-red-500 text-white`}><Archive size={20}/></span>
-                        <span onClick={() => setActionOnTheLot('delete')} className={`${styleButtonAction} bg-red-500 text-white`}><Trash2 size={20}/></span>
+                      <span onClick={() => setActionOnTheLot('edit')} className={`${styleButtonAction} bg-white shadow-sm`}><Edit2 size={20}/></span>
+                      <span onClick={() => setActionOnTheLot('resume')} className={`${styleButtonAction} bg-orange-600 text-white`}><RotateCcw size={20}/></span>
+                      <span onClick={() => setActionOnTheLot('archive')} className={`${styleButtonAction} bg-red-500 text-white`}><Archive size={20}/></span>
+                      <span onClick={() => setActionOnTheLot('delete')} className={`${styleButtonAction} bg-red-500 text-white`}><Trash2 size={20}/></span>
                     </>
                 )}
             </div>
         </div>
-        <div className="flex flex-wrap gap-2 px-2 md:px-0">
+        <div className="flex overflow-y-auto gap-2">
           <button 
             onClick={() => handleStatusFilter('')} 
             className={`${hover} px-4 py-1.5 rounded-md text-sm font-medium transition-all ${!currentStatus ? 'bg-orange-600 text-white' : 'bg-white text-black shadow-sm'}`}
@@ -200,7 +199,7 @@ export default function Lots({lots, total, currentPage, currentSort, currentOrde
           ))}
         </div>
         {/* Sort Buttons */}
-        <div className="flex flex-wrap gap-2 px-2 md:px-0">
+        <div className="flex overflow-y-auto gap-2">
           <button onClick={() => handleSort('name')} className={sortButtonClass}>
             Название <SortIcon field="name"/>
           </button>
@@ -215,9 +214,8 @@ export default function Lots({lots, total, currentPage, currentSort, currentOrde
           </button>
         </div>
         <div className="flex flex-col justify-start items-start">
-          <MobileVersion lots={allLots} select={actionOnTheLot} selectLot={setId}/>
+          <ShowCard lots={allLots} total={total} select={actionOnTheLot} selectLot={setId}/>
         </div>
-        <Pagination total={total} maxLot={20}/>
         {(id && actionOnTheLot !== 'edit') && (
             <ModalConfirm 
             handleClose={handleCloseModal} 
@@ -231,4 +229,3 @@ export default function Lots({lots, total, currentPage, currentSort, currentOrde
     </div>
   )
 }
-
