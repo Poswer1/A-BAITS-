@@ -1,0 +1,12 @@
+@"
+node_modules/
+.next/
+.env
+out/
+npm-debug.log*
+.history/
+yarn-debug.log*
+yarn-error.log*
+.DS_Store
+Thumbs.db
+"@ | Set-Content -Path .gitignore

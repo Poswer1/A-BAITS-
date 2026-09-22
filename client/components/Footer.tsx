@@ -61,7 +61,7 @@ function Footer() {
             <h1 className="font-bold text-orange-600">{item.text}</h1>
             {item.link.map((linkItem, linkIdx) => (
               linkItem.text === t('footer', 'footer-support-contact') ? (
-                <SupportChatButton lang={lang} className={`${hover} 2xl:text-base lg:text-sm`} key={linkIdx}>{linkItem.text}</SupportChatButton>
+                <SupportChatButton className={`${hover} 2xl:text-base lg:text-sm`} key={linkIdx}>{linkItem.text}</SupportChatButton>
               ) : (
                 <Link href={linkItem.link} className={`${hover} 2xl:text-base lg:text-sm`} key={linkIdx}>{linkItem.text}</Link>
               )

@@ -1,0 +1,58 @@
+'use client'
+
+import { blockClass } from '@/styles/profile/profile'
+import QRCode from 'react-qr-code'
+import { useState } from 'react'
+import Link from 'next/link'
+import { DollarSign, } from 'lucide-react'
+import { button, overlay } from '@/styles/global'
+import { useTranslation } from '@/app/context/TranslationProvider'
+import { TransactionTypes } from '@/types/types'
+import TransactionCard from '../card/transactionCard'
+import { animationScale } from '@/styles/style'
+import Pagination from '../ui/pagination'
+
+interface BalanceProps {
+  allTransaction: TransactionTypes[]
+  totalTransactions: number
+  currentBalance:number
+}
+
+export default function Balance({allTransaction,totalTransactions, currentBalance}: BalanceProps) {
+    const qrValue = `https://send.monobank.ua/3Y9bBHwR4q`;
+    const [openQr, setOpenQe] = useState(false)
+
+    const balanceUser = Math.floor(currentBalance * 10) / 10
+
+    const {t} = useTranslation()
+
+  return (
+     <div className={`flex flex-col w-full gap-2` }>
+      <div className='flex flex-col md:flex-row p-3 bg-white rounded-lg justify-between items-center w-full gap-2'>
+        <h1 className='text-gray-500 text-center md:text-start'>{t('profile', 'CurrentBalance')}: <br/><span className='text-black text-2xl md:text-xl'>{balanceUser} ₴</span></h1>
+        <button onClick={() => setOpenQe(true)} className={`${button} w-full md:w-auto`}><DollarSign />{t('profile', 'replenishBalance')}</button>
+      </div>
+      <h1 className='text-xl md:text-xl p-2 py-4 md:p-0 md:mb-2'>{t('profile', 'transactions')}</h1>
+      <div className='flex flex-col'>
+        {allTransaction?.map((t) => (
+          <TransactionCard key={t._id} transaction={t}/>
+        ))}
+        <Pagination total={totalTransactions} maxLot={20}/>
+      </div>
+      {openQr && (
+        <div className={overlay} onClick={() => setOpenQe(false)}>
+          <div className={`${animationScale} flex flex-col justify-center items-center p-5 md:p-10 w-[90%] 2xl:w-1/3 bg-white rounded-xl gap-2`} onClick={(e) => e.stopPropagation()}>
+          <span className='text-black text-center'>{t('profile', 'balanceTitle')}</span>
+          <span className='text-gray-500 text-center text-sm md:text-base'>{t('profile', 'balanceDescription')}</span>
+          <Link href='https://send.monobank.ua/3Y9bBHwR4q' className='p-5 bg-gray-100 rounded-xl shadow-md'>
+            <QRCode value={qrValue} size={200}/>
+          </Link>
+          <span className='text-xl md:text-base'>4444 4444 4444 4444</span>
+          <p className='text-gray-500 text-sm md:text-base text-center'>{t('profile', 'balanceDescriptionAboutMoney')}</p>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+

@@ -2,10 +2,9 @@
 
 import { createSupportChat } from '@/services/chat'
 import { useTranslation } from '@/app/context/TranslationProvider'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { ReactNode, useState } from 'react'
 import Toast from './toast'
-import { useParams } from 'react-router-dom'
 
 interface SupportChatButtonProps {
   className?: string
