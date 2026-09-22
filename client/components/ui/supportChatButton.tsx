@@ -5,18 +5,20 @@ import { useTranslation } from '@/app/context/TranslationProvider'
 import { useRouter } from 'next/navigation'
 import { ReactNode, useState } from 'react'
 import Toast from './toast'
+import { useParams } from 'react-router-dom'
 
 interface SupportChatButtonProps {
-  lang: string
   className?: string
   children: ReactNode
 }
 
-export default function SupportChatButton({lang, className = '', children}: SupportChatButtonProps) {
+export default function SupportChatButton({className = '', children}: SupportChatButtonProps) {
   const router = useRouter()
   const {t} = useTranslation()
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const params = useParams()
+  const lang = params.lang as string
 
   const handleClick = async () => {
     if (loading) return

@@ -85,7 +85,7 @@ function Navbar() {
                         </div>
                     </div>
                 )}
-            <SupportChatButton lang={lang} className={`${hover} p-2 bg-gray-200/30 rounded-md text-white`}>{t('navbar','support')}</SupportChatButton>
+            <SupportChatButton className={`${hover} p-2 bg-gray-200/30 rounded-md text-white`}>{t('navbar','support')}</SupportChatButton>
         </div>
     </div>
   )

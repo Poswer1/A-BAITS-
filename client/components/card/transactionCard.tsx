@@ -56,7 +56,7 @@ export default function TransactionCard({ transaction, setTransactions, useFrom}
                 {transaction.lot && (
                     <>
                      <h1>{transaction.lot?.name?.length > 40 ? transaction.lot.name.slice(0,40) + '...' : transaction.lot.name}</h1>
-                     {useFrom !== 'admin' && (
+                     {useFrom === 'admin' && (
                        <span className={`text-sm`}>№ <span className='text-orange-600'>{transaction.lot?.lotNumber}</span></span>
                      )}
                     </>

@@ -159,13 +159,13 @@ function page() {
 
       <ChatList setSelectChat={setSelectChat} selectChat={selectChat}/>
       {selectChat && (
-        <div className={`${blockClass} ${!selectChat ? 'hidden md:block': 'fixed top-0 left-0 md:static'} h-screen md:h-160 2xl:h-190 flex-col xl:w-2/3 2xl:!w-3/5 !gap-0 `}>
+        <div className={`${blockClass} ${!selectChat ? 'hidden md:block pointer-events-none md:pointer-events-auto': 'fixed top-0 left-0 md:static'}  h-screen md:h-160 2xl:h-190 flex-col xl:w-2/3 2xl:!w-3/5 !gap-0 `}>
             <div className='flex justify-start items-center w-full border-b border-b-gray-200 pb-2'>
               <Link href={`/${lang}/profile/${myInterlocutor?.name}`} className='flex gap-2 justify-center items-center'>
                 <ChevronLeft onClick={handleBack} className='md:hidden'/>
                 <AvatarBlock avatar={myInterlocutor?.avatar || ''} size="50"/>
                 <div className='flex flex-col justify-center items-start'>
-                  <h1 className={`${chat?.type === 'support' ? 'text-orange-600' : 'text-black'}`}>{chat?.type === 'support' ? t('chat', 'support') : myInterlocutor?.name}</h1>
+                  <h1 className={`text-black`}>{myInterlocutor?.name} {chat?.type === 'support' && <span className='text-orange-600'>/ {t('chat', 'support')}</span>}</h1>
                   <OlnlineUser id={myInterlocutor?._id || ''}/>
                 </div>
               </Link>
@@ -227,29 +227,31 @@ function page() {
                   )
               })}
             </div>
-            {statusUser === 'Temporary' ? (
-                <div className="flex justify-center w-full gap-2 text-yellow-400">
-                    <AlertTriangle />
-                    <h1>{t('violations', 'Temporary')}</h1>
-                </div>
-            ): myInfo && myInfo.balance <= -1 ? (
-              <div className="flex justify-center w-full gap-2 text-red-500">
-                <AlertCircle />
-                <h1>{t('chat', 'balanceInTheRed')}</h1>
-              </div>
-            ): chat?.status !== 'Close' ? (
-              <div className='flex justify-center items-center w-full gap-2'>
-                <input className={`w-full outline-none`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder={t('chat', 'typeMessage')}/>
-                <button onClick={() => {
-                  handleSendNewMessage()
-                  setMessage('')
-                  }} className={`${hover} p-2 bg-orange-600 rounded-full`}>
-                  <Send className='text-white' size={15}/>
-                </button>
-              </div>
-            ): (
-              <h1 className={`text-xl flex justify-center items-center gap-1 mt-2`}>{t('chat', 'successDeal')}<Check className='text-orange-600'/></h1>
-            )}
+            <div className='flex w-full justify-start items-center py-2 border-t border-gray-300'>
+               {statusUser === 'Temporary' ? (
+                    <div className="flex justify-center w-full gap-2 text-yellow-400">
+                        <AlertTriangle />
+                        <h1>{t('violations', 'Temporary')}</h1>
+                    </div>
+                ): myInfo && myInfo.balance <= -1 ? (
+                  <div className="flex justify-center w-full gap-2 text-red-500">
+                    <AlertCircle />
+                    <h1>{t('chat', 'balanceInTheRed')}</h1>
+                  </div>
+                ): chat?.status !== 'Close' ? (
+                  <div className='flex justify-center items-center w-full gap-2'>
+                    <input className={`w-full outline-none`} value={message} onChange={(e) => setMessage(e.target.value)} placeholder={t('chat', 'typeMessage')}/>
+                    <button onClick={() => {
+                      handleSendNewMessage()
+                      setMessage('')
+                      }} className={`${hover} p-2 bg-orange-600 rounded-full`}>
+                      <Send className='text-white' size={15}/>
+                    </button>
+                  </div>
+                ): (
+                  <h1 className={`text-xl flex justify-center items-center gap-1 mt-2`}>{t('chat', 'successDeal')}<Check className='text-orange-600'/></h1>
+                )}
+            </div>
         </div>
        )}
 

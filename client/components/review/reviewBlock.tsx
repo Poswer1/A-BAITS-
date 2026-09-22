@@ -16,7 +16,7 @@ export default function ReviewBlock({review}: {review: ReviewTypes}) {
     const BASE_URL = process.env.NEXT_PUBLIC_URL
 
   return (
-    <div className="flex flex-col justify-center items-start gap-2 bg-white px-2 py-4 border-t border-b border-gray-200 w-full">
+    <div className="flex flex-col justify-center items-start gap-2 bg-white px-2 py-4 border-t border-b border-gray-200 w-full rounded-md">
         <Link href={`/${lang}/profile/${review.from?.name}`} className="flex justify-center items-center gap-2 cursor-pointer">
             <AvatarBlock avatar={review.from?.avatar} size="32"/> 
             <span className="text-sm">{review.from?.name}</span>
@@ -30,7 +30,6 @@ export default function ReviewBlock({review}: {review: ReviewTypes}) {
             <div className='flex flex-col justify-center items-start'>
                 <span className='text-sm text-black hidden md:flex'>{review.lot?.name}</span>
                 <span className='text-sm text-black md:hidden'>{review.lot?.name.length >= 30 ? review.lot.name.slice(0, 30) + '...' : review.lot?.name}</span>
-              
             </div>
         </Link>
          

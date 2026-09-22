@@ -56,7 +56,7 @@ export default function ChatList({setSelectChat, selectChat}: ChatListProps) {
                         <div className='flex justify-center items-center gap-2'>
                             <AvatarBlock avatar={chat.lot?.images?.[0] ? chat.lot.images[0] : user[0]?.avatar}  size="50"/>
                             <div className={`flex flex-col  justify-center items-start `}>
-                            <h1 className={`text-gray-500 text-sm ${chat.type === 'support' && 'text-orange-600'}`}>{ chat.type === 'support' ? t('chat', 'support') : user[0]?.name}</h1>
+                            <h1 className={`text-gray-500 text-sm`}>{user[0]?.name} {chat?.type === 'support' && <span className='text-orange-600'>/ {t('chat', 'support')}</span>}</h1>
                             {chat.status !== 'Active' && (
                              <span className={`${'bg-gray-300 text-gray-500'} px-1 text-sm absolute top-1 right-0`}>{t('chat', 'NotActive')}</span>
                             )}

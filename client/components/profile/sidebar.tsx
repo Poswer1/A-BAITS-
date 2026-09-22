@@ -90,7 +90,7 @@ export default function Sidebar({mode, active, name} : SidebarProps) {
               key={link.link}
               ref={active === link.name ? activeLinkRef : undefined}
               href={href}
-              className={`${hoverCat} ${link.name === t('header', 'createLot') && 'bg-orange-600 text-white flex md:hidden'} px-5 lg:px-7 2xl:px-10 py-4 border-r-2 border-transparent flex whitespace-nowrap justify-start items-center w-auto shrink-0 ${mode === 'sidebarMain' ? 'md:w-full' : 'md:w-auto'} gap-2 ${active === link.name && linkActiveClass}`}
+              className={`${hoverCat} p-4 lg:px-7 2xl:px-10 border-r-2 border-transparent flex whitespace-nowrap justify-start items-center w-auto shrink-0 ${mode === 'sidebarMain' ? 'md:w-full' : 'md:w-auto'} gap-2 ${active === link.name && linkActiveClass}`}
             >
               <div className="transition-all duration-300">{link.icon}</div>
               <span className={`${(active === 'Чат' && mode === 'sidebarMain') ? 'md:opacity-0 md:absolute' : 'opacity-100 transition-all duration-300 ease-in-out'}`}>{link.name}</span>

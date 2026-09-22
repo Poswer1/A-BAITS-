@@ -60,13 +60,11 @@ export default function LotCardV2({lot, select, selectLot}: LotCardV2Props) {
         href={select === 'edit' ? `/${lang}/editLot/${lot.lotNumber}` : select ? '' : `/${lang}/lot/${lot.lotNumber}`} 
         onClick={() => (select && selectLot )? selectLot(lot._id) : ''} 
         className={`cursor-pointer border-t border-b border-gray-200 flex justify-start items-center gap-2 md:gap-10 bg-white w-full md:rounded-md text-base text-black overflow-hidden relative`}>
-        
-        <img src={`${BASE_URL}${lot.images[0]}`} className="object-cover w-25 h-25 md:w-40 md:h-40 md:block"/>
+        <img src={`${BASE_URL}${lot.images[0]}`} className="object-cover min-w-25 h-25 md:w-40 md:h-40 "/>
         <div className="flex justify-between items-center w-full">
             <div className={`${columnClass}`}>
                 <h1>{`${lot.name.length >=30 ? lot.name.slice(0, 30) + '...' : lot.name}`}</h1>
                 <h1 className="">{lot.status !== 'Active' ? t('lot', 'purchasePrice') : t('lot', 'lot-current-bid')}: <span className="text-orange-600 font-bold text-base">{priceLot} ₴</span></h1>
-                
             </div>
 
             <div className={`${columnClass} hidden md:flex`}>
