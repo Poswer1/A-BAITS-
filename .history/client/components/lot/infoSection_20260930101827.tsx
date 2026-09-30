@@ -105,6 +105,7 @@ export default function InfoSection({lot, socket, currentPrice, setCurrentPrice,
         
         // Расчет минимальной ставки: если ставок нет - текущая цена, если есть - текущая цена + шаг
         const minBid =currentPrice + lot.stepPrice 
+            : currentPrice
             
         setValue(prev => {
         if (prev - lot.stepPrice < minBid) {

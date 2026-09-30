@@ -15,7 +15,7 @@ export default function Toast({ message, error }: ToastProps) {
   return (
     <div
       className={`
-        ${isVisible ? 'opacity-100 translate-y-0 pointer-events-auto z-30' : 'opacity-0 -translate-y-3 pointer-events-none z-0'}
+        ${isVisible ? 'opacity-100 translate-y-0 pointer-events-auto z-30' : 'opacity-0 -translate-y-3 pointer-events-none'}
         ${animate}
         fixed top-20 right-5 
         flex items-center gap-3

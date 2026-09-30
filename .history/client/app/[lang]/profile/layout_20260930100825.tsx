@@ -49,7 +49,9 @@ function layout({children}: {children: React.ReactNode}) {
       ): (
         <>
           {(!name || name === username) && (
-            <Sidebar mode='sidebarMain' active={activeLink} name={username}/>
+             
+                <Sidebar mode='sidebarMain' active={activeLink} name={username}/>
+             
           )}
           <main className={`relative w-full min-w-0 ${pathname?.includes('/chat') ? 'z-30' : 'z-0'}`}>
             {children}

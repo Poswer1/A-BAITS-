@@ -97,7 +97,7 @@ export default function LotDetails({ lot }: LotDetailsProps) {
 
   return (
     <div className="flex flex-col justify-start items-center w-full relative min-h-screen md:h-screen">
-      <div className={`hidden md:block w-full sticky top-0 ${buyNowConfirm ? 'z-0' : 'z-10'}`}>
+      <div className={`hidden md:block w-full sticky top-0`}>
         <HeaderLot lot={lot} />
       </div>
       <div className="flex flex-col md:flex-row justify-start items-start w-full 2xl:w-[80%] lg:w-[90%] py-2 md:gap-2 md:h-screen">

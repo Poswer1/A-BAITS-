@@ -27,7 +27,7 @@ function Navbar() {
 
   return (
     <div className='relative flex w-full bg-[#0F0F0F] p-2 justify-center 0'>
-        <div className='flex justify-start items-center gap-6 md:gap-5 text-white w-full md:w-[90%] overflow-x-auto whitespace-nowrap'>
+        <div className='relative z-20 flex justify-start items-center gap-6 md:gap-5 text-white w-full md:w-[90%] overflow-x-auto whitespace-nowrap'>
             <Link href={`/${lang}/allLots?sort=newFirst`} className={hoverLink}>{t('navbar', 'newLot')}</Link>
             <Link href={`/${lang}/allLots?maxPrice=1`} className={hoverLink}>{t('navbar','lotfrom1UAH')}</Link>
             <Link href={`/${lang}/allLots?sort=moreBids`} className={hoverLink}>Топ {t('global','lot')}</Link>

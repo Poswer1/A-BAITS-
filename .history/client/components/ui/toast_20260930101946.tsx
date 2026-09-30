@@ -17,7 +17,7 @@ export default function Toast({ message, error }: ToastProps) {
       className={`
         ${isVisible ? 'opacity-100 translate-y-0 pointer-events-auto z-30' : 'opacity-0 -translate-y-3 pointer-events-none z-0'}
         ${animate}
-        fixed top-20 right-5 
+        fixed  relative top-20 right-5 
         flex items-center gap-3
         p-4 pr-10
         rounded-xl border

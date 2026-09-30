@@ -65,7 +65,7 @@ export default function LotDetails({ lot }: LotDetailsProps) {
       if (data.lotId === numberLot) {
         setCurrentPrice(data.newPrice)
         setUserHistory(prev => [data.lastBid, ...prev])
-        setValue(data.newPrice + lot.stepPrice)
+        setValue(data.newPrice +)
         setNewBid(data.lastBid)
       }
 
