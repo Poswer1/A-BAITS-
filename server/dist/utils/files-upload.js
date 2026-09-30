@@ -29,6 +29,7 @@ const ProccessImages = async (files, destination) => {
         const webpName = `${newName}.webp`;
         const finalPath = path_1.default.join(file.destination, webpName);
         await (0, sharp_1.default)(file.path)
+            .rotate()
             .resize({
             width: 600,
             height: 600,
