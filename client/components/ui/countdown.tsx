@@ -3,7 +3,7 @@
 import { useTranslation } from "@/app/context/TranslationProvider"
 import { useEffect, useState } from "react"
 
-export default function Countdown({date, status}: {date:string, status:string}) {
+export default function Countdown({date, status}: {date:string, status?:string}) {
 
     const [timeLeft, setTimeLeft] = useState(new Date(date).getTime() - Date.now())
     const {t} = useTranslation()
