@@ -27,7 +27,7 @@ export default function ModalConfirm({handleAction, handleClose, title, alert, y
 
     return (
     createPortal(
-    <div className={overlay} onClick={handleClose}>
+    <div className={overlay}>
         <div className={`${animationScale} flex flex-col justify-center items-center z-80 bg-white w-[90%] lg:w-2/4 xl:w-1/3 rounded-xl text-black`}>
             <div className={`py-15 flex flex-col justify-center items-center w-[90%] gap-1`}>
                 <h1 className="text-2xl text-center">{title}</h1>

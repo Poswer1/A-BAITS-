@@ -4,7 +4,7 @@ import { useTranslation } from '@/app/context/TranslationProvider'
 import { overlay } from '@/styles/global'
 import { animationScale, hover } from '@/styles/style'
 import { AlertCircle } from 'lucide-react'
-import React, { useEffect, useState } from 'react'
+import React, { useSyncExternalStore } from 'react'
 import { createPortal } from 'react-dom'
 
 interface ModalConfirmProps {
@@ -16,19 +16,15 @@ interface ModalConfirmProps {
 }
 
 export default function ModalConfirm({handleAction, handleClose, title, alert, yesButton}:ModalConfirmProps) {
-    const [mounted, setMounted] = useState(false)
+    const mounted = useSyncExternalStore(() => () => {}, () => true, () => false)
     const {t} = useTranslation()
-
-    useEffect(() => {
-        setMounted(true)
-    }, [])
 
     if (!mounted) return null
 
     return (
     createPortal(
-    <div className={overlay} onClick={handleClose}>
-        <div className={`${animationScale} flex flex-col justify-center items-center z-80 bg-white w-[90%] lg:w-2/4 xl:w-1/3 rounded-xl text-black`}>
+    <div className={overlay}>
+        <div className={`${animationScale} flex flex-col justify-center items-center z-80 bg-white w-[90%] lg:w-2/4 xl:w-1/3 rounded-xl`}>
             <div className={`py-15 flex flex-col justify-center items-center w-[90%] gap-1`}>
                 <h1 className="text-2xl text-center">{title}</h1>
                 <p className="flex text-center text-gray-500 gap-1">{alert}</p>
