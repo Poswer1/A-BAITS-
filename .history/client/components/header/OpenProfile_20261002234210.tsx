@@ -32,11 +32,11 @@ function OpenProfile({setOpenProfile, name, open}: OpenProfile) {
         window.location.reload()
     }
 
-    const linkClass = `${hoverCat} block w-full py-2 px-4 cursor-pointer`
+    const linkClass = `${hoverCat} flex w-full items-center justify-start gap-1 py-2 px-4 cursor-pointer`
 
   return (
     <>
-      <div ref={modalRef} className={`${open ? "h-70 md:h-60" : "h-0"} ${animate} ${openNotification && 'hidden'} overflow-hidden flex flex-col justify-center items-center bg-white rounded-xl absolute right-[-10] md:right-0 top-10 text-black z-20 w-40`}>
+      <div ref={modalRef} className={`${open ? "h-70 md:h-60 pointer-events-auto" : "h-0 pointer-events-none"} ${animate} ${openNotification && 'hidden'} overflow-hidden flex flex-col justify-center items-center bg-white rounded-xl absolute right-[-10] md:right-0 top-10 text-black z-[60] w-40`}>
             <Link href={`/${lang}/profile/${name}`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('header','modalProfile-profile')}</Link> 
             <Link href={`/${lang}/profile/sell/Active`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('profile', 'myLots')}</Link>
             <Link href={`/${lang}/profile/buy/Active`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('header',"modalProfile-history")}</Link>

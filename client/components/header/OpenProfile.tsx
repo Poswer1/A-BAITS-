@@ -36,7 +36,7 @@ function OpenProfile({setOpenProfile, name, open}: OpenProfile) {
 
   return (
     <>
-      <div ref={modalRef} className={`${open ? "h-70 md:h-60 pointer-events-auto" : "h-0 pointer-events-none"} ${animate} ${openNotification && 'hidden'} overflow-hidden flex flex-col justify-center items-center bg-white rounded-xl absolute right-[-10] md:right-0 top-10 text-black z-30 w-40`}>
+      <div ref={modalRef} className={`${open ? "h-70 md:h-60 pointer-events-auto" : "h-0 pointer-events-none"} ${animate} ${openNotification && 'hidden'} overflow-hidden flex flex-col justify-center items-center bg-white rounded-xl absolute right-[-10] md:right-0 top-10 text-black z-[60] w-40`}>
             <Link href={`/${lang}/profile/${name}`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('header','modalProfile-profile')}</Link> 
             <Link href={`/${lang}/profile/sell/Active`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('profile', 'myLots')}</Link>
             <Link href={`/${lang}/profile/buy/Active`} className={linkClass} onClick={() => setOpenProfile(false)}>{t('header',"modalProfile-history")}</Link>
