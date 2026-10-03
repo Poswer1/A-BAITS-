@@ -10,7 +10,7 @@ import { blockClass, pageContainerClass } from '@/styles/profile/profile'
 import { hover } from '@/styles/style';
 import { AlertCircle, AlertTriangle, Check, ChevronLeft, Laptop, MoreVertical,Send, Shield, X} from "lucide-react";
 import Link from 'next/link';
-import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { useTranslation } from '@/app/context/TranslationProvider';
@@ -28,6 +28,7 @@ function page() {
 
   const param = useParams()
   const router = useRouter()
+  const pathname = usePathname()
   const lang = param.lang as string
   const {socket} = useSocketContext()
   const {t} = useTranslation()
@@ -52,6 +53,18 @@ function page() {
     if(!selectIdChat) return
     setSelectChat(selectIdChat)
   }, [selectIdChat])
+
+  const handleSelectChat = (chatId: string, chatType: string) => {
+    setSelectChat(chatId)
+    const params = new URLSearchParams(searchParams.toString())
+    params.set('id', chatId)
+    if (chatType === 'support') {
+      params.set('support', '1')
+    } else {
+      params.delete('support')
+    }
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false })
+  }
 
   useEffect(() => {
     if (!chatRef.current || !socket) return;
@@ -148,6 +161,11 @@ function page() {
 
   const handleBack = () => {
     setSelectChat('')
+    const params = new URLSearchParams(searchParams.toString())
+    params.delete('id')
+    params.delete('support')
+    const query = params.toString()
+    router.replace(query ? `${pathname}?${query}` : pathname, { scroll: false })
   }
 
    const priceLot = chat?.lot?.redemptionMethod === 'bid' ? chat?.lot?.startPrice : chat?.lot?.blitzPrice
@@ -157,7 +175,7 @@ function page() {
       <h1 className={`text-xl 2xl:text-2xl lg:text-xl p-2 py-4 md:p-0 md:mb-2`}>Чат</h1>
       <div className='flex justify-start items-start gap-2 w-full z-10 relative'>
 
-      <ChatList setSelectChat={setSelectChat} selectChat={selectChat}/>
+      <ChatList setSelectChat={handleSelectChat} selectChat={selectChat}/>
       {selectChat && (
         <div className={`${blockClass} ${!selectChat ? 'hidden md:block pointer-events-none md:pointer-events-auto': 'fixed top-0 left-0 md:static'}  h-[100dvh] md:h-160 2xl:h-190 flex-col xl:w-2/3 2xl:!w-3/5 !gap-0 z-20`}>
             <div className='flex justify-start items-center w-full border-b border-b-gray-200 pb-2 gap-2'>
@@ -228,12 +246,12 @@ function page() {
               })}
             </div>
             <div className='flex w-full justify-center items-center py-2 border-t border-gray-300'>
-               {statusUser === 'Temporary' ? (
-                    <div className="flex justify-center w-full gap-2 text-yellow-400">
+               {!isSupportChat && (statusUser === 'Temporary' || statusUser === 'Blocked') ? (
+                    <div className={`flex justify-center w-full gap-2 ${statusUser === 'Blocked' ? 'text-red-500' : 'text-yellow-400'}`}>
                         <AlertTriangle />
-                        <h1>{t('violations', 'Temporary')}</h1>
+                        <h1>{t('violations', statusUser)}</h1>
                     </div>
-                ): myInfo && myInfo.balance <= -1 ? (
+                ): !isSupportChat && myInfo && myInfo.balance <= -1 ? (
                   <div className="flex justify-center w-full gap-2 text-red-500">
                     <AlertCircle />
                     <h1>{t('chat', 'balanceInTheRed')}</h1>

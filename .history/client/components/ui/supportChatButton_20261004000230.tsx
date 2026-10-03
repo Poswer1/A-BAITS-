@@ -26,7 +26,7 @@ export default function SupportChatButton({className = '', children}: SupportCha
     try {
       const data = await createSupportChat()
       if (!data?.chatId) throw new Error('SupportChatCreateError')
-      router.push(`/${lang}/profile/chat?id=${data.chatId}&support=1`)
+      router.push(`/${lang}/profile/chat?id=${data.chatId}`)
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'SupportChatCreateError'
       setError(t('chat', message))
@@ -38,7 +38,7 @@ export default function SupportChatButton({className = '', children}: SupportCha
 
   return (
     <>
-      <button type="button" onClick={handleClick} disabled={loading} className={`${className} cursor-pointer`}>
+      <button type="button" onClick={handleClick} disabled={loading} className={`${className}`}>
         {children}
       </button>
       <Toast message="" error={error} />

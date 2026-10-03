@@ -25,28 +25,29 @@ export default function BlockedModal({mode}:BlockedModalProps) {
     const {t} = useTranslation()
     const [open, setOpen] = useState(true)
     const {status, UnblockDate} = GetStatusUser()
-    const isRestricted = status === 'Blocked' || status === 'Temporary'
 
      useEffect(() => {
-        if (open && isRestricted) {
-            document.body.style.overflow = 'hidden'
-            return () => {
-                document.body.style.overflow = ''
-            }
+    
+        if(open && status !== 'No restrictions') {
+        document.body.style.overflow = 'hidden';
+        } else {
+        document.body.style.overflow = '';
         }
 
-        document.body.style.overflow = ''
-        return undefined
-    }, [open, isRestricted])
+        return () => {
+        document.body.style.overflow = '';
+        }
+
+    }, [open, status])
 
     const handleBack = () => {
         router.back()
     }
 
   return (
-    (isRestricted && open) && (
+    (status === 'Blocked' || status === 'Temporary' && open ) && (
         <div className={`${overlay}`}>
-            <div className={`${animationScale} flex flex-col justify-center items-center bg-white w-[90%] lg:w-2/5 2xl:w-1/3 p-10 rounded-xl gap-2`}>
+            <div className={`${animationScale} flex flex-col justify-center items-center bg-white w-[90%] lg:w-2/5 2xl:w-1/3 p-10 rounded-xl gap-2 text-black`}>
                 {status === 'Blocked' ? (
                     <Ban size={80} className='text-red-500'/>
                 ): (
@@ -58,6 +59,7 @@ export default function BlockedModal({mode}:BlockedModalProps) {
                     <span className='flex flex-col md:flex-row gap-2 text-center'>{t('violations', 'UnblockDate')} <Countdown date={UnblockDate}/></span>
                 )}
                 <div className='flex gap-4'>
+                    <
                     <Link href={'/'} className={hover}>{t('violations', 'Support')}</Link>
                     {status === 'Blocked' && (
                       <Link href={`/${lang}/auth/register`} className={hoverSub}>{t('violations', 'createNewAccount')}</Link>

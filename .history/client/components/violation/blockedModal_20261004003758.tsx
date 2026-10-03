@@ -63,8 +63,7 @@ export default function BlockedModal({mode}:BlockedModalProps) {
                      {t('violations', 'Support')}
                     </SupportChatButton>
                     <span onClick={() => mode === 'general' ? setOpen(false) : handleBack()} className={`${status !== 'Temporary' && 'hidden'} ${hover} text-orange-600`}>
-                        {mode === 'general' ? t('violations', 'IgotIt'): 'Назад'}
-                    </span>
+                        {mode === 'general' ? t('violations', 'IgotIt'): 'Назад'}</span>
                 </div>
             </div>
         </div>

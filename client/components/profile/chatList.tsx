@@ -4,20 +4,17 @@ import { hoverCat } from '@/styles/categoryList'
 import { getMyChats } from '@/services/chat'
 import { getUserById } from '@/services/user';
 import { useTranslation } from '@/app/context/TranslationProvider';
-import { useParams } from 'next/navigation';
 import { ChatTypes } from '@/types/types';
 import Image from 'next/image';
 
 interface ChatListProps {
-  setSelectChat: (v:string) => void;
+  setSelectChat: (id:string, type:string) => void;
   selectChat:string
 }
 
 export default function ChatList({setSelectChat, selectChat}: ChatListProps) {
 
     const {t} = useTranslation()
-    const params = useParams()
-
     const [activeChat, setActiveChat] = useState<ChatTypes[]>([])
     const [unActiveChat, setUnActiveChat] = useState<ChatTypes[]>([])
     const [loading, setLoading] = useState(true)
@@ -52,7 +49,7 @@ export default function ChatList({setSelectChat, selectChat}: ChatListProps) {
             if (!user) return null;
             const lastMessage = chat.messages[chat.messages.length - 1]
             return (
-                <div onClick={() => {setSelectChat(chat._id)}} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-2 transition-all  duration-300  border-b border-t 2 w-full  2xl:w-90 border-gray-300 bg-white relative`}>
+                <div key={chat._id} onClick={() => {setSelectChat(chat._id, chat.type)}} className={`${hoverCat} flex justify-between items-start gap-2 cursor-pointer p-2 transition-all  duration-300  border-b border-t 2 w-full  2xl:w-90 border-gray-300 bg-white relative`}>
                         <div className='flex justify-center items-center gap-2'>
                             <AvatarBlock avatar={chat.lot?.images?.[0] ? chat.lot.images[0] : user[0]?.avatar}  size="50"/>
                             <div className={`flex flex-col  justify-center items-start `}>
@@ -115,5 +112,3 @@ export default function ChatList({setSelectChat, selectChat}: ChatListProps) {
     </div>
   )
 }
-
-
