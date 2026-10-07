@@ -2,35 +2,56 @@ import { categoriesWithIcons } from '@/category/category';
 import ListLocation from '../../../data/citiesUK.json'
 import Catalog from '@/components/catalog/catalog';
 import Filter from '@/components/catalog/filter';
-import { getAllLot, getFilterLot } from '@/services/lot';
+import { getFilterLot } from '@/services/lot';
+import type { Metadata } from 'next'
+import { getCatalogPageSeo } from '@/utils/catalogSeo'
+import { localizedMetadata, noIndexMetadata } from '@/utils/seo'
+import CatalogNavigation from '@/components/catalog/catalogNavigation'
 
 interface pageProps {
-params: {
-    lang: string;
-    slug?: string | string[];
-  };
-searchParams: {
-    minPrice: string,
-    maxPrice:string,
-    state: string[]
-    sort:string
-    page:number
+params: Promise<{
+  lang: string;
+  slug?: string | string[];
+}>;
+searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
+
+export async function generateMetadata({ params, searchParams }: pageProps): Promise<Metadata> {
+  const [route, query] = await Promise.all([params, searchParams])
+  const lang = route.lang === 'ru' ? 'ru' : 'uk'
+  const slug = Array.isArray(route.slug) ? route.slug : route.slug ? [route.slug] : []
+  const pageSeo = getCatalogPageSeo(slug, lang)
+
+  if (!pageSeo) {
+      return noIndexMetadata(
+          lang === 'ru' ? 'Поиск рыболовных товаров' : 'Пошук рибальських товарів',
+          lang === 'ru' ? 'Результаты поиска на аукционе A-BAITS.' : 'Результати пошуку на аукціоні A-BAITS.',
+      )
+  }
+
+  const { indexable, canonicalPath, ...localizedPageSeo } = pageSeo
+  const metadata = localizedMetadata({
+    lang,
+    ...localizedPageSeo,
+    path: canonicalPath || localizedPageSeo.path,
+  })
+  if (Object.keys(query).length > 0 || indexable === false) {
+      return { ...metadata, robots: { index: false, follow: true, googleBot: { index: false, follow: true } } }
+  }
+  return metadata
 }
 
 export default async function page({params, searchParams}: pageProps) {
 
-    const param = await params
-    const search = await searchParams
+  const [param, search] = await Promise.all([params, searchParams])
 
     const lang = param.lang as string
-    const page = search.page as number
+    const page = Number(search.page)
 
     const state: string[] = search.state
-    ? (Array.isArray(search.state)
-        ? search.state
-        : [search.state]
-        ).map(s => decodeURIComponent(s))
+    ? (Array.isArray(search.state) ? search.state : [search.state])
+        .filter((value): value is string => typeof value === 'string')
+        .map(s => decodeURIComponent(s))
     : []
 
     const slug: string[] = Array.isArray(param.slug)
@@ -50,7 +71,7 @@ export default async function page({params, searchParams}: pageProps) {
     let searchValue: string | undefined;
 
 
-    let path = [...slug];
+    const path = [...slug];
     const categoryData = categoriesWithIcons.find(c => c.name === path[0]);
     const cityData = ListLocation.find(c => c.name.toLowerCase() === path[path.length - 1].toLowerCase());
 
@@ -84,26 +105,33 @@ export default async function page({params, searchParams}: pageProps) {
         searchValue = slug[0]
     }
     
-    let allLots = []
-
-    try {
-        allLots = await getFilterLot(category, subCategory, subSubCategory, city, search.minPrice, search.maxPrice, state, search.sort, searchValue, page)
-    } catch (error) {
-        allLots = []
-    }
+    const allLots = await getFilterLot(
+        category,
+        subCategory,
+        subSubCategory,
+        city,
+        typeof search.minPrice === 'string' ? search.minPrice : undefined,
+        typeof search.maxPrice === 'string' ? search.maxPrice : undefined,
+        state,
+        typeof search.sort === 'string' ? search.sort : undefined,
+        searchValue,
+        Number.isNaN(page) ? undefined : page,
+    )
 
   return (
-    <div className='flex justify-start items-start w-full h-full relative'>
-        <Filter maxPriceLot={allLots.maxPriceLot}/>
-        <Catalog 
-        category={langCategory} 
-        subCategory={langSubCategory} 
-        subSubCategory={langSubSubCategory} 
-        city={langCity} 
-        lots={allLots.lots} 
-        total={allLots.totalLot} 
-        searchValue={searchValue?.toString() || ''}/>
+    <div className='flex flex-col justify-start items-start w-full h-full relative'>
+        <CatalogNavigation lang={lang} slug={slug}/>
+        <div className='flex justify-start items-start w-full h-full relative'>
+            <Filter maxPriceLot={allLots.maxPriceLot}/>
+            <Catalog
+            category={langCategory}
+            subCategory={langSubCategory}
+            subSubCategory={langSubSubCategory}
+            city={langCity}
+            lots={allLots.lots}
+            total={allLots.totalLot}
+            searchValue={searchValue?.toString() || ''}/>
+        </div>
     </div>
   )
 }
-

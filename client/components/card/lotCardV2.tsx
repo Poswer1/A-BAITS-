@@ -60,7 +60,7 @@ export default function LotCardV2({lot, select, selectLot}: LotCardV2Props) {
         href={select === 'edit' ? `/${lang}/editLot/${lot.lotNumber}` : select ? '' : `/${lang}/lot/${lot.lotNumber}`} 
         onClick={() => (select && selectLot )? selectLot(lot._id) : ''} 
         className={`cursor-pointer min-h-25 md:h-40 border-t border-b border-gray-200 flex py-2 md:p-0 justify-start items-center gap-2 md:gap-10 bg-white w-full md:rounded-md text-base text-black overflow-hidden relative`}>
-        <img src={`${BASE_URL}${lot.images[0]}`} className="object-cover w-25 md:w-40 h-full rounded-xl bg-gray-100"/>
+        <img src={`${BASE_URL}${lot.images[0]}`} alt={lot.name} className="object-cover w-25 md:w-40 h-full rounded-xl bg-gray-100"/>
         <div className="flex justify-between items-center w-full">
             <div className={`${columnClass}`}>
                 <h1>{`${lot.name.length >=30 ? lot.name.slice(0, 30) + '...' : lot.name}`}</h1>
@@ -91,4 +91,3 @@ export default function LotCardV2({lot, select, selectLot}: LotCardV2Props) {
     </Link>
   )
 }
-

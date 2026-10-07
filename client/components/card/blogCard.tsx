@@ -1,5 +1,3 @@
-import { useTranslation } from "@/app/context/TranslationProvider"
-import { button } from "@/styles/global"
 import { hover } from "@/styles/style"
 import { Calendar, Eye } from "lucide-react"
 import { getRelativeTime } from "../ui/relativeTime"
@@ -17,11 +15,9 @@ export default function BlogCard({blog}:BlogCardProps) {
     const BASE_URL = process.env.NEXT_PUBLIC_URL
     const params = useParams()
     const lang = params.lang as string
-    const {t} = useTranslation()
-
   return (
     <Link href={`/${lang}/blog/${blog.slug}`} className={`${hover} flex flex-col justify-start items-center lg:w-1/3 xl:w-1/4 p-2 text-black`}>
-      <img src={`${BASE_URL}${blog.images}`} className="w-full object-cover h-65 rounded-xl border border-gray-200"/>
+      <img src={`${BASE_URL}${blog.images}`} alt={blog.title} className="w-full object-cover h-65 rounded-xl border border-gray-200"/>
       <div className="flex justify-between flex-col w-full lg:h-55 2xl:h-45">
         <div className="p-2">
             <h1 className="text-lg">{blog.title.length > 35 ? blog.title.slice(0, 35) + '...' : blog.title}</h1>
@@ -39,4 +35,3 @@ export default function BlogCard({blog}:BlogCardProps) {
     </Link>
   )
 }
-

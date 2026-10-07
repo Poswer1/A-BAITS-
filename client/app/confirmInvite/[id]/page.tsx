@@ -3,6 +3,13 @@ import { confirmInvite } from "@/services/chat";
 import { getRoleUser } from "@/services/user"
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation'
+import type { Metadata } from 'next'
+import { noIndexMetadata } from '@/utils/seo'
+
+export const metadata: Metadata = noIndexMetadata(
+    'Подтверждение приглашения',
+    'Техническая страница подтверждения приглашения.',
+)
 
 export default async function page({params}:{params:{id:string}}) {
 
@@ -21,4 +28,3 @@ export default async function page({params}:{params:{id:string}}) {
         redirect('/uk')
     }
 }
-

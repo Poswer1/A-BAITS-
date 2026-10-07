@@ -2,6 +2,13 @@ import LotForm from '@/components/createLot/lotForm'
 import { getLot } from '@/services/lot'
 import { getRoleUser } from '@/services/user';
 import { cookies } from 'next/headers';
+import type { Metadata } from 'next'
+import { noIndexMetadata } from '@/utils/seo'
+
+export const metadata: Metadata = noIndexMetadata(
+  'Редактировать лот',
+  'Форма редактирования лота на аукционе A-BAITS.',
+)
 
 interface pageProps {
   params: {
@@ -36,4 +43,3 @@ export default async function page({params} : pageProps) {
     <LotForm mode={mode} initialData={initialDate}/>
   )
 }
-

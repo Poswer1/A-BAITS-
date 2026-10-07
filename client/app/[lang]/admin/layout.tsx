@@ -2,6 +2,13 @@ import SidebarAdmin from '@/components/admin/sidebarAdmin'
 import React from 'react'
 import { cookies } from 'next/headers';
 import { getRoleUser } from '@/services/user';
+import type { Metadata } from 'next'
+import { noIndexMetadata } from '@/utils/seo'
+
+export const metadata: Metadata = noIndexMetadata(
+  'Управление сайтом',
+  'Закрытая административная панель A-BAITS.',
+)
 
 async function layout({children}: {children: React.ReactNode}) {
 

@@ -1,8 +1,34 @@
-import { getAllLot, getLotFrom1UAH, getNewLot, getPopularLot, getTopLot } from "@/services/lot";
+import { getLotFrom1UAH, getNewLot, getPopularLot, getTopLot } from "@/services/lot";
 import Banner from "@/components/main/banner";
 import Lots from "@/components/main/lots";
+import type { Metadata } from "next";
+import { localizedMetadata, noIndexMetadata } from "@/utils/seo";
 
 export const dynamic = 'force-dynamic';
+
+interface HomeProps {
+  params: Promise<{ lang: string }>
+  searchParams: Promise<Record<string, string | string[] | undefined>>
+}
+
+export async function generateMetadata({ params, searchParams }: HomeProps): Promise<Metadata> {
+  const [{ lang }, query] = await Promise.all([params, searchParams])
+  if (Object.keys(query).length > 0) {
+    return noIndexMetadata(
+      'A-BAITS',
+      lang === 'ru' ? 'Рыболовный онлайн-аукцион A-BAITS.' : 'Рибальський онлайн-аукціон A-BAITS.',
+    )
+  }
+
+  return localizedMetadata({
+    lang,
+    title: lang === 'ru' ? 'Рыболовный онлайн-аукцион' : 'Рибальський онлайн-аукціон',
+    description: lang === 'ru'
+      ? 'Покупайте и продавайте рыболовные товары на аукционе A-BAITS. Новые лоты, торги и предложения от рыболовов.'
+      : 'Купуйте та продавайте рибальські товари на аукціоні A-BAITS. Нові лоти, торги та пропозиції від рибалок.',
+    path: '/',
+  })
+}
 
 export default async function Home() {
 

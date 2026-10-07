@@ -1,11 +1,12 @@
 import { useTranslation } from "@/app/context/TranslationProvider"
-import { Copy, Eye, Star } from "lucide-react"
+import { Eye, Star } from "lucide-react"
 import { useParams } from "next/navigation"
 import FavoritesButton from "@/components/ui/favoritesButton"
 import { getValueByLang } from "@/utils/translateValue"
 import { categoriesWithIcons } from "@/category/category"
 import ListLocation from '../../data/citiesUK.json'
 import { LotTypes } from "@/types/types"
+import Link from "next/link"
 
 
 interface HeaderLot {
@@ -39,7 +40,29 @@ export default function HeaderLot({lot}:HeaderLot) {
                 <div className="flex flex-wrap text-sm md:text-base justify-start items-center gap-2 md:gap-6 text-gray-800">
                     <span>{t('lot', 'lot-state')} <span className="text-orange-600">{transleteState || lot?.state}</span></span>
                     <span>{t('lot', 'lot-location')}<span className="text-orange-600"> {transleteCity || lot?.location}</span></span>
-                    <span className="flex text-black">{TransleteCategory && lang === 'ru' ? TransleteCategory.ru : TransleteCategory?.uk} | {TransleteSubCategory && lang === 'ru' ? TransleteSubCategory.ru : TransleteSubCategory?.uk} | {TransleteSubSubCategory && lang === 'ru' ? TransleteSubSubCategory?.ru : TransleteSubSubCategory?.uk}</span>
+                    <nav aria-label={lang === 'ru' ? 'Категория товара' : 'Категорія товару'} className="flex flex-wrap text-black gap-1">
+                        {TransleteCategory && (
+                            <Link href={`/${lang}/${TransleteCategory.name}`} className="hover:text-orange-600">
+                                {lang === 'ru' ? TransleteCategory.ru : TransleteCategory.uk}
+                            </Link>
+                        )}
+                        {TransleteSubCategory && (
+                            <>
+                                <span aria-hidden="true">|</span>
+                                <Link href={`/${lang}/${TransleteCategory?.name}/${TransleteSubCategory.name}`} className="hover:text-orange-600">
+                                    {lang === 'ru' ? TransleteSubCategory.ru : TransleteSubCategory.uk}
+                                </Link>
+                            </>
+                        )}
+                        {TransleteSubSubCategory && (
+                            <>
+                                <span aria-hidden="true">|</span>
+                                <Link href={`/${lang}/${TransleteCategory?.name}/${TransleteSubCategory?.name}/${TransleteSubSubCategory.name}`} className="hover:text-orange-600">
+                                    {lang === 'ru' ? TransleteSubSubCategory.ru : TransleteSubSubCategory.uk}
+                                </Link>
+                            </>
+                        )}
+                    </nav>
                 </div>
             </div>
             <div className="flex flex-col justify-center items-start md:items-end gap-2">
@@ -53,4 +76,3 @@ export default function HeaderLot({lot}:HeaderLot) {
     </div>
   )
 }
-

@@ -1,63 +1,12 @@
-'use client'
+import type { Metadata } from 'next'
+import ProfileLayoutClient from './ProfileLayoutClient'
+import { noIndexMetadata } from '@/utils/seo'
 
-import { useTranslation } from '@/app/context/TranslationProvider'
-import Sidebar from '@/components/profile/sidebar'
-import Loading from '@/components/ui/loadig'
-import { getUserById } from '@/services/user'
-import { loadingBlock } from '@/styles/global'
-import { useParams, usePathname } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+export const metadata: Metadata = noIndexMetadata(
+  'Личный кабинет',
+  'Личный кабинет пользователя A-BAITS.',
+)
 
-function layout({children}: {children: React.ReactNode}) {
-
-  const [activeLink, setActiveLink] = useState('')
-  const [username, setUsername] = useState('')
-  const [loading, setLoading] = useState(true)
-  const pathname = usePathname()
-  const params = useParams()
-  const name = params.username ? decodeURIComponent(params.username as string): ''
-
-  const {t} = useTranslation()
-
-  useEffect(() => {
-    getUserById()
-    .then(data => {
-      setUsername(data.name)
-      setLoading(false)
-    }) 
-  }, [])
-
-  useEffect(() => {
-    if(!pathname) return
-    if(pathname.includes('buy')) {
-      setActiveLink(t('profile', 'buy'))
-    } else if(pathname.includes('sell')) {
-      setActiveLink(t('profile', 'sell'))
-    } else if(pathname.includes('chat')) {
-      setActiveLink('Чат')
-    } else {
-      setActiveLink(t('profile', 'profile'))
-    }
-  }, [pathname, t])
-
-  return (
-    <div className='flex flex-col md:flex-row justify-start min-h-[92vh] items-start overflow-hidden text-black w-full bg-gray-100 overflow-x-hidden'>
-      {loading ? (
-        <div className={loadingBlock}>
-          <Loading />
-        </div>
-      ): (
-        <>
-          {(!name || name === username) && (
-            <Sidebar mode='sidebarMain' active={activeLink} name={username}/>
-          )}
-          <main className={`relative w-full min-w-0 ${pathname?.includes('/chat') ? 'z-10' : 'z-0'}`}>
-            {children}
-          </main>
-        </>
-      )}
-    </div>
-  )
+export default function ProfileLayout({ children }: { children: React.ReactNode }) {
+  return <ProfileLayoutClient>{children}</ProfileLayoutClient>
 }
-
-export default layout

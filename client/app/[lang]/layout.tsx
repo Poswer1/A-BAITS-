@@ -1,5 +1,3 @@
-'use client'
-
 import TranslationProvider from "../context/TranslationProvider";
 
 
@@ -38,7 +36,7 @@ import ruBlog from '../../public/translations/ru/blog.json'
 import ruRules from '../../public/translations/ru/rules.json'
 
 import ClientLayout from "./clientLayout";
-import { useParams } from "next/navigation";
+import { serializeJsonLd, SITE_NAME, SITE_ORIGIN, siteUrl } from "@/utils/seo";
 
 type Lang = 'uk' | 'ru'
 
@@ -81,16 +79,41 @@ const translationsMap = {
     }
 }
 
-export default function LangLayout({children}: {children: React.ReactNode;}) {
-    
-    const params = useParams()
+type LangLayoutProps = {
+    children: React.ReactNode;
+    params: Promise<{ lang: string }>;
+}
 
-    const lang = params.lang as Lang || 'uk'
-
-    const messages = translationsMap[lang] ||  translationsMap.uk
+export default async function LangLayout({ children, params }: LangLayoutProps) {
+    const { lang: routeLang } = await params
+    const lang = (routeLang === 'ru' ? 'ru' : 'uk') as Lang
+    const messages = translationsMap[lang]
+    const siteStructuredData = [
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "@id": `${SITE_ORIGIN}/#organization`,
+            name: SITE_NAME,
+            url: SITE_ORIGIN,
+            logo: siteUrl('/images/logo.png'),
+        },
+        {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "@id": `${siteUrl(`/${lang}`)}#website`,
+            name: SITE_NAME,
+            url: siteUrl(`/${lang}`),
+            inLanguage: lang === 'ru' ? 'ru-RU' : 'uk-UA',
+            publisher: { "@id": `${SITE_ORIGIN}/#organization` },
+        },
+    ]
 
     return (
         <TranslationProvider messages={messages}>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: serializeJsonLd(siteStructuredData) }}
+            />
             <ClientLayout>
                 {children}
             </ClientLayout>

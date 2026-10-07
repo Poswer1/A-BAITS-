@@ -1,6 +1,5 @@
 'use client'
 
-import { useTranslation } from '@/app/context/TranslationProvider'
 import { BlogTypes } from '@/types/types'
 import { Calendar, Eye } from 'lucide-react'
 import React from 'react'
@@ -18,15 +17,13 @@ export default function BlogBySlug({blog}:BlogBySlugProps) {
     const BASE_URL = process.env.NEXT_PUBLIC_URL
     const params = useParams()
     const lang = params.lang as string
-    const {t} = useTranslation()
-
   return (
     <div className='flex flex-col justify-start items-start w-full min-h-screen bg-gray-100 gap-5 text-black'>
 
         <div className='flex justify-center w-full md:h-100 relative bg-gray-200 overflow-hidden'>
             <div className="absolute inset-0 h-full bg-gradient-to-l from-orange-600/62 via-orange-600/52 to-transparent z-0"></div>
             <div className='flex flex-col md:flex-row relative w-[90%] md:w-[80%] gap-5 mt-5 md:mt-0'>
-                <img src={`${BASE_URL}${blog.images}`} className='w-full md:w-120'/>
+                <img src={`${BASE_URL}${blog.images}`} alt={blog.title} className='w-full md:w-120'/>
                 <div className='flex flex-col justify-between p-5 gap-5'>
 
                     <div className='flex flex-col gap-2'>
@@ -53,4 +50,3 @@ export default function BlogBySlug({blog}:BlogBySlugProps) {
     </div>
   )
 }
-
