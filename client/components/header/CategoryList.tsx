@@ -2,7 +2,7 @@
 
 import { animationOpacity, hover} from "@/styles/style"
 
-import { ChevronDown, X, ChevronLeft} from "lucide-react";
+import { ChevronDown, Fish, Zap, Activity, Settings, Link2,  Layers, Snowflake, ArrowRightCircle, Feather, Gift, Monitor, Box, X, ChevronLeft} from "lucide-react";
 
 import { hoverCat, hoverSub, linkClass, listClass } from "@/styles/categoryList";
 
@@ -13,7 +13,6 @@ import { overlay } from "@/styles/global";
 import { useEffect, useState } from "react";
 
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
 
 import { getValueByLang } from "@/utils/translateValue";
 
@@ -50,6 +49,8 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
   const [subCategory, setSubCategory] = useState('')
 
   const [subSubCategory, setSubSubCategory] = useState('')
+
+  const [isMobile, setIsMobile] = useState(false)
 
   const [categoryStats, setCategoryStats] = useState<Record<string, { count: number; subcategories: Record<string, { count: number; subSubcategories: Record<string, number> }> }>>({})
 
@@ -162,12 +163,26 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
         setCategoryStats(stats || {})
 
       } catch (error) {
-        console.error('Failed to load category statistics', error)
+
       }
 
     }
 
     loadCategoryStats()
+
+  }, [])
+
+  useEffect(() => {
+
+    const mediaQuery = window.matchMedia('(max-width: 767px)')
+
+    const updateIsMobile = () => setIsMobile(mediaQuery.matches)
+
+    updateIsMobile()
+
+    mediaQuery.addEventListener('change', updateIsMobile)
+
+    return () => mediaQuery.removeEventListener('change', updateIsMobile)
 
   }, [])
 
@@ -229,26 +244,14 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
 
                 {categoriesWithIcons.map((cat) => ( 
 
-                  <li key={cat.name} onMouseEnter={() => handleSelectCat(cat.name)} className={`${hoverCat} ${category === cat.name ? 'bg-orange-800/10 text-orange-600' : '' } flex justify-between p-1 rounded-md items-center w-full ${animationOpacity}`} >
+                  <li key={cat.name} onClick={() => handleCategoryClick(cat)} onMouseEnter={() => handleSelectCat(cat.name)} className={`${hoverCat} ${category === cat.name ? 'bg-orange-800/10 text-orange-600' : '' } flex justify-between p-1 rounded-md items-center w-full ${animationOpacity}`} >
 
-                    {openFrom === 'header' ? (
-                      <Link href={`/${lang}/${cat.name}`} onClick={() => setOpenCategory(false)} className={`${linkClass} flex items-center gap-2`}>
-                        {cat.icon}{nameLang(cat)}<span className="text-sm text-gray-500">({getCategoryCount(cat.name)})</span>
-                      </Link>
-                    ) : (
-                      <span onClick={() => handleCategoryClick(cat)} className={`${linkClass} flex items-center gap-2`}>
-                        {cat.icon}{nameLang(cat)}<span className="text-sm text-gray-500">({getCategoryCount(cat.name)})</span>
-                      </span>
-                    )}
+                    <span className={`${linkClass} flex items-center gap-2`}>{cat.icon}{nameLang(cat)}<span className="text-sm text-gray-500">({getCategoryCount(cat.name)})</span></span>
 
-                    {cat.subcategories.length > 0 && (
-                      openFrom === 'header' ? (
-                        <button type="button" aria-label={`Показати підкатегорії ${nameLang(cat)}`} onClick={() => handleSelectCat(cat.name)}>
-                          <ChevronDown className="rotate-270"/>
-                        </button>
-                      ) : (
-                        <ChevronDown className="rotate-270"/>
-                      )
+                    {cat?.subcategories.length > 0 && (
+
+                      <ChevronDown className="rotate-270"/>
+
                     )}
 
                 </li>
@@ -265,27 +268,19 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
 
                   <li key={sub.name} className={`${listClass} ${animationOpacity} ml-2 w-full`} >
 
-                    {openFrom === 'header' ? (
-                      <div className={`${linkClass} ${hover} text-black flex items-center justify-between gap-3`} onMouseEnter={() => handleSelectCat('', sub.name)}>
-                        <Link href={`/${lang}/${activeCategory.name}/${sub.name}`} onClick={() => setOpenCategory(false)} className="flex items-center justify-between gap-3 flex-1">
-                          <span>{nameLang(sub)}</span>
-                          <span className='text-sm text-gray-500'>({getSubCategoryCount(activeCategory.name, sub.name)})</span>
-                        </Link>
-                        {sub.subcategories.length > 0 && (
-                          <button type="button" aria-label={`Показати підкатегорії ${nameLang(sub)}`} onClick={() => setSubCategory(sub.name)}>
-                            <ChevronDown className='text-gray-500'/>
-                          </button>
-                        )}
-                      </div>
-                    ) : (
-                      <span className={`${linkClass} ${hover} text-black flex items-center justify-between gap-3`} onClick={() => handleSubCategoryClick(sub)} onMouseEnter={() => handleSelectCat('', sub.name)}>
-                        <span className='flex items-center gap-2'>
-                          {nameLang(sub)}
-                          {sub.subcategories.length > 0 && <ChevronDown className='text-gray-500'/>}
-                        </span>
-                        <span className='text-sm text-gray-500'>({getSubCategoryCount(activeCategory.name, sub.name)})</span>
+                    <span className={`${linkClass} ${hover} text-black flex items-center justify-between gap-3`} onClick={() => handleSubCategoryClick(sub)} onMouseEnter={() => handleSelectCat('', sub.name)}>
+
+                      <span className='flex items-center gap-2'>
+
+                        {nameLang(sub)}
+
+                        {sub.subcategories.length > 0 && <ChevronDown className='text-gray-500'/>}
+
                       </span>
-                    )}
+
+                      <span className='text-sm text-gray-500'>({getSubCategoryCount(activeCategory.name, sub.name)})</span>
+
+                    </span>
 
                     {subCategory === sub.name && (
 
@@ -295,17 +290,13 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
 
                             <li className={`${listClass}  ${animationOpacity} ml-6`}key={subSub.name}>
 
-                              {openFrom === 'header' ? (
-                                <Link href={`/${lang}/${activeCategory.name}/${sub.name}/${subSub.name}`} onClick={() => setOpenCategory(false)} className={`${linkClass} ${hoverSub} text-gray-500 flex items-center justify-between gap-3`} onMouseEnter={() => handleSelectCat('', '', subSub.name)}>
-                                  <span>{nameLang(subSub)}</span>
-                                  <span className='text-sm text-gray-400'>({getSubSubCategoryCount(activeCategory.name, sub.name, subSub.name)})</span>
-                                </Link>
-                              ) : (
-                                <span className={`${linkClass} ${hoverSub} text-gray-500 flex items-center justify-between gap-3`} onClick={() => handleSubSubCategoryClick(subSub)} onMouseEnter={() => handleSelectCat('', '', subSub.name)}>
-                                  <span>{nameLang(subSub)}</span>
-                                  <span className='text-sm text-gray-400'>({getSubSubCategoryCount(activeCategory.name, sub.name, subSub.name)})</span>
-                                </span>
-                              )}
+                              <span className={`${linkClass} ${hoverSub} text-gray-500 flex items-center justify-between gap-3`} onClick={() => handleSubSubCategoryClick(subSub)} onMouseEnter={() => handleSelectCat('', '', subSub.name)}>
+
+                                <span>{nameLang(subSub)}</span>
+
+                                <span className='text-sm text-gray-400'>({getSubSubCategoryCount(activeCategory.name, sub.name, subSub.name)})</span>
+
+                              </span>
 
                             </li>
 
