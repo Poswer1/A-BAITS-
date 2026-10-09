@@ -94,8 +94,8 @@ function Header() {
     }, [socket])
 
     return (
-        <div className="flex flex-col justify-center items-center w-full ">
-            <div className="flex flex-col justify-center items-start w-full md:w-[90%] p-2 relative">
+        <div className="flex flex-col justify-center items-center w-full relative">
+            <div className="flex flex-col justify-center items-start w-full md:w-[90%] p-2 ">
 
                 <div className="flex justify-between items-center w-full p-2">
                     <Link href={`/${lang}`}>

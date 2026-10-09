@@ -115,17 +115,17 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
   }
 
   const handleCategoryClick = (cat: typeof categoriesWithIcons[number]) => {
-
-    if(cat.subcategories.length > 0) {
-
+    if (cat.subcategories.length > 0 && !isMobile) {
       handleSelectCat(cat.name)
-
       return
+    }
 
+    if (cat.subcategories.length > 0 && isMobile) {
+      handleSelectCat(cat.name)
+      return
     }
 
     handleClick(cat.name, '', '')
-
   }
 
   const handleSubCategoryClick = (sub: NonNullable<typeof activeCategory>['subcategories'][number]) => {
