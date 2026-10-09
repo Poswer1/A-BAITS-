@@ -10,18 +10,18 @@ async function Main() {
   app.use(cookieParser())
   // dirname текущия папка '..' поднять на уровень выше и в 'uploads' 
   // //express static отдает статические файлы (изображения, CSS, JS и т.д.) прямо по URL.
-  app.enableCors({
-    origin: [
-      'http://192.168.1.66:3000',
-      'http://192.168.0.157:3000',
-      'http://localhost:3000',
-      'http://127.0.0.1:3000',
-      'http://80.91.79.221:3000',
-      'http://a-baits.com.ua',
-      'https://a-baits.com.ua'
-    ],
-    credentials: true
-  })
+  app.enableCors({ origin: 
+    [ 
+      'http://192.168.1.66:3000', 
+      'http://192.168.0.157:3000', 
+      'http://localhost:3000', 
+      'http://127.0.0.1:3000', 
+      'http://80.91.79.221:3000', 
+      'http://a-baits.com.ua', 
+      'https://a-baits.com.ua', 
+      'http://www.a-baits.com.ua', 
+      'https://www.a-baits.com.ua', 
+    ], credentials: true, });
 
 const PORT = process.env.PORT || 3002
   await app.listen(PORT, '0.0.0.0');
