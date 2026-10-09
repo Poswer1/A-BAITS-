@@ -244,7 +244,7 @@ function CategoryList({setOpenCategory, openFrom, createLotSetCategory, createLo
 
                 {categoriesWithIcons.map((cat) => ( 
 
-                  <li key={cat.name} onClick={() => handleCategoryClick(cat)} onMouseEnter={() => handleSelectCat(cat.name)} className={`${hoverCat} ${category === cat.name ? 'bg-orange-800/10 text-orange-600' : '' } flex justify-between p-1 rounded-md items-center w-full ${animationOpacity}`} >
+                  <li key={cat.name} onClick={() => handleCategoryClick(cat)} onMouseEnter={() => {if (!isMobile) handleSelectCat(cat.name)}} className={`${hoverCat} ${category === cat.name ? 'bg-orange-800/10 text-orange-600' : '' } flex justify-between p-1 rounded-md items-center w-full ${animationOpacity}`} >
 
                     <span className={`${linkClass} flex items-center gap-2`}>{cat.icon}{nameLang(cat)}<span className="text-sm text-gray-500">({getCategoryCount(cat.name)})</span></span>
 
