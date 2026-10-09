@@ -14,7 +14,7 @@ const UserSchema = new mongoose_1.Schema({
     UnblockDate: { type: Date },
     balance: { type: Number, default: 0 },
     role: { type: String, required: true },
-    rating: { type: Number, default: 1 },
+    rating: { type: Number, default: 0 },
     favorites: { type: [mongoose_1.Schema.Types.ObjectId], ref: 'Lot' },
     avatar: { type: String, default: '/uploads/defaultAvatar/avatar1.webp' },
 }, { timestamps: true, });

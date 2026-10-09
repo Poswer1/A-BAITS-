@@ -200,7 +200,7 @@ export default function Setting({id, mode}: SettingProps) {
                 setValue={setLanguage}
                 list={[
                   { name: 'Русский' },
-                  { name: 'Украинский' },
+                  { name: 'Українська' },
                 ]}
                 />
               </div>
