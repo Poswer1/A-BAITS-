@@ -40,8 +40,17 @@ export default function SocketIo({children}: {children:ReactNode}) {
                     return
                 }
 
-                const nextSocket = io(BASE_URL, {
-                    path: '/socket.io',
+                let socketUrl: URL
+                try {
+                    socketUrl = new URL(BASE_URL)
+                } catch {
+                    console.error('NEXT_PUBLIC_URL должен быть абсолютным URL: WebSocket не подключен')
+                    return
+                }
+
+                const socketPath = `${socketUrl.pathname.replace(/\/+$/, '')}/socket.io`
+                const nextSocket = io(socketUrl.origin, {
+                    path: socketPath,
                     transports: ["websocket"],
                     withCredentials: true,
                 })
