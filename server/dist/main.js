@@ -45,18 +45,17 @@ async function Main() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.use('/uploads', express.static((0, path_1.join)(__dirname, '..', 'uploads')));
     app.use((0, cookie_parser_1.default)());
-    app.enableCors({
-        origin: [
+    app.enableCors({ origin: [
             'http://192.168.1.66:3000',
             'http://192.168.0.157:3000',
             'http://localhost:3000',
             'http://127.0.0.1:3000',
             'http://80.91.79.221:3000',
             'http://a-baits.com.ua',
-            'https://a-baits.com.ua'
-        ],
-        credentials: true
-    });
+            'https://a-baits.com.ua',
+            'http://www.a-baits.com.ua',
+            'https://www.a-baits.com.ua',
+        ], credentials: true, });
     const PORT = process.env.PORT || 3002;
     await app.listen(PORT, '0.0.0.0');
     console.log(`Server started on ${PORT}`);

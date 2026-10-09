@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react"
-import { data } from "react-router-dom"
 import { io, Socket } from "socket.io-client"
+import { getStatusAuth } from "@/services/auth"
 
 interface SocketProps {
     socket: Socket | null
@@ -18,30 +18,66 @@ export default function SocketIo({children}: {children:ReactNode}) {
     const [onlineUser, setOnlineUser] = useState<string[]>([])
 
     useEffect(() => {
+        let currentSocket: Socket | null = null
+        let requestId = 0
+        let disposed = false
 
-        const token = localStorage.getItem('token')
-        if(!token) return
+        const syncSocket = async () => {
+            const currentRequestId = ++requestId
 
-        const s = io(BASE_URL, {
-            path: '/socket.io',
-            transports: ["websocket"],
-            // withCredentials: true,
-            auth: {
-                token: token
+            try {
+                const isAuthenticated = await getStatusAuth()
+                if (disposed || currentRequestId !== requestId) return
+
+                currentSocket?.disconnect()
+                currentSocket = null
+                setSocket(null)
+                setOnlineUser([])
+
+                if (!isAuthenticated) return
+                if (!BASE_URL) {
+                    console.error('NEXT_PUBLIC_URL не задан: WebSocket не подключен')
+                    return
+                }
+
+                const nextSocket = io(BASE_URL, {
+                    path: '/socket.io',
+                    transports: ["websocket"],
+                    withCredentials: true,
+                })
+                currentSocket = nextSocket
+                setSocket(nextSocket)
+
+                nextSocket.on('current-online', (data: string[]) => {
+                    setOnlineUser(data)
+                })
+                nextSocket.on('user-online', (data: string) => {
+                    setOnlineUser(prev => [...prev, data])
+                })
+                nextSocket.on('connect_error', (error) => {
+                    console.error('Ошибка подключения WebSocket:', error.message)
+                })
+            } catch (error) {
+                if (disposed || currentRequestId !== requestId) return
+                console.error('Не удалось проверить авторизацию для WebSocket:', error)
+                currentSocket?.disconnect()
+                currentSocket = null
+                setSocket(null)
             }
-        })
-        setSocket(s)
-        
-        s.on('current-online', (data) => {
-            setOnlineUser(data)
-        })
-        s.on('user-online', (data) => {
-            setOnlineUser(prev => [...prev, data])
-        })
-       
+        }
+
+        const handleAuthChange = () => {
+            void syncSocket()
+        }
+
+        void syncSocket()
+        window.addEventListener('auth-change', handleAuthChange)
 
         return () => {
-            s.disconnect()
+            disposed = true
+            requestId++
+            window.removeEventListener('auth-change', handleAuthChange)
+            currentSocket?.disconnect()
         }
     }, [BASE_URL])
 

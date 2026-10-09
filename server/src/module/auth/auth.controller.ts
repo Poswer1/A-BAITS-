@@ -23,27 +23,31 @@ export class AuthController {
   
 
   @Post('login')
-  async login(@Body() dto:Auth, @Res({passthrough: true}) res:Response) {
-    const data = await this.authService.login(dto)
+  async login(
+    @Body() dto: Auth,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const data = await this.authService.login(dto);
 
     res.cookie('token', data.token, {
       httpOnly: true,
+      secure: true,
       sameSite: 'lax',
-      secure: false, // для https
-      path: '/',        
-      maxAge: 1000 * 60 * 60 * 24 * 30
-    })
+      domain: 'a-baits.com.ua',
+      path: '/',
+      maxAge: 1000 * 60 * 60 * 24 * 30,
+    });
 
-    return { ok: true, token:data.token}
-
+    return { ok: true };
   }
 
   @Post('logout')
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie('token', {
       httpOnly: true,
+      secure: true,
       sameSite: 'lax',
-      secure: false,
+      domain: 'a-baits.com.ua',
       path: '/',
     });
 

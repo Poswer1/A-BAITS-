@@ -47,5 +47,6 @@ export async function logout() {
     credentials: 'include',
   });
 
+  localStorage.removeItem('token');
   window.dispatchEvent(new Event('auth-change'));
 }

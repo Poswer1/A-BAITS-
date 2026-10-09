@@ -32,8 +32,8 @@ function page() {
             return
         }
         try {
-            const data = await login(email, password)
-            localStorage.setItem('token', data.token)
+            await login(email, password)
+            localStorage.removeItem('token')
             window.dispatchEvent(new Event('auth-change'))
             router.push(`/${lang}`)
            

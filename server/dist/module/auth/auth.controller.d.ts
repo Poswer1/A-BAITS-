@@ -16,7 +16,6 @@ export declare class AuthController {
     };
     login(dto: Auth, res: Response): Promise<{
         ok: boolean;
-        token: string;
     }>;
     logout(res: Response): {
         ok: boolean;
