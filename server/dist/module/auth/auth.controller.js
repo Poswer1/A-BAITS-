@@ -34,9 +34,8 @@ let AuthController = class AuthController {
         const data = await this.authService.login(dto);
         res.cookie('token', data.token, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: 'lax',
-            domain: 'a-baits.com.ua',
             path: '/',
             maxAge: 1000 * 60 * 60 * 24 * 30,
         });

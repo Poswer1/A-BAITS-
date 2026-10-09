@@ -6,7 +6,6 @@ import { getFilterLot } from '@/services/lot';
 import type { Metadata } from 'next'
 import { getCatalogPageSeo } from '@/utils/catalogSeo'
 import { localizedMetadata, noIndexMetadata } from '@/utils/seo'
-import CatalogNavigation from '@/components/catalog/catalogNavigation'
 
 interface pageProps {
 params: Promise<{
@@ -120,7 +119,6 @@ export default async function page({params, searchParams}: pageProps) {
 
   return (
     <div className='flex flex-col justify-start items-start w-full h-full relative'>
-        <CatalogNavigation lang={lang} slug={slug}/>
         <div className='flex justify-start items-start w-full h-full relative'>
             <Filter maxPriceLot={allLots.maxPriceLot}/>
             <Catalog

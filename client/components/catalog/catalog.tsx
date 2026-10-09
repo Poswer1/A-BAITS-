@@ -1,14 +1,12 @@
 'use client'
 
 import { LotTypes } from '@/types/types';
-import Pagination from '../ui/pagination';
 import { useTranslation } from '@/app/context/TranslationProvider';
 import MobileVersion from '../card/mobileVersion';
 import { LayoutGrid, Rows3, X } from 'lucide-react';
 import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import listLocation from '../../data/citiesUK.json';
 import { useState } from 'react';
-import { animate } from '@/styles/global';
 import ShowCard from '../card/showCard';
 
 interface CatalogProps {
