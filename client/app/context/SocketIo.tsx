@@ -48,9 +48,8 @@ export default function SocketIo({children}: {children:ReactNode}) {
                     return
                 }
 
-                const socketPath = `${socketUrl.pathname.replace(/\/+$/, '')}/socket.io`
                 const nextSocket = io(socketUrl.origin, {
-                    path: socketPath,
+                    path: '/socket.io',
                     transports: ["websocket"],
                     withCredentials: true,
                 })
