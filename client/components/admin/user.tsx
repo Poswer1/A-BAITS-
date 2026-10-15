@@ -9,7 +9,7 @@ import { changeStatus, deleteUser, TemporaryBlock, updateBalance } from '@/servi
 import { useTranslation } from '@/app/context/TranslationProvider'
 import { animationScale, hover } from '@/styles/style'
 import Setting from '../profile/setting'
-import { AlertTriangle, ArrowDown, ArrowUp, ArrowUpDown, Ban, ChevronLeft, Delete, Edit, Edit2, Search, Trash, Trash2, Unlock, Wallet, X } from 'lucide-react'
+import { AlertTriangle, ArrowDown, ArrowUp, ArrowUpDown, Ban,  Edit2, Trash2, Unlock, Wallet } from 'lucide-react'
 import ConfirmWindow from './confirmWindow'
 import { blockObj, textObj } from '@/styles/admin'
 import Countdown from '../ui/countdown'
@@ -29,7 +29,7 @@ interface listUserProps {
     currentSearch: string
 }
 
-export default  function User({listUser, total, currentPage, currentSort, currentOrder, currentSearch}: listUserProps) {
+export default  function User({listUser, total, currentSort, currentOrder, currentSearch}: listUserProps) {
 
     const {t} = useTranslation()
     const router = useRouter()

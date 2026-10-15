@@ -32,7 +32,7 @@ export default function Countdown({date, status, textSize}: {date:string, status
 
   return (
     <div>
-      {(timeLeft > 0 || status === 'Active') ? (
+      {timeLeft > 0 && status === 'Active' ? (
          <span className={`text-orange-600 ${textSize ? textSize : 'text-base'}`}>{days}д {hours}ч {minutes}м {seconds}с</span>
       ) : (
         <span className="text-orange-600">{t('lot', 'timeIsUp')}</span>
