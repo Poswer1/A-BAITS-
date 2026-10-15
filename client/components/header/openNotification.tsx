@@ -75,7 +75,7 @@ export default function OpenNotification({setOpen, open, setRead}: OpenNotificat
     const modalRef = useClickOutside(setOpen)
 
   return (
-    <div ref={modalRef} className={`transition-all duration-500 ${open ? 'h-screen md:h-2/3 pointer-events-auto' : 'h-0 pointer-events-none'} flex flex-col w-full md:w-150 justify-start overflow-hidden items-start custom-scrollbar bg-white fixed top-[9%] md:top-[10%] 2xl:top-[7%] right-0 md:right-10 gap-2 z-30 text-black shadow-xl md:rounded-xl`}>
+    <div ref={modalRef} style={{ top: 'var(--site-header-height, 0px)' }} className={`transition-all duration-500 ${open ? 'h-screen md:h-2/3 pointer-events-auto' : 'h-0 pointer-events-none'} flex flex-col w-full md:w-150 justify-start overflow-hidden items-start custom-scrollbar bg-white fixed right-0 md:right-10 gap-2 z-30 text-black shadow-xl md:rounded-xl`}>
         {loading ? (
             <h1>{t('header', 'loading')}</h1>
         ): (

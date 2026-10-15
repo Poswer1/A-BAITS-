@@ -1,5 +1,5 @@
-import { NotificationGateway } from "../notification/notification.gateway";
-import { PaymentService } from "../payment/payment.service";
+import { NotificationGateway } from '../notification/notification.gateway';
+import { PaymentService } from '../payment/payment.service';
 export declare class CronSerivce {
     private readonly paymentService;
     private readonly notificationGateWay;

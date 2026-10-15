@@ -161,8 +161,8 @@ let LotService = class LotService {
         const lot = await lot_model_1.LotModel.findOne(ownerFilter);
         if (!lot)
             throw new common_1.BadRequestException('LotNotFound');
-        const durationMs = lot.auctionDurationMs ?? (lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0);
-        if (!Number.isFinite(durationMs) || durationMs <= 0) {
+        const durationMs = lot.auctionDurationMs;
+        if (typeof durationMs !== 'number' || !Number.isFinite(durationMs) || durationMs <= 0) {
             throw new common_1.BadRequestException('InvalidLotDuration');
         }
         const nowDate = new Date();

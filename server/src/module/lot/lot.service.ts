@@ -139,8 +139,8 @@ export class LotService {
     const ownerFilter = role === 'admin' ? { _id: id } : { _id: id, author: userId }
     const lot = await LotModel.findOne(ownerFilter)
     if(!lot) throw new BadRequestException('LotNotFound')
-    const durationMs = lot.auctionDurationMs ?? (lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0)
-    if (!Number.isFinite(durationMs) || durationMs <= 0) {
+    const durationMs = lot.auctionDurationMs
+    if (typeof durationMs !== 'number' || !Number.isFinite(durationMs) || durationMs <= 0) {
       throw new BadRequestException('InvalidLotDuration')
     }
     const nowDate = new Date()

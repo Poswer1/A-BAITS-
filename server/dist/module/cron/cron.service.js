@@ -28,11 +28,19 @@ let CronSerivce = class CronSerivce {
             const nowDate = new Date();
             const soldThreshold = new Date(nowDate.getTime() - 14 * 24 * 60 * 60 * 1000);
             const archiveThreshold = new Date(nowDate.getTime() - 90 * 24 * 60 * 60 * 1000);
-            await lot_model_1.LotModel.updateMany({ status: 'Sold', date: { $lte: soldThreshold } }, { $set: { status: 'Archive' } });
-            await lot_model_1.LotModel.deleteMany({ status: 'Archive', updatedAt: { $lte: archiveThreshold } });
+            await lot_model_1.LotModel.updateMany({
+                status: 'Sold',
+                date: { $lte: soldThreshold },
+            }, {
+                $set: { status: 'Archive' },
+            });
+            await lot_model_1.LotModel.deleteMany({
+                status: 'Archive',
+                updatedAt: { $lte: archiveThreshold },
+            });
             const expiredLots = await lot_model_1.LotModel.find({
                 date: { $lte: nowDate },
-                status: 'Active'
+                status: 'Active',
             });
             if (expiredLots.length === 0)
                 return;
@@ -40,26 +48,70 @@ let CronSerivce = class CronSerivce {
                 try {
                     if (lot.historyBid.length > 0) {
                         const winner = lot.historyBid[lot.historyBid.length - 1];
-                        await this.paymentService.buyLot(winner.author.toString(), { lotId: lot._id.toString(), price: winner.currentBid });
+                        await this.paymentService.buyLot(winner.author.toString(), {
+                            lotId: lot._id.toString(),
+                            price: winner.currentBid,
+                        });
                     }
                     else {
                         const now = new Date();
-                        const durationMs = lot.auctionDurationMs ?? (lot.createdAt ? lot.date.getTime() - lot.createdAt.getTime() : 0);
-                        if (!Number.isFinite(durationMs) || durationMs <= 0) {
+                        const durationMs = lot.auctionDurationMs;
+                        if (typeof durationMs !== 'number' ||
+                            !Number.isFinite(durationMs) ||
+                            durationMs <= 0) {
                             console.error('Некорректная длительность лота', lot._id);
                             continue;
                         }
                         if (lot.autoReExtension) {
+                            console.log({
+                                now: nowDate.toISOString(),
+                                oldDate: lot.date.toISOString(),
+                                durationMs: lot.auctionDurationMs,
+                                durationHours: (lot.auctionDurationMs ?? 0) / 3_600_000,
+                            });
                             const nextDate = (0, time_utils_1.buildRelistedDate)(now, durationMs);
-                            const update = await lot_model_1.LotModel.updateOne({
+                            console.log('ДО ОБНОВЛЕНИЯ:', {
+                                now: now.toISOString(),
+                                oldDate: lot.date.toISOString(),
+                                durationMs,
+                                durationHours: durationMs / 3_600_000,
+                                nextDate: nextDate.toISOString(),
+                                nextDateKyiv: nextDate.toLocaleString('uk-UA', {
+                                    timeZone: 'Europe/Kyiv',
+                                }),
+                            });
+                            const updatedLot = await lot_model_1.LotModel.findOneAndUpdate({
                                 _id: lot._id,
                                 status: 'Active',
-                                date: { $lte: now },
                                 'historyBid.0': { $exists: false },
-                            }, { $set: { date: nextDate, auctionDurationMs: durationMs } });
-                            if (update.modifiedCount === 0)
+                            }, {
+                                $set: {
+                                    date: nextDate,
+                                    auctionDurationMs: durationMs,
+                                },
+                            }, { returnDocument: 'after' });
+                            if (!updatedLot) {
+                                console.log('Лот НЕ обновлён. Возможно, не совпали условия запроса.');
                                 continue;
-                            console.log('лот перевыставлен');
+                            }
+                            const check = await lot_model_1.LotModel.findById(lot._id).select('date');
+                            console.log('ПОВТОРНО ИЗ БАЗЫ:', {
+                                date: check?.date,
+                                iso: check?.date?.toISOString(),
+                            });
+                            console.log('ПОСЛЕ ОБНОВЛЕНИЯ:', {
+                                savedDate: updatedLot?.date?.toISOString(),
+                                savedDateKyiv: updatedLot?.date?.toLocaleString('uk-UA', {
+                                    timeZone: 'Europe/Kyiv',
+                                }),
+                            });
+                            console.log({
+                                id: check?._id.toString(),
+                                date: check?.date,
+                                database: lot_model_1.LotModel.db.name,
+                                collection: lot_model_1.LotModel.collection.name,
+                            });
+                            console.log('Лот перевыставлен');
                         }
                         else {
                             const update = await lot_model_1.LotModel.updateOne({
@@ -67,17 +119,31 @@ let CronSerivce = class CronSerivce {
                                 status: 'Active',
                                 date: { $lte: now },
                                 'historyBid.0': { $exists: false },
-                            }, { $set: { status: 'Completed', auctionDurationMs: durationMs } });
+                            }, {
+                                $set: {
+                                    status: 'Completed',
+                                    auctionDurationMs: durationMs,
+                                },
+                            });
                             if (update.modifiedCount === 0)
                                 continue;
                             console.log(`Лот ${lot._id} завершён без ставок`);
                         }
                     }
                     if (lot.historyBid.length === 0 && lot.autoReExtension) {
-                        await this.notificationGateWay.sendNotification({ to: lot.author.toString(), notification: 'lotRelisted', lotId: lot._id.toString() });
+                        await this.notificationGateWay.sendNotification({
+                            to: lot.author.toString(),
+                            notification: 'lotRelisted',
+                            lotId: lot._id.toString(),
+                        });
                     }
-                    else if (lot.historyBid.length === 0 && !lot.autoReExtension) {
-                        await this.notificationGateWay.sendNotification({ to: lot.author.toString(), notification: 'lotNotRedeemed', lotId: lot._id.toString() });
+                    else if (lot.historyBid.length === 0 &&
+                        !lot.autoReExtension) {
+                        await this.notificationGateWay.sendNotification({
+                            to: lot.author.toString(),
+                            notification: 'lotNotRedeemed',
+                            lotId: lot._id.toString(),
+                        });
                     }
                 }
                 catch (error) {

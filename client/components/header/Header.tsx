@@ -93,9 +93,32 @@ function Header() {
         }
     }, [socket])
 
+    useEffect(() => {
+        const header = document.querySelector('[data-site-header]')
+        if (!header) return
+
+        const updateHeaderHeight = () => {
+            document.documentElement.style.setProperty(
+                '--site-header-height',
+                `${header.getBoundingClientRect().height}px`
+            )
+        }
+
+        updateHeaderHeight()
+        const observer = new ResizeObserver(updateHeaderHeight)
+        observer.observe(header)
+        window.addEventListener('resize', updateHeaderHeight)
+
+        return () => {
+            observer.disconnect()
+            window.removeEventListener('resize', updateHeaderHeight)
+            document.documentElement.style.removeProperty('--site-header-height')
+        }
+    }, [])
+
     return (
         <div className="flex flex-col justify-center items-center w-full relative">
-            <div className="flex flex-col justify-center items-start w-full md:w-[90%] p-2 ">
+            <div data-site-header className="flex flex-col justify-center items-start w-full md:w-[90%] p-2 ">
 
                 <div className="flex justify-between items-center w-full p-2">
                     <Link href={`/${lang}`}>
