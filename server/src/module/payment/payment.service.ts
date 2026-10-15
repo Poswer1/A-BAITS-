@@ -45,7 +45,7 @@ export class PaymentService {
         
         const updateLot = await LotModel.updateOne(
         { _id: lotId, winner: { $exists: false }, status: 'Active' },
-        { $set: { winner: userId, status: 'Sold', date: new Date(), redemptionMethod: redemption } },
+        { $set: { winner: userId, status: 'Sold', redemptionMethod: redemption } },
         { session } 
         )
 

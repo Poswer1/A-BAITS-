@@ -15,7 +15,6 @@ const schedule_1 = require("@nestjs/schedule");
 const lot_model_1 = require("../../models/lot.model");
 const notification_gateway_1 = require("../notification/notification.gateway");
 const payment_service_1 = require("../payment/payment.service");
-const time_utils_1 = require("../lot/time.utils");
 let CronSerivce = class CronSerivce {
     paymentService;
     notificationGateWay;
@@ -63,54 +62,6 @@ let CronSerivce = class CronSerivce {
                             continue;
                         }
                         if (lot.autoReExtension) {
-                            console.log({
-                                now: nowDate.toISOString(),
-                                oldDate: lot.date.toISOString(),
-                                durationMs: lot.auctionDurationMs,
-                                durationHours: (lot.auctionDurationMs ?? 0) / 3_600_000,
-                            });
-                            const nextDate = (0, time_utils_1.buildRelistedDate)(now, durationMs);
-                            console.log('ДО ОБНОВЛЕНИЯ:', {
-                                now: now.toISOString(),
-                                oldDate: lot.date.toISOString(),
-                                durationMs,
-                                durationHours: durationMs / 3_600_000,
-                                nextDate: nextDate.toISOString(),
-                                nextDateKyiv: nextDate.toLocaleString('uk-UA', {
-                                    timeZone: 'Europe/Kyiv',
-                                }),
-                            });
-                            const updatedLot = await lot_model_1.LotModel.findOneAndUpdate({
-                                _id: lot._id,
-                                status: 'Active',
-                                'historyBid.0': { $exists: false },
-                            }, {
-                                $set: {
-                                    date: nextDate,
-                                    auctionDurationMs: durationMs,
-                                },
-                            }, { returnDocument: 'after' });
-                            if (!updatedLot) {
-                                console.log('Лот НЕ обновлён. Возможно, не совпали условия запроса.');
-                                continue;
-                            }
-                            const check = await lot_model_1.LotModel.findById(lot._id).select('date');
-                            console.log('ПОВТОРНО ИЗ БАЗЫ:', {
-                                date: check?.date,
-                                iso: check?.date?.toISOString(),
-                            });
-                            console.log('ПОСЛЕ ОБНОВЛЕНИЯ:', {
-                                savedDate: updatedLot?.date?.toISOString(),
-                                savedDateKyiv: updatedLot?.date?.toLocaleString('uk-UA', {
-                                    timeZone: 'Europe/Kyiv',
-                                }),
-                            });
-                            console.log({
-                                id: check?._id.toString(),
-                                date: check?.date,
-                                database: lot_model_1.LotModel.db.name,
-                                collection: lot_model_1.LotModel.collection.name,
-                            });
                             console.log('Лот перевыставлен');
                         }
                         else {

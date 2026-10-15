@@ -53,7 +53,7 @@ let PaymentService = class PaymentService {
                 throw new common_1.BadRequestException('UserNotFound');
             if (user.balance <= -1)
                 throw new common_1.BadRequestException('balanceInTheRed');
-            const updateLot = await lot_model_1.LotModel.updateOne({ _id: lotId, winner: { $exists: false }, status: 'Active' }, { $set: { winner: userId, status: 'Sold', date: new Date(), redemptionMethod: redemption } }, { session });
+            const updateLot = await lot_model_1.LotModel.updateOne({ _id: lotId, winner: { $exists: false }, status: 'Active' }, { $set: { winner: userId, status: 'Sold', redemptionMethod: redemption } }, { session });
             if (updateLot.modifiedCount === 0) {
                 throw new common_1.BadRequestException('LotAlreadySold');
             }

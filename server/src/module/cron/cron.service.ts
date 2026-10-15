@@ -73,62 +73,22 @@ export class CronSerivce {
             }
 
             if (lot.autoReExtension) {
-                console.log({
-                now: nowDate.toISOString(),
-                oldDate: lot.date.toISOString(),
-                durationMs: lot.auctionDurationMs,
-                durationHours: (lot.auctionDurationMs ?? 0) / 3_600_000,
-            });
-              const nextDate = buildRelistedDate(now, durationMs);
+              // const nextDate = buildRelistedDate(now, durationMs);
 
-            console.log('ДО ОБНОВЛЕНИЯ:', {
-  now: now.toISOString(),
-  oldDate: lot.date.toISOString(),
-  durationMs,
-  durationHours: durationMs / 3_600_000,
-  nextDate: nextDate.toISOString(),
-  nextDateKyiv: nextDate.toLocaleString('uk-UA', {
-    timeZone: 'Europe/Kyiv',
-  }),
-});
-
-              const updatedLot = await LotModel.findOneAndUpdate(
-                {
-                    _id: lot._id,
-                    status: 'Active',
-                    'historyBid.0': { $exists: false },
-                },
-                {
-                    $set: {
-                    date: nextDate,
-                    auctionDurationMs: durationMs,
-                    },
-                },
-                { returnDocument: 'after' },
-                );
-                if(!updatedLot) {
-                    console.log('Лот НЕ обновлён. Возможно, не совпали условия запроса.');
-                    continue;
-                }
-                const check = await LotModel.findById(lot._id).select('date');
-
-console.log('ПОВТОРНО ИЗ БАЗЫ:', {
-  date: check?.date,
-  iso: check?.date?.toISOString(),
-});
-                console.log('ПОСЛЕ ОБНОВЛЕНИЯ:', {
-  savedDate: updatedLot?.date?.toISOString(),
-  savedDateKyiv: updatedLot?.date?.toLocaleString('uk-UA', {
-    timeZone: 'Europe/Kyiv',
-  }),
-});
-
-console.log({
-  id: check?._id.toString(),
-  date: check?.date,
-  database: LotModel.db.name,
-  collection: LotModel.collection.name,
-});
+              // const updatedLot = await LotModel.findOneAndUpdate(
+              //   {
+              //       _id: lot._id,
+              //       status: 'Active',
+              //       'historyBid.0': { $exists: false },
+              //   },
+              //   {
+              //       $set: {
+              //       date: nextDate,
+              //       auctionDurationMs: durationMs,
+              //       },
+              //   },
+              //   { returnDocument: 'after' },
+              //   );
               console.log('Лот перевыставлен');
             } else {
               const update = await LotModel.updateOne(
