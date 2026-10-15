@@ -12,6 +12,7 @@ import TransactionCard from '../card/transactionCard'
 import { animationScale } from '@/styles/style'
 import Pagination from '../ui/pagination'
 import SupportChatButton from '../ui/supportChatButton'
+import Image from 'next/image'
 
 interface BalanceProps {
   allTransaction: TransactionTypes[]
@@ -48,10 +49,14 @@ export default function Balance({allTransaction,totalTransactions, currentBalanc
           <div className={`${animationScale} flex flex-col justify-center items-center p-5 md:p-10 w-[90%] 2xl:w-1/3 bg-white rounded-xl gap-2`} onClick={(e) => e.stopPropagation()}>
           <span className='text-black text-center'>{t('profile', 'balanceTitle')}</span>
           <span className='text-gray-500 text-center text-sm md:text-base'>{t('profile', 'balanceDescription')}</span>
-          <Link href='https://send.monobank.ua/3Y9bBHwR4q' className='p-5 bg-gray-100 rounded-xl shadow-md'>
-            <QRCode value={qrValue} size={200}/>
-          </Link>
-          <span className='text-xl md:text-base'>4444 4444 4444 4444</span>
+          <Image
+            src="/images/chat/QRcode.jpg"
+            alt="qr"
+            width={500}
+            height={500}
+            className="w-full max-w-[200px] h-auto object-contain"
+          />
+          <span className='text-xl md:text-base'>5457 0822 5340 4094</span>
           <p className='text-gray-500 text-sm md:text-base text-center'>{t('profile', 'balanceDescriptionAboutMoney')}</p>
           </div>
         </div>
