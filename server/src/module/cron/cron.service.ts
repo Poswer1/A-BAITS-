@@ -73,22 +73,22 @@ export class CronSerivce {
             }
 
             if (lot.autoReExtension) {
-              // const nextDate = buildRelistedDate(now, durationMs);
+              const nextDate = buildRelistedDate(now, durationMs);
 
-              // const updatedLot = await LotModel.findOneAndUpdate(
-              //   {
-              //       _id: lot._id,
-              //       status: 'Active',
-              //       'historyBid.0': { $exists: false },
-              //   },
-              //   {
-              //       $set: {
-              //       date: nextDate,
-              //       auctionDurationMs: durationMs,
-              //       },
-              //   },
-              //   { returnDocument: 'after' },
-              //   );
+              const updatedLot = await LotModel.findOneAndUpdate(
+                {
+                    _id: lot._id,
+                    status: 'Active',
+                    'historyBid.0': { $exists: false },
+                },
+                {
+                    $set: {
+                    date: nextDate,
+                    auctionDurationMs: durationMs,
+                    },
+                },
+                { returnDocument: 'after' },
+                );
               console.log('Лот перевыставлен');
             } else {
               const update = await LotModel.updateOne(

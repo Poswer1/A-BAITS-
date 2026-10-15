@@ -15,6 +15,7 @@ const schedule_1 = require("@nestjs/schedule");
 const lot_model_1 = require("../../models/lot.model");
 const notification_gateway_1 = require("../notification/notification.gateway");
 const payment_service_1 = require("../payment/payment.service");
+const time_utils_1 = require("../lot/time.utils");
 let CronSerivce = class CronSerivce {
     paymentService;
     notificationGateWay;
@@ -62,6 +63,17 @@ let CronSerivce = class CronSerivce {
                             continue;
                         }
                         if (lot.autoReExtension) {
+                            const nextDate = (0, time_utils_1.buildRelistedDate)(now, durationMs);
+                            const updatedLot = await lot_model_1.LotModel.findOneAndUpdate({
+                                _id: lot._id,
+                                status: 'Active',
+                                'historyBid.0': { $exists: false },
+                            }, {
+                                $set: {
+                                    date: nextDate,
+                                    auctionDurationMs: durationMs,
+                                },
+                            }, { returnDocument: 'after' });
                             console.log('Лот перевыставлен');
                         }
                         else {
