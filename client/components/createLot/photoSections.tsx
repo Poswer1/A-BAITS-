@@ -74,6 +74,14 @@ export default function PhotoSections({setFile, file, preview, setPreview, initi
       setDragIndex(null)
     }
 
+    const getImageSrc = (src: string) => {
+      if (src.startsWith('blob:') || src.startsWith('http://') || src.startsWith('https://')) {
+        return src
+      }
+
+      return `${BASE_URL}${src.startsWith('/') ? '' : '/'}${src}`
+    }
+
   return (
     <div className={block}>
        <div className={Blockinput}>
@@ -90,7 +98,11 @@ export default function PhotoSections({setFile, file, preview, setPreview, initi
                 {preview[index] ? (
                   <>
                     <div onDrop={() => handleDrop(index)} draggable  onDragStart={() => setDragIndex(index)}  onDragOver={(e) => e.preventDefault()} className="w-full h-full">
-                      <img src={initialPreview.length > 0 ? `${BASE_URL}${preview[index]}` : preview[index]} className="object-cover w-full h-full object-center rounded" onMouseEnter={() => setHoverFile(index)}/>
+                      <img
+                        src={getImageSrc(preview[index])}
+                        className="object-cover w-full h-full object-center rounded"
+                        onMouseEnter={() => setHoverFile(index)}
+                      />
                     </div>
                     {hoverFile === index && (
                     <div className={` ${animationOpacity} absolute`} onClick={(e) => {e.preventDefault(), handleDeleteFile(index)}} onMouseLeave={() => setHoverFile('')}>

@@ -335,7 +335,7 @@ export default function LotForm({mode, initialData}:LotFormProps) {
 
         file?.forEach(f => formData.append('images', f))
 
-        if(!file && mode === 'edit' || mode === 'editAdmin') {
+        if ((mode === 'edit' || mode === 'editAdmin') && file.length === 0) {
           const latestPreview = [...preview]
           const filteredPreview = latestPreview.filter(p => 
             typeof p === 'string' && p.startsWith('/uploads/lots/')
